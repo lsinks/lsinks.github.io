@@ -1,5 +1,5 @@
 ---
-title: "Louise Sinks"
+title: "Louise E. Sinks"
 ---
 
 This is a Quarto website.
