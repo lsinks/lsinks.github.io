@@ -1,0 +1,22 @@
+---
+title: "My First Post"
+description: "This is a sample blog post"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+    #orcid: 0000-0002-5300-3075
+    #affiliation: Master of Environmental Data Science Program @ The Bren School (UCSB) & The National Center for Ecological Analysis & Synthesis
+    #affiliation-url: https://ucsb-meds.github.io/ 
+date: 03-14-2023
+categories: [Quarto, R, turtle] # self-defined categories
+citation:
+  url: https://lsinks.github.io/2023-03-14_tester-post 
+image: mckinley.jpg
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+This is my first blog entry. I am following the tutorial here:
+
+https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/
+
+Couldn't have done it without the best helper turtle in the world.
