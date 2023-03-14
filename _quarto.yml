@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Louise Sinks"
+  title: "Louise E. Sinks"
   navbar:
     left:
       - href: index.qmd
