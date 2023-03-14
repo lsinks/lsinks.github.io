@@ -14,7 +14,7 @@ website:
 
 format:
   html:
-    theme: lumen
+    theme: darkly
     css: styles.css
     toc: true
 
