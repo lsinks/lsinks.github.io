@@ -1,6 +1,6 @@
 ---
-title: "samantha csik"
-image: images/sam.jpg
+title: "Louise E. Sinks"
+image: images/headshot.jpg
 about: 
   template: trestles
   image-shape: rounded
@@ -8,16 +8,15 @@ about:
   links:
     - icon: linkedin 
       text: LinkedIn
-      href: https://www.linkedin.com/in/samanthacsik/
+      href: https://www.linkedin.com/in/louise-sinks/
     - icon: twitter 
       text: Twitter
-      href: https://twitter.com/SamanthaCsik
+      href: https://twitter.com/LouiseSinks
     - icon: github 
       text: GitHub
-      href: https://github.com/samanthacsik
-    - icon: envelope 
-      text: Email
-      href: mailto:scsik@ucsb.edu
+      href: https://github.com/lsinks
+    - text: Google Scholar
+      href: https://scholar.google.com/citations?user=Os4ZVq8AAAAJ&hl=en
 ---
 
 This is a Quarto website.
