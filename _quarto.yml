@@ -5,6 +5,7 @@ project:
 website:
   title: "Louise E. Sinks"
   navbar:
+    title: "Louise E. Sinks"
     left:
       - href: index.qmd
         text: Home
