@@ -1,6 +1,6 @@
 ---
-title: "My First Post"
-description: "This is a sample blog post"
+title: "Creating a Blog"
+description: "Trying to create a Quarto Blog"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
@@ -15,8 +15,16 @@ image: mckinley.jpg
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-This is my first blog entry. I am following the tutorial here:
+This is my first blog entry. I am following the tutorials here:
+
+https://ucsb-meds.github.io/creating-quarto-websites/#where-you-should-start-changing-stuff
 
 https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/
 
-Couldn't have done it without the best helper turtle in the world.
+Generally, this process has been a nightmare. The website is being created within RStudio, then pushed to GitHub and published through GitHub pages. As I've made changes per the tutorial, I have repeatedly been unable to push changes to GitHub due to a variety of fatal errors and merge conflicts. Since I'm only working in a single place I have no idea where all these merge conflicts are arising from. I don't understand how I can have everything in sync everywhere, make a local change, commit it, and then be unable to push it. I've had to delete the GitHub repository at least half a dozen times and recreate it from my local version because I couldn't find any way to fix the conflicts and fatal errors. I'm not sure whose fault this is (Quarto, GitHub or RStudio). It could be my fault, but I really don't understand why things are breaking so spectacularly. I've used git/ GitHub for version control of R projects before and I've never had an error. (I don't really see how you can get a merge conflict if you are the only person working on a project and you are only working at a single location, but maybe I'm failing to envision some use case.)
+
+I decided to go with Quarto because it is now built-in to RStudio and the tutorials by Samantha Csik seemed very clear. (And to be fair, they are! Very easy to follow.) The tutorials I found for R Markdown to make a website seemed a little more involved and a little more kludgey.
+
+Couldn't have done it without the best helper turtle in the world. Mac took a lot of executive naps to work on the problem.
+
+[![](mac_face.jpg)](An orange box turtle is peering out of an office made out of a cardboard box.)
