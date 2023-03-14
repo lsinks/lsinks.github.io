@@ -4,13 +4,13 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "This is a place for me to document my journey in learning data science in a more rigorous way. While I did a lot of coding and modeling as a chemist, I did not formally learn to code or about modeling and machine learning frameworks. (I wish I had! My post-doc would have been a lot smoother.)\nMost of my academic work was in Matlab so I chose to start this process with R because it looked more similar than Python."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Louise E. Sinks",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "EMPLOYMENT\nFreelance Technical Consultant 2017- present\nVice President US Nano LLC 2011-2017\nEDUCATION\nUniversity of Pennsylvania 2005-2011\nPostdoctoral Research Fellow 2008-2011\nNIH National Research Service Award Postdoctoral Fellow 2005-2008\nUniversity of Aarhus summer 2009\nVisiting Researcher, Center for Oxygen Microscopic Imaging\nNorthwestern University Evanston, IL 1999-2004\nMS and PhD in Chemistry\nUniversity of Virginia Charlottesville, VA 1995-1999\nBS in Chemistry with Honors, Minor: Math, fulfilled requirements for a BA in Physics\nCERTIFICATIONS\nDataCamp Data Scientist Professional Certificate\nGoogle Data Analytics Certificate"
   }
 ]

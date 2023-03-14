@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-About this site
+This is a place for me to document my journey in learning data science in a more rigorous way. While I did a lot of coding and modeling as a chemist, I did not formally learn to code or about modeling and machine learning frameworks. (I wish I had! My post-doc would have been a lot smoother.)
 
-```{r}
-1 + 1
-```
+Most of my academic work was in Matlab so I chose to start this process with R because it looked more similar than Python.

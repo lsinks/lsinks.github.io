@@ -19,10 +19,34 @@ about:
       href: https://scholar.google.com/citations?user=Os4ZVq8AAAAJ&hl=en
 ---
 
-This is a Quarto website.
+**EMPLOYMENT**
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Freelance Technical Consultant 2017- present
 
-```{r}
-1 + 1
-```
+Vice President US Nano LLC 2011-2017
+
+**EDUCATION**
+
+**University of Pennsylvania 2005-2011**
+
+Postdoctoral Research Fellow 2008-2011
+
+NIH National Research Service Award Postdoctoral Fellow 2005-2008
+
+**University of Aarhus summer 2009**
+
+Visiting Researcher, Center for Oxygen Microscopic Imaging
+
+**Northwestern University Evanston, IL 1999-2004**
+
+MS and PhD in Chemistry
+
+**University of Virginia Charlottesville, VA 1995-1999**
+
+BS in Chemistry with Honors, Minor: Math, fulfilled requirements for a BA in Physics
+
+**CERTIFICATIONS**
+
+DataCamp Data Scientist Professional Certificate
+
+Google Data Analytics Certificate
