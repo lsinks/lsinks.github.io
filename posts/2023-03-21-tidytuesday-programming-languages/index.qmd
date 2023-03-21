@@ -1,0 +1,37 @@
+---
+title: "TidyTuesday: Programming Languages"
+---
+
+This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The sample visualizations are about the comment codes.
+
+```{r}
+library(tidytuesdayR)
+library(tidyverse)
+library(skimr)
+```
+
+```{r}
+# Get the Data
+
+# Read in with tidytuesdayR package 
+# Install from CRAN via: install.packages("tidytuesdayR")
+# This loads the readme and all the datasets for the week of interest
+
+# Either ISO-8601 date or year/week works!
+
+tuesdata <- tidytuesdayR::tt_load('2023-03-21')
+tuesdata <- tidytuesdayR::tt_load(2023, week = 12)
+
+languages2 <- tuesdata$languages
+
+# Or read in the data manually
+
+#languages <- readr::read_csv('https://raw.githubusercontent.com#/rfordatascience/tidytuesday/master/data/2023/2023-03-21/languages.csv')
+```
+
+```{r}
+
+
+```
+
+Let's try to reproduce the graphs in the sample article first.

@@ -27,4 +27,4 @@ I decided to go with Quarto because it is now built-in to RStudio and the tutori
 
 Couldn't have done it without the best helper turtle in the world. Mac took a lot of executive naps to work on the problem.
 
-[![](mac_face.jpg)](An orange box turtle is peering out of an office made out of a cardboard box.)
+[![](mac_face.jpg)](An%20orange%20box%20turtle%20is%20peering%20out%20of%20an%20office%20made%20out%20of%20a%20cardboard%20box.)
