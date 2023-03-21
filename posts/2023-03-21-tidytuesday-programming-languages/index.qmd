@@ -12,7 +12,7 @@ image: pop-lang-by-token.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The sample visualizations are about the comment codes.
+This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The [sample visualizations are about the comment codes](https://pldb.com/posts/does-every-programming-language-support-line-comments.html).
 
 ```{r}
 #| label: loading-libraries
@@ -26,7 +26,7 @@ library(gt)
 library(ggrepel)
 ```
 
-Load the data first. There has been some cleaning done as outlined on the TidyTuesday github page.
+Load the data first. There has been some cleaning done as outlined on the [TidyTuesday github page](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-03-21/readme.md).
 
 ```{r}
 #| label: load-data
@@ -208,7 +208,7 @@ join_madness %>%
 
 ```
 
-This is a visualization of the highest ranked languages for each token. The number of users of the dominant language is also encoded in the size and color of the label.  Having it ordered makes it difficult to tell if Java or Python is the most popular/ highest ranked language.
+This is a visualization of the highest ranked languages for each token. The number of users of the dominant language is also encoded in the size and color of the label. Having it ordered makes it difficult to tell if Java or Python is the most popular/ highest ranked language.
 
 ```{r}
 #| label: lang-token-graph
@@ -222,6 +222,7 @@ join_madness %>%
   ylab("Number of languages using token") +
   theme_classic()
 ```
+
 Here is the same graph just ordered "alphabetically" by token.
 
 ```{r}
