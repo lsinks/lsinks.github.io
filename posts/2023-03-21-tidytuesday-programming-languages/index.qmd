@@ -8,8 +8,8 @@ author:
 categories: [R, TidyTuesday, R-code] # self-defined categories
 citation:
   url: https://lsinks.github.io/2023-03-21-tidytuesday-programming-languages 
-#image: mckinley.jpg
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+image: pop-lang-by-token.png
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The sample visualizations are about the comment codes.
@@ -17,11 +17,13 @@ This is my first attempt at Tidy Tuesday. The dataset today is about Programming
 ```{r}
 #| label: loading-libraries
 #| warning: false
+#| output: false
 library(tidytuesdayR)
 library(tidyverse)
 library(skimr)
 library(ggthemes)
 library(gt)
+library(ggrepel)
 ```
 
 Load the data first. There has been some cleaning done as outlined on the TidyTuesday github page.
@@ -29,6 +31,7 @@ Load the data first. There has been some cleaning done as outlined on the TidyTu
 ```{r}
 #| label: load-data
 #| warning: false
+#| output: false
 # Get the Data
 
 # Read in with tidytuesdayR package 
@@ -91,7 +94,7 @@ programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
   group_by(line_comment_token) %>%
   count(line_comment_token) %>%
   ggplot(aes(fct_rev(fct_reorder(line_comment_token, n)), n)) +
-  geom_col() +
+  geom_col(fill = "dodgerblue2") +
   ylab("Count") +
   xlab("Comment Token") +
   ggtitle("Popularity of different comment tokens") +
@@ -103,6 +106,7 @@ programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
 Let's make a nice table of the popular comment types.
 
 ```{r}
+# | label: table-tokens
 programming_lang2 <- programming_lang %>%
   filter(is.na(line_comment_token) == FALSE) %>%
   count(line_comment_token, sort = TRUE) 
@@ -121,7 +125,7 @@ programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
   group_by(line_comment_token) %>%
   summarize(avg_rank = mean(language_rank)) %>%
   ggplot(aes((fct_reorder(line_comment_token, avg_rank)), avg_rank)) +
-  geom_col() +
+  geom_col(fill = "dodgerblue2") +
   ylab("Average Rank of Language") +
   xlab("Comment Token") +
   ggtitle("Average rank of languages using different comment tokens") +
@@ -144,7 +148,10 @@ Only COBOL does, so the rank of this token isn't diluted by many less popular la
 programming_lang %>%
   filter(is.na(line_comment_token) == FALSE) %>%
   ggplot(aes(line_comment_token, language_rank)) +
-  geom_boxplot() +
+  geom_boxplot(color = "dodgerblue2") +
+  ggtitle("The rank of languages by token.") +
+  xlab("Token") +
+  ylab ("Language Rank") +
   theme_classic()
 ```
 
@@ -156,17 +163,18 @@ programming_lang %>%
   filter(is.na(line_comment_token) == FALSE) %>%
   ggplot(aes(fct_reorder(line_comment_token, language_rank,
                          .fun = median, .desc = FALSE), language_rank)) +
-  geom_boxplot() +
+  geom_boxplot(color = "dodgerblue2") +
+  ggtitle("The rank of languages by token") +
   xlab("Token") +
-  ylab("Number of Languages") +
-  ggtitle("What are the popular symbols for commenting?") +
-  theme_classic()
+  ylab("Language Rank") +
+    theme_classic()
 
 ```
 
 Let's see the most popular language for each symbol. There might be a way to do this all at once, but I'm going to pull it out with joins to previous tables I've created.
 
 ```{r}
+#| label: most-pop-lang-per-token
 programming_lang3 <- programming_lang %>%
   filter(is.na(line_comment_token) == FALSE) %>%
   group_by(line_comment_token) %>%
@@ -183,26 +191,49 @@ join_madness <- join_madness %>%
          number_of_jobs)
 ```
 
-So now we have a bunch of summarized data in a single dataframe.
+So now we have a bunch of summarized data in a single dataframe. Here's a graph. It is saying something, but I'm not sure what. When you can't come up with a concise title, then you probably don't know what you are trying to say...
 
 ```{r}
+#| label: tokens-pop
 join_madness %>%
-  ggplot(aes(highest_rank, n, size = log(number_of_users), color = log(number_of_users), label = line_comment_token)) +
- # geom_point() +
+  ggplot(aes(highest_rank, n, size = log(number_of_users), 
+             color = log(number_of_users), label = line_comment_token)) +
   scale_y_log10() +
   scale_x_log10() +
-  geom_text() +
+  geom_text_repel(show.legend = FALSE) +
+  ggtitle("Popularity of tokens by language rank and usage") +
+  xlab("Highest Rank of language using Token") +
+  ylab("Number of Languages using token") +
   theme_classic()
 
 ```
 
-And another graoh.
+This is a visualization of the highest ranked languages for each token. The number of users of the dominant language is also encoded in the size and color of the label.  Having it ordered makes it difficult to tell if Java or Python is the most popular/ highest ranked language.
 
 ```{r}
+#| label: lang-token-graph
 join_madness %>%
-  ggplot(aes(line_comment_token, n, size = log(number_of_users), color = log(number_of_users), label = title)) +
+  ggplot(aes(fct_rev(fct_reorder(line_comment_token, highest_rank)), n , size = log(number_of_users), color = log(number_of_users), label = title)) +
  # geom_point() +
   scale_y_log10() +
-  geom_text() +
+  geom_text_repel(show.legend = FALSE) +
+   ggtitle("The Most Popular Language for Each Comment Token") +
+  xlab("Token") +
+  ylab("Number of languages using token") +
+  theme_classic()
+```
+Here is the same graph just ordered "alphabetically" by token.
+
+```{r}
+#| label: lang-token-graph-undordered
+join_madness %>%
+  ggplot(aes(line_comment_token, n, size = log(number_of_users), 
+             color = log(number_of_users), label = title)) +
+ # geom_point() +
+  scale_y_log10() +
+  geom_text_repel(show.legend = FALSE) +
+   ggtitle("The Most Popular Language for Each Comment Token") +
+  xlab("Token") +
+  ylab("Number of languages using token") +
   theme_classic()
 ```
