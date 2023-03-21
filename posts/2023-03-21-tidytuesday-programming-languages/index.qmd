@@ -1,16 +1,32 @@
 ---
 title: "TidyTuesday: Programming Languages"
+description: "Trying to create a Quarto Blog"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+    date: 03-21-2023
+categories: [R, TidyTuesday, R-code] # self-defined categories
+citation:
+  url: https://lsinks.github.io/2023-03-21-tidytuesday-programming-languages 
+#image: mckinley.jpg
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The sample visualizations are about the comment codes.
 
 ```{r}
+#| label: loading-libraries
 library(tidytuesdayR)
 library(tidyverse)
 library(skimr)
+library(ggthemes)
+library(gt)
 ```
 
+First, let's look at how complete the data is.
+
 ```{r}
+#| label: load-data
 # Get the Data
 
 # Read in with tidytuesdayR package 
@@ -22,16 +38,154 @@ library(skimr)
 tuesdata <- tidytuesdayR::tt_load('2023-03-21')
 tuesdata <- tidytuesdayR::tt_load(2023, week = 12)
 
-languages2 <- tuesdata$languages
+languages <- tuesdata$languages
 
 # Or read in the data manually
 
 #languages <- readr::read_csv('https://raw.githubusercontent.com#/rfordatascience/tidytuesday/master/data/2023/2023-03-21/languages.csv')
 ```
 
+First, let's look at how complete the data is. The skimr package produces nice summary information about the variables and their completeness.
+
 ```{r}
+#| label: check-missingness
+
+
+skim(languages)
+
+```
+
+The data is pretty incomplete. Only 9 of the 49 variables are fully complete. The line comment token is only 0.110 complete and the has comments is only 0.144 complete. This variable has only 3 false values; it is likely that the missing data is skewed towards false. It is more likely that you'd complete this entry if there were a comment, than if there weren't. This is somewhat different than the previous analysis, however that was performed in July of 2022. It is also possible that the cleaning and prep done to prepare the #TidyTuesday dataset removed some entries which did have FALSE values for the comments.
+
+There are some funny entries that appeared in the skim report, like -2000 as the year the earliest language appeared. It turns out this is Babylonian numerals, so it probably correct. This does show there is a lot more than computer languages in this dataset though.
+
+Looking through the variables, I see there is a "type" in the data dictionary, and it appears that "pl" means programming language. So let's filter for that. (I couldn't find an explantion of this variable on https://pldb.com/) It is used on various pages, but I couldn't find the definition of the types.
+
+Also, rank starts at 0, and I'd like it to start at 1.
+
+```{r}
+#| label: cleaning-data
+programming_lang <- languages %>%
+  filter(type == 'pl') %>%
+  select(-starts_with("github"), -starts_with("wikipedia"), -description, -creators, -website:semantic_scholar) %>%
+  mutate(language_rank = language_rank + 1)
+
+skim(programming_lang)
 
 
 ```
 
-Let's try to reproduce the graphs in the sample article first.
+This now produces a dataset with 0.143 completeness for features_has_comments. All non-missing entries are TRUE, which again suggests that FALSE is over represented in the missing data.
+
+Let's only look at the programming languages that have data for comments.
+
+```{r}
+
+programming_lang <- programming_lang %>%
+  filter(features_has_comments == TRUE)
+
+skim(programming_lang)
+
+```
+
+This subset is still moderately incomplete for information about comments. Only 75% of the data has the type of comment entered (#, //, etc). 86% of the entries are completed for "feature_has_line_comments" which indicates if comments must occupy a single line or if they can be made inline.
+
+```{r}
+#| label: most-popular-comment-token
+
+programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
+  group_by(line_comment_token) %>%
+  count(line_comment_token) %>%
+  ggplot(aes(fct_rev(fct_reorder(line_comment_token, n)), n)) +
+  geom_col() +
+  ylab("Count") +
+  xlab("Comment Token") +
+  ggtitle("Popularity of different comment tokens") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45,  vjust = 0.25, hjust = 0.25))
+
+```
+
+Let's make a nice table of the popular comments.
+
+```{r}
+programming_lang2 <- programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
+  count(line_comment_token, sort = TRUE) 
+
+programming_lang2 %>%
+gt() %>%
+tab_header(title = "Most Common Comment Tokens") %>%
+cols_label(line_comment_token = "Token", n = "# of Languages that Use token")
+
+```
+
+There is a language rank. Let's see the average rank of languages for each token.
+
+```{r}
+programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
+  group_by(line_comment_token) %>%
+  summarize(avg_rank = mean(language_rank)) %>%
+  ggplot(aes((fct_reorder(line_comment_token, avg_rank)), avg_rank)) +
+  geom_col() +
+  ylab("Average Rank of Language") +
+  xlab("Comment Token") +
+  ggtitle("Average rank of languages using different comment tokens") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45,  vjust = 0.25, hjust = 0.25))
+```
+
+The highest ranked token is "\*\>". What languages use this?
+
+```{r}
+programming_lang %>% filter(line_comment_token == "*>") %>%
+  select(title, language_rank, line_comment_token)
+
+```
+
+Only COBOL does, so the rank of this token isn't diluted by many less popular languages.
+
+```{r}
+programming_lang %>%
+  filter(is.na(line_comment_token) == FALSE) %>%
+  ggplot(aes(line_comment_token, language_rank)) +
+  geom_boxplot()
+```
+
+Okay, let's clean this up.
+
+```{r}
+programming_lang %>%
+  filter(is.na(line_comment_token) == FALSE) %>%
+  ggplot(aes(fct_reorder(line_comment_token, language_rank, .fun = median, .desc = FALSE), language_rank)) +
+  geom_boxplot()
+
+```
+
+Let's see the most popular language for each symbol.
+
+```{r}
+programming_lang3 <- programming_lang %>% filter(is.na(line_comment_token) == FALSE) %>%
+  group_by(line_comment_token) %>%
+  summarize(highest_rank = min(language_rank)) 
+
+join_madness <- programming_lang2 %>%
+  left_join(programming_lang3, by = "line_comment_token") %>% 
+  left_join(programming_lang, by = c("highest_rank" = "language_rank", "line_comment_token"= "line_comment_token")) 
+
+join_madness <-join_madness %>%
+  select(line_comment_token, n, highest_rank, title, appeared, number_of_users,
+         number_of_jobs)
+```
+
+graph this
+
+```{r}
+join_madness %>%
+  ggplot(aes(highest_rank, n, size = log(number_of_users), color = log(number_of_users), label = line_comment_token)) +
+ # geom_point() +
+  scale_y_log10() +
+  scale_x_log10() +
+  geom_text() +
+  theme_classic()
+
+```
