@@ -13,6 +13,10 @@ website:
       - posts.qmd
       - href: blogroll.qmd
         text: "Blog Roll"
+  google-analytics: "G-WR4VFC0MC2"
+  cookie-consent: true
+  twitter-card:
+    creator: "@LouiseSinks"
 
 format:
   html:

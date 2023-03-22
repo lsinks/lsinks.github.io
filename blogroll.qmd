@@ -15,3 +15,5 @@ Tutorials I've followed:
 Setting Up Webpage:
 
 [Creating Quarto Websites by Sam Csik](https://ucsb-meds.github.io/creating-quarto-websites/)
+
+[Albert Rapp: The ultimate guide to starting a Quarto blog](https://albert-rapp.de/posts/13_quarto_blog_writing_guide/13_quarto_blog_writing_guide.htm)
