@@ -22,6 +22,69 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 
@@ -114,6 +177,8 @@ ul.task-list li input[type="checkbox"] {
                 <div class="quarto-category">TidyTuesday</div>
                 <div class="quarto-category">R-code</div>
                 <div class="quarto-category">Code-Along</div>
+                <div class="quarto-category">Data-Viz</div>
+                <div class="quarto-category">skimr</div>
               </div>
                   </div>
   </div>
@@ -137,7 +202,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#skimr" id="toc-skimr" class="nav-link active" data-scroll-target="#skimr">Skimr</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
@@ -145,8 +216,1346 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<p>Yesterday, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
+<section id="skimr" class="level2">
+<h2 class="anchored" data-anchor-id="skimr">Skimr</h2>
+<p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the Data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in with tidytuesdayR package </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This loads the readme and all the datasets for the week of interest</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Either ISO-8601 date or year/week works!</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#tuesdata &lt;- tidytuesdayR::tt_load('2023-03-21')</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2023</span>, <span class="at">week =</span> <span class="dv">12</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>languages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here is what the raw skimr output looks like.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | label: raw-skim-output</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">languages</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">4303</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">logical</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pldb_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4303</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">title</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4267</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">description</td>
+<td style="text-align: right;">3480</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2273</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">811</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">type</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">creators</td>
+<td style="text-align: right;">3203</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">985</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">website</td>
+<td style="text-align: right;">2928</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1368</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">domain_name</td>
+<td style="text-align: right;">3588</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">700</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reference</td>
+<td style="text-align: right;">2314</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">251</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1955</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo</td>
+<td style="text-align: right;">3402</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">897</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_description</td>
+<td style="text-align: right;">3438</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">419</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">853</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language</td>
+<td style="text-align: right;">3829</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">474</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_tm_scope</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_type</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_ace_mode</td>
+<td style="text-align: right;">3838</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_file_extensions</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia</td>
+<td style="text-align: right;">2731</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1566</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_summary</td>
+<td style="text-align: right;">2884</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">6741</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1407</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_related</td>
+<td style="text-align: right;">3145</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1761</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1059</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">line_comment_token</td>
+<td style="text-align: right;">3831</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">origin_community</td>
+<td style="text-align: right;">1190</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">305</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2232</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">file_type</td>
+<td style="text-align: right;">3213</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 6%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: left;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">features_has_comments</td>
+<td style="text-align: right;">3683</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">TRU: 617, FAL: 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">features_has_semantic_indentation</td>
+<td style="text-align: right;">3722</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: left;">FAL: 516, TRU: 65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">features_has_line_comments</td>
+<td style="text-align: right;">3765</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: left;">TRU: 517, FAL: 21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">is_open_source</td>
+<td style="text-align: right;">3792</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: left;">TRU: 453, FAL: 58</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">appeared</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1991.11</td>
+<td style="text-align: right;">111.44</td>
+<td style="text-align: right;">-2000</td>
+<td style="text-align: right;">1984.00</td>
+<td style="text-align: right;">1997.0</td>
+<td style="text-align: right;">2012.00</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">domain_name_registered</td>
+<td style="text-align: right;">3801</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">2011.33</td>
+<td style="text-align: right;">7.02</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">2007.00</td>
+<td style="text-align: right;">2013.0</td>
+<td style="text-align: right;">2017.00</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▃▃▇▆</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isbndb</td>
+<td style="text-align: right;">3217</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">7.71</td>
+<td style="text-align: right;">33.16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">400</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">book_count</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">17.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">401</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">semantic_scholar</td>
+<td style="text-align: right;">3545</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">3.79</td>
+<td style="text-align: right;">8.32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">language_rank</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2151.00</td>
+<td style="text-align: right;">1242.31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1075.50</td>
+<td style="text-align: right;">2151.0</td>
+<td style="text-align: right;">3226.50</td>
+<td style="text-align: right;">4302</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_stars</td>
+<td style="text-align: right;">3414</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2127.40</td>
+<td style="text-align: right;">7554.02</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">29.00</td>
+<td style="text-align: right;">194.0</td>
+<td style="text-align: right;">1071.00</td>
+<td style="text-align: right;">88526</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_forks</td>
+<td style="text-align: right;">3417</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">261.29</td>
+<td style="text-align: right;">1203.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.25</td>
+<td style="text-align: right;">16.0</td>
+<td style="text-align: right;">91.50</td>
+<td style="text-align: right;">23732</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_updated</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2021.39</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">2022.00</td>
+<td style="text-align: right;">2022.0</td>
+<td style="text-align: right;">2022.00</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_subscribers</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">62.34</td>
+<td style="text-align: right;">200.88</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">13.0</td>
+<td style="text-align: right;">44.00</td>
+<td style="text-align: right;">2910</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_created</td>
+<td style="text-align: right;">3425</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2015.84</td>
+<td style="text-align: right;">3.48</td>
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">2013.00</td>
+<td style="text-align: right;">2016.0</td>
+<td style="text-align: right;">2019.00</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▅▇▇▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_issues</td>
+<td style="text-align: right;">3518</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">123.03</td>
+<td style="text-align: right;">546.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">9.0</td>
+<td style="text-align: right;">61.00</td>
+<td style="text-align: right;">9522</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_first_commit</td>
+<td style="text-align: right;">3567</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">2014.74</td>
+<td style="text-align: right;">4.99</td>
+<td style="text-align: right;">1987</td>
+<td style="text-align: right;">2012.00</td>
+<td style="text-align: right;">2015.0</td>
+<td style="text-align: right;">2018.00</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▁▁▆▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_repos</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">197134.67</td>
+<td style="text-align: right;">1226900.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">91.25</td>
+<td style="text-align: right;">725.5</td>
+<td style="text-align: right;">7900.25</td>
+<td style="text-align: right;">16046489</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_daily_page_views</td>
+<td style="text-align: right;">2837</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">227.13</td>
+<td style="text-align: right;">783.55</td>
+<td style="text-align: right;">-1</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">99.00</td>
+<td style="text-align: right;">13394</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_backlinks_count</td>
+<td style="text-align: right;">2877</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">318.55</td>
+<td style="text-align: right;">1635.29</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">13.00</td>
+<td style="text-align: right;">39.0</td>
+<td style="text-align: right;">126.00</td>
+<td style="text-align: right;">34348</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_page_id</td>
+<td style="text-align: right;">2893</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">9167847.21</td>
+<td style="text-align: right;">13506832.90</td>
+<td style="text-align: right;">928</td>
+<td style="text-align: right;">375153.75</td>
+<td style="text-align: right;">2114700.5</td>
+<td style="text-align: right;">12321223.00</td>
+<td style="text-align: right;">63063548</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_appeared</td>
+<td style="text-align: right;">2958</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">1991.14</td>
+<td style="text-align: right;">17.03</td>
+<td style="text-align: right;">1830</td>
+<td style="text-align: right;">1980.00</td>
+<td style="text-align: right;">1994.0</td>
+<td style="text-align: right;">2005.00</td>
+<td style="text-align: right;">2019</td>
+<td style="text-align: left;">▁▁▁▃▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_created</td>
+<td style="text-align: right;">3040</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">2005.75</td>
+<td style="text-align: right;">3.77</td>
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">2003.00</td>
+<td style="text-align: right;">2005.0</td>
+<td style="text-align: right;">2007.00</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">▇▇▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_revision_count</td>
+<td style="text-align: right;">3130</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">330.43</td>
+<td style="text-align: right;">813.26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">35.00</td>
+<td style="text-align: right;">84.0</td>
+<td style="text-align: right;">242.00</td>
+<td style="text-align: right;">10104</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">last_activity</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2000.62</td>
+<td style="text-align: right;">84.60</td>
+<td style="text-align: right;">-900</td>
+<td style="text-align: right;">1992.00</td>
+<td style="text-align: right;">2006.0</td>
+<td style="text-align: right;">2021.00</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">number_of_users</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">13771.26</td>
+<td style="text-align: right;">227712.95</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">20.0</td>
+<td style="text-align: right;">230.00</td>
+<td style="text-align: right;">7179119</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">number_of_jobs</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">422.18</td>
+<td style="text-align: right;">12572.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">771996</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">central_package_repository_count</td>
+<td style="text-align: right;">1482</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don’t particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.</p>
+<p>The package let’s you set the summary functions that skimr calls. Drop the</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | label: custom-skim-functions</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>my_skim <span class="ot">&lt;-</span> <span class="fu">skim_with</span>(<span class="at">numeric =</span> <span class="fu">sfl</span>(<span class="at">p25 =</span> <span class="cn">NULL</span>, <span class="at">p50 =</span> <span class="cn">NULL</span>, <span class="at">p75 =</span> <span class="cn">NULL</span>)) </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">my_skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">languages</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">4303</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">logical</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pldb_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4303</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">title</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4267</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">description</td>
+<td style="text-align: right;">3480</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2273</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">811</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">type</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">creators</td>
+<td style="text-align: right;">3203</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">985</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">website</td>
+<td style="text-align: right;">2928</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1368</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">domain_name</td>
+<td style="text-align: right;">3588</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">700</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reference</td>
+<td style="text-align: right;">2314</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">251</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1955</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo</td>
+<td style="text-align: right;">3402</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">897</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_description</td>
+<td style="text-align: right;">3438</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">419</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">853</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language</td>
+<td style="text-align: right;">3829</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">474</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_tm_scope</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_type</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_ace_mode</td>
+<td style="text-align: right;">3838</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_file_extensions</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia</td>
+<td style="text-align: right;">2731</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1566</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_summary</td>
+<td style="text-align: right;">2884</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">6741</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1407</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_related</td>
+<td style="text-align: right;">3145</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1761</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1059</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">line_comment_token</td>
+<td style="text-align: right;">3831</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">origin_community</td>
+<td style="text-align: right;">1190</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">305</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2232</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">file_type</td>
+<td style="text-align: right;">3213</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 6%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: left;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">features_has_comments</td>
+<td style="text-align: right;">3683</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">TRU: 617, FAL: 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">features_has_semantic_indentation</td>
+<td style="text-align: right;">3722</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: left;">FAL: 516, TRU: 65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">features_has_line_comments</td>
+<td style="text-align: right;">3765</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: left;">TRU: 517, FAL: 21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">is_open_source</td>
+<td style="text-align: right;">3792</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: left;">TRU: 453, FAL: 58</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">appeared</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1991.11</td>
+<td style="text-align: right;">111.44</td>
+<td style="text-align: right;">-2000</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">domain_name_registered</td>
+<td style="text-align: right;">3801</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">2011.33</td>
+<td style="text-align: right;">7.02</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▃▃▇▆</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isbndb</td>
+<td style="text-align: right;">3217</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">7.71</td>
+<td style="text-align: right;">33.16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">400</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">book_count</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">17.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">401</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">semantic_scholar</td>
+<td style="text-align: right;">3545</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">3.79</td>
+<td style="text-align: right;">8.32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">language_rank</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2151.00</td>
+<td style="text-align: right;">1242.31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4302</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_stars</td>
+<td style="text-align: right;">3414</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2127.40</td>
+<td style="text-align: right;">7554.02</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">88526</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_forks</td>
+<td style="text-align: right;">3417</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">261.29</td>
+<td style="text-align: right;">1203.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23732</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_updated</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2021.39</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_subscribers</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">62.34</td>
+<td style="text-align: right;">200.88</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2910</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_created</td>
+<td style="text-align: right;">3425</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2015.84</td>
+<td style="text-align: right;">3.48</td>
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▅▇▇▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_issues</td>
+<td style="text-align: right;">3518</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">123.03</td>
+<td style="text-align: right;">546.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9522</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_first_commit</td>
+<td style="text-align: right;">3567</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">2014.74</td>
+<td style="text-align: right;">4.99</td>
+<td style="text-align: right;">1987</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▁▁▆▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_repos</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">197134.67</td>
+<td style="text-align: right;">1226900.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16046489</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_daily_page_views</td>
+<td style="text-align: right;">2837</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">227.13</td>
+<td style="text-align: right;">783.55</td>
+<td style="text-align: right;">-1</td>
+<td style="text-align: right;">13394</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_backlinks_count</td>
+<td style="text-align: right;">2877</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">318.55</td>
+<td style="text-align: right;">1635.29</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34348</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_page_id</td>
+<td style="text-align: right;">2893</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">9167847.21</td>
+<td style="text-align: right;">13506832.90</td>
+<td style="text-align: right;">928</td>
+<td style="text-align: right;">63063548</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_appeared</td>
+<td style="text-align: right;">2958</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">1991.14</td>
+<td style="text-align: right;">17.03</td>
+<td style="text-align: right;">1830</td>
+<td style="text-align: right;">2019</td>
+<td style="text-align: left;">▁▁▁▃▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_created</td>
+<td style="text-align: right;">3040</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">2005.75</td>
+<td style="text-align: right;">3.77</td>
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">▇▇▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_revision_count</td>
+<td style="text-align: right;">3130</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">330.43</td>
+<td style="text-align: right;">813.26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10104</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">last_activity</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2000.62</td>
+<td style="text-align: right;">84.60</td>
+<td style="text-align: right;">-900</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">number_of_users</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">13771.26</td>
+<td style="text-align: right;">227712.95</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7179119</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">number_of_jobs</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">422.18</td>
+<td style="text-align: right;">12572.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">771996</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">central_package_repository_count</td>
+<td style="text-align: right;">1482</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Another attempt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>joined <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"processed_lang.csv"</span> , <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now the original figure</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 
 
+</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks,
   author = {Louise E. Sinks},

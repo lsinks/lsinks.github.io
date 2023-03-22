@@ -1,0 +1,483 @@
+pldb_id,title,type,appeared,language_rank,features_has_comments,features_has_semantic_indentation,features_has_line_comments,line_comment_token,last_activity,number_of_users,number_of_jobs,origin_community,central_package_repository_count,file_type,is_open_source
+java,Java,pl,1995,1,TRUE,FALSE,TRUE,//,2022,5550123,85206,Sun Microsystems,NA,text,NA
+javascript,JavaScript,pl,1995,2,TRUE,FALSE,TRUE,//,2022,5962666,63993,Netscape,NA,text,NA
+c,C,pl,1972,3,TRUE,FALSE,TRUE,//,2022,3793768,59919,Bell Labs,0,text,NA
+python,Python,pl,1991,4,TRUE,TRUE,TRUE,#,2022,2818037,46976,Centrum Wiskunde & Informatica,NA,text,NA
+php,PHP,pl,1995,9,TRUE,FALSE,TRUE,//,2022,2356101,30349,Zend,NA,text,NA
+perl,Perl,pl,1987,10,TRUE,FALSE,TRUE,#,2022,491984,13482,Unisys,NA,text,NA
+matlab,MATLAB,pl,1984,11,TRUE,FALSE,TRUE,%,2022,2661579,32228,University of New Mexico,NA,text,NA
+ruby,Ruby,pl,1995,13,TRUE,FALSE,TRUE,#,2022,357730,11438,NA,NA,text,NA
+csharp,C#,pl,2000,12,TRUE,FALSE,TRUE,//,2022,217261,19747,Microsoft,NA,text,NA
+fortran,Fortran,pl,1957,14,TRUE,FALSE,TRUE,!,2022,165151,1931,IBM,0,text,NA
+r,R,pl,1993,16,TRUE,FALSE,TRUE,#,2022,1075613,14173,University of Auckland,NA,text,TRUE
+go,Go,pl,2009,18,TRUE,FALSE,TRUE,//,2022,525179,6403,Google,0,text,TRUE
+scala,Scala,pl,2004,21,TRUE,FALSE,TRUE,//,2022,139471,4525,École Polytechnique Fédérale de Lausanne,0,text,TRUE
+swift,Swift,pl,2014,23,TRUE,FALSE,TRUE,//,2022,362590,3754,Apple,NA,text,TRUE
+ada,Ada,pl,1980,22,TRUE,FALSE,TRUE,--,2022,12116,2184,CII Honeywell Bull,0,text,NA
+cobol,COBOL,pl,1959,19,TRUE,FALSE,TRUE,*>,2022,187188,2616,Conference/Committee on Data Systems Languages,0,text,NA
+rust,Rust,pl,2010,26,TRUE,FALSE,TRUE,//,2023,302193,141,Mozilla,NA,text,TRUE
+kotlin,Kotlin,pl,2011,25,TRUE,FALSE,TRUE,//,2023,130094,5276,JetBrains,0,text,TRUE
+powershell,PowerShell,pl,2006,28,TRUE,FALSE,TRUE,#,2022,208708,19576,Microsoft,NA,text,TRUE
+pascal,Pascal,pl,1970,29,TRUE,FALSE,FALSE,//,2022,7708,102,ETH Zürich,0,text,NA
+haskell,Haskell,pl,1990,31,TRUE,TRUE,TRUE,--,2022,37628,495,Yale University && Chalmers University && Microsoft Research && University of Edinburgh,NA,text,NA
+typescript,TypeScript,pl,2012,32,TRUE,FALSE,TRUE,//,2023,216959,1542,Microsoft,NA,text,TRUE
+sas,SAS,pl,1976,36,TRUE,FALSE,TRUE,*,2022,361103,4682,NA,0,text,NA
+lua,Lua,pl,1993,34,TRUE,FALSE,TRUE,--,2022,58860,1106,Tecgraf,NA,text,TRUE
+julia,Julia,pl,2012,35,TRUE,FALSE,TRUE,#,2023,81911,85,https://github.com/JuliaLang,NA,text,TRUE
+prolog,Prolog,pl,1972,39,TRUE,FALSE,TRUE,%,2022,51482,446,University of Edinburgh && Aix-Marseille University,NA,text,NA
+objective-c,Objective-C,pl,1984,43,TRUE,FALSE,TRUE,//,2022,12380,4276,Apple,NA,text,NA
+clojure,Clojure,pl,2007,41,TRUE,FALSE,TRUE,;,2022,44933,469,"Cognitect, Inc",NA,text,TRUE
+scheme,Scheme,pl,1970,50,TRUE,FALSE,TRUE,;,2022,3796,1174,https://community.scheme.org/,0,text,NA
+erlang,Erlang,pl,1986,48,TRUE,FALSE,TRUE,%,2022,27148,308,Ericsson,NA,text,TRUE
+bash,Bash,pl,1989,40,TRUE,FALSE,TRUE,#,2022,61747,4774,GNU,NA,text,TRUE
+mathematica,Mathematica,pl,1988,45,TRUE,FALSE,FALSE,NA,2022,148741,1553,Wolfram Research,NA,text,FALSE
+elixir,Elixir,pl,2011,46,TRUE,FALSE,TRUE,#,2022,55882,214,The Elixir Team,NA,text,TRUE
+cuda,CUDA,pl,2007,49,TRUE,FALSE,NA,NA,2018,38623,769,Nvidia,0,text,TRUE
+dart,Dart,pl,2011,51,TRUE,FALSE,TRUE,//,2022,38325,208,Google,NA,text,TRUE
+modula-2,Modula-2,pl,1978,52,TRUE,FALSE,FALSE,NA,2022,655,0,ETH Zurich,0,text,NA
+visual-basic,Visual Basic,pl,1991,47,TRUE,FALSE,TRUE,',2022,15898,3294,Microsoft,0,text,NA
+tcl,Tcl,pl,1988,53,TRUE,FALSE,TRUE,#,2022,3106,0,NA,0,text,TRUE
+actionscript,ActionScript,pl,1998,54,TRUE,FALSE,TRUE,NA,2022,1630,88,Macromedia,0,text,NA
+vba,VBA,pl,1993,55,TRUE,NA,TRUE,',2022,3650,511,Microsoft,0,text,NA
+basic,BASIC,pl,1964,60,TRUE,FALSE,TRUE,REM,2022,7025,0,Dartmouth College,0,text,NA
+awk,awk,pl,1977,61,TRUE,FALSE,TRUE,#,2022,4680,7,Bell Labs,0,text,NA
+delphi,Delphi,pl,1995,62,TRUE,FALSE,TRUE,//,2022,7084,181,"Idera, Inc.",0,text,FALSE
+f-sharp,F#,pl,2005,65,TRUE,TRUE,TRUE,//,2022,4316,0,Microsoft Research,NA,text,TRUE
+ocaml,OCaml,pl,1996,69,TRUE,FALSE,FALSE,NA,2022,3341,0,Institut national de recherche en sciences et technologies du numérique,NA,text,TRUE
+eiffel,Eiffel,pl,1986,71,TRUE,FALSE,TRUE,--,2023,1583,0,Eiffel Software,0,text,NA
+crystal,Crystal,pl,2014,63,TRUE,FALSE,TRUE,#,2022,27065,0,https://forum.crystal-lang.org/,0,text,TRUE
+smalltalk,Smalltalk,pl,1972,77,TRUE,FALSE,FALSE,NA,2022,5400,0,NA,NA,text,NA
+modula-3,Modula-3,pl,1986,74,TRUE,FALSE,FALSE,NA,2018,641,0,Digital Equipment Corporation && elego Software Solutions GmbH,0,text,TRUE
+elm,Elm,pl,2012,67,TRUE,TRUE,TRUE,--,2022,11377,127,https://github.com/elm,NA,text,TRUE
+racket,Racket,pl,1994,75,TRUE,FALSE,TRUE,;,2022,7353,48,PLT Inc.,NA,text,TRUE
+groovy,Groovy,pl,2003,79,TRUE,FALSE,TRUE,//,2022,6056,0,https://github.com/grails,0,text,TRUE
+d,D,pl,2001,81,TRUE,FALSE,TRUE,//,2022,6311,0,Digital Mars,NA,text,NA
+common-lisp,Common Lisp,pl,1984,86,TRUE,FALSE,TRUE,;,2022,1891,24,American National Standards Institute,0,text,NA
+reason,Reason,pl,2016,59,TRUE,FALSE,TRUE,//,2022,11216,0,Facebook,0,text,TRUE
+sagemath,Sage,pl,2005,84,TRUE,FALSE,TRUE,#,2022,1116,0,NA,0,text,TRUE
+maple,Maple,pl,1982,66,TRUE,FALSE,TRUE,#,2022,53310,511,Cybernet Systems Co. Ltd,NA,text,NA
+coffeescript,CoffeeScript,pl,2009,64,TRUE,TRUE,TRUE,#,2022,23320,216,https://github.com/jashkenas,0,text,TRUE
+apl,APL,pl,1964,91,TRUE,FALSE,TRUE,⍝,2022,3670,0,Harvard University,0,text,NA
+opencl,OpenCL,pl,2009,94,TRUE,FALSE,TRUE,//,2018,3731,266,Khronos Group,0,text,TRUE
+xquery,XQuery,pl,2007,101,TRUE,FALSE,FALSE,NA,2022,1351,125,W3C,0,text,NA
+spss,SPSS,pl,1968,104,TRUE,FALSE,FALSE,NA,2022,965674,9587,NA,0,text,NA
+rexx,Rexx,pl,1979,116,TRUE,FALSE,FALSE,NA,2022,435,40,IBM,0,text,NA
+nim,Nim,pl,2008,103,TRUE,TRUE,TRUE,#,2022,19118,0,https://github.com/nim-lang,NA,text,TRUE
+lfe,LFE,pl,2008,118,TRUE,FALSE,TRUE,;,2022,405,0,https://github.com/lfe,0,text,TRUE
+visual-basic.net,Visual Basic .NET,pl,2001,109,TRUE,FALSE,TRUE,',2022,5691,3447,Microsoft,NA,text,NA
+forth,Forth,pl,1970,121,TRUE,FALSE,TRUE,\,2022,3230,0,National Radio Astronomy Observatory,NA,text,NA
+purebasic,PureBasic,pl,1998,120,TRUE,FALSE,TRUE,;,2022,426,0,Fantaisie Software,0,text,NA
+haxe,Haxe,pl,2005,113,TRUE,FALSE,TRUE,//,2022,8831,1,Haxe Foundation,NA,text,TRUE
+vbscript,VBScript,pl,1996,126,TRUE,FALSE,TRUE,',2022,3347,142,Microsoft,0,text,NA
+cil,CIL,pl,2000,128,TRUE,FALSE,TRUE,//,2022,1080,0,Microsoft,0,text,NA
+chapel,Chapel,pl,2004,110,TRUE,FALSE,TRUE,//,2022,16150,1,Cray,0,text,TRUE
+oberon,Oberon,pl,1986,130,TRUE,FALSE,NA,NA,2022,810,0,Eidgenössische Technische Hochschule Zürich,0,text,NA
+applescript,Applescript,pl,1993,129,TRUE,FALSE,TRUE,--,2022,1221,6,Apple,0,text,FALSE
+oz,Oz,pl,1991,127,TRUE,FALSE,TRUE,%,2022,661,0,Universität des Saarlandes,0,text,TRUE
+lasso,Lasso,pl,1995,125,TRUE,FALSE,TRUE,//,2022,396,142,LassoSoft Inc,0,text,FALSE
+fish,fish,pl,2005,122,TRUE,FALSE,TRUE,#,2022,24362,1,https://github.com/fish-shell,0,text,TRUE
+red,Red,pl,2011,112,TRUE,FALSE,TRUE,;,2022,6608,0,https://github.com/red,0,text,TRUE
+simula,Simula,pl,1965,138,TRUE,FALSE,TRUE,!,2002,1110,0,NA,0,text,NA
+idris,Idris,pl,2014,133,TRUE,FALSE,TRUE,--,2022,6168,1,University of St Andrews,0,text,TRUE
+logo,Logo,pl,1967,140,TRUE,FALSE,TRUE,;,2022,2895,0,Massachusetts Institute of Technology,0,text,NA
+ampl,AMPL,pl,1985,137,TRUE,FALSE,TRUE,#,2022,766,3,AMPL Optimization LLC,0,text,FALSE
+sed,sed,pl,1974,141,TRUE,NA,TRUE,NA,2018,1865,0,NA,0,text,NA
+picolisp,PicoLisp,pl,1988,142,TRUE,FALSE,TRUE,#,2022,316,0,https://www.mail-archive.com/picolisp@software-lab.de,0,text,NA
+tex,Tex,pl,1978,132,TRUE,FALSE,TRUE,%,2022,4276,3,NA,NA,text,TRUE
+v,V,pl,2019,144,TRUE,FALSE,TRUE,//,2022,36606,0,NA,NA,NA,NA
+bcpl,BCPL,pl,1966,147,TRUE,FALSE,TRUE,//,2001,1050,0,University of Cambridge,0,text,NA
+pl-sql,PL/SQL,pl,1991,148,TRUE,FALSE,TRUE,--,2017,2355,2972,Oracle,0,text,NA
+dylan,Dylan,pl,1992,150,TRUE,FALSE,TRUE,//,2022,636,0,Apple,0,text,NA
+rebol,REBOL,pl,1997,154,TRUE,FALSE,TRUE,;,2022,326,0,REBOL Technologies,0,text,TRUE
+processing,Processing,pl,2001,149,TRUE,FALSE,TRUE,//,2022,2366,0,Massachusetts Institute of Technology,0,text,NA
+hack,Hack,pl,2014,153,TRUE,FALSE,TRUE,//,2022,1436,19,Facebook,0,text,TRUE
+purescript,PureScript,pl,2013,139,TRUE,TRUE,TRUE,--,2022,10706,0,NA,NA,text,TRUE
+flux,FLUX,pl,2014,158,TRUE,FALSE,TRUE,//,2022,28134,0,https://github.com/fluxcd,0,text,TRUE
+fantom,Fantom,pl,2005,167,TRUE,FALSE,TRUE,//,2022,521,0,https://github.com/fantom-lang,0,text,TRUE
+squirrel,Squirrel,pl,2003,168,TRUE,FALSE,TRUE,//,2022,1688,0,NA,0,text,TRUE
+eulisp,EuLisp,pl,1985,176,TRUE,FALSE,TRUE,;,2006,90,0,https://henry.github.io,0,NA,NA
+monkey,Monkey,pl,2011,170,TRUE,FALSE,TRUE,',2016,292,0,https://github.com/Regal-Internet-Brothers,0,text,NA
+agda,Agda,pl,2007,173,TRUE,FALSE,TRUE,--,2014,731,0,Chalmers University of Technology,0,text,TRUE
+blitzbasic,BlitzBasic,pl,2000,174,TRUE,NA,TRUE,NA,2016,475,0,Blitz Research,0,text,NA
+abap,ABAP,pl,1983,135,TRUE,FALSE,TRUE,*,2022,2416,283,SAP,0,text,NA
+mumps,MUMPS,pl,1966,181,TRUE,FALSE,TRUE,;,2022,1345,0,MUMPS Development Committee,0,text,NA
+emacs-lisp,Emacs Lisp,pl,1985,185,TRUE,FALSE,TRUE,;,2018,1645,0,GNU Project,NA,text,TRUE
+coldfusion,ColdFusion,pl,1995,179,TRUE,FALSE,NA,NA,2022,1646,0,Adobe,NA,text,FALSE
+autoit,AutoIt,pl,1999,184,TRUE,FALSE,TRUE,;,2022,1011,0,AutoIt Consulting Ltd,0,text,TRUE
+makefile,Makefile,pl,1976,193,TRUE,TRUE,TRUE,#,2002,1861,0,Bell Labs,0,text,NA
+vala,Vala,pl,2006,201,TRUE,FALSE,TRUE,//,2017,1171,0,NA,0,text,TRUE
+j,J,pl,1990,188,TRUE,FALSE,TRUE,NB.,2022,3779,0,Jsoftware Inc,0,text,TRUE
+newlisp,NewLisp,pl,1991,198,TRUE,FALSE,TRUE,NA,2022,453,0,http://kosh.sdf.org,0,text,TRUE
+nemerle,Nemerle,pl,2003,199,TRUE,TRUE,TRUE,//,2022,406,0,JetBrains,0,text,NA
+zig,Zig,pl,2015,190,TRUE,NA,TRUE,NA,2022,23492,0,NA,0,text,TRUE
+jison,Jison,pl,2009,171,TRUE,FALSE,NA,NA,2022,5688,0,https://github.com/zaach/jison/issues,0,text,TRUE
+moonscript,MoonScript,pl,2011,165,TRUE,FALSE,TRUE,--,2022,3585,0,https://github.com/leafo/moonscript/issues,0,text,TRUE
+icon,Icon,pl,1977,202,TRUE,FALSE,TRUE,#,2001,271,0,The University of Arizona,0,text,NA
+terra,Terra,pl,2012,166,TRUE,FALSE,TRUE,--,2022,3195,0,NA,0,text,TRUE
+x10,X10,pl,2004,203,TRUE,FALSE,TRUE,NA,2022,376,0,IBM,0,text,TRUE
+ballerina,Ballerina,pl,2015,177,TRUE,FALSE,TRUE,//,2022,6576,0,WSO2,NA,text,TRUE
+scilab,Scilab,pl,1990,208,TRUE,FALSE,TRUE,//,2012,1290,0,NA,0,text,TRUE
+io,Io,pl,2002,210,TRUE,FALSE,TRUE,//,2022,461,0,https://github.com/IoLanguage,0,text,NA
+flow,Flow,pl,2014,204,TRUE,FALSE,TRUE,//,2022,27307,0,Facebook,NA,NA,NA
+turing,Turing,pl,1982,205,TRUE,FALSE,TRUE,%,2017,525,0,NA,0,text,NA
+idyll,idyll,pl,2017,163,TRUE,FALSE,TRUE,//,2022,2170,0,https://github.com/idyll-lang,NA,NA,NA
+mercury,Mercury,pl,1995,209,TRUE,FALSE,TRUE,%,2022,939,0,University of Melbourne,0,text,TRUE
+qml,QML,pl,2009,206,TRUE,FALSE,TRUE,//,2014,1131,0,Qt Group plc,0,text,NA
+idl,IDL,pl,1977,214,TRUE,FALSE,NA,NA,2017,1281,0,"L3Harris Geospatial Solutions, Inc",0,text,NA
+frege,Frege,pl,2011,180,TRUE,FALSE,TRUE,--,2022,4361,0,https://github.com/Frege,0,text,TRUE
+xbase,xBase,pl,1986,215,TRUE,FALSE,TRUE,//,2017,425,0,NA,0,text,NA
+octave,GNU Octave,pl,1988,191,TRUE,FALSE,TRUE,%,2022,2406,0,University of Wisconsin-Madison && University of Texas,0,text,TRUE
+boo,Boo,pl,2003,220,TRUE,TRUE,TRUE,#,2022,861,0,The Boo Programming Language,0,text,TRUE
+object-pascal,Object Pascal,pl,1986,235,TRUE,FALSE,FALSE,NA,2004,765,0,https://gitlab.com/groups/freepascal.org/fpc/-/issues,0,text,NA
+hy,Hy,pl,2013,196,TRUE,FALSE,TRUE,;,2022,5559,0,https://github.com/hylang,0,text,TRUE
+zephir,Zephir,pl,2013,200,TRUE,FALSE,TRUE,//,2022,4740,0,NA,0,text,TRUE
+ceylon,Ceylon,pl,2011,225,TRUE,FALSE,TRUE,//,2022,1161,0,Red Hat,0,text,TRUE
+opa,Opa,pl,2011,238,TRUE,FALSE,NA,NA,2022,2104,0,https://github.com/MLstate,0,text,NA
+supercollider,SuperCollider,pl,1996,239,TRUE,FALSE,TRUE,//,2022,801,0,NA,0,text,TRUE
+systemverilog,SystemVerilog,pl,2002,237,TRUE,FALSE,TRUE,//,2005,1345,0,Synopsys,0,text,NA
+qbasic,QBasic,pl,1991,223,TRUE,NA,TRUE,NA,2001,1910,0,Microsoft,0,text,FALSE
+clean,Clean,pl,1987,231,TRUE,FALSE,TRUE,//,2017,481,0,Radboud University Nijmegen,0,text,NA
+lean,Lean,pl,2015,195,TRUE,NA,TRUE,NA,2022,2898,0,Microsoft Research,0,text,TRUE
+snobol,SNOBOL,pl,1962,246,TRUE,FALSE,TRUE,*,2002,341,0,NA,0,text,NA
+clips,CLIPS,pl,1985,241,TRUE,FALSE,TRUE,;,2022,651,0,NASA,0,text,NA
+pony,Pony,pl,2012,218,TRUE,NA,TRUE,NA,2023,7417,0,https://github.com/ponylang,0,text,TRUE
+plpgsql,PL/pgSQL,pl,1998,260,TRUE,NA,TRUE,NA,2016,490,0,The PostgreSQL Global Development Group,0,text,NA
+factor,Factor,pl,2003,259,TRUE,FALSE,NA,NA,2022,2251,0,https://github.com/factor,0,text,TRUE
+stata,Stata,pl,1985,242,TRUE,FALSE,TRUE,//,2022,2816,0,StataCorp,NA,text,FALSE
+nextflow,Nextflow,pl,2013,216,TRUE,FALSE,NA,NA,2022,3332,0,https://github.com/nextflow-io,0,text,TRUE
+pike,Pike,pl,1994,265,TRUE,FALSE,TRUE,//,2022,446,0,Chalmers Datorförening,0,text,TRUE
+pl-i,PL/I,pl,1964,213,TRUE,FALSE,NA,NA,2022,1535,0,IBM,0,text,NA
+isabelle,Isabelle,pl,1986,269,TRUE,FALSE,NA,NA,2018,576,0,University Of Cambridge && Technische Universität München,0,text,TRUE
+netlogo,NetLogo,pl,1999,245,TRUE,FALSE,TRUE,;,2022,2193,0,Northwestern University,0,text,TRUE
+minid,MiniD,pl,2006,274,TRUE,FALSE,TRUE,//,2007,86,0,http://www.dsource.org/projects/minid,0,text,NA
+api-blueprint,API Blueprint,pl,2013,263,TRUE,FALSE,TRUE,#,2022,15183,0,API Blueprint,0,text,TRUE
+perl-6,Perl 6,pl,2015,288,TRUE,FALSE,TRUE,#,2018,961,0,https://raku.org/community,0,text,TRUE
+click,Click,pl,1999,219,TRUE,FALSE,TRUE,//,2022,1817,0,Massachusetts Institute of Technology,0,text,TRUE
+ats,ATS,pl,2013,279,TRUE,FALSE,TRUE,//,2022,576,0,Boston University,0,text,TRUE
+s-algol,S-algol,pl,1979,286,TRUE,FALSE,TRUE,!,2006,65,0,NA,0,NA,NA
+csound,Csound,pl,1985,285,TRUE,FALSE,TRUE,;,2022,521,0,Massachusetts Institute of Technology,0,text,TRUE
+xojo,Xojo,pl,1996,298,TRUE,FALSE,TRUE,//,2022,596,0,NA,0,text,FALSE
+foxpro,FoxPRO,pl,1992,300,TRUE,NA,TRUE,NA,2006,1240,0,Fox Software,0,text,NA
+clojurescript,ClojureScript,pl,2011,283,TRUE,NA,TRUE,NA,2022,14223,0,https://github.com/clojure,0,text,TRUE
+e,E,pl,1997,309,TRUE,FALSE,TRUE,#,2022,406,0,"Combex, Inc.",0,text,TRUE
+alloy,Alloy,pl,1997,301,TRUE,FALSE,TRUE,//,2022,376,0,Massachusetts Institute of Technology,0,text,NA
+wren,Wren,pl,2013,278,TRUE,FALSE,TRUE,//,2022,7070,0,NA,0,text,TRUE
+odin,odin,pl,2016,270,TRUE,FALSE,TRUE,//,2022,3571,0,https://github.com/odin-lang,NA,NA,NA
+livescript,LiveScript,pl,2011,311,TRUE,TRUE,TRUE,#,2017,395,0,https://github.com/gkz/LiveScript/issues,0,text,TRUE
+modelica,Modelica,pl,1997,313,TRUE,FALSE,TRUE,//,2022,736,0,Modelica Association,0,text,NA
+pov-ray-sdl,POV-Ray SDL,pl,1991,264,TRUE,FALSE,TRUE,//,2022,2169,0,Persistence of Vision Raytracer Pty. Ltd,0,text,NA
+clipper,Clipper,pl,1985,322,TRUE,FALSE,TRUE,//,2003,516,0,Nantucket Corporation,0,text,NA
+batch,Batchfile,pl,1985,273,TRUE,NA,TRUE,REM,2022,4005,0,Microsoft,0,text,NA
+b,B,pl,1969,294,TRUE,FALSE,NA,NA,2001,1380,0,Bell Labs,0,text,NA
+m4,M4,pl,1977,325,TRUE,FALSE,TRUE,#,2004,715,0,AT&T Bell Laboratories,0,text,NA
+datalog,Datalog,pl,1977,328,TRUE,FALSE,TRUE,%,2004,820,0,University of Maryland,0,text,NA
+objective-j,Objective-J,pl,2008,323,TRUE,FALSE,TRUE,//,2014,376,0,https://github.com/cappuccino,0,text,TRUE
+dafny,Dafny,pl,2009,281,TRUE,FALSE,TRUE,//,2022,2359,0,Microsoft,0,text,TRUE
+wolfram,Wolfram Language,pl,1988,333,TRUE,FALSE,FALSE,NA,2022,1626,0,Wolfram Research,0,text,FALSE
+gambas,Gambas,pl,1999,340,TRUE,FALSE,NA,NA,2003,485,0,https://lists.gambas-basic.org/listinfo,0,NA,TRUE
+tla,TLA,pl,1999,275,TRUE,FALSE,TRUE,\*,2017,1055,0,NA,0,text,TRUE
+halide,halide,pl,2010,320,TRUE,FALSE,TRUE,//,2022,7894,0,https://github.com/halide,0,NA,TRUE
+speedie,Speedie,pl,2022,335,TRUE,TRUE,NA,//,2023,1,0,NA,NA,text,NA
+c3,C3,pl,2019,282,TRUE,FALSE,TRUE,//,2023,1035,0,The C3 Language Project,NA,NA,TRUE
+seed7,Seed7,pl,2005,355,TRUE,FALSE,TRUE,#,2012,206,0,NA,0,text,NA
+powerbuilder,PowerBuilder,pl,2010,346,TRUE,FALSE,TRUE,//,2010,965,0,SAP SE,0,text,NA
+xs,XS,pl,2002,354,TRUE,FALSE,NA,NA,2018,285,0,NA,0,text,NA
+ec,eC,pl,2004,290,TRUE,FALSE,TRUE,//,2022,900,0,Ecere Corporation,0,text,TRUE
+oberon-2,Oberon-2,pl,1991,363,TRUE,FALSE,NA,NA,2004,165,0,Eidgenössische Technische Hochschule Zürich,0,NA,NA
+genie,Genie,pl,2008,369,TRUE,TRUE,NA,NA,2009,280,0,GNOME Foundation,0,text,TRUE
+maxima,Maxima,pl,1982,371,TRUE,FALSE,NA,NA,2022,691,0,Massachusetts Institute of Technology,0,text,TRUE
+autohotkey,AutoHotkey,pl,2003,317,TRUE,FALSE,TRUE,;,2022,1761,0,AutoHotkey Foundation LLC,0,text,TRUE
+cool,Classroom Object Oriented Language,pl,1996,361,TRUE,FALSE,TRUE,--,2014,345,0,Stanford University,0,text,NA
+gw-basic,GW-BASIC,pl,1983,304,TRUE,NA,NA,NA,2002,1190,0,Microsoft,0,NA,NA
+setl,SETL,pl,1969,385,TRUE,FALSE,TRUE,--,2004,191,0,NA,0,text,NA
+ecl,ECL,pl,2000,324,TRUE,FALSE,TRUE,//,2023,1653,0,LexisNexis Risk Solutions Group,0,text,NA
+falcon,Falcon,pl,2003,393,TRUE,FALSE,TRUE,//,2022,306,0,https://github.com/falconpl,0,text,NA
+xbasepp,XBase++,pl,1997,382,TRUE,FALSE,TRUE,//,2005,115,0,NA,0,NA,NA
+dc,Dc,pl,1978,396,TRUE,FALSE,TRUE,#,2004,200,0,AT&T Bell Laboratories,0,text,NA
+livecode,LiveCode,pl,2001,400,TRUE,FALSE,TRUE,--,2022,321,0,LiveCode Ltd,0,text,NA
+wisp,wisp,pl,2012,331,TRUE,TRUE,TRUE,;,2022,1381,0,NA,0,text,TRUE
+k,K,pl,1993,410,TRUE,FALSE,TRUE,/,2022,585,0,Kx Systems,0,text,NA
+bluespec,Bluespec,pl,2000,405,TRUE,FALSE,NA,NA,2015,345,0,"Bluespec, Inc",0,text,NA
+croc,Croc,pl,2006,406,TRUE,FALSE,TRUE,//,2017,194,0,http://www.dsource.org/projects/minid,NA,NA,NA
+true-basic,True BASIC,pl,1983,422,TRUE,FALSE,TRUE,!,2001,135,0,NA,0,NA,NA
+wxbasic,WxBasic,pl,2002,416,TRUE,FALSE,TRUE,',2004,45,0,NA,0,NA,TRUE
+urweb,UrWeb,pl,2008,350,TRUE,FALSE,NA,NA,2022,1131,0,NA,0,text,TRUE
+gap,GAP,pl,1986,357,TRUE,FALSE,TRUE,#,2022,1289,0,RWTH Aachen University,0,text,TRUE
+sather,Sather,pl,1990,436,TRUE,FALSE,TRUE,--,2001,126,0,NA,0,text,NA
+freebasic,FreeBASIC,pl,2004,390,TRUE,FALSE,NA,NA,2016,800,0,The FreeBASIC Development Team,0,NA,NA
+unison,unison,pl,2015,401,TRUE,FALSE,TRUE,--,2022,5176,0,NA,0,NA,TRUE
+cilk,CIL,pl,1994,446,TRUE,FALSE,TRUE,//,2004,446,0,Intel,0,text,NA
+starlark,starlark,pl,2018,388,TRUE,FALSE,TRUE,#,2022,1708,0,NA,NA,NA,NA
+xtend,Xtend,pl,2011,448,TRUE,FALSE,NA,NA,2014,321,0,NA,0,text,TRUE
+dtrace,DTrace,pl,2005,399,TRUE,FALSE,NA,NA,2022,926,0,Sun Microsystems,0,text,NA
+ragel,Ragel,pl,2007,454,TRUE,FALSE,TRUE,#,2022,373,0,https://github.com/bnoordhuis/ragel/issues,0,text,TRUE
+aspectj,AspectJ,pl,2001,384,TRUE,FALSE,TRUE,//,2017,661,0,Eclipse Foundation,0,text,TRUE
+fortress,Fortress,pl,2004,473,TRUE,FALSE,NA,NA,2006,291,0,Sun Labs,0,text,TRUE
+pari-gp,PARI/GP,pl,1985,471,TRUE,FALSE,NA,NA,2022,231,0,Université Bordeaux,0,text,TRUE
+mupad,muPad,pl,1997,477,TRUE,NA,TRUE,NA,2018,366,0,University of Paderborn,0,text,FALSE
+hlsl,HLSL,pl,2002,467,TRUE,NA,TRUE,NA,2017,640,0,Microsoft,0,text,NA
+unicon,Unicon,pl,2008,479,TRUE,FALSE,TRUE,#,2022,116,0,NA,0,text,TRUE
+ring,Ring,pl,2016,469,TRUE,FALSE,TRUE,#,2017,431,0,King Saud University,0,text,TRUE
+hope,HOPE,pl,1978,486,TRUE,FALSE,TRUE,---,2004,145,0,https://github.com/dmbaturin/hope/issues,0,text,NA
+gosu,Gosu,pl,2002,488,TRUE,NA,TRUE,NA,2017,726,0,"Guidewire Software, Inc",0,text,TRUE
+openvera,OpenVera,pl,2001,489,TRUE,FALSE,TRUE,//,2008,105,0,Systems Science Inc,0,text,NA
+eve,Eve,pl,2016,455,TRUE,FALSE,TRUE,//,2022,7830,0,https://github.com/witheve,0,text,TRUE
+fennel,Fennel,pl,2016,429,TRUE,FALSE,TRUE,;,2022,1989,0,https://lists.sr.ht/%7Etechnomancy/fennel,NA,NA,NA
+jcl,JCL,pl,1964,424,TRUE,FALSE,TRUE,NA,2003,795,0,IBM,0,text,NA
+glsl,GLSL,pl,1992,498,TRUE,NA,TRUE,NA,2017,450,0,OpenGL Architecture Review Board,0,text,NA
+golo,Golo,pl,2012,413,TRUE,FALSE,TRUE,#,2022,1018,0,https://dev.eclipse.org/mailman/listinfo/golo-dev,0,text,TRUE
+nsis,NSIS,pl,2001,408,TRUE,FALSE,TRUE,;,2016,756,0,"Nullsoft, Inc",0,text,NA
+expect,Expect,pl,1990,504,TRUE,FALSE,TRUE,#,2004,1011,0,www.tcl.tk/community/coreteam,0,text,TRUE
+beta,BETA,pl,1983,505,TRUE,FALSE,TRUE,//,2007,156,0,Scandinavian School of object- orientation,0,text,NA
+action,Action!,pl,1983,506,TRUE,FALSE,TRUE,;,2004,95,0,Optimized Systems Software,0,text,NA
+janet,janet,pl,2018,456,TRUE,NA,NA,NA,2023,3224,0,https://github.com/janet-lang,NA,NA,NA
+pl-m,PL/M,pl,1973,513,TRUE,FALSE,NA,NA,2004,360,0,Microcomputer Applications Associates,0,text,NA
+cg,Cg,pl,2003,515,TRUE,FALSE,TRUE,//,2012,965,0,Nvidia,0,text,NA
+lilypond,LilyPond,pl,1996,517,TRUE,FALSE,TRUE,NA,2022,731,0,https://gitlab.com/lilypond,0,text,TRUE
+qb64,QB64,pl,2007,519,TRUE,FALSE,TRUE,',2008,470,0,https://qb64.boards.net,0,NA,TRUE
+wdl,WDL,pl,2012,443,TRUE,FALSE,TRUE,#,2022,1511,0,NA,0,text,TRUE
+koka,Koka,pl,2012,466,TRUE,FALSE,TRUE,//,2022,2525,0,Microsoft Research,0,text,TRUE
+igor-pro,IGOR Pro,pl,1993,521,TRUE,FALSE,TRUE,//,2018,415,0,"WaveMetrics, Inc",0,text,NA
+common-workflow-language,CWL,pl,2014,439,TRUE,FALSE,TRUE,#,2022,1065,0,https://w3id.org/cwl/meeting_minutes,0,text,TRUE
+sourcepawn,SourcePawn,pl,2014,442,TRUE,FALSE,TRUE,NA,2022,599,0,NA,0,text,TRUE
+renpy,Ren'Py,pl,2004,451,TRUE,FALSE,TRUE,#,2018,870,0,https://github.com/renpy,0,text,TRUE
+taichi,Taichi,pl,2019,531,TRUE,FALSE,TRUE,//,2022,26221,0,NA,NA,NA,NA
+lpc,LPC,pl,1995,539,TRUE,FALSE,TRUE,//,2017,256,0,Chalmers Datorförening,0,text,NA
+reia,Reia,pl,2008,459,TRUE,NA,TRUE,#,2022,899,0,https://github.com/tarcieri/reia/issues,NA,NA,NA
+carp,carp,pl,2016,512,TRUE,FALSE,TRUE,;,2022,5046,0,https://github.com/carp-lang,0,text,TRUE
+euphoria,Euphoria,pl,1993,541,TRUE,FALSE,TRUE,--,2022,256,0,Rapid Deployment Software,0,text,TRUE
+guile,Guile,pl,1993,556,TRUE,FALSE,TRUE,;,2005,376,0,GNU Project,0,text,TRUE
+jule,Jule,pl,2021,547,TRUE,FALSE,TRUE,//,2022,84,0,NA,0,text,TRUE
+dockerfile,Dockerfile,pl,2013,563,TRUE,FALSE,TRUE,#,2017,201,0,"Docker, Inc.",0,text,NA
+kixtart,KiXtart,pl,1991,576,TRUE,FALSE,TRUE,;,2022,156,0,https://github.com/kivy,0,text,NA
+lotusscript,LotusScript,pl,1996,585,TRUE,FALSE,NA,NA,2003,165,0,Lotus Development Corporation,0,text,NA
+beads-lang,beads-lang,pl,2016,574,TRUE,TRUE,TRUE,//,2016,1,0,Edward de Jong,NA,NA,NA
+jade,JADE,pl,1996,588,TRUE,FALSE,TRUE,//,2005,490,0,Jade Software Corporation,0,text,NA
+mirah,Mirah,pl,2009,516,TRUE,FALSE,NA,NA,2022,1341,0,https://github.com/mirah,0,text,TRUE
+bel,Bel,pl,2019,596,TRUE,FALSE,TRUE,;,2019,1,0,NA,NA,NA,NA
+progsbase,progsbase,pl,2018,518,TRUE,FALSE,TRUE,NA,2022,1001,0,Inductive AS,NA,text,NA
+spin,Spin,pl,2006,592,TRUE,TRUE,TRUE,',2018,200,0,NA,0,text,NA
+thinbasic,ThinBasic,pl,2004,611,TRUE,FALSE,TRUE,',2015,95,0,NA,0,NA,TRUE
+arexx,ARexx,pl,1987,617,TRUE,FALSE,NA,NA,2005,135,0,NA,0,text,NA
+clos,CLOS,pl,1988,618,TRUE,FALSE,TRUE,;,2007,70,0,NA,0,NA,NA
+pawn,PAWN,pl,2006,523,TRUE,FALSE,TRUE,//,2022,785,0,Informatie-Technologisch Bureau CompuPhase,0,text,TRUE
+futhark,Futhark,pl,2013,540,TRUE,NA,TRUE,NA,2022,2212,0,University of Copenhagen,0,text,TRUE
+jai,JAI,pl,2014,535,TRUE,FALSE,TRUE,//,2022,1562,0,https://github.com/Jai-Community/,0,text,NA
+yoix,Yoix,pl,2000,606,TRUE,FALSE,TRUE,//,2005,65,0,NA,0,NA,TRUE
+s3,S3,pl,1986,620,TRUE,FALSE,NA,NA,2007,60,0,NA,0,text,NA
+mgmt,mgmt,pl,2015,568,TRUE,FALSE,TRUE,#,2022,3781,0,https://github.com/purpleidea/mgmt/issues,NA,NA,NA
+felix,Felix,pl,2001,527,TRUE,FALSE,TRUE,//,2022,819,0,felix-language@googlegroups.com,0,NA,NA
+netlinx,NetLinx,pl,2007,613,TRUE,FALSE,TRUE,//,2018,290,0,"AMX, LLC",0,text,NA
+slope,Slope,pl,2021,534,TRUE,FALSE,TRUE,;,2021,1001,0,NA,NA,NA,NA
+p4,P4,pl,2014,529,TRUE,FALSE,TRUE,//,2022,666,0,Barefoot Networks && Intel && Stanford University && Princeton University && Google && Microsoft Research,0,text,TRUE
+aldor,Aldor,pl,1990,638,TRUE,TRUE,TRUE,--,2022,81,0,Western University,0,text,TRUE
+joy,Joy,pl,2001,655,TRUE,FALSE,NA,NA,2003,260,0,La Trobe University,0,text,NA
+lookml,LookML,pl,2012,639,TRUE,FALSE,TRUE,#,2018,201,0,Looker,0,text,NA
+angelscript,Angelscript,pl,2003,564,TRUE,FALSE,TRUE,//,2018,366,0,NA,0,text,NA
+apex,Apex,pl,2007,654,TRUE,FALSE,TRUE,//,2018,201,0,Salesforce,0,text,NA
+mql,MQL5,pl,2005,554,TRUE,FALSE,TRUE,//,2016,480,0,MetaQuotes Software,0,text,NA
+volt,Volt,pl,2011,580,TRUE,FALSE,TRUE,//,2022,365,0,NA,0,text,TRUE
+dm,DM,pl,1994,663,TRUE,FALSE,TRUE,//,2016,201,0,BYOND Software,0,text,NA
+lsl,Linden Scripting Language,pl,2003,670,TRUE,FALSE,TRUE,//,2017,200,0,"Linden Research, Inc",0,text,NA
+tea,Tea,pl,1997,689,TRUE,FALSE,TRUE,#,2015,291,0,NA,0,text,NA
+ncl,NCAR Command Language,pl,1994,573,TRUE,FALSE,TRUE,;,2022,572,0,University Corporation for Atmospheric Research,0,text,TRUE
+gdscript,GDScript,pl,2008,682,TRUE,FALSE,TRUE,#,2018,201,0,https://github.com/godotengine,0,text,NA
+futurebasic,FutureBASIC,pl,1992,707,TRUE,FALSE,TRUE,//,2016,75,0,Brilor Software,0,NA,TRUE
+eclipse-command-language,Eclipse Command Language,pl,2008,691,TRUE,FALSE,TRUE,%,2018,200,0,Eclipse Foundation,0,text,NA
+powerbasic,PowerBASIC,pl,1989,717,TRUE,FALSE,TRUE,',2002,235,0,PowerBASIC Inc,0,NA,NA
+turbo-basic,Turbo Basic,pl,1987,724,TRUE,FALSE,TRUE,',2002,80,0,NA,0,NA,NA
+shaderlab,ShaderLab,pl,2000,704,TRUE,FALSE,TRUE,//,2017,200,0,NA,0,text,NA
+filebench-wml,Filebench WML,pl,2011,591,TRUE,FALSE,TRUE,#,2022,547,0,https://github.com/filebench,0,text,TRUE
+staroffice-basic,StarOffice Basic,pl,2000,731,TRUE,FALSE,TRUE,',2012,45,0,NA,0,NA,NA
+harbour,Harbour,pl,1999,734,TRUE,FALSE,TRUE,//,2022,231,0,https://github.com/harbour,0,text,TRUE
+cryptol,Cryptol,pl,2014,634,TRUE,NA,TRUE,NA,2022,1419,0,"Galois,Inc",0,text,TRUE
+component-pascal,COMPONENT PASCAL,pl,1997,739,TRUE,FALSE,NA,NA,2022,200,0,www.oberon.ch,0,text,NA
+refal,Refal,pl,1968,757,TRUE,FALSE,TRUE,*,2022,101,0,http://pespmc1.vub.ac.be/TURCHIN.html,0,text,NA
+carth,carth,pl,2018,748,TRUE,FALSE,TRUE,;,2022,25,0,NA,NA,NA,NA
+mu,Mu,pl,2014,643,TRUE,FALSE,TRUE,#,2022,1367,0,https://github.com/akkartik/mu/issues,0,text,TRUE
+cartocss,CartoCSS,pl,2010,752,TRUE,FALSE,TRUE,//,2015,200,0,Mapbox,0,text,NA
+jasmin,Jasmin,pl,1997,759,TRUE,FALSE,TRUE,;,2014,201,0,https://jasmin.sourceforge.net/,0,text,NA
+renderscript,RenderScript,pl,2011,760,TRUE,FALSE,NA,NA,2011,181,0,NA,0,text,NA
+literate-agda,Literate Agda,pl,2009,761,TRUE,FALSE,TRUE,--,2009,0,0,Chalmers University,0,text,NA
+game-maker-language,Game Maker Language,pl,1999,769,TRUE,FALSE,TRUE,//,2022,200,0,YoYo Games Ltd,0,text,NA
+openscad,OpenSCAD,pl,2010,653,TRUE,FALSE,TRUE,//,2017,720,0,https://opencollective.com/openscad,0,text,TRUE
+nqc,Not Quite C,pl,2017,796,TRUE,FALSE,TRUE,//,2022,313,0,https://github.com/nlsandler/nqcc/issues,0,text,TRUE
+clist,CLIST,pl,1990,793,TRUE,FALSE,NA,NA,2003,125,0,IBM,0,text,NA
+blitzmax,BlitzMax,pl,2014,661,TRUE,NA,TRUE,NA,2022,489,0,Blitz Research,0,text,TRUE
+objective-cpp,Objective C++,pl,1993,788,TRUE,FALSE,TRUE,//,2018,200,0,Apple,0,text,NA
+ooc,ooc,pl,2009,676,TRUE,NA,NA,NA,2022,710,0,https://github.com/ooc-lang,0,text,TRUE
+neko,Neko,pl,2005,687,TRUE,FALSE,NA,NA,2022,995,0,Haxe Foundation,0,text,TRUE
+omega,omega,pl,2005,800,TRUE,FALSE,TRUE,--,2005,1,0,Portland State University,NA,NA,NA
+bliss,BLISS,pl,1969,811,TRUE,FALSE,TRUE,!,2003,240,0,Carnegie-Mellon University,0,NA,NA
+lily,Lily,pl,2011,702,TRUE,FALSE,NA,NA,2022,1198,0,https://gitlab.com/FascinatedBox/lily/-/issues,0,text,TRUE
+nit,Nit,pl,2008,695,TRUE,NA,TRUE,NA,2022,625,0,https://github.com/nitlang,0,text,TRUE
+ox,OX,pl,1996,807,TRUE,FALSE,TRUE,//,2015,251,0,OxMetrics Technologies,0,text,FALSE
+alpine-abuild,Alpine Abuild,pl,2006,808,TRUE,FALSE,TRUE,#,2018,200,0,alpinelinux,0,text,NA
+slice,Slice,pl,2011,809,TRUE,FALSE,TRUE,//,2018,200,0,NA,0,text,NA
+clay,clay,pl,2010,693,TRUE,NA,TRUE,NA,2022,508,0,https://claylabs.com/,NA,NA,NA
+simcode,SimCode,pl,1997,818,TRUE,FALSE,TRUE,//,2018,25,0,NA,0,NA,FALSE
+gcc-machine-description,GCC Machine Description,pl,2001,829,TRUE,FALSE,TRUE,;,2018,200,0,University of Arizona,0,text,NA
+activevfp,ActiveVFP,pl,2001,831,TRUE,FALSE,TRUE,*,2013,85,0,VFP Community,0,NA,TRUE
+praat-script,Praat Script,pl,1997,745,TRUE,FALSE,TRUE,#,2022,1502,0,Universiteit van Amsterdam,NA,NA,NA
+whiley,Whiley,pl,2009,732,TRUE,FALSE,TRUE,//,2022,373,0,NA,NA,NA,NA
+shen,Shen,pl,2011,841,TRUE,NA,TRUE,NA,2018,201,0,NA,0,text,NA
+fibonacci,Fibonacci,pl,1991,850,TRUE,FALSE,NA,NA,1991,0,0,Università di Pisa,0,NA,NA
+mvel,MVEL,pl,2003,853,TRUE,FALSE,TRUE,//,2008,235,0,https://github.com/mvel,0,NA,TRUE
+arkscript,ArkScript,pl,2019,729,TRUE,FALSE,TRUE,#,2022,580,0,Alexandre Plateau,NA,NA,NA
+roku-brightscript,Brightscript,pl,2010,856,TRUE,FALSE,TRUE,',2015,200,0,NA,0,text,NA
+cell,Cell,pl,2017,865,TRUE,FALSE,TRUE,//,2022,106,0,https://github.com/cell-lang,0,text,TRUE
+cycript,Cycript,pl,2008,869,TRUE,FALSE,TRUE,//,2022,201,0,"SaurikIT, LLC",0,text,NA
+raku,Raku,pl,2019,870,TRUE,FALSE,TRUE,#,2022,16,0,https://www.raku.org/community,NA,NA,NA
+strips,Strips,pl,1969,881,TRUE,FALSE,TRUE,//,2005,615,0,NA,0,NA,NA
+chuck,Ch,pl,2003,755,TRUE,FALSE,TRUE,//,2018,536,0,chuck team,0,text,NA
+netrexx,NetRexx,pl,1996,886,TRUE,FALSE,NA,NA,2007,65,0,IBM,0,text,NA
+winxed,winxed,pl,2009,878,TRUE,FALSE,TRUE,//,2018,49,0,NA,NA,NA,NA
+fancy,Fancy,pl,2010,767,TRUE,FALSE,TRUE,NA,2022,557,0,https://github.com/bakkdoor/fancy/issues,0,text,TRUE
+smt,SMT,pl,2003,892,TRUE,FALSE,TRUE,;,2015,201,0,NA,0,text,NA
+ezhil,Ezhil,pl,2007,893,TRUE,FALSE,TRUE,#,2021,116,0,Google scholar,0,text,TRUE
+nxc,Not eXactly C,pl,2006,897,TRUE,FALSE,TRUE,//,2008,125,0,https://sourceforge.net/p/bricxcc/_list/tickets,0,text,NA
+mary,Mary,pl,1970,898,TRUE,FALSE,TRUE,%,2001,55,0,Stiftelsen for industriell og teknisk forskning,0,text,NA
+logtalk,Logtalk,pl,1998,902,TRUE,FALSE,NA,NA,2017,231,0,https://github.com/LogtalkDotOrg,0,text,NA
+storyscript,storyscript,pl,2017,777,TRUE,FALSE,TRUE,#,2022,404,0,NA,NA,NA,NA
+mun-lang,mun-lang,pl,2019,814,TRUE,FALSE,TRUE,//,2022,1461,0,https://github.com/mun-lang,NA,NA,NA
+creative-basic,Creative Basic,pl,2008,912,TRUE,FALSE,TRUE,',2008,35,0,NA,0,NA,NA
+observable-lang,Observable,pl,2017,762,TRUE,FALSE,TRUE,//,2022,983,0,Observable,NA,NA,NA
+maxscript,MAXScript,pl,1996,917,TRUE,FALSE,NA,NA,2018,201,0,"Autodesk, Inc",0,text,NA
+pan,Pan,pl,2011,896,TRUE,FALSE,TRUE,#,2022,306,0,https://github.com/quattor,0,text,TRUE
+loomscript,LoomScript,pl,2013,921,TRUE,FALSE,TRUE,//,2014,201,0,https://theengine.co/,0,text,NA
+openedge-advanced-business-language,OpenEdge ABL,pl,2006,821,TRUE,NA,NA,NA,2016,710,0,Progress Software Corporation,0,text,FALSE
+spatial,Spatial,pl,2018,900,TRUE,FALSE,TRUE,//,2022,317,0,NA,0,text,TRUE
+type-language,Type Language,pl,2013,934,TRUE,FALSE,TRUE,//,2018,200,0,NA,0,text,NA
+moo,MOO,pl,1993,939,TRUE,FALSE,NA,NA,2001,80,0,University of Waterloo,0,text,NA
+treelang,Treelang,pl,1988,940,TRUE,FALSE,TRUE,//,2008,30,0,NA,0,NA,NA
+ssharp,Script.NET,pl,2007,861,TRUE,FALSE,TRUE,//,2022,366,0,NA,0,text,TRUE
+vhdl-ams,VHDL-AMS,pl,1993,974,TRUE,FALSE,TRUE,--,2007,185,0,NA,0,NA,NA
+fable-lang,Fable,pl,2012,975,TRUE,FALSE,TRUE,//,2022,1,0,https://github.com/fable-compiler,NA,NA,NA
+operational-control-language,Operational Control Language,pl,1986,982,TRUE,FALSE,TRUE,//,2006,40,0,IBM,0,NA,NA
+handel-c,Handel-C,pl,1996,990,TRUE,FALSE,NA,NA,2006,105,0,Oxford University Computing Laboratory,0,NA,NA
+opal,Opal,pl,1994,995,TRUE,FALSE,TRUE,--,2020,288,0,https://github.com/TU-Berlin,0,text,TRUE
+fml-lang,FML,pl,2012,998,TRUE,FALSE,TRUE,#,2012,0,0,https://duriansoftware.com,NA,NA,NA
+c2,C2,pl,2012,852,TRUE,NA,NA,NA,2022,755,0,NA,NA,NA,NA
+lingo,Lingo,pl,1988,1005,TRUE,FALSE,NA,NA,2004,220,0,MacroMind,0,text,NA
+acl2,ACL2,pl,1990,1020,TRUE,NA,NA,NA,2002,195,0,The University of Texas at Austin,0,text,TRUE
+xblite,XBLite,pl,2001,1018,TRUE,FALSE,TRUE,',2008,60,0,NA,0,NA,NA
+maya,Maya Embedded Language,pl,2013,1014,TRUE,FALSE,TRUE,//,2013,270,0,"Autodesk, Inc",0,text,NA
+logos,Logos,pl,2010,1015,TRUE,FALSE,TRUE,//,2016,200,0,https://github.com/DHowett/theos-logos-examples/issues,0,text,NA
+spry,spry,pl,2015,899,TRUE,FALSE,TRUE,#,2022,449,0,NA,NA,NA,NA
+gwl,Guix Workflow Language,pl,2017,1040,TRUE,FALSE,TRUE,;,2017,1,0,GNU Project,NA,NA,NA
+macro-10,MACRO-10,pl,1978,1051,TRUE,FALSE,TRUE,;,2009,40,0,Digital Equipment Corporation,0,NA,NA
+flow9,Flow9,pl,2010,929,TRUE,NA,TRUE,//,2022,627,0,https://github.com/area9innovation,NA,NA,NA
+krl,KRL,pl,1976,1058,TRUE,FALSE,TRUE,//,2002,90,0,Xerox PARC && Stanford University,0,text,NA
+q-sharp,Q#,pl,2017,1059,TRUE,NA,TRUE,//,2017,1,0,Microsoft,0,text,NA
+ns-basic,NS Basic,pl,1994,1064,TRUE,FALSE,TRUE,//,2018,105,0,NSB Corporation,0,NA,FALSE
+plus,Plus,pl,1976,1069,TRUE,FALSE,NA,NA,2010,60,0,University of British Columbia,0,text,NA
+module-management-system,Module Management System,pl,2005,1071,TRUE,FALSE,TRUE,!,2005,0,0,https://github.com/endlesssoftware,0,text,NA
+tht,tht,pl,2017,1082,TRUE,FALSE,TRUE,//,2022,116,0,NA,NA,NA,NA
+monte,monte,pl,2014,1083,TRUE,FALSE,NA,NA,2022,106,0,https://github.com/monte-language,0,text,TRUE
+dslx,dslx,pl,2020,1084,TRUE,FALSE,TRUE,//,2020,0,0,Google,NA,NA,NA
+rc,Rc,pl,1989,1095,TRUE,FALSE,TRUE,#,2003,345,0,Bell Labs,0,NA,NA
+xbasic,Xbasic,pl,1988,1089,TRUE,FALSE,TRUE,',2006,25,0,NA,0,NA,TRUE
+gentoo-ebuild,Gentoo Ebuild,pl,1999,1104,TRUE,FALSE,TRUE,#,2018,286,0,Gentoo Foundation,0,text,NA
+gentee,gentee,pl,2018,1107,TRUE,FALSE,TRUE,//,2022,130,0,https://github.com/gentee,NA,NA,NA
+promal,PROMAL,pl,1986,1108,TRUE,TRUE,TRUE,;,2004,55,0,Systems Management Associates,0,NA,NA
+rescript,Rescript,pl,2020,1111,TRUE,FALSE,TRUE,//,2022,1,0,NA,NA,NA,NA
+dex,dex,pl,2018,958,TRUE,FALSE,TRUE,--,2022,1482,0,Google,NA,NA,NA
+parrot-basic,Parrot BASIC,pl,2009,1146,TRUE,FALSE,TRUE,#,2016,25,0,https://www.perl.org,0,NA,NA
+lispyscript,lispyscript,pl,2012,1023,TRUE,FALSE,TRUE,;,2022,756,0,https://github.com/santoshrajan/lispyscript/issues,NA,NA,NA
+parser,Parser 3,pl,1997,1142,TRUE,FALSE,TRUE,#,2022,61,0,Art. Lebedev Studio,0,text,TRUE
+salsa,Simple Actor Language System and Architecture,pl,2001,1160,TRUE,FALSE,NA,NA,2005,91,0,NA,0,text,NA
+frink,Frink,pl,2001,1162,TRUE,FALSE,TRUE,//,2022,61,0,https://futureboy.us/,0,text,NA
+bitbake,BitBake,pl,2004,1103,TRUE,FALSE,TRUE,#,2008,326,0,Yocto Project,0,text,TRUE
+gherkin,Gherkin,pl,2008,1173,TRUE,FALSE,TRUE,#,2017,201,0,SmartBear Software,0,text,NA
+flagship,flagship,pl,1986,1174,TRUE,FALSE,TRUE,//,2022,1,0,multisoft Datentechnik,NA,NA,NA
+orc-lang,Orc,pl,2004,1196,TRUE,FALSE,NA,NA,2007,86,0,The University of Texas at Austin,0,text,TRUE
+gerbil,Gerbil Scheme,pl,2016,1024,TRUE,NA,TRUE,;,2022,1169,0,https://github.com/vyzo/gerbil/issues,NA,NA,NA
+bc,basic calculator,pl,1975,1055,TRUE,NA,NA,NA,2004,440,0,Bell Labs,0,text,NA
+neeilang,neeilang,pl,2019,1211,TRUE,FALSE,TRUE,//,2022,49,0,https://github.com/neeilan/neeilang/issues,NA,NA,NA
+hilvl,hilvl,pl,2015,1212,TRUE,FALSE,TRUE,//,2021,7,0,https://github.com/holgerl/hilvl/issues,NA,NA,NA
+dale,Dale,pl,2013,1037,TRUE,NA,NA,NA,2022,1111,0,NA,NA,NA,NA
+cfscript,CFScript,pl,1999,1230,TRUE,FALSE,TRUE,//,2006,55,0,NA,0,NA,NA
+yasl,Yet Another Scripting Language,pl,2017,1219,TRUE,FALSE,TRUE,#,2022,100,0,NA,NA,NA,NA
+holyc,holyc,pl,2005,1222,TRUE,FALSE,TRUE,//,2005,0,0,https://github.com/cia-foundation/TempleOS/issues,NA,NA,NA
+redcode,Redcode,pl,1984,1101,TRUE,NA,TRUE,NA,2003,575,0,Bolt Beranek and Newman Inc,0,text,NA
+neut,neut,pl,2018,1114,TRUE,FALSE,TRUE,;,2022,816,0,https://github.com/vekatze/neut/issues,NA,NA,NA
+txr,txr,pl,2009,1239,TRUE,FALSE,NA,NA,2009,1,0,NA,NA,NA,NA
+zimpl,Zimpl,pl,2004,1240,TRUE,FALSE,TRUE,#,2004,1,0,NA,0,text,NA
+nymph,Nymph,pl,2017,1254,TRUE,FALSE,TRUE,//,2022,192,0,https://github.com/maelswarm/nymph/issues,NA,NA,NA
+boron,Boron,pl,2009,1257,TRUE,NA,TRUE,;,2009,1,0,NA,NA,text,TRUE
+s-plus,S-PLUS,pl,1988,1068,TRUE,FALSE,TRUE,#,2006,390,0,NA,0,text,FALSE
+tuple-space,Tuple space,pl,1988,1206,TRUE,FALSE,TRUE,//,2005,300,0,NA,0,NA,NA
+nesl,NESL,pl,1993,1292,TRUE,NA,NA,NA,2004,70,0,Carnegie Mellon University,0,text,NA
+ocl,OCL,pl,1997,1102,TRUE,FALSE,TRUE,--,2008,950,0,IBM,NA,NA,NA
+mouse,Mouse,pl,1970,1275,TRUE,FALSE,TRUE,~,2006,81,0,https://sourceforge.net/p/mouse/mailman,0,text,NA
+haggis,HAGGIS,pl,2010,1153,TRUE,FALSE,NA,NA,2016,480,0,University of Glasgow && Heriot Watt University && University of Strathclyde,0,text,NA
+spiral,spiral,pl,2017,1120,TRUE,FALSE,TRUE,//,2022,920,0,NA,NA,NA,NA
+ags-script,Adventure Game Studio Script,pl,2001,1301,TRUE,FALSE,TRUE,//,2018,201,0,Adventure Game Studio,0,text,NA
+c-shell,C shell,pl,1978,1302,TRUE,FALSE,TRUE,#,2002,116,0,"University of California, Berkeley",0,text,TRUE
+charity,Charity,pl,1992,1303,TRUE,FALSE,TRUE,%,2005,111,0,University of Calgary,0,text,NA
+pawn-scripting-language,Pawn,pl,1998,1305,TRUE,NA,TRUE,NA,1998,15,0,Informatie-Technologisch Bureau CompuPhase,0,NA,NA
+epsilon,epsilon,pl,1967,1307,TRUE,FALSE,TRUE,//,1967,1,0,"Eclipse Foundation, Inc",NA,NA,NA
+z-expressions,Z,pl,2012,1315,TRUE,TRUE,TRUE,--,2022,303,0,NA,NA,NA,NA
+jspp,JS++,pl,2011,1323,TRUE,FALSE,TRUE,//,2011,21,0,Onux,NA,NA,NA
+jslt,JSLT,pl,2017,1187,TRUE,NA,TRUE,NA,2022,772,0,https://github.com/schibsted,NA,NA,NA
+manool,manool,pl,2018,1347,TRUE,FALSE,TRUE,--,2022,67,0,https://github.com/rusini/manool/pulls,NA,NA,NA
+judoscript,Judoscript,pl,2001,1348,TRUE,FALSE,TRUE,//,2007,40,0,https://github.com/metaprgmr/Judoscript/issues,0,NA,TRUE
+parasail,parasail,pl,2009,1349,TRUE,NA,TRUE,NA,2012,21,0,Ada Core Technologies,NA,NA,NA
+fsl,Finite State Language,pl,2016,1351,TRUE,FALSE,TRUE,//,2016,0,0,https://github.com/StoneCypher/jssm/issues,NA,NA,NA
+silk,silk,pl,2019,1369,TRUE,FALSE,TRUE,//,2022,73,0,NA,NA,NA,NA
+augeas,Augeas,pl,2007,1370,TRUE,NA,NA,NA,2022,66,0,Red Hat Software,0,text,TRUE
+claro,Claro,pl,2021,1371,TRUE,FALSE,TRUE,#,2022,8,0,https://github.com/JasonSteving99,NA,NA,NA
+fjolnir,Fjölnir,pl,1986,1388,TRUE,FALSE,TRUE,;,2005,105,0,University of Iceland,0,text,NA
+owen-lang,owen-lang,pl,2019,1392,TRUE,FALSE,TRUE,//,2022,13,0,https://github.com/pawwkm/owen/issues,NA,NA,NA
+verifpal,verifpal,pl,2019,1395,TRUE,FALSE,TRUE,//,2022,1,0,NA,NA,NA,NA
+jsl,JSL,pl,1989,1425,TRUE,FALSE,TRUE,//,1989,0,0,JMP Statistical Discovery LLC,NA,NA,NA
+popr,popr,pl,2012,1408,TRUE,FALSE,TRUE,__,2022,217,0,https://github.com/HackerFoo/poprc/issues,0,text,TRUE
+kai,kai,pl,2016,1412,TRUE,FALSE,TRUE,//,2020,73,0,https://github.com/kai-language,NA,NA,NA
+buddyscript,BuddyScript,pl,2002,1415,TRUE,TRUE,TRUE,#,2009,35,0,ActiveBuddy,0,text,NA
+fizz,fizz,pl,2017,1417,TRUE,FALSE,TRUE,//,2017,1,0,https://f1zz.org,NA,NA,NA
+ldpl,ldpl,pl,2019,1438,TRUE,FALSE,TRUE,#,2022,199,0,https://github.com/Lartu/ldpl/issues,NA,NA,NA
+pointless,pointless,pl,2020,1439,TRUE,NA,TRUE,NA,2022,147,0,https://github.com/pointless-lang,NA,NA,NA
+easytrieve,Easytrieve,pl,1969,1484,TRUE,NA,TRUE,NA,2009,125,0,CA Technologies,0,NA,NA
+lite-c,Lite-C,pl,2007,1485,TRUE,FALSE,TRUE,//,2007,86,0,Conitec Datensysteme GmbH,0,text,TRUE
+atomese,Atomese,pl,2007,1521,TRUE,FALSE,TRUE,;,2007,1,0,OpenCog Foundation,NA,NA,NA
+dedukti,dedukti,pl,2009,1549,TRUE,FALSE,NA,NA,2022,211,0,https://github.com/Deducteam,NA,NA,NA
+tal,TAL,pl,2008,1584,TRUE,NA,NA,NA,2008,105,0,NA,0,text,NA
+sqr,Structured Query Reporter,pl,1980,1503,TRUE,FALSE,TRUE,!,2005,330,0,NA,0,text,NA
+heron-lang,Heron,pl,2016,1571,TRUE,FALSE,TRUE,//,2022,70,0,https://github.com/cdiggins/heron-language/issues,NA,NA,NA
+taf,taf,pl,2012,1572,TRUE,FALSE,TRUE,;,2022,63,0,NA,NA,NA,NA
+rpl-lang,Reactive Plan Language,pl,1993,1605,TRUE,FALSE,TRUE,;,1993,0,0,NA,0,text,NA
+action-code-script,Action Code Script,pl,2004,1629,TRUE,FALSE,TRUE,//,2004,55,0,id Software,0,NA,NA
+xpl0,XPL0,pl,1976,1652,TRUE,FALSE,NA,NA,2008,40,0,NA,0,NA,NA
+isetl,ISETL,pl,1989,1655,TRUE,FALSE,TRUE,--,2014,25,0,Clarkson University,0,NA,NA
+boogie,Boogie,pl,2008,1657,TRUE,NA,TRUE,NA,2008,1,0,Microsoft,NA,NA,NA
+rosette-lang,rosette-lang,pl,2013,1662,TRUE,FALSE,TRUE,;,2013,1,0,NA,NA,NA,NA
+xxl,xxl,pl,2016,1688,TRUE,FALSE,TRUE,//,2022,209,0,NA,NA,NA,NA
+pnuts,Pnuts,pl,1997,1708,TRUE,FALSE,TRUE,//,2008,60,0,Sun Japan,0,NA,TRUE
+bla,Bla,pl,1994,1713,TRUE,FALSE,TRUE,--,1994,1,0,University of Amsterdam,NA,NA,NA
+false,False,pl,1993,1716,TRUE,FALSE,NA,NA,1993,1,0,http://strlen.com,0,NA,NA
+urbiscript,Urbiscript,pl,2003,1736,TRUE,NA,NA,NA,2011,45,0,NA,0,NA,TRUE
+blz,blz,pl,2015,1738,TRUE,FALSE,TRUE,#,2021,25,0,NA,NA,NA,NA
+ctalk-lang,ctalk-lang,pl,1989,1746,TRUE,FALSE,TRUE,//,1989,0,0,École des Mines de Saint-Étienne,NA,NA,NA
+floscript,FloScript,pl,2013,1618,TRUE,NA,TRUE,NA,2021,249,0,ProSapien LLC,NA,NA,NA
+probevue,ProbeVue,pl,2008,1785,TRUE,FALSE,NA,NA,2008,20,0,http://www.tablespace.net,0,text,NA
+plot-lang,Plot,pl,2006,1793,TRUE,FALSE,TRUE,;,2006,1,0,Association of Lisp Users,NA,NA,NA
+wart,Wart,pl,2010,1838,TRUE,FALSE,TRUE,#,2019,127,0,NA,NA,NA,NA
+stella,stella,pl,1999,1860,TRUE,FALSE,TRUE,;,1999,1,0,NA,NA,NA,NA
+rlab,RLaB,pl,1998,1900,TRUE,NA,NA,NA,2004,80,0,https://sourceforge.net/p/rlab/bugs,0,text,NA
+optimj,OptimJ,pl,2006,1902,TRUE,FALSE,TRUE,//,2010,70,0,Ateji,0,NA,NA
+ambienttalk,AmbientTalk,pl,2006,1910,TRUE,NA,TRUE,NA,2006,1,0,Vrije Universiteit,NA,NA,NA
+usd,USD,pl,2016,2010,TRUE,NA,TRUE,NA,2016,1,0,Pixar,NA,NA,NA
+wescheme,wescheme,pl,2009,2011,TRUE,FALSE,TRUE,;,2022,1,0,NA,NA,NA,NA
+savi,Savi,pl,2018,1864,TRUE,NA,TRUE,NA,2022,156,0,NA,NA,NA,NA
+rita,Rita,pl,2019,2052,TRUE,NA,TRUE,NA,2022,70,0,https://github.com/zaibacu/rita-dsl/issues,NA,NA,NA
+lain,lain,pl,2017,2068,TRUE,FALSE,TRUE,;,2017,1,0,https://github.com/XXIIVV,NA,NA,NA
+luau,luau,pl,2020,2069,TRUE,FALSE,TRUE,--,2020,1,0,https://github.com/Roblox/luau/issues,NA,NA,NA
+bioscript,bioscript,pl,2019,2074,TRUE,FALSE,NA,NA,2019,0,0,"University of California, Riverside",NA,NA,NA
+sora,sora,pl,2019,2079,TRUE,FALSE,TRUE,//,2019,0,0,NA,NA,NA,NA
+konsolscript,KonsolScript,pl,2005,2275,TRUE,NA,NA,NA,2010,30,0,https://sourceforge.net/p/konsolscript/feature-requests/,0,NA,NA
+spice,Spice,pl,2021,2366,TRUE,NA,TRUE,NA,2021,1,0,NA,NA,NA,NA
+sarl,SARL,pl,2013,2464,TRUE,NA,NA,NA,2013,1,0,NA,NA,NA,NA
+rbscript,rbscript,pl,1996,2474,TRUE,FALSE,TRUE,//,1996,0,0,NA,0,NA,NA
+snobol4,SNOBOL4,pl,1967,2727,TRUE,NA,NA,NA,1967,0,0,NA,0,NA,NA
+smithy,Smithy,pl,2016,2877,TRUE,NA,NA,NA,2016,1,0,NA,NA,NA,NA
+babel,BABEL,pl,1990,2994,TRUE,NA,NA,NA,1990,0,0,University of Münster && Universidad Politécnica de Madrid,0,NA,NA

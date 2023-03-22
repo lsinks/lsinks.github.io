@@ -5,9 +5,85 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
     date: 03-22-2023
-categories: [R, TidyTuesday, R-code, Code-Along] # self-defined categories
+categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, skimr] # self-defined categories
 citation:
   url: https://lsinks.github.io/ 
 image: pop-lang-by-token.png
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
+
+Yesterday, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the skimr documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media.
+
+## Skimr
+
+Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidytuesdayR)
+library(tidyverse)
+library(skimr)
+library(ggthemes)
+library(gt)
+library(ggrepel)
+```
+
+```{r}
+#| label: load-data
+#| warning: false
+#| output: false
+# Get the Data
+
+# Read in with tidytuesdayR package 
+# This loads the readme and all the datasets for the week of interest
+
+# Either ISO-8601 date or year/week works!
+
+#tuesdata <- tidytuesdayR::tt_load('2023-03-21')
+tuesdata <- tidytuesdayR::tt_load(2023, week = 12)
+
+languages <- tuesdata$languages
+```
+
+Here is what the raw skimr output looks like.
+
+```{r}
+# | label: raw-skim-output
+skimr::skim(languages)
+```
+
+My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don't particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.
+
+The package let's you set the summary functions that skimr calls. Drop the
+
+```{r}
+# | label: custom-skim-functions
+
+my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL)) 
+
+my_skim(languages)
+```
+
+Another attempt:
+
+```{r}
+joined <- read_csv("processed_lang.csv" , show_col_types = FALSE)
+```
+
+Now the original figure
+
+```{r}
+#| label: lang-token-graph-undordered
+joined %>%
+  ggplot(aes(line_comment_token, n, size = log(number_of_users), 
+             color = log(number_of_users), label = title)) +
+ # geom_point() +
+  scale_y_log10() +
+  geom_text_repel(show.legend = FALSE) +
+   ggtitle("The Most Popular Language for Each Comment Token") +
+  xlab("Token") +
+  ylab("Number of languages using token") +
+  theme_classic()
+```
