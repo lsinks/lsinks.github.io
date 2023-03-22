@@ -1,0 +1,17 @@
+---
+title: "Blog Roll"
+---
+
+Blogs:
+
+[R Bloggers](https://www.r-bloggers.com/)
+
+Tutorials I've followed:
+
+[Word Games Project](https://github.com/lsinks/Word-Games):
+
+[r letter frequency in R packages via R-Bloggers](https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/)
+
+Setting Up Webpage:
+
+[Creating Quarto Websites by Sam Csik](https://ucsb-meds.github.io/creating-quarto-websites/)

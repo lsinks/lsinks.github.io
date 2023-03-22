@@ -11,6 +11,8 @@ website:
         text: Home
       - about.qmd
       - posts.qmd
+      - href: blogroll.qmd
+        text: "Blog Roll"
 
 format:
   html:
