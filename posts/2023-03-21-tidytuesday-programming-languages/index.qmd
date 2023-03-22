@@ -1,11 +1,11 @@
 ---
-title: "TidyTuesday: Programming Languages"
+title: "TidyTuesday Week 12: Programming Languages"
 description: "TidyTuesday: How to comment in Various Programming Languages"
 author:
   - name: Louise E. Sinks
-    url: https://lsinks.github.io/
+    url: https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/
     date: 03-21-2023
-categories: [R, TidyTuesday, R-code] # self-defined categories
+categories: [R, TidyTuesday, R-code, Code-Along] # self-defined categories
 citation:
   url: https://lsinks.github.io/2023-03-21-tidytuesday-programming-languages 
 image: pop-lang-by-token.png
