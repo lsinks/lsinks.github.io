@@ -3,11 +3,11 @@ title: "TidyTuesday Week 12: Programming Languages"
 description: "TidyTuesday: How to comment in Various Programming Languages"
 author:
   - name: Louise E. Sinks
-    url: https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/
+    url: https://lsinks.github.io/
     date: 03-21-2023
 categories: [R, TidyTuesday, R-code, Code-Along] # self-defined categories
 citation:
-  url: https://lsinks.github.io/2023-03-21-tidytuesday-programming-languages 
+  url: https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/ 
 image: pop-lang-by-token.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
@@ -213,7 +213,9 @@ This is a visualization of the highest ranked languages for each token. The numb
 ```{r}
 #| label: lang-token-graph
 join_madness %>%
-  ggplot(aes(fct_rev(fct_reorder(line_comment_token, highest_rank)), n , size = log(number_of_users), color = log(number_of_users), label = title)) +
+  ggplot(aes(fct_rev(fct_reorder(line_comment_token, highest_rank)), n,
+             size = log(number_of_users), color = log(number_of_users),
+             label = title)) +
  # geom_point() +
   scale_y_log10() +
   geom_text_repel(show.legend = FALSE) +

@@ -1,3 +1,13 @@
 ---
-title: "TidyTuesday: Programming Languages Revisited"
+title: "TidyTuesday Week 12: Programming Languages Revisited"
+description: "TidyTuesday: Polishing "
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+    date: 03-22-2023
+categories: [R, TidyTuesday, R-code, Code-Along] # self-defined categories
+citation:
+  url: https://lsinks.github.io/ 
+image: pop-lang-by-token.png
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
