@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Thu, 23 Mar 2023 16:31:56 GMT</lastBuildDate>
+<lastBuildDate>Thu, 23 Mar 2023 17:01:42 GMT</lastBuildDate>
 <item>
   <title>TidyTuesday Week 12: Programming Languages</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -1970,7 +1970,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Thu, 23 Mar 2023 16:31:56 GMT</pubDate>
+  <pubDate>Thu, 23 Mar 2023 17:01:42 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 </channel>
