@@ -4,15 +4,19 @@ project:
 
 website:
   title: "Louise E. Sinks"
+  site-url: https://lsinks.github.io
+  description: "Data Science Blog and Portfolio of Louise Sinks"
   navbar:
     title: "Louise E. Sinks"
-    left:
+    right:
       - href: index.qmd
         text: Home
       - about.qmd
       - posts.qmd
       - href: blogroll.qmd
         text: "Blog Roll"
+      - icon: rss
+        href: posts.xml
   google-analytics: "G-WR4VFC0MC2"
   cookie-consent: true
   twitter-card:

@@ -1,280 +1,88 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
-<meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.335">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
-<meta name="author" content="Louise E. Sinks">
-<meta name="description" content="TidyTuesday: How to comment in Various Programming Languages">
-
-<title>Louise E. Sinks - TidyTuesday Week 12: Programming Languages</title>
-<style>
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-ul.task-list{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-  width: 0.8em;
-  margin: 0 0.8em 0.2em -1.6em;
-  vertical-align: middle;
-}
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Louise E. Sinks</title>
+<link>https://lsinks.github.io/posts.html</link>
+<atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
+<description>Data Science Blog and Portfolio of Louise Sinks</description>
+<generator>quarto-1.2.335</generator>
+<lastBuildDate>Thu, 23 Mar 2023 16:31:56 GMT</lastBuildDate>
+<item>
+  <title>Creating a Blog</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</link>
+  <description><![CDATA[ 
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
-<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
-<script src="../../site_libs/quarto-html/quarto.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 20,
-  "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
-  }
-}</script>
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
 
-<script type="text/plain" cookie-consent="tracking">
-
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
-</script>
-
-<script type="text/javascript" charset="UTF-8">
-document.addEventListener('DOMContentLoaded', function () {
-cookieconsent.run({
-  "notice_banner_type":"simple",
-  "consent_type":"implied",
-  "palette":"light",
-  "language":"en",
-  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
-  "notice_banner_reject_button_hide":false,
-  "preferences_center_close_button_hide":false,
-  "website_name":""
-  });
-});
-</script> 
-  
-
-
-<link rel="stylesheet" href="../../styles.css">
-<meta name="twitter:title" content="Louise E. Sinks - TidyTuesday Week 12: Programming Languages">
-<meta name="twitter:description" content="TidyTuesday: How to comment in Various Programming Languages">
-<meta name="twitter:image" content="https://lsinks.github.io/posts\2023-03-21-tidytuesday-programming-languages\pop-lang-by-token.png">
-<meta name="twitter:creator" content="@LouiseSinks">
-<meta name="twitter:image-height" content="507">
-<meta name="twitter:image-width" content="640">
-<meta name="twitter:card" content="summary_large_image">
-</head>
-
-<body class="nav-fixed">
-
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
-    <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Louise E. Sinks</span>
-    </a>
-  </div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html">
- <span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../about.html">
- <span class="menu-text">About</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../posts.html">
- <span class="menu-text">Blog Entries</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../blogroll.html">
- <span class="menu-text">Blog Roll</span></a>
-  </li>  
-  <li class="nav-item compact">
-    <a class="nav-link" href="../../posts.xml"><i class="bi bi-rss" role="img">
-</i> 
- <span class="menu-text"></span></a>
-  </li>  
-</ul>
-              <div id="quarto-search" class="" title="Search"></div>
-          </div> <!-- /navcollapse -->
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
-<!-- sidebar -->
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    </div>
-<!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">TidyTuesday Week 12: Programming Languages</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">R</div>
-    <div class="quarto-category">TidyTuesday</div>
-    <div class="quarto-category">R-code</div>
-    <div class="quarto-category">Code-Along</div>
-  </div>
-  </div>
-
-<div>
-  <div class="description">
-    TidyTuesday: How to comment in Various Programming Languages
-  </div>
+<p>This is my first blog entry. I am following the tutorials here:</p>
+<p>https://ucsb-meds.github.io/creating-quarto-websites/#where-you-should-start-changing-stuff</p>
+<p>https://samanthacsik.github.io/posts/2022-10-24-quarto-blogs/</p>
+<p>Generally, this process has been a nightmare. The website is being created within RStudio, then pushed to GitHub and published through GitHub pages. As I’ve made changes per the tutorial, I have repeatedly been unable to push changes to GitHub due to a variety of fatal errors and merge conflicts. Since I’m only working in a single place I have no idea where all these merge conflicts are arising from. I don’t understand how I can have everything in sync everywhere, make a local change, commit it, and then be unable to push it. I’ve had to delete the GitHub repository at least half a dozen times and recreate it from my local version because I couldn’t find any way to fix the conflicts and fatal errors. I’m not sure whose fault this is (Quarto, GitHub or RStudio). It could be my fault, but I really don’t understand why things are breaking so spectacularly. I’ve used git/ GitHub for version control of R projects before and I’ve never had an error. (I don’t really see how you can get a merge conflict if you are the only person working on a project and you are only working at a single location, but maybe I’m failing to envision some use case.)</p>
+<p>I decided to go with Quarto because it is now built-in to RStudio and the tutorials by Samantha Csik seemed very clear. (And to be fair, they are! Very easy to follow.) The tutorials I found for R Markdown to make a website seemed a little more involved and a little more kludgey.</p>
+<p>Couldn’t have done it without the best helper turtle in the world. Mac took a lot of executive naps to work on the problem.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="An orange box turtle is peering out of an office made out of a cardboard box."><img src="https://lsinks.github.io/posts/2023-03-14-tester-post/mac_face.jpg" class="img-fluid figure-img"></a></p>
+</figure>
 </div>
 
 
-<div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Louise E. Sinks </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks,
+  author = {Louise E. Sinks},
+  title = {Creating a {Blog}},
+  url = {https://lsinks.github.io/2023-03-14_tester-post},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. n.d. <span>“Creating a Blog.”</span> <a href="https://lsinks.github.io/2023-03-14_tester-post">https://lsinks.github.io/2023-03-14_tester-post</a>.
+</div></div></section></div> ]]></description>
+  <category>Quarto</category>
+  <category>R</category>
+  <category>turtle</category>
+  <guid>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</guid>
+  <pubDate>Thu, 23 Mar 2023 16:31:56 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-14-tester-post/mckinley.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>TidyTuesday Week 12: Programming Languages</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</link>
+  <description><![CDATA[ 
 
-</header>
+
 
 <p>This is my first attempt at Tidy Tuesday. The dataset today is about Programming Languages. The <a href="https://pldb.com/posts/does-every-programming-language-support-line-comments.html">sample visualizations are about the comment codes</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidytuesdayR)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(gt)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(ggrepel)</span></code></pre></div>
 </div>
 <p>Load the data first. There has been some cleaning done as outlined on the <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-03-21/readme.md">TidyTuesday github page</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the Data</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in with tidytuesdayR package </span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This loads the readme and all the datasets for the week of interest</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Either ISO-8601 date or year/week works!</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#tuesdata &lt;- tidytuesdayR::tt_load('2023-03-21')</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2023</span>, <span class="at">week =</span> <span class="dv">12</span>)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>languages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Get the Data</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;"># Read in with tidytuesdayR package </span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;"># This loads the readme and all the datasets for the week of interest</span></span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;"># Either ISO-8601 date or year/week works!</span></span>
+<span id="cb2-7"></span>
+<span id="cb2-8"><span class="co" style="color: #5E5E5E;">#tuesdata &lt;- tidytuesdayR::tt_load('2023-03-21')</span></span>
+<span id="cb2-9">tuesdata <span class="ot" style="color: #003B4F;">&lt;-</span> tidytuesdayR<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">tt_load</span>(<span class="dv" style="color: #AD0000;">2023</span>, <span class="at" style="color: #657422;">week =</span> <span class="dv" style="color: #AD0000;">12</span>)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11">languages <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>languages</span></code></pre></div>
 </div>
 <p>First, let’s look at how complete the data is. The skimr package produces nice summary information about the variables and their completeness.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;">skim</span>(languages)</span></code></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
@@ -959,13 +767,13 @@ cookieconsent.run({
 <p>Looking through the variables, I see there is a “type” in the data dictionary, and it appears that “pl” means programming language. So let’s filter for that. (I couldn’t find an explanation of this variable on https://pldb.com/) It is used on various pages, but I couldn’t find the definition of the types.</p>
 <p>Also, rank starts at 0, and I’d like it to start at 1.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'pl'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"github"</span>), <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"wikipedia"</span>),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span>description, <span class="sc">-</span>creators, <span class="sc">-</span>(website<span class="sc">:</span>semantic_scholar)) <span class="sc">%&gt;%</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">language_rank =</span> language_rank <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(programming_lang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">programming_lang <span class="ot" style="color: #003B4F;">&lt;-</span> languages <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">filter</span>(type <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">'pl'</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-3">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="fu" style="color: #4758AB;">starts_with</span>(<span class="st" style="color: #20794D;">"github"</span>), <span class="sc" style="color: #5E5E5E;">-</span><span class="fu" style="color: #4758AB;">starts_with</span>(<span class="st" style="color: #20794D;">"wikipedia"</span>),</span>
+<span id="cb4-4">         <span class="sc" style="color: #5E5E5E;">-</span>description, <span class="sc" style="color: #5E5E5E;">-</span>creators, <span class="sc" style="color: #5E5E5E;">-</span>(website<span class="sc" style="color: #5E5E5E;">:</span>semantic_scholar)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">language_rank =</span> language_rank <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb4-6"></span>
+<span id="cb4-7"><span class="fu" style="color: #4758AB;">skim</span>(programming_lang)</span></code></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
@@ -1264,10 +1072,10 @@ cookieconsent.run({
 <p>This now produces a dataset with 0.143 completeness for features_has_comments. All non-missing entries are TRUE, which again suggests that FALSE is over represented in the missing data.</p>
 <p>Let’s only look at the programming languages that have data for comments.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="ot">&lt;-</span> programming_lang <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(features_has_comments <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(programming_lang)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">programming_lang <span class="ot" style="color: #003B4F;">&lt;-</span> programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">filter</span>(features_has_comments <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="fu" style="color: #4758AB;">skim</span>(programming_lang)</span></code></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
@@ -1565,31 +1373,31 @@ cookieconsent.run({
 </div>
 <p>This subset is still moderately incomplete for information about comments. Only 75% of the data has the type of comment entered (#, //, etc). 86% of the entries are completed for “feature_has_line_comments” which indicates if comments must occupy a single line or if they can be made inline.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(line_comment_token) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(line_comment_token) <span class="sc">%&gt;%</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(line_comment_token, n)), n)) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"dodgerblue2"</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Count"</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Popularity of different comment tokens"</span>) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>,  <span class="at">vjust =</span> <span class="fl">0.25</span>, <span class="at">hjust =</span> <span class="fl">0.25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;">group_by</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;">count</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="fu" style="color: #4758AB;">fct_rev</span>(<span class="fu" style="color: #4758AB;">fct_reorder</span>(line_comment_token, n)), n)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;">geom_col</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"dodgerblue2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-6">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Count"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Comment Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Popularity of different comment tokens"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">45</span>,  <span class="at" style="color: #657422;">vjust =</span> <span class="fl" style="color: #AD0000;">0.25</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.25</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/most-popular-comment-token-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/most-popular-comment-token-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Let’s make a nice table of the popular comment types.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | label: table-tokens</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>programming_lang2 <span class="ot">&lt;-</span> programming_lang <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(line_comment_token, <span class="at">sort =</span> <span class="cn">TRUE</span>) </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>programming_lang2 <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Most Common Comment Tokens"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cols_label</span>(<span class="at">line_comment_token =</span> <span class="st">"Token"</span>, <span class="at">n =</span> <span class="st">"# of Languages that use token"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;"># | label: table-tokens</span></span>
+<span id="cb7-2">programming_lang2 <span class="ot" style="color: #003B4F;">&lt;-</span> programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-3">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;">count</span>(line_comment_token, <span class="at" style="color: #657422;">sort =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) </span>
+<span id="cb7-5"></span>
+<span id="cb7-6">programming_lang2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-7"><span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-8"><span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Most Common Comment Tokens"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-9"><span class="fu" style="color: #4758AB;">cols_label</span>(<span class="at" style="color: #657422;">line_comment_token =</span> <span class="st" style="color: #20794D;">"Token"</span>, <span class="at" style="color: #657422;">n =</span> <span class="st" style="color: #20794D;">"# of Languages that use token"</span>)</span></code></pre></div>
 <div class="cell-output-display">
 
 <div id="bympdlajqx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -2062,24 +1870,24 @@ cookieconsent.run({
 </div>
 <p>There is a language rank, which measures the popularity of the language based on signals such as number of users and number of jobs. Let’s see the average rank of languages for each token.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(line_comment_token) <span class="sc">%&gt;%</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg_rank =</span> <span class="fu">mean</span>(language_rank)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>((<span class="fu">fct_reorder</span>(line_comment_token, avg_rank)), avg_rank)) <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"dodgerblue2"</span>) <span class="sc">+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Average Rank of Language"</span>) <span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Average rank of languages using different comment tokens"</span>) <span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>,  <span class="at">vjust =</span> <span class="fl">0.25</span>, <span class="at">hjust =</span> <span class="fl">0.25</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;">group_by</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;">summarize</span>(<span class="at" style="color: #657422;">avg_rank =</span> <span class="fu" style="color: #4758AB;">mean</span>(language_rank)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>((<span class="fu" style="color: #4758AB;">fct_reorder</span>(line_comment_token, avg_rank)), avg_rank)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;">geom_col</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"dodgerblue2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Average Rank of Language"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-7">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Comment Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-8">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Average rank of languages using different comment tokens"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-9">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-10">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">45</span>,  <span class="at" style="color: #657422;">vjust =</span> <span class="fl" style="color: #AD0000;">0.25</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.25</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/avg-rank-by-token-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/avg-rank-by-token-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>The highest (average) ranked token is “*&gt;”. What languages use this?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="sc">%&gt;%</span> <span class="fu">filter</span>(line_comment_token <span class="sc">==</span> <span class="st">"*&gt;"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, language_rank, line_comment_token)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">filter</span>(line_comment_token <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"*&gt;"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;">select</span>(title, language_rank, line_comment_token)</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   title language_rank line_comment_token
@@ -2089,97 +1897,97 @@ cookieconsent.run({
 </div>
 <p>Only COBOL does, so the rank of this token isn’t diluted by many less popular languages. We can view the distribution of the language ranks for all the tokens.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, language_rank)) <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"dodgerblue2"</span>) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"The rank of languages by token."</span>) <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span> (<span class="st">"Language Rank"</span>) <span class="sc">+</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb11-2">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb11-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(line_comment_token, language_rank)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-4">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"dodgerblue2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-5">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"The rank of languages by token."</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-6">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-7">  <span class="fu" style="color: #4758AB;">ylab</span> (<span class="st" style="color: #20794D;">"Language Rank"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-8">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/boxplot-ranks-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/boxplot-ranks-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Okay, let’s clean this up. I’d like it sorted by the median rank. Remeber rank is in reverse numerical order- a low number means a higher rank.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>programming_lang <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">fct_reorder</span>(line_comment_token, language_rank,</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">.fun =</span> median, <span class="at">.desc =</span> <span class="cn">FALSE</span>), language_rank)) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">color =</span> <span class="st">"dodgerblue2"</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"The rank of languages by token"</span>) <span class="sc">+</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Language Rank"</span>) <span class="sc">+</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="fu" style="color: #4758AB;">fct_reorder</span>(line_comment_token, language_rank,</span>
+<span id="cb12-4">                         <span class="at" style="color: #657422;">.fun =</span> median, <span class="at" style="color: #657422;">.desc =</span> <span class="cn" style="color: #8f5902;">FALSE</span>), language_rank)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-5">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>(<span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"dodgerblue2"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-6">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"The rank of languages by token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-7">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-8">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Language Rank"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-9">    <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/sorted-rank-boxplot-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/sorted-rank-boxplot-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Let’s see the most popular language for each symbol. There might be a way to do this all at once, but I’m going to pull it out with joins to previous tables I’ve created.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>programming_lang3 <span class="ot">&lt;-</span> programming_lang <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(line_comment_token) <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(line_comment_token) <span class="sc">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">highest_rank =</span> <span class="fu">min</span>(language_rank)) </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>join_madness <span class="ot">&lt;-</span> programming_lang2 <span class="sc">%&gt;%</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(programming_lang3, <span class="at">by =</span> <span class="st">"line_comment_token"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(programming_lang, </span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"highest_rank"</span> <span class="ot">=</span> <span class="st">"language_rank"</span>,</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"line_comment_token"</span> <span class="ot">=</span> <span class="st">"line_comment_token"</span>)) </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>join_madness <span class="ot">&lt;-</span> join_madness <span class="sc">%&gt;%</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(line_comment_token, n, highest_rank, title, appeared, number_of_users,</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>         number_of_jobs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">programming_lang3 <span class="ot" style="color: #003B4F;">&lt;-</span> programming_lang <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="fu" style="color: #4758AB;">is.na</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;">group_by</span>(line_comment_token) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;">summarize</span>(<span class="at" style="color: #657422;">highest_rank =</span> <span class="fu" style="color: #4758AB;">min</span>(language_rank)) </span>
+<span id="cb13-5"></span>
+<span id="cb13-6">join_madness <span class="ot" style="color: #003B4F;">&lt;-</span> programming_lang2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-7">  <span class="fu" style="color: #4758AB;">left_join</span>(programming_lang3, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"line_comment_token"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb13-8">  <span class="fu" style="color: #4758AB;">left_join</span>(programming_lang, </span>
+<span id="cb13-9">            <span class="at" style="color: #657422;">by =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"highest_rank"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"language_rank"</span>,</span>
+<span id="cb13-10">                   <span class="st" style="color: #20794D;">"line_comment_token"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"line_comment_token"</span>)) </span>
+<span id="cb13-11"></span>
+<span id="cb13-12">join_madness <span class="ot" style="color: #003B4F;">&lt;-</span> join_madness <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-13">  <span class="fu" style="color: #4758AB;">select</span>(line_comment_token, n, highest_rank, title, appeared, number_of_users,</span>
+<span id="cb13-14">         number_of_jobs)</span></code></pre></div>
 </div>
 <p>So now we have a bunch of summarized data in a single dataframe. Here’s a graph. It is saying something, but I’m not sure what. When you can’t come up with a concise title, then you probably don’t know what you are trying to say…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>join_madness <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(highest_rank, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> line_comment_token)) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Popularity of tokens by language rank and usage"</span>) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Highest Rank of language using Token"</span>) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of Languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">join_madness <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(highest_rank, n, <span class="at" style="color: #657422;">size =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), </span>
+<span id="cb14-3">             <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), <span class="at" style="color: #657422;">label =</span> line_comment_token)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-4">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-5">  <span class="fu" style="color: #4758AB;">scale_x_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-6">  <span class="fu" style="color: #4758AB;">geom_text_repel</span>(<span class="at" style="color: #657422;">show.legend =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-7">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Popularity of tokens by language rank and usage"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-8">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Highest Rank of language using Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-9">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of Languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-10">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/tokens-pop-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/tokens-pop-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>This is a visualization of the highest ranked languages for each token. The number of users of the dominant language is also encoded in the size and color of the label. Having it ordered makes it difficult to tell if Java or Python is the most popular/ highest ranked language.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>join_madness <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="fu">fct_rev</span>(<span class="fu">fct_reorder</span>(line_comment_token, highest_rank)), n,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fu">log</span>(number_of_users), <span class="at">color =</span> <span class="fu">log</span>(number_of_users),</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">join_madness <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="fu" style="color: #4758AB;">fct_rev</span>(<span class="fu" style="color: #4758AB;">fct_reorder</span>(line_comment_token, highest_rank)), n,</span>
+<span id="cb15-3">             <span class="at" style="color: #657422;">size =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users),</span>
+<span id="cb15-4">             <span class="at" style="color: #657422;">label =</span> title)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-5"> <span class="co" style="color: #5E5E5E;"># geom_point() +</span></span>
+<span id="cb15-6">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-7">  <span class="fu" style="color: #4758AB;">geom_text_repel</span>(<span class="at" style="color: #657422;">show.legend =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-8">   <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"The Most Popular Language for Each Comment Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-9">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-10">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb15-11">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/lang-token-graph-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/lang-token-graph-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>Here is the same graph just ordered “alphabetically” by token.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>join_madness <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">join_madness <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb16-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(line_comment_token, n, <span class="at" style="color: #657422;">size =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), </span>
+<span id="cb16-3">             <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), <span class="at" style="color: #657422;">label =</span> title)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-4"> <span class="co" style="color: #5E5E5E;"># geom_point() +</span></span>
+<span id="cb16-5">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-6">  <span class="fu" style="color: #4758AB;">geom_text_repel</span>(<span class="at" style="color: #657422;">show.legend =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-7">   <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"The Most Popular Language for Each Comment Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-8">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-9">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb16-10">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
@@ -2191,150 +1999,17 @@ cookieconsent.run({
   url = {https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas">
 Louise E. Sinks. n.d. <span>“TidyTuesday Week 12: Programming
 Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/">https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/</a>.
-</div></div></section></div></main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    target: function(trigger) {
-      return trigger.previousElementSibling;
-    }
-  });
-  clipboard.on('success', function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  });
-  function tippyHover(el, contentFn) {
-    const config = {
-      allowHTML: true,
-      content: contentFn,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start'
-    };
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      return note.innerHTML;
-    });
-  }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
-      });
-    }
-  }
-});
-</script>
-</div> <!-- /content -->
-<footer class="footer">
-  <div class="nav-footer">
-      <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
-  </div>
-</footer>
-
-
-
-</body></html>
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
+  <pubDate>Thu, 23 Mar 2023 16:31:56 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
+</channel>
+</rss>
