@@ -50,7 +50,8 @@ languages <- tuesdata$languages
 Here is what the raw skimr output looks like.
 
 ```{r}
-# | label: raw-skim-output
+#| label: raw-skim-output
+#| column: page
 skimr::skim(languages)
 ```
 
@@ -59,7 +60,8 @@ My main objection is that the numerical summary is too wide and has a scroll bar
 The package let's you set the summary functions that skimr calls. Drop the
 
 ```{r}
-# | label: custom-skim-functions
+#| label: custom-skim-functions
+#| column: page
 
 my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL)) 
 

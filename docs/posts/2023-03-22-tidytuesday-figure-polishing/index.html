@@ -212,7 +212,7 @@ cookieconsent.run({
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -251,7 +251,7 @@ cookieconsent.run({
 </header>
 
 <p>Yesterday, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
-<section id="skimr" class="level2">
+<section id="skimr" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="skimr">Skimr</h2>
 <p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
 <div class="cell">
@@ -276,10 +276,9 @@ cookieconsent.run({
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>languages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here is what the raw skimr output looks like.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | label: raw-skim-output</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
 <tbody>
@@ -960,13 +959,11 @@ cookieconsent.run({
 </div>
 <p>My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don’t particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.</p>
 <p>The package let’s you set the summary functions that skimr calls. Drop the</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># | label: custom-skim-functions</span></span>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>my_skim <span class="ot">&lt;-</span> <span class="fu">skim_with</span>(<span class="at">numeric =</span> <span class="fu">sfl</span>(<span class="at">p25 =</span> <span class="cn">NULL</span>, <span class="at">p50 =</span> <span class="cn">NULL</span>, <span class="at">p75 =</span> <span class="cn">NULL</span>)) </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>my_skim <span class="ot">&lt;-</span> <span class="fu">skim_with</span>(<span class="at">numeric =</span> <span class="fu">sfl</span>(<span class="at">p25 =</span> <span class="cn">NULL</span>, <span class="at">p50 =</span> <span class="cn">NULL</span>, <span class="at">p75 =</span> <span class="cn">NULL</span>)) </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">my_skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">my_skim</span>(languages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page">
 <table class="table table-sm table-striped">
 <caption>Data summary</caption>
 <tbody>
