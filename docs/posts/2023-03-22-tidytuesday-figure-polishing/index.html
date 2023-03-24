@@ -213,7 +213,7 @@ cookieconsent.run({
    
   <ul>
   <li><a href="#skimr" id="toc-skimr" class="nav-link active" data-scroll-target="#skimr">Skimr</a></li>
-  <li><a href="#making-a-nicer-figure" id="toc-making-a-nicer-figure" class="nav-link" data-scroll-target="#making-a-nicer-figure">Making a nicer figure</a></li>
+  <li><a href="#improving-the-popular-language-for-each-comment-token-figure" id="toc-improving-the-popular-language-for-each-comment-token-figure" class="nav-link" data-scroll-target="#improving-the-popular-language-for-each-comment-token-figure">Improving the Popular language for each comment token figure</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +256,7 @@ cookieconsent.run({
 
 </header>
 
-<p>This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
+<p>This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr and Quarto documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
 <section id="skimr" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="skimr">Skimr</h2>
 <p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
@@ -889,9 +889,9 @@ cookieconsent.run({
 </table>
 </div>
 </div>
-<p>This output is much nicer. It is a bit “wall of text” though. I wouldn’t recommend using this in reports, but it is a useful tool when you are doing your initial analysis of a dataset. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but when you try to save the notebook or run non-interactively, it fails.)</p>
-<p>If for some reason you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have a large number of variables, like you do here.</p>
-<p>either use skimr and filter the results by variable type and then style the table using the gt package or I’d use the visdat package to make some figures about missingness. The figure is very crow</p>
+<p>This output is much nicer. It is a bit wall of text though. I wouldn’t recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)</p>
+<p>If, for some reason, you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.</p>
+<p>Here’s an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the gt package to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.</p>
 <div class="cell page-columns page-full">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>languages_numeric <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric)</span>
@@ -899,17 +899,22 @@ cookieconsent.run({
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>lang_numeric_skim <span class="ot">&lt;-</span> <span class="fu">my_skim</span>(languages_numeric)</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>lang_numeric_skim <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>)<span class="sc">%&gt;%</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Numerical Variables in Languages"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>skim_type)   <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">n_missing =</span> <span class="st">"# Missing"</span>, <span class="at">complete_rate =</span> <span class="st">"Completeness"</span>, </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.mean =</span> <span class="st">"Mean"</span>, <span class="at">numeric.sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.p0 =</span> <span class="st">"Min"</span>, <span class="at">numeric.p100 =</span> <span class="st">"Max"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.hist =</span> <span class="st">"Histogram"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Numerical Variables in Languages"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page">
 
-<div id="gaidgwxnbx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="bbntncbkqp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#gaidgwxnbx) .gt_table {
+:where(#bbntncbkqp) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -922,19 +927,19 @@ cookieconsent.run({
   width: auto;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #004D80;
+  border-top-color: #5F5F5F;
   border-right-style: none;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #004D80;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
 
-:where(#gaidgwxnbx) .gt_heading {
+:where(#bbntncbkqp) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -946,12 +951,12 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#gaidgwxnbx) .gt_caption {
+:where(#bbntncbkqp) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#gaidgwxnbx) .gt_title {
+:where(#bbntncbkqp) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -963,7 +968,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-:where(#gaidgwxnbx) .gt_subtitle {
+:where(#bbntncbkqp) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -975,19 +980,19 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-:where(#gaidgwxnbx) .gt_bottom_border {
+:where(#bbntncbkqp) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
 }
 
-:where(#gaidgwxnbx) .gt_col_headings {
+:where(#bbntncbkqp) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 1px;
   border-left-color: #D3D3D3;
@@ -996,9 +1001,9 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#gaidgwxnbx) .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
+:where(#bbntncbkqp) .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
   font-size: 100%;
   font-weight: normal;
   text-transform: inherit;
@@ -1016,9 +1021,9 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#gaidgwxnbx) .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
+:where(#bbntncbkqp) .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
   font-size: 100%;
   font-weight: normal;
   text-transform: inherit;
@@ -1028,18 +1033,18 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-:where(#gaidgwxnbx) .gt_column_spanner_outer:first-child {
+:where(#bbntncbkqp) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#gaidgwxnbx) .gt_column_spanner_outer:last-child {
+:where(#bbntncbkqp) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#gaidgwxnbx) .gt_column_spanner {
+:where(#bbntncbkqp) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
   vertical-align: bottom;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -1048,7 +1053,7 @@ cookieconsent.run({
   width: 100%;
 }
 
-:where(#gaidgwxnbx) .gt_group_heading {
+:where(#bbntncbkqp) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1060,10 +1065,10 @@ cookieconsent.run({
   text-transform: inherit;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 1px;
   border-left-color: #D3D3D3;
@@ -1074,7 +1079,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-:where(#gaidgwxnbx) .gt_empty_group_heading {
+:where(#bbntncbkqp) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1082,22 +1087,22 @@ cookieconsent.run({
   font-weight: initial;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
   vertical-align: middle;
 }
 
-:where(#gaidgwxnbx) .gt_from_md > :first-child {
+:where(#bbntncbkqp) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#gaidgwxnbx) .gt_from_md > :last-child {
+:where(#bbntncbkqp) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#gaidgwxnbx) .gt_row {
+:where(#bbntncbkqp) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1105,31 +1110,31 @@ cookieconsent.run({
   margin: 10px;
   border-top-style: none;
   border-top-width: 1px;
-  border-top-color: #89D3FE;
+  border-top-color: #D5D5D5;
   border-left-style: none;
   border-left-width: 1px;
-  border-left-color: #89D3FE;
+  border-left-color: #D5D5D5;
   border-right-style: none;
   border-right-width: 1px;
-  border-right-color: #89D3FE;
+  border-right-color: #D5D5D5;
   vertical-align: middle;
   overflow-x: hidden;
 }
 
-:where(#gaidgwxnbx) .gt_stub {
-  color: #FFFFFF;
-  background-color: #0076BA;
+:where(#bbntncbkqp) .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
   font-size: 100%;
   font-weight: initial;
   text-transform: inherit;
   border-right-style: solid;
   border-right-width: 2px;
-  border-right-color: #0076BA;
+  border-right-color: #D5D5D5;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_stub_row_group {
+:where(#bbntncbkqp) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1143,11 +1148,11 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-:where(#gaidgwxnbx) .gt_row_group_first td {
+:where(#bbntncbkqp) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#gaidgwxnbx) .gt_summary_row {
+:where(#bbntncbkqp) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1157,28 +1162,28 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_first_summary_row {
+:where(#bbntncbkqp) .gt_first_summary_row {
   border-top-style: solid;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
 }
 
-:where(#gaidgwxnbx) .gt_first_summary_row.thick {
+:where(#bbntncbkqp) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#gaidgwxnbx) .gt_last_summary_row {
+:where(#bbntncbkqp) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
 }
 
-:where(#gaidgwxnbx) .gt_grand_summary_row {
+:where(#bbntncbkqp) .gt_grand_summary_row {
   color: #333333;
-  background-color: #89D3FE;
+  background-color: #D5D5D5;
   text-transform: inherit;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -1186,30 +1191,30 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_first_grand_summary_row {
+:where(#bbntncbkqp) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-style: double;
   border-top-width: 6px;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
 }
 
-:where(#gaidgwxnbx) .gt_striped {
-  background-color: #F4F4F4;
+:where(#bbntncbkqp) .gt_striped {
+  background-color: #EDF7FC;
 }
 
-:where(#gaidgwxnbx) .gt_table_body {
+:where(#bbntncbkqp) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #0076BA;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #0076BA;
+  border-bottom-color: #5F5F5F;
 }
 
-:where(#gaidgwxnbx) .gt_footnotes {
+:where(#bbntncbkqp) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1223,7 +1228,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#gaidgwxnbx) .gt_footnote {
+:where(#bbntncbkqp) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1232,7 +1237,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_sourcenotes {
+:where(#bbntncbkqp) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1246,7 +1251,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#gaidgwxnbx) .gt_sourcenote {
+:where(#bbntncbkqp) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1254,90 +1259,88 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_left {
+:where(#bbntncbkqp) .gt_left {
   text-align: left;
 }
 
-:where(#gaidgwxnbx) .gt_center {
+:where(#bbntncbkqp) .gt_center {
   text-align: center;
 }
 
-:where(#gaidgwxnbx) .gt_right {
+:where(#bbntncbkqp) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#gaidgwxnbx) .gt_font_normal {
+:where(#bbntncbkqp) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#gaidgwxnbx) .gt_font_bold {
+:where(#bbntncbkqp) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#gaidgwxnbx) .gt_font_italic {
+:where(#bbntncbkqp) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#gaidgwxnbx) .gt_super {
+:where(#bbntncbkqp) .gt_super {
   font-size: 65%;
 }
 
-:where(#gaidgwxnbx) .gt_footnote_marks {
+:where(#bbntncbkqp) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#gaidgwxnbx) .gt_asterisk {
+:where(#bbntncbkqp) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#gaidgwxnbx) .gt_indent_1 {
+:where(#bbntncbkqp) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#gaidgwxnbx) .gt_indent_2 {
+:where(#bbntncbkqp) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#gaidgwxnbx) .gt_indent_3 {
+:where(#bbntncbkqp) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#gaidgwxnbx) .gt_indent_4 {
+:where(#bbntncbkqp) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#gaidgwxnbx) .gt_indent_5 {
+:where(#bbntncbkqp) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 <table class="gt_table">
   <thead class="gt_header">
     <tr>
-      <td colspan="9" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Numerical Variables in Languages</td>
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Numerical Variables in Languages</td>
     </tr>
     
   </thead>
   <thead class="gt_col_headings">
     <tr>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_type">skim_type</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n_missing">n_missing</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="complete_rate">complete_rate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.mean">numeric.mean</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.sd">numeric.sd</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p0">numeric.p0</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p100">numeric.p100</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="numeric.hist">numeric.hist</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">appeared</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">appeared</td>
 <td headers="n_missing" class="gt_row gt_right">0</td>
 <td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right">1.991105e+03</td>
@@ -1345,8 +1348,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">-2000</td>
 <td headers="numeric.p100" class="gt_row gt_right">2023</td>
 <td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">domain_name_registered</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">domain_name_registered</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3801</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.1166628</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">2.011333e+03</td>
@@ -1354,8 +1356,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">1990</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">2023</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▃▃▇▆</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">isbndb</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">isbndb</td>
 <td headers="n_missing" class="gt_row gt_right">3217</td>
 <td headers="complete_rate" class="gt_row gt_right">0.2523821</td>
 <td headers="numeric.mean" class="gt_row gt_right">7.706262e+00</td>
@@ -1363,8 +1364,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">0</td>
 <td headers="numeric.p100" class="gt_row gt_right">400</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">book_count</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">book_count</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">2.079479e+00</td>
@@ -1372,8 +1372,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">401</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">semantic_scholar</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">semantic_scholar</td>
 <td headers="n_missing" class="gt_row gt_right">3545</td>
 <td headers="complete_rate" class="gt_row gt_right">0.1761562</td>
 <td headers="numeric.mean" class="gt_row gt_right">3.794195e+00</td>
@@ -1381,8 +1380,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">0</td>
 <td headers="numeric.p100" class="gt_row gt_right">52</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">language_rank</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">language_rank</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">2.151000e+03</td>
@@ -1390,8 +1388,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">4302</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▇▇▇▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">github_repo_stars</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_stars</td>
 <td headers="n_missing" class="gt_row gt_right">3414</td>
 <td headers="complete_rate" class="gt_row gt_right">0.2066000</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.127403e+03</td>
@@ -1399,8 +1396,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">0</td>
 <td headers="numeric.p100" class="gt_row gt_right">88526</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_forks</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_forks</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3417</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.2059029</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">2.612867e+02</td>
@@ -1408,8 +1404,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">23732</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">github_repo_updated</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_updated</td>
 <td headers="n_missing" class="gt_row gt_right">3418</td>
 <td headers="complete_rate" class="gt_row gt_right">0.2056705</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.021390e+03</td>
@@ -1417,8 +1412,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">2012</td>
 <td headers="numeric.p100" class="gt_row gt_right">2023</td>
 <td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_subscribers</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_subscribers</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3418</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.2056705</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">6.234237e+01</td>
@@ -1426,8 +1420,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">2910</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">github_repo_created</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_created</td>
 <td headers="n_missing" class="gt_row gt_right">3425</td>
 <td headers="complete_rate" class="gt_row gt_right">0.2040437</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.015843e+03</td>
@@ -1435,8 +1428,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">2006</td>
 <td headers="numeric.p100" class="gt_row gt_right">2022</td>
 <td headers="numeric.hist" class="gt_row gt_left">▁▅▇▇▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_issues</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_issues</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3518</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.1824309</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">1.230344e+02</td>
@@ -1444,8 +1436,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">9522</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">github_repo_first_commit</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_first_commit</td>
 <td headers="n_missing" class="gt_row gt_right">3567</td>
 <td headers="complete_rate" class="gt_row gt_right">0.1710435</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.014739e+03</td>
@@ -1453,8 +1444,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">1987</td>
 <td headers="numeric.p100" class="gt_row gt_right">2022</td>
 <td headers="numeric.hist" class="gt_row gt_left">▁▁▁▆▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">github_language_repos</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_language_repos</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3833</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.1092261</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">1.971347e+05</td>
@@ -1462,8 +1452,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">16046489</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">wikipedia_daily_page_views</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_daily_page_views</td>
 <td headers="n_missing" class="gt_row gt_right">2837</td>
 <td headers="complete_rate" class="gt_row gt_right">0.3406925</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.271330e+02</td>
@@ -1471,8 +1460,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">-1</td>
 <td headers="numeric.p100" class="gt_row gt_right">13394</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_backlinks_count</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_backlinks_count</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">2877</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.3313967</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">3.185484e+02</td>
@@ -1480,8 +1468,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">1</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">34348</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">wikipedia_page_id</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_page_id</td>
 <td headers="n_missing" class="gt_row gt_right">2893</td>
 <td headers="complete_rate" class="gt_row gt_right">0.3276784</td>
 <td headers="numeric.mean" class="gt_row gt_right">9.167847e+06</td>
@@ -1489,8 +1476,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">928</td>
 <td headers="numeric.p100" class="gt_row gt_right">63063548</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_appeared</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_appeared</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">2958</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.3125726</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">1.991144e+03</td>
@@ -1498,8 +1484,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">1830</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">2019</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▁▃▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">wikipedia_created</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_created</td>
 <td headers="n_missing" class="gt_row gt_right">3040</td>
 <td headers="complete_rate" class="gt_row gt_right">0.2935162</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.005748e+03</td>
@@ -1507,8 +1492,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">2001</td>
 <td headers="numeric.p100" class="gt_row gt_right">2020</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▇▂▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_revision_count</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_revision_count</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">3130</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.2726005</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">3.304314e+02</td>
@@ -1516,8 +1500,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">1</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">10104</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">last_activity</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">last_activity</td>
 <td headers="n_missing" class="gt_row gt_right">0</td>
 <td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right">2.000616e+03</td>
@@ -1525,8 +1508,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">-900</td>
 <td headers="numeric.p100" class="gt_row gt_right">2023</td>
 <td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">number_of_users</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">number_of_users</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">1.377126e+04</td>
@@ -1534,8 +1516,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
 <td headers="numeric.p100" class="gt_row gt_right gt_striped">7179119</td>
 <td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left">number_of_jobs</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left">number_of_jobs</td>
 <td headers="n_missing" class="gt_row gt_right">0</td>
 <td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
 <td headers="numeric.mean" class="gt_row gt_right">4.221838e+02</td>
@@ -1543,8 +1524,7 @@ cookieconsent.run({
 <td headers="numeric.p0" class="gt_row gt_right">0</td>
 <td headers="numeric.p100" class="gt_row gt_right">771996</td>
 <td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
-    <tr><td headers="skim_type" class="gt_row gt_left gt_striped">numeric</td>
-<td headers="skim_variable" class="gt_row gt_left gt_striped">central_package_repository_count</td>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">central_package_repository_count</td>
 <td headers="n_missing" class="gt_row gt_right gt_striped">1482</td>
 <td headers="complete_rate" class="gt_row gt_right gt_striped">0.6555891</td>
 <td headers="numeric.mean" class="gt_row gt_right gt_striped">0.000000e+00</td>
@@ -1559,8 +1539,8 @@ cookieconsent.run({
 </div>
 </div>
 </div>
-<p>The visdat package makes ggplot compatible missingness plots. The cluster = TRUE option groups varaibles that share missingness. Here we see that usually if some of the github data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable and the overall missingness of the dataset is shown in the legend.</p>
-<p>Note vis_miss doesn’t work on very large datasets. The documentations suggests keeping the number of records below 1,000. There is a more extensive package for exploratory visualizations called naniar which could also be used.</p>
+<p>The visdat package makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.</p>
+<p>Note vis_miss doesn’t work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called naniar could also be used.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>languages_numeric <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_miss</span>(<span class="at">cluster =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
@@ -1572,8 +1552,8 @@ cookieconsent.run({
 </div>
 </div>
 </section>
-<section id="making-a-nicer-figure" class="level2">
-<h2 class="anchored" data-anchor-id="making-a-nicer-figure">Making a nicer figure</h2>
+<section id="improving-the-popular-language-for-each-comment-token-figure" class="level2">
+<h2 class="anchored" data-anchor-id="improving-the-popular-language-for-each-comment-token-figure">Improving the Popular language for each comment token figure</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>joined <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"processed_lang.csv"</span> , <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1593,21 +1573,23 @@ cookieconsent.run({
 <p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>T</p>
+<p>I thought I had noted this in the previous post, but one of the tokens, , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.</p>
+<p>I saw a nice TidyTuesday figure on Twitter with a caption referencing the original dataset. I’d like to add that. I generally want to increase the figure’s legibility and flip the color scale so that darker blue corresponds to more users. I also don’t think what popular means is entirely clear, so I’d like to explain more fully what I’m graphing.</p>
+<p>#https://stackoverflow.com/questions/41320747/ggplot2-reversing-the-standard-color-gradient-for-a-continuous-variable</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ggtitle</span>(<span class="st">'\u00a3'</span>) <span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme(text = element_text(family = "font1")) +</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme(text= element_text(family = "Cambria Math")) +</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_gradient</span>(<span class="at">high =</span> <span class="st">"#08306b"</span>, <span class="at">low =</span> <span class="st">"#6baed6"</span>) <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"The Most Popular Language for Each Comment Token"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Based on # Users and Rank"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"data from https://pldb.com/"</span>) <span class="sc">+</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
