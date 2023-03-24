@@ -12,7 +12,7 @@ image: pop-lang-by-token.png
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-Yesterday, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the skimr documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media.
+This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the skimr documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media.
 
 ## Skimr
 
@@ -28,6 +28,7 @@ library(skimr)
 library(ggthemes)
 library(gt)
 library(ggrepel)
+library(visdat) # visualizing missing data in dataframe
 ```
 
 ```{r}
@@ -62,6 +63,32 @@ my_skim(languages)
 
 This output is much nicer. It is a bit "wall of text" though. I wouldn't recommend using this in reports, but it is a useful tool when you are doing your initial analysis of a dataset. (As a side note, I have noticed skimr doesn't work well on Kaggle. It performs as expected if you are in interactive mode, but when you try to save the notebook or run non-interactively, it fails.)
 
+If for some reason you did need to include output/ visualizations about missingness in a report, I'd probably recreate visualizations or tables by class of variable, especially if you have a large number of variables, like you do here.
+
+either use skimr and filter the results by variable type and then style the table using the gt package or I'd use the visdat package to make some figures about missingness. The figure is very crow
+
+```{r}
+#| column: page
+languages_numeric <- languages %>%
+  select_if(is.numeric)
+
+lang_numeric_skim <- my_skim(languages_numeric)
+
+lang_numeric_skim %>%
+gt() %>%
+tab_header(title = "Summary of Numerical Variables in Languages") 
+
+
+```
+
+the visdat package makes nice figures.
+
+```{r}
+#| column: page
+vis_miss(languages_numeric) +
+ggtitle("Missing Data in the Languages Dataset") 
+```
+
 ## Making a nicer figure
 
 ```{r}
@@ -84,19 +111,9 @@ joined %>%
   theme_classic()
 ```
 
-```{r}
-library(emojifont)
-loadfonts(device = "win")
-```
-
 T
 
 ```{r}
-windowsFonts(font1 = "Segoe UI Symbol")
-```
-
-```{r}
-windowsFonts(font1 = "Segoe UI Symbol")
 joined %>%
   ggplot(aes(line_comment_token, n, size = log(number_of_users), 
              color = log(number_of_users), label = title)) +
@@ -108,6 +125,6 @@ joined %>%
   #theme(text = element_text(family = "font1")) +
   #theme(text= element_text(family = "Cambria Math")) +
   xlab("Token") +
-  ylab("Number of languages using token") 
-  #theme_classic()
+  ylab("Number of languages using token") +
+  theme_classic(base_size = 14)
 ```
