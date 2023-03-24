@@ -256,7 +256,7 @@ cookieconsent.run({
 
 </header>
 
-<p>Yesterday, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
+<p>This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
 <section id="skimr" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="skimr">Skimr</h2>
 <p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
@@ -266,7 +266,8 @@ cookieconsent.run({
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visdat) <span class="co"># visualizing missing data in dataframe</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the Data</span></span>
@@ -889,43 +890,721 @@ cookieconsent.run({
 </div>
 </div>
 <p>This output is much nicer. It is a bit “wall of text” though. I wouldn’t recommend using this in reports, but it is a useful tool when you are doing your initial analysis of a dataset. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but when you try to save the notebook or run non-interactively, it fails.)</p>
+<p>If for some reason you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have a large number of variables, like you do here.</p>
+<p>either use skimr and filter the results by variable type and then style the table using the gt package or I’d use the visdat package to make some figures about missingness. The figure is very crow</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>languages_numeric <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>lang_numeric_skim <span class="ot">&lt;-</span> <span class="fu">my_skim</span>(languages_numeric)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>lang_numeric_skim <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Numerical Variables in Languages"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page">
+
+<div id="goskwwycks" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#goskwwycks) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#goskwwycks) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#goskwwycks) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#goskwwycks) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#goskwwycks) .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#goskwwycks) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#goskwwycks) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#goskwwycks) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#goskwwycks) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#goskwwycks) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+:where(#goskwwycks) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#goskwwycks) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#goskwwycks) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#goskwwycks) .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#goskwwycks) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#goskwwycks) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#goskwwycks) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#goskwwycks) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#goskwwycks) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#goskwwycks) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+:where(#goskwwycks) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#goskwwycks) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#goskwwycks) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#goskwwycks) .gt_left {
+  text-align: left;
+}
+
+:where(#goskwwycks) .gt_center {
+  text-align: center;
+}
+
+:where(#goskwwycks) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#goskwwycks) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#goskwwycks) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#goskwwycks) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#goskwwycks) .gt_super {
+  font-size: 65%;
+}
+
+:where(#goskwwycks) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#goskwwycks) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#goskwwycks) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#goskwwycks) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#goskwwycks) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#goskwwycks) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#goskwwycks) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="9" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Numerical Variables in Languages</td>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_type">skim_type</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n_missing">n_missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="complete_rate">complete_rate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.mean">numeric.mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.sd">numeric.sd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p0">numeric.p0</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p100">numeric.p100</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="numeric.hist">numeric.hist</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">appeared</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.991105e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.114434e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">-2000</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">domain_name_registered</td>
+<td headers="n_missing" class="gt_row gt_right">3801</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1166628</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.011333e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">7.021132e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">1990</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▃▃▇▆</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">isbndb</td>
+<td headers="n_missing" class="gt_row gt_right">3217</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2523821</td>
+<td headers="numeric.mean" class="gt_row gt_right">7.706262e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.316421e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">400</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">book_count</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.079479e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.734465e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">401</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">semantic_scholar</td>
+<td headers="n_missing" class="gt_row gt_right">3545</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1761562</td>
+<td headers="numeric.mean" class="gt_row gt_right">3.794195e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">8.316231e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">52</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">language_rank</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.151000e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.242313e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">4302</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_stars</td>
+<td headers="n_missing" class="gt_row gt_right">3414</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2066000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.127403e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">7.554016e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">88526</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_forks</td>
+<td headers="n_missing" class="gt_row gt_right">3417</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2059029</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.612867e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.203003e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">23732</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_updated</td>
+<td headers="n_missing" class="gt_row gt_right">3418</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2056705</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.021390e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.763285e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2012</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_subscribers</td>
+<td headers="n_missing" class="gt_row gt_right">3418</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2056705</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.234237e+01</td>
+<td headers="numeric.sd" class="gt_row gt_right">2.008820e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">2910</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_created</td>
+<td headers="n_missing" class="gt_row gt_right">3425</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2040437</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.015843e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.479589e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2006</td>
+<td headers="numeric.p100" class="gt_row gt_right">2022</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▅▇▇▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_issues</td>
+<td headers="n_missing" class="gt_row gt_right">3518</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1824309</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.230344e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">5.462553e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">9522</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_repo_first_commit</td>
+<td headers="n_missing" class="gt_row gt_right">3567</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1710435</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.014739e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">4.985409e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">1987</td>
+<td headers="numeric.p100" class="gt_row gt_right">2022</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▆▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">github_language_repos</td>
+<td headers="n_missing" class="gt_row gt_right">3833</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1092261</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.971347e+05</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.226901e+06</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">16046489</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_daily_page_views</td>
+<td headers="n_missing" class="gt_row gt_right">2837</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3406925</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.271330e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">7.835524e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">-1</td>
+<td headers="numeric.p100" class="gt_row gt_right">13394</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_backlinks_count</td>
+<td headers="n_missing" class="gt_row gt_right">2877</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3313967</td>
+<td headers="numeric.mean" class="gt_row gt_right">3.185484e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.635289e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right">1</td>
+<td headers="numeric.p100" class="gt_row gt_right">34348</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_page_id</td>
+<td headers="n_missing" class="gt_row gt_right">2893</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3276784</td>
+<td headers="numeric.mean" class="gt_row gt_right">9.167847e+06</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.350683e+07</td>
+<td headers="numeric.p0" class="gt_row gt_right">928</td>
+<td headers="numeric.p100" class="gt_row gt_right">63063548</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_appeared</td>
+<td headers="n_missing" class="gt_row gt_right">2958</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3125726</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.991144e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.702650e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">1830</td>
+<td headers="numeric.p100" class="gt_row gt_right">2019</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▃▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_created</td>
+<td headers="n_missing" class="gt_row gt_right">3040</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2935162</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.005748e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.768240e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2001</td>
+<td headers="numeric.p100" class="gt_row gt_right">2020</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▂▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">wikipedia_revision_count</td>
+<td headers="n_missing" class="gt_row gt_right">3130</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2726005</td>
+<td headers="numeric.mean" class="gt_row gt_right">3.304314e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">8.132556e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">1</td>
+<td headers="numeric.p100" class="gt_row gt_right">10104</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">last_activity</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.000616e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">8.459776e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">-900</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">number_of_users</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.377126e+04</td>
+<td headers="numeric.sd" class="gt_row gt_right">2.277129e+05</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">7179119</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">number_of_jobs</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">4.221838e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.257299e+04</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">771996</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">central_package_repository_count</td>
+<td headers="n_missing" class="gt_row gt_right">1482</td>
+<td headers="complete_rate" class="gt_row gt_right">0.6555891</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.000000e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.000000e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">0</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▇▁▁</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>the visdat package makes nice figures.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_miss</span>(languages_numeric) <span class="sc">+</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggtitle</span>(<span class="st">"Missing Data in the Languages Dataset"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 </section>
 <section id="making-a-nicer-figure" class="level2">
 <h2 class="anchored" data-anchor-id="making-a-nicer-figure">Making a nicer figure</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>joined <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"processed_lang.csv"</span> , <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>joined <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"processed_lang.csv"</span> , <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now the original figure:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>T</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emojifont)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggtitle</span>(<span class="st">"The Most Popular Language for Each Comment Token"</span>) <span class="sc">+</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a> <span class="co"># geom_point() +</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>     <span class="fu">ggtitle</span>(<span class="st">'\u00a3'</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme(text = element_text(family = "font1")) +</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#theme(text= element_text(family = "Cambria Math")) +</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
