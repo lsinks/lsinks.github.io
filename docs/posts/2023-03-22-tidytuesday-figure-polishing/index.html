@@ -212,8 +212,8 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#skimr" id="toc-skimr" class="nav-link active" data-scroll-target="#skimr">Skimr</a></li>
-  <li><a href="#improving-the-popular-language-for-each-comment-token-figure" id="toc-improving-the-popular-language-for-each-comment-token-figure" class="nav-link" data-scroll-target="#improving-the-popular-language-for-each-comment-token-figure">Improving the Popular language for each comment token figure</a></li>
+  <li><a href="#skimr-to-understand-your-data" id="toc-skimr-to-understand-your-data" class="nav-link active" data-scroll-target="#skimr-to-understand-your-data">Skimr to understand your data</a></li>
+  <li><a href="#improving-the-most-popular-language-for-each-comment-token-figure" id="toc-improving-the-most-popular-language-for-each-comment-token-figure" class="nav-link" data-scroll-target="#improving-the-most-popular-language-for-each-comment-token-figure">Improving “The Most Popular Language for Each Comment Token” Figure</a></li>
   </ul>
 </nav>
     </div>
@@ -256,9 +256,10 @@ cookieconsent.run({
 
 </header>
 
-<p>This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the skimr and Quarto documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media.</p>
-<section id="skimr" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="skimr">Skimr</h2>
+<p>This week, <a href="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/">I participated</a> in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the <a href="https://cran.r-project.org/web/packages/skimr/index.html">skimr</a> and <a href="https://quarto.org/docs/output-formats/page-layout.html">Quarto</a> documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media:</p>
+<p>https://twitter.com/LouiseSinks/status/1638281716614811664?s=20</p>
+<section id="skimr-to-understand-your-data" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="skimr-to-understand-your-data">Skimr to understand your data</h2>
 <p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidytuesdayR)</span>
@@ -891,7 +892,7 @@ cookieconsent.run({
 </div>
 <p>This output is much nicer. It is a bit wall of text though. I wouldn’t recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)</p>
 <p>If, for some reason, you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.</p>
-<p>Here’s an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the gt package to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.</p>
+<p>Here’s an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the <a href="https://gt.rstudio.com/">gt package</a> to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.</p>
 <div class="cell page-columns page-full">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>languages_numeric <span class="ot">&lt;-</span> languages <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(is.numeric)</span>
@@ -909,12 +910,12 @@ cookieconsent.run({
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Numerical Variables in Languages"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page">
 
-<div id="bbntncbkqp" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="aydwpnqfcw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#bbntncbkqp) .gt_table {
+:where(#aydwpnqfcw) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -939,7 +940,7 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-:where(#bbntncbkqp) .gt_heading {
+:where(#aydwpnqfcw) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -951,12 +952,12 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#bbntncbkqp) .gt_caption {
+:where(#aydwpnqfcw) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#bbntncbkqp) .gt_title {
+:where(#aydwpnqfcw) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -968,7 +969,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-:where(#bbntncbkqp) .gt_subtitle {
+:where(#aydwpnqfcw) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -980,13 +981,13 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-:where(#bbntncbkqp) .gt_bottom_border {
+:where(#aydwpnqfcw) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-:where(#bbntncbkqp) .gt_col_headings {
+:where(#aydwpnqfcw) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1001,7 +1002,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#bbntncbkqp) .gt_col_heading {
+:where(#aydwpnqfcw) .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1021,7 +1022,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#bbntncbkqp) .gt_column_spanner_outer {
+:where(#aydwpnqfcw) .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1033,15 +1034,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-:where(#bbntncbkqp) .gt_column_spanner_outer:first-child {
+:where(#aydwpnqfcw) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#bbntncbkqp) .gt_column_spanner_outer:last-child {
+:where(#aydwpnqfcw) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#bbntncbkqp) .gt_column_spanner {
+:where(#aydwpnqfcw) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -1053,7 +1054,7 @@ cookieconsent.run({
   width: 100%;
 }
 
-:where(#bbntncbkqp) .gt_group_heading {
+:where(#aydwpnqfcw) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1079,7 +1080,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-:where(#bbntncbkqp) .gt_empty_group_heading {
+:where(#aydwpnqfcw) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1094,15 +1095,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-:where(#bbntncbkqp) .gt_from_md > :first-child {
+:where(#aydwpnqfcw) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#bbntncbkqp) .gt_from_md > :last-child {
+:where(#aydwpnqfcw) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#bbntncbkqp) .gt_row {
+:where(#aydwpnqfcw) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1121,7 +1122,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#bbntncbkqp) .gt_stub {
+:where(#aydwpnqfcw) .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -1134,7 +1135,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#bbntncbkqp) .gt_stub_row_group {
+:where(#aydwpnqfcw) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1148,11 +1149,11 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-:where(#bbntncbkqp) .gt_row_group_first td {
+:where(#aydwpnqfcw) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#bbntncbkqp) .gt_summary_row {
+:where(#aydwpnqfcw) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1162,16 +1163,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#bbntncbkqp) .gt_first_summary_row {
+:where(#aydwpnqfcw) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-:where(#bbntncbkqp) .gt_first_summary_row.thick {
+:where(#aydwpnqfcw) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#bbntncbkqp) .gt_last_summary_row {
+:where(#aydwpnqfcw) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1181,7 +1182,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#bbntncbkqp) .gt_grand_summary_row {
+:where(#aydwpnqfcw) .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -1191,7 +1192,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#bbntncbkqp) .gt_first_grand_summary_row {
+:where(#aydwpnqfcw) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1201,11 +1202,11 @@ cookieconsent.run({
   border-top-color: #5F5F5F;
 }
 
-:where(#bbntncbkqp) .gt_striped {
+:where(#aydwpnqfcw) .gt_striped {
   background-color: #EDF7FC;
 }
 
-:where(#bbntncbkqp) .gt_table_body {
+:where(#aydwpnqfcw) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1214,7 +1215,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#bbntncbkqp) .gt_footnotes {
+:where(#aydwpnqfcw) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1228,7 +1229,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#bbntncbkqp) .gt_footnote {
+:where(#aydwpnqfcw) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1237,7 +1238,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#bbntncbkqp) .gt_sourcenotes {
+:where(#aydwpnqfcw) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1251,7 +1252,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#bbntncbkqp) .gt_sourcenote {
+:where(#aydwpnqfcw) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1259,64 +1260,64 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#bbntncbkqp) .gt_left {
+:where(#aydwpnqfcw) .gt_left {
   text-align: left;
 }
 
-:where(#bbntncbkqp) .gt_center {
+:where(#aydwpnqfcw) .gt_center {
   text-align: center;
 }
 
-:where(#bbntncbkqp) .gt_right {
+:where(#aydwpnqfcw) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#bbntncbkqp) .gt_font_normal {
+:where(#aydwpnqfcw) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#bbntncbkqp) .gt_font_bold {
+:where(#aydwpnqfcw) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#bbntncbkqp) .gt_font_italic {
+:where(#aydwpnqfcw) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#bbntncbkqp) .gt_super {
+:where(#aydwpnqfcw) .gt_super {
   font-size: 65%;
 }
 
-:where(#bbntncbkqp) .gt_footnote_marks {
+:where(#aydwpnqfcw) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#bbntncbkqp) .gt_asterisk {
+:where(#aydwpnqfcw) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#bbntncbkqp) .gt_indent_1 {
+:where(#aydwpnqfcw) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#bbntncbkqp) .gt_indent_2 {
+:where(#aydwpnqfcw) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#bbntncbkqp) .gt_indent_3 {
+:where(#aydwpnqfcw) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#bbntncbkqp) .gt_indent_4 {
+:where(#aydwpnqfcw) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#bbntncbkqp) .gt_indent_5 {
+:where(#aydwpnqfcw) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1539,8 +1540,8 @@ cookieconsent.run({
 </div>
 </div>
 </div>
-<p>The visdat package makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.</p>
-<p>Note vis_miss doesn’t work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called naniar could also be used.</p>
+<p>The <a href="https://cran.r-project.org/web/packages/visdat/">visdat package</a> makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.</p>
+<p>Note vis_miss doesn’t work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called <a href="https://naniar.njtierney.com/">naniar</a> could also be used.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>languages_numeric <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vis_miss</span>(<span class="at">cluster =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
@@ -1552,8 +1553,8 @@ cookieconsent.run({
 </div>
 </div>
 </section>
-<section id="improving-the-popular-language-for-each-comment-token-figure" class="level2">
-<h2 class="anchored" data-anchor-id="improving-the-popular-language-for-each-comment-token-figure">Improving the Popular language for each comment token figure</h2>
+<section id="improving-the-most-popular-language-for-each-comment-token-figure" class="level2">
+<h2 class="anchored" data-anchor-id="improving-the-most-popular-language-for-each-comment-token-figure">Improving “The Most Popular Language for Each Comment Token” Figure</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>joined <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"processed_lang.csv"</span> , <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -1573,9 +1574,10 @@ cookieconsent.run({
 <p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>I thought I had noted this in the previous post, but one of the tokens, , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.</p>
-<p>I saw a nice TidyTuesday figure on Twitter with a caption referencing the original dataset. I’d like to add that. I generally want to increase the figure’s legibility and flip the color scale so that darker blue corresponds to more users. I also don’t think what popular means is entirely clear, so I’d like to explain more fully what I’m graphing.</p>
-<p>#https://stackoverflow.com/questions/41320747/ggplot2-reversing-the-standard-color-gradient-for-a-continuous-variable</p>
+<p>I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.</p>
+<p>I saw a nice TidyTuesday figure on Twitter:</p>
+<p>https://twitter.com/mitsuoxv/status/1637986238962728961?s=20</p>
+<p>with a caption referencing the original dataset. I’d like to add that. I generally want to increase the figure’s legibility and flip the color scale so that darker blue corresponds to more users. I also don’t think what popular means is entirely clear, so I’d like to explain more fully what I’m graphing.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>

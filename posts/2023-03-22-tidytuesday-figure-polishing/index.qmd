@@ -12,9 +12,11 @@ image: pop-lang-by-token.png
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-This week, I participated in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the skimr and Quarto documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media.
+This week, [I participated](https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/) in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the [skimr](https://cran.r-project.org/web/packages/skimr/index.html) and [Quarto](https://quarto.org/docs/output-formats/page-layout.html) documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media:
 
-## Skimr
+https://twitter.com/LouiseSinks/status/1638281716614811664?s=20
+
+## Skimr to understand your data
 
 Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.
 
@@ -60,11 +62,12 @@ my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL))
 
 my_skim(languages)
 ```
+
 This output is much nicer. It is a bit wall of text though. I wouldn't recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn't work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)
 
 If, for some reason, you did need to include output/ visualizations about missingness in a report, I'd probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.
 
-Here's an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the gt package to style the resulting dataframe as a table.  I used a built-in style, but each table element can be individually customized.
+Here's an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the [gt package](https://gt.rstudio.com/) to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.
 
 ```{r}
 #| column: page
@@ -85,9 +88,9 @@ lang_numeric_skim %>%
 
 ```
 
-The visdat package makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.
+The [visdat package](https://cran.r-project.org/web/packages/visdat/) makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.
 
-Note vis_miss doesn't work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called naniar could also be used.
+Note vis_miss doesn't work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called [naniar](https://naniar.njtierney.com/) could also be used.
 
 ```{r}
 languages_numeric %>%
@@ -97,7 +100,7 @@ ggtitle("Missing Data in the Languages Dataset") +
   theme(axis.text.x = element_text(size = 8, angle = 90))
 ```
 
-## Improving the Popular language for each comment token figure
+## Improving "The Most Popular Language for Each Comment Token" Figure
 
 ```{r}
 joined <- read_csv("processed_lang.csv" , show_col_types = FALSE)
@@ -118,11 +121,14 @@ joined %>%
   ylab("Number of languages using token") +
   theme_classic()
 ```
-I thought I had noted this in the previous post, but one of the tokens, , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn't work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.
 
-I saw a nice TidyTuesday figure on Twitter with a caption referencing the original dataset. I'd like to add that. I generally want to increase the figure's legibility and flip the color scale so that darker blue corresponds to more users. I also don't think what popular means is entirely clear, so I'd like to explain more fully what I'm graphing.
- 
-  #https://stackoverflow.com/questions/41320747/ggplot2-reversing-the-standard-color-gradient-for-a-continuous-variable
+I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn't work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.
+
+I saw a nice TidyTuesday figure on Twitter:
+
+https://twitter.com/mitsuoxv/status/1637986238962728961?s=20
+
+with a caption referencing the original dataset. I'd like to add that. I generally want to increase the figure's legibility and flip the color scale so that darker blue corresponds to more users. I also don't think what popular means is entirely clear, so I'd like to explain more fully what I'm graphing.
 
 ```{r}
 joined %>%
