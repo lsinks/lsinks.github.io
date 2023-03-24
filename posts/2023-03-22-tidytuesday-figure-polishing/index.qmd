@@ -76,6 +76,7 @@ lang_numeric_skim <- my_skim(languages_numeric)
 
 lang_numeric_skim %>%
 gt() %>%
+opt_stylize(style = 1, color = "blue", add_row_striping = TRUE)%>%
 tab_header(title = "Summary of Numerical Variables in Languages") 
 
 
@@ -86,7 +87,6 @@ The visdat package makes ggplot compatible missingness plots. The cluster = TRUE
 Note vis_miss doesn't work on very large datasets. The documentations suggests keeping the number of records below 1,000. There is a more extensive package for exploratory visualizations called naniar which could also be used.
 
 ```{r}
-#| column: page
 
 languages_numeric %>%
 vis_miss(cluster = TRUE) +
