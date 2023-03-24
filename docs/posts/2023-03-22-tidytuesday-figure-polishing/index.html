@@ -212,7 +212,12 @@ cookieconsent.run({
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#skimr-to-understand-your-data" id="toc-skimr-to-understand-your-data" class="nav-link active" data-scroll-target="#skimr-to-understand-your-data">Skimr to understand your data</a></li>
+  <li><a href="#skimr-to-understand-your-data" id="toc-skimr-to-understand-your-data" class="nav-link active" data-scroll-target="#skimr-to-understand-your-data">Skimr to understand your data</a>
+  <ul class="collapse">
+  <li><a href="#customizing-the-skim-output" id="toc-customizing-the-skim-output" class="nav-link" data-scroll-target="#customizing-the-skim-output">Customizing the skim Output</a></li>
+  <li><a href="#styling-skim-output-with-gt" id="toc-styling-skim-output-with-gt" class="nav-link" data-scroll-target="#styling-skim-output-with-gt">Styling skim output with gt</a></li>
+  <li><a href="#visualizing-missingness-with-visdat" id="toc-visualizing-missingness-with-visdat" class="nav-link" data-scroll-target="#visualizing-missingness-with-visdat">Visualizing Missingness with visdat</a></li>
+  </ul></li>
   <li><a href="#improving-the-most-popular-language-for-each-comment-token-figure" id="toc-improving-the-most-popular-language-for-each-comment-token-figure" class="nav-link" data-scroll-target="#improving-the-most-popular-language-for-each-comment-token-figure">Improving “The Most Popular Language for Each Comment Token” Figure</a></li>
   </ul>
 </nav>
@@ -257,7 +262,13 @@ cookieconsent.run({
 </header>
 
 <p>This week, <a href="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/">I participated</a> in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the <a href="https://cran.r-project.org/web/packages/skimr/index.html">skimr</a> and <a href="https://quarto.org/docs/output-formats/page-layout.html">Quarto</a> documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media:</p>
-<p>https://twitter.com/LouiseSinks/status/1638281716614811664?s=20</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>My first try at a <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> challenge. We were given a dataset about what characters are used to comment computer code. This viz shows the most “highly ranked” language for each type of commenting token. The size of the word reflects the # of users of that language. <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://t.co/oGhqaYHD5U">pic.twitter.com/oGhqaYHD5U</a></p>
+<p></p>
+<p>— Louise Sinks (<span class="citation" data-cites="LouiseSinks">@LouiseSinks</span>) <a href="https://twitter.com/LouiseSinks/status/1638281716614811664?ref_src=twsrc%5Etfw">March 21, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section id="skimr-to-understand-your-data" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="skimr-to-understand-your-data">Skimr to understand your data</h2>
 <p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
@@ -283,6 +294,8 @@ cookieconsent.run({
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>languages</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="customizing-the-skim-output" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="customizing-the-skim-output">Customizing the skim Output</h3>
 <p>My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don’t particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.</p>
 <p>First, quarto lets you expand the output of the code chunk to fill the page via the option “#| column: page”, so I’ll do that. Next, I’ll create a custom skim function that drops the p25, p50, and p75 output from the summary of the numerical variables.</p>
 <div class="cell page-columns page-full">
@@ -891,6 +904,9 @@ cookieconsent.run({
 </div>
 </div>
 <p>This output is much nicer. It is a bit wall of text though. I wouldn’t recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)</p>
+</section>
+<section id="styling-skim-output-with-gt" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="styling-skim-output-with-gt">Styling skim output with gt</h3>
 <p>If, for some reason, you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.</p>
 <p>Here’s an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the <a href="https://gt.rstudio.com/">gt package</a> to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.</p>
 <div class="cell page-columns page-full">
@@ -910,12 +926,12 @@ cookieconsent.run({
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Numerical Variables in Languages"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page">
 
-<div id="aydwpnqfcw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="gpaaiqwihe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#aydwpnqfcw) .gt_table {
+:where(#gpaaiqwihe) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -940,7 +956,7 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-:where(#aydwpnqfcw) .gt_heading {
+:where(#gpaaiqwihe) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -952,12 +968,12 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#aydwpnqfcw) .gt_caption {
+:where(#gpaaiqwihe) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#aydwpnqfcw) .gt_title {
+:where(#gpaaiqwihe) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -969,7 +985,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-:where(#aydwpnqfcw) .gt_subtitle {
+:where(#gpaaiqwihe) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -981,13 +997,13 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-:where(#aydwpnqfcw) .gt_bottom_border {
+:where(#gpaaiqwihe) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-:where(#aydwpnqfcw) .gt_col_headings {
+:where(#gpaaiqwihe) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1002,7 +1018,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#aydwpnqfcw) .gt_col_heading {
+:where(#gpaaiqwihe) .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1022,7 +1038,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#aydwpnqfcw) .gt_column_spanner_outer {
+:where(#gpaaiqwihe) .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1034,15 +1050,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-:where(#aydwpnqfcw) .gt_column_spanner_outer:first-child {
+:where(#gpaaiqwihe) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#aydwpnqfcw) .gt_column_spanner_outer:last-child {
+:where(#gpaaiqwihe) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#aydwpnqfcw) .gt_column_spanner {
+:where(#gpaaiqwihe) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -1054,7 +1070,7 @@ cookieconsent.run({
   width: 100%;
 }
 
-:where(#aydwpnqfcw) .gt_group_heading {
+:where(#gpaaiqwihe) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1080,7 +1096,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-:where(#aydwpnqfcw) .gt_empty_group_heading {
+:where(#gpaaiqwihe) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1095,15 +1111,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-:where(#aydwpnqfcw) .gt_from_md > :first-child {
+:where(#gpaaiqwihe) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#aydwpnqfcw) .gt_from_md > :last-child {
+:where(#gpaaiqwihe) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#aydwpnqfcw) .gt_row {
+:where(#gpaaiqwihe) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1122,7 +1138,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#aydwpnqfcw) .gt_stub {
+:where(#gpaaiqwihe) .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -1135,7 +1151,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_stub_row_group {
+:where(#gpaaiqwihe) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1149,11 +1165,11 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-:where(#aydwpnqfcw) .gt_row_group_first td {
+:where(#gpaaiqwihe) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#aydwpnqfcw) .gt_summary_row {
+:where(#gpaaiqwihe) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1163,16 +1179,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_first_summary_row {
+:where(#gpaaiqwihe) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-:where(#aydwpnqfcw) .gt_first_summary_row.thick {
+:where(#gpaaiqwihe) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#aydwpnqfcw) .gt_last_summary_row {
+:where(#gpaaiqwihe) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1182,7 +1198,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#aydwpnqfcw) .gt_grand_summary_row {
+:where(#gpaaiqwihe) .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -1192,7 +1208,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_first_grand_summary_row {
+:where(#gpaaiqwihe) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1202,11 +1218,11 @@ cookieconsent.run({
   border-top-color: #5F5F5F;
 }
 
-:where(#aydwpnqfcw) .gt_striped {
+:where(#gpaaiqwihe) .gt_striped {
   background-color: #EDF7FC;
 }
 
-:where(#aydwpnqfcw) .gt_table_body {
+:where(#gpaaiqwihe) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1215,7 +1231,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#aydwpnqfcw) .gt_footnotes {
+:where(#gpaaiqwihe) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1229,7 +1245,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#aydwpnqfcw) .gt_footnote {
+:where(#gpaaiqwihe) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1238,7 +1254,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_sourcenotes {
+:where(#gpaaiqwihe) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1252,7 +1268,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#aydwpnqfcw) .gt_sourcenote {
+:where(#gpaaiqwihe) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1260,64 +1276,64 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_left {
+:where(#gpaaiqwihe) .gt_left {
   text-align: left;
 }
 
-:where(#aydwpnqfcw) .gt_center {
+:where(#gpaaiqwihe) .gt_center {
   text-align: center;
 }
 
-:where(#aydwpnqfcw) .gt_right {
+:where(#gpaaiqwihe) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#aydwpnqfcw) .gt_font_normal {
+:where(#gpaaiqwihe) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#aydwpnqfcw) .gt_font_bold {
+:where(#gpaaiqwihe) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#aydwpnqfcw) .gt_font_italic {
+:where(#gpaaiqwihe) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#aydwpnqfcw) .gt_super {
+:where(#gpaaiqwihe) .gt_super {
   font-size: 65%;
 }
 
-:where(#aydwpnqfcw) .gt_footnote_marks {
+:where(#gpaaiqwihe) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#aydwpnqfcw) .gt_asterisk {
+:where(#gpaaiqwihe) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#aydwpnqfcw) .gt_indent_1 {
+:where(#gpaaiqwihe) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#aydwpnqfcw) .gt_indent_2 {
+:where(#gpaaiqwihe) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#aydwpnqfcw) .gt_indent_3 {
+:where(#gpaaiqwihe) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#aydwpnqfcw) .gt_indent_4 {
+:where(#gpaaiqwihe) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#aydwpnqfcw) .gt_indent_5 {
+:where(#gpaaiqwihe) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1540,6 +1556,9 @@ cookieconsent.run({
 </div>
 </div>
 </div>
+</section>
+<section id="visualizing-missingness-with-visdat" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-missingness-with-visdat">Visualizing Missingness with visdat</h3>
 <p>The <a href="https://cran.r-project.org/web/packages/visdat/">visdat package</a> makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.</p>
 <p>Note vis_miss doesn’t work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called <a href="https://naniar.njtierney.com/">naniar</a> could also be used.</p>
 <div class="cell">
@@ -1552,6 +1571,7 @@ cookieconsent.run({
 <p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="improving-the-most-popular-language-for-each-comment-token-figure" class="level2">
 <h2 class="anchored" data-anchor-id="improving-the-most-popular-language-for-each-comment-token-figure">Improving “The Most Popular Language for Each Comment Token” Figure</h2>
@@ -1574,24 +1594,32 @@ cookieconsent.run({
 <p><img src="index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.</p>
+<p>I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. There is a nice tutorial on <a href="https://statisticaloddsandends.wordpress.com/2021/07/08/using-different-fonts-with-ggplot2/">changing fonts in ggplot</a> that did not work until <a href="https://github.com/GuangchuangYu/meme/issues/1">I found someone with the same issue</a>. The solution is to add a line of code that doesn’t make much sense to me : <code>windowsFonts("Cambria Math" = windowsFont("Cambria Math"))</code></p>
 <p>I saw a nice TidyTuesday figure on Twitter:</p>
-<p>https://twitter.com/mitsuoxv/status/1637986238962728961?s=20</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>My submission for <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a>, Week 12 on programming languages. I explore jobs per users.<br><br>Code: <a href="https://t.co/bV9DUHZmro">https://t.co/bV9DUHZmro</a> <a href="https://t.co/2D5YLnE5yz">pic.twitter.com/2D5YLnE5yz</a></p>
+<p></p>
+<p>— Mitsuo Shiota (<span class="citation" data-cites="mitsuoxv">@mitsuoxv</span>) <a href="https://twitter.com/mitsuoxv/status/1637986238962728961?ref_src=twsrc%5Etfw">March 21, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <p>with a caption referencing the original dataset. I’d like to add that. I generally want to increase the figure’s legibility and flip the color scale so that darker blue corresponds to more users. I also don’t think what popular means is entirely clear, so I’d like to explain more fully what I’m graphing.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_gradient</span>(<span class="at">high =</span> <span class="st">"#08306b"</span>, <span class="at">low =</span> <span class="st">"#6baed6"</span>) <span class="sc">+</span> </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"The Most Popular Language for Each Comment Token"</span>,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Based on # Users and Rank"</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"data from https://pldb.com/"</span>) <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">windowsFonts</span>(<span class="st">"Cambria Math"</span> <span class="ot">=</span> <span class="fu">windowsFont</span>(<span class="st">"Cambria Math"</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>joined <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(line_comment_token, n, <span class="at">size =</span> <span class="fu">log</span>(number_of_users), </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="fu">log</span>(number_of_users), <span class="at">label =</span> title)) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_gradient</span>(<span class="at">high =</span> <span class="st">"#08306b"</span>, <span class="at">low =</span> <span class="st">"#6baed6"</span>) <span class="sc">+</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"The Most Popular Language for Each Comment Token"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Based on # Users and Rank"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"data from https://pldb.com/"</span>) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Token"</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Number of languages using token"</span>) <span class="sc">+</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">text =</span> <span class="fu">element_text</span>( <span class="at">family =</span> <span class="st">"Cambria Math"</span>)) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
