@@ -3,19 +3,32 @@ title: "TidyTuesday Week 12: Programming Languages Revisited"
 description: "TidyTuesday: Polishing "
 author:
   - name: Louise E. Sinks
-    url: https://lsinks.github.io/
-    date: 03-22-2023
+    url: https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/
+    date: 03-24-2023
 categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, skimr] # self-defined categories
 citation:
   url: https://lsinks.github.io/ 
 image: pop-lang-by-token.png
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 This week, [I participated](https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/) in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn't formatted nicely on the webpage. Today, I'm going to delve into the [skimr](https://cran.r-project.org/web/packages/skimr/index.html) and [Quarto](https://quarto.org/docs/output-formats/page-layout.html) documentation and make a nicer version of the output. Secondly, I'm going to fix up my final figure, which is the one I shared on social media:
 
-https://twitter.com/LouiseSinks/status/1638281716614811664?s=20
+<blockquote class="twitter-tweet">
 
+<p lang="en" dir="ltr">
+
+My first try at a <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> challenge. We were given a dataset about what characters are used to comment computer code. This viz shows the most "highly ranked" language for each type of commenting token. The size of the word reflects the \# of users of that language. <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://t.co/oGhqaYHD5U">pic.twitter.com/oGhqaYHD5U</a>
+
+</p>
+
+--- Louise Sinks (@LouiseSinks) <a href="https://twitter.com/LouiseSinks/status/1638281716614811664?ref_src=twsrc%5Etfw">March 21, 2023</a>
+
+</blockquote>
+
+```{=html}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+```
 ## Skimr to understand your data
 
 Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.
@@ -50,6 +63,8 @@ tuesdata <- tidytuesdayR::tt_load(2023, week = 12)
 languages <- tuesdata$languages
 ```
 
+### Customizing the skim Output
+
 My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don't particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.
 
 First, quarto lets you expand the output of the code chunk to fill the page via the option "#\| column: page", so I'll do that. Next, I'll create a custom skim function that drops the p25, p50, and p75 output from the summary of the numerical variables.
@@ -64,6 +79,8 @@ my_skim(languages)
 ```
 
 This output is much nicer. It is a bit wall of text though. I wouldn't recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn't work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)
+
+### Styling skim output with gt
 
 If, for some reason, you did need to include output/ visualizations about missingness in a report, I'd probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.
 
@@ -87,6 +104,8 @@ lang_numeric_skim %>%
   tab_header(title = "Summary of Numerical Variables in Languages") 
 
 ```
+
+### Visualizing Missingness with visdat
 
 The [visdat package](https://cran.r-project.org/web/packages/visdat/) makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.
 
@@ -122,15 +141,29 @@ joined %>%
   theme_classic()
 ```
 
-I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn't work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. So I will come back to that in another post.
+I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn't work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. There is a nice tutorial on [changing fonts in ggplot](https://statisticaloddsandends.wordpress.com/2021/07/08/using-different-fonts-with-ggplot2/) that did not work until [I found someone with the same issue](https://github.com/GuangchuangYu/meme/issues/1). The solution is to add a line of code that doesn't make much sense to me : `windowsFonts("Cambria Math" = windowsFont("Cambria Math"))`
 
 I saw a nice TidyTuesday figure on Twitter:
 
-https://twitter.com/mitsuoxv/status/1637986238962728961?s=20
+<blockquote class="twitter-tweet">
 
+<p lang="en" dir="ltr">
+
+My submission for <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a>, Week 12 on programming languages. I explore jobs per users.<br><br>Code: <a href="https://t.co/bV9DUHZmro">https://t.co/bV9DUHZmro</a> <a href="https://t.co/2D5YLnE5yz">pic.twitter.com/2D5YLnE5yz</a>
+
+</p>
+
+--- Mitsuo Shiota (@mitsuoxv) <a href="https://twitter.com/mitsuoxv/status/1637986238962728961?ref_src=twsrc%5Etfw">March 21, 2023</a>
+
+</blockquote>
+
+```{=html}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+```
 with a caption referencing the original dataset. I'd like to add that. I generally want to increase the figure's legibility and flip the color scale so that darker blue corresponds to more users. I also don't think what popular means is entirely clear, so I'd like to explain more fully what I'm graphing.
 
 ```{r}
+windowsFonts("Cambria Math" = windowsFont("Cambria Math"))
 joined %>%
   ggplot(aes(line_comment_token, n, size = log(number_of_users), 
              color = log(number_of_users), label = title)) +
@@ -143,5 +176,7 @@ joined %>%
   xlab("Token") +
   ylab("Number of languages using token") +
   theme_classic(base_size = 16) +
-  theme(axis.text.x = element_text(face = "bold"))
+  theme(text = element_text( family = "Cambria Math")) +
+  theme(axis.text.x = element_text(face = "bold")) 
+
 ```

@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Fri, 24 Mar 2023 18:12:07 GMT</lastBuildDate>
+<lastBuildDate>Fri, 24 Mar 2023 18:42:57 GMT</lastBuildDate>
 <item>
   <title>Creating a Blog</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -46,7 +46,7 @@ Louise E. Sinks. n.d. <span>“Creating a Blog.”</span> <a href="https://lsink
   <category>R</category>
   <category>turtle</category>
   <guid>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</guid>
-  <pubDate>Fri, 24 Mar 2023 18:12:07 GMT</pubDate>
+  <pubDate>Fri, 24 Mar 2023 18:42:57 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-14-tester-post/mckinley.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -2008,8 +2008,1403 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Fri, 24 Mar 2023 18:12:07 GMT</pubDate>
+  <pubDate>Fri, 24 Mar 2023 18:42:57 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
+</item>
+<item>
+  <title>TidyTuesday Week 12: Programming Languages Revisited</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>This week, <a href="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/">I participated</a> in my first #TidyTuesday challenge. My goal was to get something out on the day of the challenge rather than perfection. I did notice that the skimr output wasn’t formatted nicely on the webpage. Today, I’m going to delve into the <a href="https://cran.r-project.org/web/packages/skimr/index.html">skimr</a> and <a href="https://quarto.org/docs/output-formats/page-layout.html">Quarto</a> documentation and make a nicer version of the output. Secondly, I’m going to fix up my final figure, which is the one I shared on social media:</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>My first try at a <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> challenge. We were given a dataset about what characters are used to comment computer code. This viz shows the most “highly ranked” language for each type of commenting token. The size of the word reflects the # of users of that language. <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://t.co/oGhqaYHD5U">pic.twitter.com/oGhqaYHD5U</a></p>
+<p></p>
+<p>— Louise Sinks (<span class="citation" data-cites="LouiseSinks">@LouiseSinks</span>) <a href="https://twitter.com/LouiseSinks/status/1638281716614811664?ref_src=twsrc%5Etfw">March 21, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<section id="skimr-to-understand-your-data" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="skimr-to-understand-your-data">Skimr to understand your data</h2>
+<p>Skimr is a package that provides statistical summaries of the variables in your dataframe. It also provides information about the missingness of each variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidytuesdayR)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(gt)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(ggrepel)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(visdat) <span class="co" style="color: #5E5E5E;"># visualizing missing data in dataframe</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Get the Data</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;"># Read in with tidytuesdayR package </span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;"># This loads the readme and all the datasets for the week of interest</span></span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;"># Either ISO-8601 date or year/week works!</span></span>
+<span id="cb2-7"></span>
+<span id="cb2-8"><span class="co" style="color: #5E5E5E;">#tuesdata &lt;- tidytuesdayR::tt_load('2023-03-21')</span></span>
+<span id="cb2-9">tuesdata <span class="ot" style="color: #003B4F;">&lt;-</span> tidytuesdayR<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">tt_load</span>(<span class="dv" style="color: #AD0000;">2023</span>, <span class="at" style="color: #657422;">week =</span> <span class="dv" style="color: #AD0000;">12</span>)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11">languages <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>languages</span></code></pre></div>
+</div>
+<section id="customizing-the-skim-output" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="customizing-the-skim-output">Customizing the skim Output</h3>
+<p>My main objection is that the numerical summary is too wide and has a scroll bar. I especially want the histogram to be viewable on the first screen. I also don’t particularly care about all the quartile information; min and max are enough. If I want to delve more into the stats of a variable, I will do it another way, not with skimr.</p>
+<p>First, quarto lets you expand the output of the code chunk to fill the page via the option “#| column: page”, so I’ll do that. Next, I’ll create a custom skim function that drops the p25, p50, and p75 output from the summary of the numerical variables.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">my_skim <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">skim_with</span>(<span class="at" style="color: #657422;">numeric =</span> <span class="fu" style="color: #4758AB;">sfl</span>(<span class="at" style="color: #657422;">p25 =</span> <span class="cn" style="color: #8f5902;">NULL</span>, <span class="at" style="color: #657422;">p50 =</span> <span class="cn" style="color: #8f5902;">NULL</span>, <span class="at" style="color: #657422;">p75 =</span> <span class="cn" style="color: #8f5902;">NULL</span>)) </span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="fu" style="color: #4758AB;">my_skim</span>(languages)</span></code></pre></div>
+<div class="cell-output-display column-page">
+<table class="table table-sm table-striped">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">languages</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">4303</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">49</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">logical</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">24</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">pldb_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4303</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">title</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">56</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4267</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">description</td>
+<td style="text-align: right;">3480</td>
+<td style="text-align: right;">0.19</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2273</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">811</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">type</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">creators</td>
+<td style="text-align: right;">3203</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">253</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">985</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">website</td>
+<td style="text-align: right;">2928</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">131</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1368</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">domain_name</td>
+<td style="text-align: right;">3588</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">700</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">reference</td>
+<td style="text-align: right;">2314</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">251</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1955</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo</td>
+<td style="text-align: right;">3402</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">73</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">897</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_description</td>
+<td style="text-align: right;">3438</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">419</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">853</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language</td>
+<td style="text-align: right;">3829</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">474</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_tm_scope</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">361</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_type</td>
+<td style="text-align: right;">3837</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_ace_mode</td>
+<td style="text-align: right;">3838</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_language_file_extensions</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">606</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">466</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia</td>
+<td style="text-align: right;">2731</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">104</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1566</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_summary</td>
+<td style="text-align: right;">2884</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">6741</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1407</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_related</td>
+<td style="text-align: right;">3145</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1761</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1059</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">line_comment_token</td>
+<td style="text-align: right;">3831</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">origin_community</td>
+<td style="text-align: right;">1190</td>
+<td style="text-align: right;">0.72</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">305</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2232</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">file_type</td>
+<td style="text-align: right;">3213</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 6%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: left;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">features_has_comments</td>
+<td style="text-align: right;">3683</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">TRU: 617, FAL: 3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">features_has_semantic_indentation</td>
+<td style="text-align: right;">3722</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: left;">FAL: 516, TRU: 65</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">features_has_line_comments</td>
+<td style="text-align: right;">3765</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: left;">TRU: 517, FAL: 21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">is_open_source</td>
+<td style="text-align: right;">3792</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: left;">TRU: 453, FAL: 58</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">appeared</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1991.11</td>
+<td style="text-align: right;">111.44</td>
+<td style="text-align: right;">-2000</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">domain_name_registered</td>
+<td style="text-align: right;">3801</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">2011.33</td>
+<td style="text-align: right;">7.02</td>
+<td style="text-align: right;">1990</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▃▃▇▆</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">isbndb</td>
+<td style="text-align: right;">3217</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">7.71</td>
+<td style="text-align: right;">33.16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">400</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">book_count</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.08</td>
+<td style="text-align: right;">17.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">401</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">semantic_scholar</td>
+<td style="text-align: right;">3545</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">3.79</td>
+<td style="text-align: right;">8.32</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">52</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">language_rank</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2151.00</td>
+<td style="text-align: right;">1242.31</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4302</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_stars</td>
+<td style="text-align: right;">3414</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2127.40</td>
+<td style="text-align: right;">7554.02</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">88526</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_forks</td>
+<td style="text-align: right;">3417</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">261.29</td>
+<td style="text-align: right;">1203.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">23732</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_updated</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">2021.39</td>
+<td style="text-align: right;">1.76</td>
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_subscribers</td>
+<td style="text-align: right;">3418</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">62.34</td>
+<td style="text-align: right;">200.88</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2910</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_created</td>
+<td style="text-align: right;">3425</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2015.84</td>
+<td style="text-align: right;">3.48</td>
+<td style="text-align: right;">2006</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▅▇▇▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_repo_issues</td>
+<td style="text-align: right;">3518</td>
+<td style="text-align: right;">0.18</td>
+<td style="text-align: right;">123.03</td>
+<td style="text-align: right;">546.26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9522</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">github_repo_first_commit</td>
+<td style="text-align: right;">3567</td>
+<td style="text-align: right;">0.17</td>
+<td style="text-align: right;">2014.74</td>
+<td style="text-align: right;">4.99</td>
+<td style="text-align: right;">1987</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▁▁▁▆▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">github_language_repos</td>
+<td style="text-align: right;">3833</td>
+<td style="text-align: right;">0.11</td>
+<td style="text-align: right;">197134.67</td>
+<td style="text-align: right;">1226900.57</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">16046489</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_daily_page_views</td>
+<td style="text-align: right;">2837</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">227.13</td>
+<td style="text-align: right;">783.55</td>
+<td style="text-align: right;">-1</td>
+<td style="text-align: right;">13394</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_backlinks_count</td>
+<td style="text-align: right;">2877</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">318.55</td>
+<td style="text-align: right;">1635.29</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">34348</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_page_id</td>
+<td style="text-align: right;">2893</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">9167847.21</td>
+<td style="text-align: right;">13506832.90</td>
+<td style="text-align: right;">928</td>
+<td style="text-align: right;">63063548</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_appeared</td>
+<td style="text-align: right;">2958</td>
+<td style="text-align: right;">0.31</td>
+<td style="text-align: right;">1991.14</td>
+<td style="text-align: right;">17.03</td>
+<td style="text-align: right;">1830</td>
+<td style="text-align: right;">2019</td>
+<td style="text-align: left;">▁▁▁▃▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wikipedia_created</td>
+<td style="text-align: right;">3040</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">2005.75</td>
+<td style="text-align: right;">3.77</td>
+<td style="text-align: right;">2001</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">▇▇▂▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wikipedia_revision_count</td>
+<td style="text-align: right;">3130</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">330.43</td>
+<td style="text-align: right;">813.26</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10104</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">last_activity</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2000.62</td>
+<td style="text-align: right;">84.60</td>
+<td style="text-align: right;">-900</td>
+<td style="text-align: right;">2023</td>
+<td style="text-align: left;">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">number_of_users</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">13771.26</td>
+<td style="text-align: right;">227712.95</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7179119</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">number_of_jobs</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">422.18</td>
+<td style="text-align: right;">12572.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">771996</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">central_package_repository_count</td>
+<td style="text-align: right;">1482</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">▁▁▇▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This output is much nicer. It is a bit wall of text though. I wouldn’t recommend using this in reports, but it is a useful tool when doing your initial dataset analysis. (As a side note, I have noticed skimr doesn’t work well on Kaggle. It performs as expected if you are in interactive mode, but it fails when you try to save the notebook or run non-interactively.)</p>
+</section>
+<section id="styling-skim-output-with-gt" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="styling-skim-output-with-gt">Styling skim output with gt</h3>
+<p>If, for some reason, you did need to include output/ visualizations about missingness in a report, I’d probably recreate visualizations or tables by class of variable, especially if you have many variables, as I do here.</p>
+<p>Here’s an example for numeric variables, of which there are 24 in the dataset. First, we will skim the data and then use the <a href="https://gt.rstudio.com/">gt package</a> to style the resulting dataframe as a table. I used a built-in style, but each table element can be individually customized.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">languages_numeric <span class="ot" style="color: #003B4F;">&lt;-</span> languages <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">select_if</span>(is.numeric)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4">lang_numeric_skim <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">my_skim</span>(languages_numeric)</span>
+<span id="cb4-5"></span>
+<span id="cb4-6">lang_numeric_skim <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>skim_type)   <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;">cols_label</span>(<span class="at" style="color: #657422;">n_missing =</span> <span class="st" style="color: #20794D;">"# Missing"</span>, <span class="at" style="color: #657422;">complete_rate =</span> <span class="st" style="color: #20794D;">"Completeness"</span>, </span>
+<span id="cb4-10">             <span class="at" style="color: #657422;">numeric.mean =</span> <span class="st" style="color: #20794D;">"Mean"</span>, <span class="at" style="color: #657422;">numeric.sd =</span> <span class="st" style="color: #20794D;">"Standard Deviation"</span>,</span>
+<span id="cb4-11">             <span class="at" style="color: #657422;">numeric.p0 =</span> <span class="st" style="color: #20794D;">"Min"</span>, <span class="at" style="color: #657422;">numeric.p100 =</span> <span class="st" style="color: #20794D;">"Max"</span>,</span>
+<span id="cb4-12">             <span class="at" style="color: #657422;">numeric.hist =</span> <span class="st" style="color: #20794D;">"Histogram"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;">opt_stylize</span>(<span class="at" style="color: #657422;">style =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="at" style="color: #657422;">add_row_striping =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-14">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Summary of Numerical Variables in Languages"</span>) </span></code></pre></div>
+<div class="cell-output-display column-page">
+
+<div id="gpaaiqwihe" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#gpaaiqwihe) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#gpaaiqwihe) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gpaaiqwihe) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#gpaaiqwihe) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#gpaaiqwihe) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#gpaaiqwihe) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#gpaaiqwihe) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gpaaiqwihe) .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#gpaaiqwihe) .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#gpaaiqwihe) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#gpaaiqwihe) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#gpaaiqwihe) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#gpaaiqwihe) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#gpaaiqwihe) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+:where(#gpaaiqwihe) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#gpaaiqwihe) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#gpaaiqwihe) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#gpaaiqwihe) .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#gpaaiqwihe) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#gpaaiqwihe) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+:where(#gpaaiqwihe) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#gpaaiqwihe) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#gpaaiqwihe) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+:where(#gpaaiqwihe) .gt_striped {
+  background-color: #EDF7FC;
+}
+
+:where(#gpaaiqwihe) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#gpaaiqwihe) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gpaaiqwihe) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#gpaaiqwihe) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_left {
+  text-align: left;
+}
+
+:where(#gpaaiqwihe) .gt_center {
+  text-align: center;
+}
+
+:where(#gpaaiqwihe) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#gpaaiqwihe) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#gpaaiqwihe) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#gpaaiqwihe) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#gpaaiqwihe) .gt_super {
+  font-size: 65%;
+}
+
+:where(#gpaaiqwihe) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#gpaaiqwihe) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#gpaaiqwihe) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#gpaaiqwihe) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#gpaaiqwihe) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#gpaaiqwihe) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#gpaaiqwihe) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Numerical Variables in Languages</td>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">appeared</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.991105e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.114434e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">-2000</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">domain_name_registered</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3801</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.1166628</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">2.011333e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">7.021132e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">1990</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▃▃▇▆</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">isbndb</td>
+<td headers="n_missing" class="gt_row gt_right">3217</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2523821</td>
+<td headers="numeric.mean" class="gt_row gt_right">7.706262e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.316421e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">400</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">book_count</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">2.079479e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.734465e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">401</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">semantic_scholar</td>
+<td headers="n_missing" class="gt_row gt_right">3545</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1761562</td>
+<td headers="numeric.mean" class="gt_row gt_right">3.794195e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right">8.316231e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">52</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">language_rank</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">2.151000e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.242313e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">4302</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_stars</td>
+<td headers="n_missing" class="gt_row gt_right">3414</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2066000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.127403e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">7.554016e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">88526</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_forks</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3417</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.2059029</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">2.612867e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.203003e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">23732</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_updated</td>
+<td headers="n_missing" class="gt_row gt_right">3418</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2056705</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.021390e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.763285e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2012</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_subscribers</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3418</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.2056705</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">6.234237e+01</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">2.008820e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">2910</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_created</td>
+<td headers="n_missing" class="gt_row gt_right">3425</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2040437</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.015843e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.479589e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2006</td>
+<td headers="numeric.p100" class="gt_row gt_right">2022</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▅▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_repo_issues</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3518</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.1824309</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.230344e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">5.462553e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">9522</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">github_repo_first_commit</td>
+<td headers="n_missing" class="gt_row gt_right">3567</td>
+<td headers="complete_rate" class="gt_row gt_right">0.1710435</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.014739e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">4.985409e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">1987</td>
+<td headers="numeric.p100" class="gt_row gt_right">2022</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▆▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">github_language_repos</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3833</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.1092261</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.971347e+05</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.226901e+06</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">16046489</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_daily_page_views</td>
+<td headers="n_missing" class="gt_row gt_right">2837</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3406925</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.271330e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">7.835524e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right">-1</td>
+<td headers="numeric.p100" class="gt_row gt_right">13394</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_backlinks_count</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">2877</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.3313967</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">3.185484e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.635289e+03</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">34348</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_page_id</td>
+<td headers="n_missing" class="gt_row gt_right">2893</td>
+<td headers="complete_rate" class="gt_row gt_right">0.3276784</td>
+<td headers="numeric.mean" class="gt_row gt_right">9.167847e+06</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.350683e+07</td>
+<td headers="numeric.p0" class="gt_row gt_right">928</td>
+<td headers="numeric.p100" class="gt_row gt_right">63063548</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_appeared</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">2958</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.3125726</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.991144e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.702650e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">1830</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">2019</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▁▃▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">wikipedia_created</td>
+<td headers="n_missing" class="gt_row gt_right">3040</td>
+<td headers="complete_rate" class="gt_row gt_right">0.2935162</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.005748e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">3.768240e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right">2001</td>
+<td headers="numeric.p100" class="gt_row gt_right">2020</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▂▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">wikipedia_revision_count</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">3130</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.2726005</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">3.304314e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">8.132556e+02</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">10104</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">last_activity</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">2.000616e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">8.459776e+01</td>
+<td headers="numeric.p0" class="gt_row gt_right">-900</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▁▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">number_of_users</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.377126e+04</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">2.277129e+05</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">7179119</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">number_of_jobs</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">4.221838e+02</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.257299e+04</td>
+<td headers="numeric.p0" class="gt_row gt_right">0</td>
+<td headers="numeric.p100" class="gt_row gt_right">771996</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">central_package_repository_count</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1482</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.6555891</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.000000e+00</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.000000e+00</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▇▁▁</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="visualizing-missingness-with-visdat" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-missingness-with-visdat">Visualizing Missingness with visdat</h3>
+<p>The <a href="https://cran.r-project.org/web/packages/visdat/">visdat package</a> makes ggplot- compatible missingness plots. The cluster = TRUE option groups variables that share missingness. Here we see that usually if some of the GitHub data is missing, then all of the GitHub data is missing. The percent missing is listed for each variable, and the overall missingness of the dataset is shown in the legend.</p>
+<p>Note vis_miss doesn’t work on very large datasets. The documentation suggests keeping the number of records below 1,000. A more extensive package for exploratory visualizations called <a href="https://naniar.njtierney.com/">naniar</a> could also be used.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">languages_numeric <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2"><span class="fu" style="color: #4758AB;">vis_miss</span>(<span class="at" style="color: #657422;">cluster =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb5-3"><span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Missing Data in the Languages Dataset"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb5-4">  <span class="co" style="color: #5E5E5E;">#theme_classic() +</span></span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">8</span>, <span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">90</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="improving-the-most-popular-language-for-each-comment-token-figure" class="level2">
+<h2 class="anchored" data-anchor-id="improving-the-most-popular-language-for-each-comment-token-figure">Improving “The Most Popular Language for Each Comment Token” Figure</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">joined <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"processed_lang.csv"</span> , <span class="at" style="color: #657422;">show_col_types =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span></code></pre></div>
+</div>
+<p>Now the original figure:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">joined <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(line_comment_token, n, <span class="at" style="color: #657422;">size =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), </span>
+<span id="cb7-3">             <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), <span class="at" style="color: #657422;">label =</span> title)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-4"> <span class="co" style="color: #5E5E5E;"># geom_point() +</span></span>
+<span id="cb7-5">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-6">  <span class="fu" style="color: #4758AB;">geom_text_repel</span>(<span class="at" style="color: #657422;">show.legend =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-7">   <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"The Most Popular Language for Each Comment Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-8">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-9">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb7-10">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. There is a nice tutorial on <a href="https://statisticaloddsandends.wordpress.com/2021/07/08/using-different-fonts-with-ggplot2/">changing fonts in ggplot</a> that did not work until <a href="https://github.com/GuangchuangYu/meme/issues/1">I found someone with the same issue</a>. The solution is to add a line of code that doesn’t make much sense to me : <code>windowsFonts("Cambria Math" = windowsFont("Cambria Math"))</code></p>
+<p>I saw a nice TidyTuesday figure on Twitter:</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>My submission for <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a>, Week 12 on programming languages. I explore jobs per users.<br><br>Code: <a href="https://t.co/bV9DUHZmro">https://t.co/bV9DUHZmro</a> <a href="https://t.co/2D5YLnE5yz">pic.twitter.com/2D5YLnE5yz</a></p>
+<p></p>
+<p>— Mitsuo Shiota (<span class="citation" data-cites="mitsuoxv">@mitsuoxv</span>) <a href="https://twitter.com/mitsuoxv/status/1637986238962728961?ref_src=twsrc%5Etfw">March 21, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>with a caption referencing the original dataset. I’d like to add that. I generally want to increase the figure’s legibility and flip the color scale so that darker blue corresponds to more users. I also don’t think what popular means is entirely clear, so I’d like to explain more fully what I’m graphing.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">windowsFonts</span>(<span class="st" style="color: #20794D;">"Cambria Math"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">windowsFont</span>(<span class="st" style="color: #20794D;">"Cambria Math"</span>))</span>
+<span id="cb8-2">joined <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(line_comment_token, n, <span class="at" style="color: #657422;">size =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), </span>
+<span id="cb8-4">             <span class="at" style="color: #657422;">color =</span> <span class="fu" style="color: #4758AB;">log</span>(number_of_users), <span class="at" style="color: #657422;">label =</span> title)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;">geom_text_repel</span>(<span class="at" style="color: #657422;">show.legend =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-7">    <span class="fu" style="color: #4758AB;">scale_colour_gradient</span>(<span class="at" style="color: #657422;">high =</span> <span class="st" style="color: #20794D;">"#08306b"</span>, <span class="at" style="color: #657422;">low =</span> <span class="st" style="color: #20794D;">"#6baed6"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb8-8">   <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"The Most Popular Language for Each Comment Token"</span>,</span>
+<span id="cb8-9">       <span class="at" style="color: #657422;">subtitle =</span> <span class="st" style="color: #20794D;">"Based on # Users and Rank"</span>,</span>
+<span id="cb8-10">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"data from https://pldb.com/"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-11">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-12">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-13">  <span class="fu" style="color: #4758AB;">theme_classic</span>(<span class="at" style="color: #657422;">base_size =</span> <span class="dv" style="color: #AD0000;">16</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-14">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">text =</span> <span class="fu" style="color: #4758AB;">element_text</span>( <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Cambria Math"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-15">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"bold"</span>)) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks,
+  author = {Louise E. Sinks},
+  title = {TidyTuesday {Week} 12: {Programming} {Languages} {Revisited}},
+  url = {https://lsinks.github.io/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. n.d. <span>“TidyTuesday Week 12: Programming Languages
+Revisited.”</span> <a href="https://lsinks.github.io/">https://lsinks.github.io/</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Data-Viz</category>
+  <category>skimr</category>
+  <guid>https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index.html</guid>
+  <pubDate>Fri, 24 Mar 2023 18:42:57 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/pop-lang-by-token.png" medium="image" type="image/png"/>
 </item>
 </channel>
 </rss>
