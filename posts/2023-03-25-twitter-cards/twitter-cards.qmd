@@ -14,4 +14,4 @@ image: thumbnail.jpg
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-Trying to get the picture to show in a twitter card
+Trying to get the picture to show in a twitter card. Apparently you need to specify the image on every document, not just in the main yml doc, which is what I understood from the instructions.

@@ -60,7 +60,7 @@
     "href": "posts/2023-03-25-twitter-cards/twitter-cards.html",
     "title": "Twitter Cards",
     "section": "",
-    "text": "Trying to get the picture to show in a twitter card\n\n\n\nCitationBibTeX citation:@online{e.sinks,\n  author = {Louise E. Sinks},\n  title = {Twitter {Cards}},\n  url = {https://lsinks.github.io/posts/2023-03-25-twitter-cards/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nLouise E. Sinks. n.d. “Twitter Cards.” https://lsinks.github.io/posts/2023-03-25-twitter-cards/."
+    "text": "Trying to get the picture to show in a twitter card. Apparently you need to specify the image on every document, not just in the main yml doc, which is what I understood from the instructions.\n\n\n\nCitationBibTeX citation:@online{e.sinks,\n  author = {Louise E. Sinks},\n  title = {Twitter {Cards}},\n  url = {https://lsinks.github.io/posts/2023-03-25-twitter-cards/},\n  langid = {en}\n}\nFor attribution, please cite this work as:\nLouise E. Sinks. n.d. “Twitter Cards.” https://lsinks.github.io/posts/2023-03-25-twitter-cards/."
   },
   {
     "objectID": "posts.html",

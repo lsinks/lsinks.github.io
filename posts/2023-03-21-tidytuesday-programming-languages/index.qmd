@@ -1,6 +1,8 @@
 ---
 title: "TidyTuesday Week 12: Programming Languages"
 description: "TidyTuesday: How to comment in Various Programming Languages"
+twitter-card:
+  image: "pop-lang-by-token.png"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
