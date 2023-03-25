@@ -2,34 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/about.html</loc>
-    <lastmod>2023-03-24T18:54:25.924Z</lastmod>
+    <lastmod>2023-03-25T16:03:02.668Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/blogroll.html</loc>
-    <lastmod>2023-03-24T18:54:26.507Z</lastmod>
+    <lastmod>2023-03-25T16:03:03.418Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/index.html</loc>
-    <lastmod>2023-03-24T18:54:27.116Z</lastmod>
+    <lastmod>2023-03-25T16:03:04.198Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</loc>
-    <lastmod>2023-03-24T18:54:27.941Z</lastmod>
+    <lastmod>2023-03-25T16:03:05.178Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</loc>
-    <lastmod>2023-03-24T18:54:30.578Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-03-24T18:54:32.682Z</lastmod>
-  </url>
-  <url>
-    <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-03-25T16:00:44.255Z</lastmod>
+    <lastmod>2023-03-25T16:03:08.222Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-03-25T16:00:57.820Z</lastmod>
+    <lastmod>2023-03-25T16:03:10.334Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts.html</loc>
+    <lastmod>2023-03-25T16:03:20.679Z</lastmod>
   </url>
 </urlset>

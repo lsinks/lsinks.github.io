@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sat, 25 Mar 2023 16:00:44 GMT</lastBuildDate>
+<lastBuildDate>Sat, 25 Mar 2023 16:03:20 GMT</lastBuildDate>
 <item>
   <title>TidyTuesday Week 12: Programming Languages</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -1970,7 +1970,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Sat, 25 Mar 2023 16:00:44 GMT</pubDate>
+  <pubDate>Sat, 25 Mar 2023 16:03:20 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
@@ -3365,7 +3365,7 @@ Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-24-tidytues
   <category>Data-Viz</category>
   <category>skimr</category>
   <guid>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</guid>
-  <pubDate>Sat, 25 Mar 2023 16:00:44 GMT</pubDate>
+  <pubDate>Sat, 25 Mar 2023 16:03:20 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/revised_fig.png" medium="image" type="image/png" height="89" width="144"/>
 </item>
 </channel>
