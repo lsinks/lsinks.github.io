@@ -1,0 +1,17 @@
+---
+title: "Twitter Cards"
+description: "Making Twitter Cards"
+twitter-card:
+  image: thumbnail.jpg
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+    date: 03-24-2023
+categories: [Quarto] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-03-25-twitter-cards/ 
+image: thumbnail.jpg
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Trying to get the picture to show in a twitter card
