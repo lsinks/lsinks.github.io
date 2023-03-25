@@ -7,7 +7,7 @@ author:
     date: 03-24-2023
 categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, skimr] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/ 
+  url: https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/ 
 image: revised_fig.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

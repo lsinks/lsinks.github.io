@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Fri, 24 Mar 2023 18:54:40 GMT</lastBuildDate>
+<lastBuildDate>Sat, 25 Mar 2023 16:00:44 GMT</lastBuildDate>
 <item>
   <title>Creating a Blog</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -46,7 +46,7 @@ Louise E. Sinks. n.d. <span>“Creating a Blog.”</span> <a href="https://lsink
   <category>R</category>
   <category>turtle</category>
   <guid>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</guid>
-  <pubDate>Fri, 24 Mar 2023 18:54:40 GMT</pubDate>
+  <pubDate>Sat, 25 Mar 2023 16:00:44 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-14-tester-post/mckinley.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -2008,13 +2008,13 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Fri, 24 Mar 2023 18:54:40 GMT</pubDate>
+  <pubDate>Sat, 25 Mar 2023 16:00:44 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
   <title>TidyTuesday Week 12: Programming Languages Revisited</title>
   <dc:creator>Louise E. Sinks</dc:creator>
-  <link>https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index.html</link>
+  <link>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</link>
   <description><![CDATA[ 
 
 
@@ -2684,12 +2684,12 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
 <span id="cb4-14">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Summary of Numerical Variables in Languages"</span>) </span></code></pre></div>
 <div class="cell-output-display column-page">
 
-<div id="thxptbkzha" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="jsxjbtnuhh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-:where(#thxptbkzha) .gt_table {
+:where(#jsxjbtnuhh) .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2714,7 +2714,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-left-color: #D3D3D3;
 }
 
-:where(#thxptbkzha) .gt_heading {
+:where(#jsxjbtnuhh) .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2726,12 +2726,12 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-right-color: #D3D3D3;
 }
 
-:where(#thxptbkzha) .gt_caption {
+:where(#jsxjbtnuhh) .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#thxptbkzha) .gt_title {
+:where(#jsxjbtnuhh) .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2743,7 +2743,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-bottom-width: 0;
 }
 
-:where(#thxptbkzha) .gt_subtitle {
+:where(#jsxjbtnuhh) .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2755,13 +2755,13 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-top-width: 0;
 }
 
-:where(#thxptbkzha) .gt_bottom_border {
+:where(#jsxjbtnuhh) .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-:where(#thxptbkzha) .gt_col_headings {
+:where(#jsxjbtnuhh) .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -2776,7 +2776,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-right-color: #D3D3D3;
 }
 
-:where(#thxptbkzha) .gt_col_heading {
+:where(#jsxjbtnuhh) .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -2796,7 +2796,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   overflow-x: hidden;
 }
 
-:where(#thxptbkzha) .gt_column_spanner_outer {
+:where(#jsxjbtnuhh) .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -2808,15 +2808,15 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 4px;
 }
 
-:where(#thxptbkzha) .gt_column_spanner_outer:first-child {
+:where(#jsxjbtnuhh) .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#thxptbkzha) .gt_column_spanner_outer:last-child {
+:where(#jsxjbtnuhh) .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#thxptbkzha) .gt_column_spanner {
+:where(#jsxjbtnuhh) .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -2828,7 +2828,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   width: 100%;
 }
 
-:where(#thxptbkzha) .gt_group_heading {
+:where(#jsxjbtnuhh) .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2854,7 +2854,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   text-align: left;
 }
 
-:where(#thxptbkzha) .gt_empty_group_heading {
+:where(#jsxjbtnuhh) .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2869,15 +2869,15 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   vertical-align: middle;
 }
 
-:where(#thxptbkzha) .gt_from_md > :first-child {
+:where(#jsxjbtnuhh) .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#thxptbkzha) .gt_from_md > :last-child {
+:where(#jsxjbtnuhh) .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#thxptbkzha) .gt_row {
+:where(#jsxjbtnuhh) .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2896,7 +2896,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   overflow-x: hidden;
 }
 
-:where(#thxptbkzha) .gt_stub {
+:where(#jsxjbtnuhh) .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -2909,7 +2909,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 5px;
 }
 
-:where(#thxptbkzha) .gt_stub_row_group {
+:where(#jsxjbtnuhh) .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2923,11 +2923,11 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   vertical-align: top;
 }
 
-:where(#thxptbkzha) .gt_row_group_first td {
+:where(#jsxjbtnuhh) .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#thxptbkzha) .gt_summary_row {
+:where(#jsxjbtnuhh) .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2937,16 +2937,16 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 5px;
 }
 
-:where(#thxptbkzha) .gt_first_summary_row {
+:where(#jsxjbtnuhh) .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-:where(#thxptbkzha) .gt_first_summary_row.thick {
+:where(#jsxjbtnuhh) .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#thxptbkzha) .gt_last_summary_row {
+:where(#jsxjbtnuhh) .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2956,7 +2956,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-bottom-color: #5F5F5F;
 }
 
-:where(#thxptbkzha) .gt_grand_summary_row {
+:where(#jsxjbtnuhh) .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -2966,7 +2966,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 5px;
 }
 
-:where(#thxptbkzha) .gt_first_grand_summary_row {
+:where(#jsxjbtnuhh) .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2976,11 +2976,11 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-top-color: #5F5F5F;
 }
 
-:where(#thxptbkzha) .gt_striped {
+:where(#jsxjbtnuhh) .gt_striped {
   background-color: #EDF7FC;
 }
 
-:where(#thxptbkzha) .gt_table_body {
+:where(#jsxjbtnuhh) .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -2989,7 +2989,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-bottom-color: #5F5F5F;
 }
 
-:where(#thxptbkzha) .gt_footnotes {
+:where(#jsxjbtnuhh) .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3003,7 +3003,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-right-color: #D3D3D3;
 }
 
-:where(#thxptbkzha) .gt_footnote {
+:where(#jsxjbtnuhh) .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3012,7 +3012,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 5px;
 }
 
-:where(#thxptbkzha) .gt_sourcenotes {
+:where(#jsxjbtnuhh) .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3026,7 +3026,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   border-right-color: #D3D3D3;
 }
 
-:where(#thxptbkzha) .gt_sourcenote {
+:where(#jsxjbtnuhh) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3034,64 +3034,64 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   padding-right: 5px;
 }
 
-:where(#thxptbkzha) .gt_left {
+:where(#jsxjbtnuhh) .gt_left {
   text-align: left;
 }
 
-:where(#thxptbkzha) .gt_center {
+:where(#jsxjbtnuhh) .gt_center {
   text-align: center;
 }
 
-:where(#thxptbkzha) .gt_right {
+:where(#jsxjbtnuhh) .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#thxptbkzha) .gt_font_normal {
+:where(#jsxjbtnuhh) .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#thxptbkzha) .gt_font_bold {
+:where(#jsxjbtnuhh) .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#thxptbkzha) .gt_font_italic {
+:where(#jsxjbtnuhh) .gt_font_italic {
   font-style: italic;
 }
 
-:where(#thxptbkzha) .gt_super {
+:where(#jsxjbtnuhh) .gt_super {
   font-size: 65%;
 }
 
-:where(#thxptbkzha) .gt_footnote_marks {
+:where(#jsxjbtnuhh) .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-:where(#thxptbkzha) .gt_asterisk {
+:where(#jsxjbtnuhh) .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#thxptbkzha) .gt_indent_1 {
+:where(#jsxjbtnuhh) .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#thxptbkzha) .gt_indent_2 {
+:where(#jsxjbtnuhh) .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#thxptbkzha) .gt_indent_3 {
+:where(#jsxjbtnuhh) .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#thxptbkzha) .gt_indent_4 {
+:where(#jsxjbtnuhh) .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#thxptbkzha) .gt_indent_5 {
+:where(#jsxjbtnuhh) .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -3326,7 +3326,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
 <span id="cb5-4">  <span class="co" style="color: #5E5E5E;">#theme_classic() +</span></span>
 <span id="cb5-5">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">8</span>, <span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">90</span>))</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -3349,7 +3349,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
 <span id="cb7-9">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Number of languages using token"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
 <span id="cb7-10">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index_files/figure-html/lang-token-graph-undordered-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>I thought I had noted this in the previous post, but one of the tokens, ⍝ , is rendered as an empty box in the ggplot figures. I thought fixing this would be easy. First, I thought I could just pass the Unicode value for that symbol. Then, when that didn’t work, I thought I could change the font to one supporting that symbol. Supposedly, changing the font should be easy, yet after 3 hours working on it, I still had blank squares. There is a nice tutorial on <a href="https://statisticaloddsandends.wordpress.com/2021/07/08/using-different-fonts-with-ggplot2/">changing fonts in ggplot</a> that did not work until <a href="https://github.com/GuangchuangYu/meme/issues/1">I found someone with the same issue</a>. The solution is to add a line of code that doesn’t make much sense to me : <code>windowsFonts("Cambria Math" = windowsFont("Cambria Math"))</code></p>
@@ -3379,7 +3379,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
 <span id="cb8-14">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">text =</span> <span class="fu" style="color: #4758AB;">element_text</span>( <span class="at" style="color: #657422;">family =</span> <span class="st" style="color: #20794D;">"Cambria Math"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
 <span id="cb8-15">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">face =</span> <span class="st" style="color: #20794D;">"bold"</span>)) </span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
@@ -3389,12 +3389,12 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks,
   author = {Louise E. Sinks},
   title = {TidyTuesday {Week} 12: {Programming} {Languages} {Revisited}},
-  url = {https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/},
+  url = {https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas">
 Louise E. Sinks. n.d. <span>“TidyTuesday Week 12: Programming Languages
-Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/">https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/</a>.
+Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/">https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>TidyTuesday</category>
@@ -3402,9 +3402,9 @@ Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-22-tidytues
   <category>Code-Along</category>
   <category>Data-Viz</category>
   <category>skimr</category>
-  <guid>https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/index.html</guid>
-  <pubDate>Fri, 24 Mar 2023 18:54:40 GMT</pubDate>
-  <media:content url="https://lsinks.github.io/posts/2023-03-22-tidytuesday-figure-polishing/revised_fig.png" medium="image" type="image/png" height="89" width="144"/>
+  <guid>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</guid>
+  <pubDate>Sat, 25 Mar 2023 16:00:44 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/revised_fig.png" medium="image" type="image/png" height="89" width="144"/>
 </item>
 </channel>
 </rss>
