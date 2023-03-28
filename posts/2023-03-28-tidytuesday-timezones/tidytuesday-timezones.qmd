@@ -11,7 +11,7 @@ categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, ggimage, maps] # self
 citation:
   url: https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/
 image: "thumbnail.png"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 [This week's TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-03-28/readme.md) is about the timezone data from [IANA timezone database](https://data.iana.org/time-zones/tz-link.html).
@@ -35,7 +35,7 @@ library(ggimage)
 
 ```
 
-The history of this database is fascinating. It is used by many computer systems to determine the correct time based on location.
+The history of this database is fascinating. It is used by many computer systems to determine the correct time based on location. To learn more, I recommend reading [Daniel Rosehill's article on the topic](https://onezero.medium.com/the-largely-untold-story-of-how-one-guy-in-california-keeps-the-worlds-computers-on-the-right-time-a97a5493bf73). For a drier history, check out the [wikipedia article](https://en.wikipedia.org/wiki/Tz_database).
 
 ```{r}
 #| label: load-data
@@ -74,7 +74,7 @@ I was interested in how many countries had multiple times zones. I know the US h
 ```{r}
 #| label: how-many-tz
 #| warning: false
-#| output: false
+
 num_zones <- timezone_countries %>%
   count(country_code, sort = TRUE)
 
@@ -167,24 +167,24 @@ I hadn't previously used the [maps package](https://cran.r-project.org/web/packa
 
 aspect_ratio <- 1.618  
 
-p <- map_data("world") %>% 
+us_tz_map <- map_data("world") %>% 
   ggplot(aes(long, lat)) +
   geom_polygon(aes(group = group), fill = "white", 
-               color = "gray30", alpha = 0.5) +
+               color = "gray30", alpha = 0.9) +
   geom_image(aes(x = longitude, latitude, image = image_name), 
              data = US_tz, size = 0.025, by = "width",
              asp = aspect_ratio) +
   coord_sf() +
   labs(title = "The United States has 29 Timezone- Mostly Redunant",
-       caption = "Data from :https://data.iana.org/time-zones/tz-link.html") +
+       caption = "Data from: https://data.iana.org/time-zones/tz-link.html") +
   theme_void() +
   theme(aspect.ratio = 1/aspect_ratio,
     legend.position = "bottom",
     plot.background = element_rect(fill = "white", color = "white")
     )
 
-ggsave("thumbnail.png", p, width = 5 * aspect_ratio, height = 5)
-p
+ggsave("thumbnail.png", us_tz_map, width = 5 * aspect_ratio, height = 5)
+us_tz_map
 ```
 
 And what we see is there are a bunch of redundant times zone specification, especially in the Midwest.

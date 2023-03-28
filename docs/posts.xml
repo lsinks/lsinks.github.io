@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Tue, 28 Mar 2023 20:06:12 GMT</lastBuildDate>
+<lastBuildDate>Tue, 28 Mar 2023 20:33:28 GMT</lastBuildDate>
 <item>
   <title>Creating a Blog</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -46,7 +46,7 @@ Louise E. Sinks. n.d. <span>“Creating a Blog.”</span> <a href="https://lsink
   <category>R</category>
   <category>turtle</category>
   <guid>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:06:12 GMT</pubDate>
+  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-14-tester-post/mckinley.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
@@ -2008,7 +2008,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:06:12 GMT</pubDate>
+  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
@@ -3403,7 +3403,7 @@ Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-24-tidytues
   <category>Data-Viz</category>
   <category>skimr</category>
   <guid>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:06:12 GMT</pubDate>
+  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/thumbnail.png" medium="image" type="image/png" height="103" width="144"/>
 </item>
 <item>
@@ -3429,8 +3429,1203 @@ Louise E. Sinks. n.d. <span>“Twitter Cards.”</span> <a href="https://lsinks.
 </div></div></section></div> ]]></description>
   <category>Quarto</category>
   <guid>https://lsinks.github.io/posts/2023-03-25-twitter-cards/twitter-cards.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:06:12 GMT</pubDate>
+  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-25-twitter-cards/thumbnail.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Tidy Tuesday: Daylight Savings Time</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</link>
+  <description><![CDATA[ 
+
+
+
+<p><a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-03-28/readme.md">This week’s TidyTuesday</a> is about the timezone data from <a href="https://data.iana.org/time-zones/tz-link.html">IANA timezone database</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidytuesdayR)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(gt)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(lubridate)</span>
+<span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(lutz)</span>
+<span id="cb1-9"><span class="fu" style="color: #4758AB;">library</span>(maps)</span>
+<span id="cb1-10"><span class="fu" style="color: #4758AB;">library</span>(scales)</span>
+<span id="cb1-11"><span class="fu" style="color: #4758AB;">library</span>(sf)</span>
+<span id="cb1-12"><span class="fu" style="color: #4758AB;">library</span>(ggimage)</span></code></pre></div>
+</div>
+<p>The history of this database is fascinating. It is used by many computer systems to determine the correct time based on location. To learn more, I recommend reading <a href="https://onezero.medium.com/the-largely-untold-story-of-how-one-guy-in-california-keeps-the-worlds-computers-on-the-right-time-a97a5493bf73">Daniel Rosehill’s article on the topic</a>. For a drier history, check out the <a href="https://en.wikipedia.org/wiki/Tz_database">wikipedia article</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Get the Data</span></span>
+<span id="cb2-2"></span>
+<span id="cb2-3"><span class="co" style="color: #5E5E5E;"># Read in with tidytuesdayR package </span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;"># This loads the readme and all the datasets for the week of interest</span></span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;"># Either ISO-8601 date or year/week works!</span></span>
+<span id="cb2-7"></span>
+<span id="cb2-8"><span class="co" style="color: #5E5E5E;">#tuesdata &lt;- tidytuesdayR::tt_load('2023-03-21')</span></span>
+<span id="cb2-9">tuesdata <span class="ot" style="color: #003B4F;">&lt;-</span> tidytuesdayR<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">tt_load</span>(<span class="dv" style="color: #AD0000;">2023</span>, <span class="at" style="color: #657422;">week =</span> <span class="dv" style="color: #AD0000;">13</span>)</span>
+<span id="cb2-10"></span>
+<span id="cb2-11">transitions <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>transitions</span>
+<span id="cb2-12">timezones <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>timezones</span>
+<span id="cb2-13">timezone_countries <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>timezone_countries</span>
+<span id="cb2-14">countries <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>countries</span></code></pre></div>
+</div>
+<p>It is suggested that we change the begin and end variables in transitions to datetimes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">transitions <span class="ot" style="color: #003B4F;">&lt;-</span> transitions <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">begin =</span> <span class="fu" style="color: #4758AB;">as_datetime</span>(begin), <span class="at" style="color: #657422;">end =</span> <span class="fu" style="color: #4758AB;">as_datetime</span>(end))</span></code></pre></div>
+</div>
+<p>I was interested in how many countries had multiple times zones. I know the US has 4 time zones in the continental US.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">num_zones <span class="ot" style="color: #003B4F;">&lt;-</span> timezone_countries <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">count</span>(country_code, <span class="at" style="color: #657422;">sort =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4">num_zones <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;">filter</span>(n <span class="sc" style="color: #5E5E5E;">&gt;</span> <span class="dv" style="color: #AD0000;">1</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;">left_join</span>(countries) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;">select</span>(place_name, n) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;">filter</span>(place_name <span class="sc" style="color: #5E5E5E;">!=</span> <span class="st" style="color: #20794D;">"NA"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-10">  <span class="fu" style="color: #4758AB;">cols_label</span>(<span class="at" style="color: #657422;">place_name =</span> <span class="st" style="color: #20794D;">"Country"</span>, <span class="at" style="color: #657422;">n =</span> <span class="st" style="color: #20794D;">"Number of TZs"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;">opt_stylize</span>(<span class="at" style="color: #657422;">style =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="at" style="color: #657422;">add_row_striping =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-12">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Countries with Multiple TZs"</span>) </span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="wbfpvrqshf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#wbfpvrqshf) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#wbfpvrqshf) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wbfpvrqshf) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#wbfpvrqshf) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#wbfpvrqshf) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#wbfpvrqshf) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#wbfpvrqshf) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wbfpvrqshf) .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#wbfpvrqshf) .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#wbfpvrqshf) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#wbfpvrqshf) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#wbfpvrqshf) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#wbfpvrqshf) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#wbfpvrqshf) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+:where(#wbfpvrqshf) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#wbfpvrqshf) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#wbfpvrqshf) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#wbfpvrqshf) .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#wbfpvrqshf) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#wbfpvrqshf) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+:where(#wbfpvrqshf) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#wbfpvrqshf) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#wbfpvrqshf) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+:where(#wbfpvrqshf) .gt_striped {
+  background-color: #EDF7FC;
+}
+
+:where(#wbfpvrqshf) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#wbfpvrqshf) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wbfpvrqshf) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#wbfpvrqshf) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_left {
+  text-align: left;
+}
+
+:where(#wbfpvrqshf) .gt_center {
+  text-align: center;
+}
+
+:where(#wbfpvrqshf) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#wbfpvrqshf) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#wbfpvrqshf) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#wbfpvrqshf) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#wbfpvrqshf) .gt_super {
+  font-size: 65%;
+}
+
+:where(#wbfpvrqshf) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#wbfpvrqshf) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#wbfpvrqshf) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#wbfpvrqshf) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#wbfpvrqshf) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#wbfpvrqshf) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#wbfpvrqshf) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Countries with Multiple TZs</td>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Country">Country</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Number of TZs">Number of TZs</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="place_name" class="gt_row gt_left">United States</td>
+<td headers="n" class="gt_row gt_right">29</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Canada</td>
+<td headers="n" class="gt_row gt_right gt_striped">28</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Russia</td>
+<td headers="n" class="gt_row gt_right">27</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Brazil</td>
+<td headers="n" class="gt_row gt_right gt_striped">16</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Argentina</td>
+<td headers="n" class="gt_row gt_right">12</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Australia</td>
+<td headers="n" class="gt_row gt_right gt_striped">12</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Mexico</td>
+<td headers="n" class="gt_row gt_right">11</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Kazakhstan</td>
+<td headers="n" class="gt_row gt_right gt_striped">7</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Greenland</td>
+<td headers="n" class="gt_row gt_right">4</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Indonesia</td>
+<td headers="n" class="gt_row gt_right gt_striped">4</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Ukraine</td>
+<td headers="n" class="gt_row gt_right">4</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Chile</td>
+<td headers="n" class="gt_row gt_right gt_striped">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Spain</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Micronesia</td>
+<td headers="n" class="gt_row gt_right gt_striped">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Kiribati</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Mongolia</td>
+<td headers="n" class="gt_row gt_right gt_striped">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Malaysia</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">French Polynesia</td>
+<td headers="n" class="gt_row gt_right gt_striped">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Portugal</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">US minor outlying islands</td>
+<td headers="n" class="gt_row gt_right gt_striped">3</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Congo (Dem. Rep.)</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">China</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Cyprus</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Germany</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Ecuador</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Marshall Islands</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">New Zealand</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Papua New Guinea</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Palestine</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">French Southern &amp; Antarctic Lands</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left">Uzbekistan</td>
+<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="place_name" class="gt_row gt_left gt_striped">Vietnam</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>And we find that the United States has 29!! time zones in the database. This was unexpected, so say the least. I thought maybe there were some times zones for territories and perhaps military bases that I did not know about. I also thought there might be some extra time zones arising from some states using daylight savings time, while others in the same area might not. I wanted to visualize where these times zones were.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">US_tz <span class="ot" style="color: #003B4F;">&lt;-</span> timezone_countries <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">filter</span>(country_code <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"US"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;">left_join</span>(timezones)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(zone)`</code></pre>
+</div>
+</div>
+<p>I found the <a href="https://cran.r-project.org/web/packages/lutz/">lutz package</a> created nice pictograms about when a timezone shifts from DST and back. (This package uses the same underlying database that we are using here to determine when the shifts occur.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"> <span class="fu" style="color: #4758AB;">tz_plot</span>(US_tz<span class="sc" style="color: #5E5E5E;">$</span>zone[<span class="dv" style="color: #AD0000;">21</span>])</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I created the plots and saved them as images. I modified a function I found on <a href="https://stackoverflow.com/questions/66324232/how-to-save-files-with-different-names-using-for-loops-in-r">stack overflow to create the file names</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">wd <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">getwd</span>()</span>
+<span id="cb8-2">filepath <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">file.path</span>(wd)</span>
+<span id="cb8-3"></span>
+<span id="cb8-4"></span>
+<span id="cb8-5">make_filename <span class="ot" style="color: #003B4F;">=</span> <span class="cf" style="color: #003B4F;">function</span>(number){</span>
+<span id="cb8-6">  <span class="co" style="color: #5E5E5E;"># doing this, putting it all on a single line or using pipe %&gt;%</span></span>
+<span id="cb8-7">  <span class="co" style="color: #5E5E5E;"># is just matter of style</span></span>
+<span id="cb8-8">  filename <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"tzplot"</span>, number, <span class="at" style="color: #657422;">sep=</span><span class="st" style="color: #20794D;">"_"</span>)</span>
+<span id="cb8-9">  filename <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">paste0</span>(filename, <span class="st" style="color: #20794D;">".png"</span>)</span>
+<span id="cb8-10">  filename <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">file.path</span>(filepath, filename)</span>
+<span id="cb8-11">  </span>
+<span id="cb8-12">  filename</span>
+<span id="cb8-13">}</span>
+<span id="cb8-14"></span>
+<span id="cb8-15"><span class="co" style="color: #5E5E5E;">#creating a variable to store the files name</span></span>
+<span id="cb8-16">US_tz <span class="ot" style="color: #003B4F;">&lt;-</span> US_tz <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-17">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">image_name =</span> <span class="st" style="color: #20794D;">"tbd"</span>)</span>
+<span id="cb8-18"></span>
+<span id="cb8-19">index <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span>
+<span id="cb8-20"><span class="cf" style="color: #003B4F;">for</span> (index <span class="cf" style="color: #003B4F;">in</span> <span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">1</span>, <span class="fu" style="color: #4758AB;">nrow</span>(US_tz))) {</span>
+<span id="cb8-21">  filename <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">make_filename</span>(index)</span>
+<span id="cb8-22">  US_tz[index , <span class="st" style="color: #20794D;">"image_name"</span>] <span class="ot" style="color: #003B4F;">&lt;-</span> filename</span>
+<span id="cb8-23">  <span class="co" style="color: #5E5E5E;"># 1. Open jpeg file</span></span>
+<span id="cb8-24">  <span class="fu" style="color: #4758AB;">png</span>(filename, <span class="at" style="color: #657422;">width =</span> <span class="dv" style="color: #AD0000;">350</span>, <span class="at" style="color: #657422;">height =</span> <span class="dv" style="color: #AD0000;">350</span>, <span class="at" style="color: #657422;">bg =</span> <span class="st" style="color: #20794D;">"transparent"</span>)</span>
+<span id="cb8-25">  <span class="co" style="color: #5E5E5E;"># 2. Create the plot</span></span>
+<span id="cb8-26">  <span class="co" style="color: #5E5E5E;"># you need to print the plot if you call it inside a loop</span></span>
+<span id="cb8-27">  <span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">tz_plot</span>(US_tz<span class="sc" style="color: #5E5E5E;">$</span>zone[index]))</span>
+<span id="cb8-28">  <span class="co" style="color: #5E5E5E;"># 3. Close the file</span></span>
+<span id="cb8-29">  <span class="fu" style="color: #4758AB;">dev.off</span>()</span>
+<span id="cb8-30">  index <span class="ot" style="color: #003B4F;">=</span> index <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">1</span></span>
+<span id="cb8-31">}</span></code></pre></div>
+</div>
+<p>Next I created a world map, inspired by the one from</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>My submission for <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a>, Week 13 on time zones. I plot time zones in the world map.<br><br>Code: <a href="https://t.co/y5Cm4tuaVk">https://t.co/y5Cm4tuaVk</a> <a href="https://t.co/BZC3anC5Oa">pic.twitter.com/BZC3anC5Oa</a></p>
+<p></p>
+<p>— Mitsuo Shiota (<span class="citation" data-cites="mitsuoxv">@mitsuoxv</span>) <a href="https://twitter.com/mitsuoxv/status/1640514380600332290?ref_src=twsrc%5Etfw">March 28, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>I hadn’t previously used the <a href="https://cran.r-project.org/web/packages/maps/">maps package</a>, so I appreciate being introduced to it. The maps package only has a mainland US map, so I used the world map. (Plus, as I mentioned, I thought some of these time zones would be in other parts of the world.) I followed a tutorial on <a href="https://themockup.blog/posts/2020-10-11-embedding-images-in-ggplot/">Plotting Points as Images in ggplot</a> and used the hints about aspect ratio to make my tz_plot circles remain circular. However, that did stretch the world a bit.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">aspect_ratio <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fl" style="color: #AD0000;">1.618</span>  </span>
+<span id="cb9-2"></span>
+<span id="cb9-3">us_tz_map <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">map_data</span>(<span class="st" style="color: #20794D;">"world"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(long, lat)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;">geom_polygon</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">group =</span> group), <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"white"</span>, </span>
+<span id="cb9-6">               <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"gray30"</span>, <span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-7">  <span class="fu" style="color: #4758AB;">geom_image</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> longitude, latitude, <span class="at" style="color: #657422;">image =</span> image_name), </span>
+<span id="cb9-8">             <span class="at" style="color: #657422;">data =</span> US_tz, <span class="at" style="color: #657422;">size =</span> <span class="fl" style="color: #AD0000;">0.025</span>, <span class="at" style="color: #657422;">by =</span> <span class="st" style="color: #20794D;">"width"</span>,</span>
+<span id="cb9-9">             <span class="at" style="color: #657422;">asp =</span> aspect_ratio) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;">coord_sf</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-11">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"The United States has 29 Timezone- Mostly Redunant"</span>,</span>
+<span id="cb9-12">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Data from: https://data.iana.org/time-zones/tz-link.html"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-13">  <span class="fu" style="color: #4758AB;">theme_void</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb9-14">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">aspect.ratio =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">/</span>aspect_ratio,</span>
+<span id="cb9-15">    <span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"bottom"</span>,</span>
+<span id="cb9-16">    <span class="at" style="color: #657422;">plot.background =</span> <span class="fu" style="color: #4758AB;">element_rect</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"white"</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"white"</span>)</span>
+<span id="cb9-17">    )</span>
+<span id="cb9-18"></span>
+<span id="cb9-19"><span class="fu" style="color: #4758AB;">ggsave</span>(<span class="st" style="color: #20794D;">"thumbnail.png"</span>, us_tz_map, <span class="at" style="color: #657422;">width =</span> <span class="dv" style="color: #AD0000;">5</span> <span class="sc" style="color: #5E5E5E;">*</span> aspect_ratio, <span class="at" style="color: #657422;">height =</span> <span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb9-20">us_tz_map</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>And what we see is there are a bunch of redundant times zone specification, especially in the Midwest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">US_tz <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;">select</span>(zone, latitude, longitude) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;">arrange</span>(longitude) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-4">  <span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-5">  <span class="fu" style="color: #4758AB;">opt_stylize</span>(<span class="at" style="color: #657422;">style =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="at" style="color: #657422;">add_row_striping =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-6">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Countries with Multiple TZs"</span>) </span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="uczrxcvfac" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#uczrxcvfac) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#uczrxcvfac) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#uczrxcvfac) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#uczrxcvfac) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#uczrxcvfac) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#uczrxcvfac) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#uczrxcvfac) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#uczrxcvfac) .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#uczrxcvfac) .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#uczrxcvfac) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#uczrxcvfac) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#uczrxcvfac) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#uczrxcvfac) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#uczrxcvfac) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+:where(#uczrxcvfac) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#uczrxcvfac) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#uczrxcvfac) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#uczrxcvfac) .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#uczrxcvfac) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#uczrxcvfac) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#uczrxcvfac) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#uczrxcvfac) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+:where(#uczrxcvfac) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#uczrxcvfac) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#uczrxcvfac) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#uczrxcvfac) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+:where(#uczrxcvfac) .gt_striped {
+  background-color: #EDF7FC;
+}
+
+:where(#uczrxcvfac) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#uczrxcvfac) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#uczrxcvfac) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#uczrxcvfac) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#uczrxcvfac) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#uczrxcvfac) .gt_left {
+  text-align: left;
+}
+
+:where(#uczrxcvfac) .gt_center {
+  text-align: center;
+}
+
+:where(#uczrxcvfac) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#uczrxcvfac) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#uczrxcvfac) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#uczrxcvfac) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#uczrxcvfac) .gt_super {
+  font-size: 65%;
+}
+
+:where(#uczrxcvfac) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#uczrxcvfac) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#uczrxcvfac) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#uczrxcvfac) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#uczrxcvfac) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#uczrxcvfac) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#uczrxcvfac) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Countries with Multiple TZs</td>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="zone">zone</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="latitude">latitude</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="longitude">longitude</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="zone" class="gt_row gt_left">America/Adak</td>
+<td headers="latitude" class="gt_row gt_right">52.66667</td>
+<td headers="longitude" class="gt_row gt_right">-177.13333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Nome</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">64.56667</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-165.78333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">Pacific/Honolulu</td>
+<td headers="latitude" class="gt_row gt_right">21.71667</td>
+<td headers="longitude" class="gt_row gt_right">-158.35000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Anchorage</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">61.30000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-149.91667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Yakutat</td>
+<td headers="latitude" class="gt_row gt_right">60.35000</td>
+<td headers="longitude" class="gt_row gt_right">-140.35000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Sitka</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">57.75000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-135.41667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Juneau</td>
+<td headers="latitude" class="gt_row gt_right">58.41667</td>
+<td headers="longitude" class="gt_row gt_right">-134.60000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Metlakatla</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">55.73333</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-132.15000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Los_Angeles</td>
+<td headers="latitude" class="gt_row gt_right">34.18333</td>
+<td headers="longitude" class="gt_row gt_right">-118.80000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Boise</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">44.41667</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-116.35000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Phoenix</td>
+<td headers="latitude" class="gt_row gt_right">34.33333</td>
+<td headers="longitude" class="gt_row gt_right">-112.46667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Denver</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">40.08333</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-105.03333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/North_Dakota/Beulah</td>
+<td headers="latitude" class="gt_row gt_right">48.10000</td>
+<td headers="longitude" class="gt_row gt_right">-102.43333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/North_Dakota/Center</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">48.08333</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-102.23333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/North_Dakota/New_Salem</td>
+<td headers="latitude" class="gt_row gt_right">47.53333</td>
+<td headers="longitude" class="gt_row gt_right">-102.05000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Menominee</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">45.56667</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-88.45000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Indiana/Vincennes</td>
+<td headers="latitude" class="gt_row gt_right">39.30000</td>
+<td headers="longitude" class="gt_row gt_right">-88.23333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Indiana/Petersburg</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">39.00000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-87.98333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Chicago</td>
+<td headers="latitude" class="gt_row gt_right">41.85000</td>
+<td headers="longitude" class="gt_row gt_right">-87.65000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Indiana/Tell_City</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">38.13333</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-87.43333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Indiana/Knox</td>
+<td headers="latitude" class="gt_row gt_right">42.03333</td>
+<td headers="longitude" class="gt_row gt_right">-87.11667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Indiana/Marengo</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">38.90000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-87.01667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Indiana/Winamac</td>
+<td headers="latitude" class="gt_row gt_right">41.13333</td>
+<td headers="longitude" class="gt_row gt_right">-86.78333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Indiana/Indianapolis</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">39.86667</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-86.63333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Kentucky/Louisville</td>
+<td headers="latitude" class="gt_row gt_right">38.50000</td>
+<td headers="longitude" class="gt_row gt_right">-86.31667</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Kentucky/Monticello</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">37.60000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-85.78333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/Indiana/Vevay</td>
+<td headers="latitude" class="gt_row gt_right">39.60000</td>
+<td headers="longitude" class="gt_row gt_right">-85.10000</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left gt_striped">America/Detroit</td>
+<td headers="latitude" class="gt_row gt_right gt_striped">43.20000</td>
+<td headers="longitude" class="gt_row gt_right gt_striped">-83.78333</td></tr>
+    <tr><td headers="zone" class="gt_row gt_left">America/New_York</td>
+<td headers="latitude" class="gt_row gt_right">41.55000</td>
+<td headers="longitude" class="gt_row gt_right">-74.38333</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks,
+  author = {Louise E. Sinks},
+  title = {Tidy {Tuesday:} {Daylight} {Savings} {Time}},
+  url = {https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. n.d. <span>“Tidy Tuesday: Daylight Savings
+Time.”</span> <a href="https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/">https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Data-Viz</category>
+  <category>ggimage</category>
+  <category>maps</category>
+  <guid>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</guid>
+  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
 </item>
 </channel>
 </rss>
