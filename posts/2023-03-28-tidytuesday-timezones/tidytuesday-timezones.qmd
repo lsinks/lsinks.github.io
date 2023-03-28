@@ -1,20 +1,20 @@
 ---
 title: "Tidy Tuesday: Daylight Savings Time"
-description: "TidyTuesday: Polishing"
+description: "TidyTuesday: Exploring Time Zones and Daylight Savings Time"
 twitter-card:
   image: "thumbnail.png"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
     date: 03-28-2023
-categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz] # self-defined categories
+categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, ggimage, maps] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/
 image: "thumbnail.png"
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-this is tidy tuesday
+[This week's TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-03-28/readme.md) is about the timezone data from [IANA timezone database](https://data.iana.org/time-zones/tz-link.html).
 
 ```{r}
 #| label: loading-libraries
@@ -27,10 +27,15 @@ library(ggthemes)
 library(gt)
 library(lubridate)
 library(skimr)
+library(lutz)
+library(maps)
+library(scales)
+library(sf)
+library(ggimage)
 
 ```
 
-This week's TidyTuesday is about timezones and daylight savings time.
+The history of this database is fascinating. It is used by many computer systems to determine the correct time based on location.
 
 ```{r}
 #| label: load-data
@@ -52,25 +57,128 @@ timezone_countries <- tuesdata$timezone_countries
 countries <- tuesdata$countries
 ```
 
-Cleaning the data.
+It is suggested that we change the begin and end variables in transitions to datetimes.
 
 ```{r}
-library(skimr)
-```
-
-More
-
-```{r}
-
+#| label: cleaning-data
+#| warning: false
+#| output: false
 transitions <- transitions %>%
   mutate(begin = as_datetime(begin), end = as_datetime(end))
 
 
 ```
 
-Missingness
+I was interested in how many countries had multiple times zones. I know the US has 4 time zones in the continental US.
 
 ```{r}
-skim(transitions)
+#| label: how-many-tz
+#| warning: false
+#| output: false
+num_zones <- timezone_countries %>%
+  count(country_code, sort = TRUE)
+
+num_zones %>% 
+  filter(n > 1) %>%
+  left_join(countries) %>%
+  select(place_name, n) %>%
+  filter(place_name != "NA") %>%
+  gt() %>%
+  cols_label(place_name = "Country", n = "Number of TZs") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Countries with Multiple TZs") 
+
+
+```
+
+And we find that the United States has 29!! time zones in the database. This was unexpected, so say the least. I thought maybe there were some times zones for territories and perhaps military bases that I did not know about. I also thought there might be some extra time zones arising from some states using daylight savings time, while others in the same area might not. I wanted to visualize where these times zones were.
+
+```{r}
+US_tz <- timezone_countries %>% 
+  filter(country_code == "US") %>%
+  left_join(timezones)
+```
+
+I found the [lutz package](https://cran.r-project.org/web/packages/lutz/) created nice pictograms about when a timezone shifts from DST and back. (This package uses the same underlying database that we are using here to determine when the shifts occur.)
+
+```{r}
+ tz_plot(US_tz$zone[21])
+
+```
+
+I created the plots and saved them as images. I modified a function I found on stack overflow to create the file names.
+
+```{r}
+
+wd <- getwd()
+filepath = file.path(wd)
+
+#https://stackoverflow.com/questions/66324232/how-to-save-files-with-different-names-using-for-loops-in-r
+make_filename = function(number){
+  # doing this, putting it all on a single line or using pipe %>%
+  # is just matter of style
+  filename = paste("tzplot", number, sep="_")
+  filename = paste0(filename, ".png")
+  filename = file.path(filepath, filename)
+  
+  filename
+}
+
+#creating a variable to store the files name
+US_tz <- US_tz %>%
+  mutate(image_name = "tbd")
+
+index <- 1
+for (index in seq(1, nrow(US_tz))) {
+  filename = make_filename(index)
+  US_tz[index , "image_name"] <- filename
+  # 1. Open jpeg file
+  png(filename, width = 350, height = 350, bg = "transparent")
+  # 2. Create the plot
+  # you need to print the plot if you call it inside a loop
+  print(tz_plot(US_tz$zone[index]))
+  # 3. Close the file
+  dev.off()
+  index = index + 1
+}
+
+```
+
+Next I created a world map, inspired by the one from
+
+\<blockquote class="twitter-tweet"\>\<p lang="en" dir="ltr"\>My submission for \<a href="https://twitter.com/hashtag/TidyTuesday?src=hash&ref_src=twsrc%5Etfw"\>#TidyTuesday\</a\>, Week 13 on time zones. I plot time zones in the world map.\<br\>\<br\>Code: \<a href="https://t.co/y5Cm4tuaVk"\>https://t.co/y5Cm4tuaVk\</a\> \<a href="https://t.co/BZC3anC5Oa"\>pic.twitter.com/BZC3anC5Oa\</a\>\</p\>--- Mitsuo Shiota (\@mitsuoxv) \<a href="https://twitter.com/mitsuoxv/status/1640514380600332290?ref_src=twsrc%5Etfw"\>March 28, 2023\</a\>\</blockquote\> \<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"\>\</script\>
+
+I hadn't previously used the [maps package](https://cran.r-project.org/web/packages/maps/), so I appreciate being introduced to it. The maps package only has a mainland US map, so I used the world map. (Plus, as I mentioned, I thought some of these time zones would be in other parts of the world.) I followed a tutorial on [Plotting Points as Images in ggplot](https://themockup.blog/posts/2020-10-11-embedding-images-in-ggplot/) and used the hints about aspect ratio to make my tz_plot circles remain circular. However, that did stretch the world a bit.
+
+```{r}
+
+aspect_ratio <- 1.618  
+
+p <- map_data("world") %>% 
+  ggplot(aes(long, lat)) +
+  geom_polygon(aes(group = group), fill = "white", 
+               color = "gray30", alpha = 0.5) +
+  geom_image(aes(x = longitude, latitude, image = image_name), 
+             data = US_tz, size = 0.025, by = "width",
+             asp = aspect_ratio) +
+  coord_sf() +
+  labs(title = "The United States has 29 Timezone- Mostly Redunant",
+       caption = "Data from :https://data.iana.org/time-zones/tz-link.html") +
+  theme_void() +
+  theme(aspect.ratio = 1/aspect_ratio,
+    legend.position = "bottom",
+    plot.background = element_rect(fill = "white", color = "white")
+    )
+
+ggsave("thumbnail.png", p, width = 5 * aspect_ratio, height = 5)
+
+```
+
+And what we see is there are a bunch of redundant times zone specification, especially in the Midwest.
+
+```{r}
+US_tz %>%
+  select(zone, latitude, longitude) %>%
+  arrange(longitude)
 
 ```
