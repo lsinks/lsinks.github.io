@@ -106,14 +106,14 @@ I found the [lutz package](https://cran.r-project.org/web/packages/lutz/) create
 
 ```
 
-I created the plots and saved them as images. I modified a function I found on stack overflow to create the file names.
+I created the plots and saved them as images. I modified a function I found on [stack overflow to create the file names](https://stackoverflow.com/questions/66324232/how-to-save-files-with-different-names-using-for-loops-in-r).
 
 ```{r}
 
 wd <- getwd()
 filepath = file.path(wd)
 
-#https://stackoverflow.com/questions/66324232/how-to-save-files-with-different-names-using-for-loops-in-r
+
 make_filename = function(number){
   # doing this, putting it all on a single line or using pipe %>%
   # is just matter of style
@@ -146,8 +146,21 @@ for (index in seq(1, nrow(US_tz))) {
 
 Next I created a world map, inspired by the one from
 
-\<blockquote class="twitter-tweet"\>\<p lang="en" dir="ltr"\>My submission for \<a href="https://twitter.com/hashtag/TidyTuesday?src=hash&ref_src=twsrc%5Etfw"\>#TidyTuesday\</a\>, Week 13 on time zones. I plot time zones in the world map.\<br\>\<br\>Code: \<a href="https://t.co/y5Cm4tuaVk"\>https://t.co/y5Cm4tuaVk\</a\> \<a href="https://t.co/BZC3anC5Oa"\>pic.twitter.com/BZC3anC5Oa\</a\>\</p\>--- Mitsuo Shiota (\@mitsuoxv) \<a href="https://twitter.com/mitsuoxv/status/1640514380600332290?ref_src=twsrc%5Etfw"\>March 28, 2023\</a\>\</blockquote\> \<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"\>\</script\>
+<blockquote class="twitter-tweet">
 
+<p lang="en" dir="ltr">
+
+My submission for <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&ref_src=twsrc%5Etfw">#TidyTuesday</a>, Week 13 on time zones. I plot time zones in the world map.<br><br>Code: <a href="https://t.co/y5Cm4tuaVk">https://t.co/y5Cm4tuaVk</a> <a href="https://t.co/BZC3anC5Oa">pic.twitter.com/BZC3anC5Oa</a>
+
+</p>
+
+--- Mitsuo Shiota (@mitsuoxv) <a href="https://twitter.com/mitsuoxv/status/1640514380600332290?ref_src=twsrc%5Etfw">March 28, 2023</a>
+
+</blockquote>
+
+```{=html}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+```
 I hadn't previously used the [maps package](https://cran.r-project.org/web/packages/maps/), so I appreciate being introduced to it. The maps package only has a mainland US map, so I used the world map. (Plus, as I mentioned, I thought some of these time zones would be in other parts of the world.) I followed a tutorial on [Plotting Points as Images in ggplot](https://themockup.blog/posts/2020-10-11-embedding-images-in-ggplot/) and used the hints about aspect ratio to make my tz_plot circles remain circular. However, that did stretch the world a bit.
 
 ```{r}
@@ -171,7 +184,7 @@ p <- map_data("world") %>%
     )
 
 ggsave("thumbnail.png", p, width = 5 * aspect_ratio, height = 5)
-
+p
 ```
 
 And what we see is there are a bunch of redundant times zone specification, especially in the Midwest.
@@ -179,6 +192,9 @@ And what we see is there are a bunch of redundant times zone specification, espe
 ```{r}
 US_tz %>%
   select(zone, latitude, longitude) %>%
-  arrange(longitude)
+  arrange(longitude) %>%
+  gt() %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Countries with Multiple TZs") 
 
 ```
