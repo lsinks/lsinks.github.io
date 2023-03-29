@@ -11,7 +11,7 @@ website:
     right:
       - href: index.qmd
         text: Home
-      - about.qmd
+      #- about.qmd
       - posts.qmd
       - href: blogroll.qmd
         text: "Blog Roll"

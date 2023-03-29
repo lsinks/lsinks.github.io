@@ -1,12 +1,5 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "This is a place for me to document my journey in learning data science in a more rigorous way. While I did a lot of coding and modeling as a chemist, I did not formally learn to code or about modeling and machine learning frameworks. (I wish I had! My post-doc would have been a lot smoother.)\nMost of my academic work was in Matlab so I chose to start this process with R because it looked more similar than Python."
-  },
-  {
     "objectID": "blogroll.html",
     "href": "blogroll.html",
     "title": "Blog Roll",
@@ -18,7 +11,7 @@
     "href": "index.html",
     "title": "Louise E. Sinks",
     "section": "",
-    "text": "EMPLOYMENT\nFreelance Technical Consultant 2017- present\nVice President US Nano LLC 2011-2017\nEDUCATION\nUniversity of Pennsylvania 2005-2011\nPostdoctoral Research Fellow 2008-2011\nNIH National Research Service Award Postdoctoral Fellow 2005-2008\nUniversity of Aarhus summer 2009\nVisiting Researcher, Center for Oxygen Microscopic Imaging\nNorthwestern University Evanston, IL 1999-2004\nMS and PhD in Chemistry\nUniversity of Virginia Charlottesville, VA 1995-1999\nBS in Chemistry with Honors, Minor: Math, fulfilled requirements for a BA in Physics\nCERTIFICATIONS\nDataCamp Data Scientist Professional Certificate\nGoogle Data Analytics Certificate"
+    "text": "Hello! I’m Louise Sinks.\nI’m a chemist by training. My favorite part was always analysis and modeling. I’ve recently been learning R and Python, and this webpage is a place to document my data science journey. While I did a lot of coding and modeling as a chemist, I did not formally learn about modeling and machine learning frameworks. (I wish I had! My post-doc would have been a lot smoother.)"
   },
   {
     "objectID": "posts/2023-03-14-tester-post/index.html",

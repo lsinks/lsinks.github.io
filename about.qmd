@@ -1,7 +1,114 @@
 ---
 title: "About"
+draft: true
 ---
 
-This is a place for me to document my journey in learning data science in a more rigorous way. While I did a lot of coding and modeling as a chemist, I did not formally learn to code or about modeling and machine learning frameworks. (I wish I had! My post-doc would have been a lot smoother.)
+I am a Physical Chemist with over ten years of experience working in multidisciplinary teams in various fields. I am a highly experienced writer and have published numerous peer-reviewed articles and papers on these topics. I previously ran the day-to-day operations of a small nanotechnology start-up.
 
-Most of my academic work was in Matlab so I chose to start this process with R because it looked more similar than Python.
+More details about my background below if you are interested.
+
+
+**EDUCATION**
+
+University of Pennsylvania 2005-2011
+
+Prof. Sergei A. Vinogradov U. of Pennsylvania 2008-2011
+
+Postdoctoral Research Fellow
+
+Developed new two-photon lifetime imaging microscopy technique for quantifying oxygen content in cells. Validated and characterized new fluorescent or phosphorescent probes for oxygen, zinc, and pH sensing. Performed cell culture work to maintain cells used in microscopy. Performed various assays to determine the viability of cells doped with the probe molecules.
+
+Center for Oxygen Microscopic Imaging University of Aarhus July-August 2009
+
+Visiting Researcher
+
+Tested cytotoxic effects of fluorescent probes developed in Vinogradov lab. Performed singlet oxygen microscopy. Learned and performed patch-clamp technique (whole-cell electrophysiological measurements) to study the effect of localized reactive oxygen species generation on ion channel function in mouse neurons.
+
+Prof. R. Hochstrasser & Prof. M. J. Therien U. of Pennsylvania 2005- 2008
+
+NIH National Research Service Award Postdoctoral Fellow
+
+Used 2D-IR techniques to probe the local structure of trans-membrane proteins and Vis-pump/ IR-probe ultra-fast techniques to probe proton-coupled electron transfer.
+
+Prof. M. J. Therien & Prof. R. Hochstrasser U. of Pennsylvania 2004- 2005
+
+Postdoctoral Research Fellow Utilized IR- pump/ probe, VIS- pump/probe, and Vis-pump/ IR-probe ultra-fast techniques to study the influence of environment on biologically relevant processes such as proton-coupled electron transfer. Environments ranged from simple solvents to complex protein hosts. Use visible pump-probe techniques to study highly conjugated porphyrin arrays. Built VIS-pump/IR-probe equipment.
+
+Northwestern University Evanston, IL 1999-2004
+
+2001-2004 PhD in Chemistry
+
+● Dissertation Title: Role of Environment on Photo-induced Electron Transfer
+
+1999- 2001 MS in Chemistry
+
+● Thesis Title: Photo-induced Electron Transfer of Donor-Acceptor Molecules in a Liquid Crystalline Environment
+
+Prof. M. R. Wasielewski Northwestern University 1999- 2004
+
+Graduate Research Assistant/ Teaching Assistant Researched solvent/media effects on photo-induced electron transfer in organic covalent donor-acceptor systems as well as the role of conformational gating on electronic coupling of donors and acceptors. Studied impact on π- π driven self-assembly on electron and energy transfer within the nanostructure. Designed, constructed, and maintained two femtosecond transient absorption laser systems. Synthesized donor-acceptor molecules.
+
+University of Virginia Charlottesville, VA 1995 - 1999
+
+● Intermediate Honors
+
+● Echols Scholar (College of Arts and Sciences honors program)
+
+● Major: BS in Chemistry with Honors, BA in Physics Minor: Math
+
+**EMPLOYMENT**
+
+US Nano LLC
+
+Vice President 2012-2017
+
+Ran the day to day operations. Key responsibilities:
+
+Project Management
+
+- Directed US Nano's research activities to develop semiconductor nanowire technologies
+- Managed team of 5-10 technical and support staff
+- Resulted in two US patents for scalable synthesis of nanowires, additional applications pending.
+- Wrote and managed grants to fund portions of research
+  - Awarded NSF SBIR Phase II grant for ~$747,000
+
+Marketing & Business Development efforts
+
+- Generated copy for white papers, company website, and other promotional materials
+- Generated and presented pitches to Angels, VCs, and potential Industrial partners
+- Interviewed 100 potential customers to understand needs around nanowire technology
+
+Technical & Analytical Work
+
+- Designed and Analyzed experiments using DOE (Design of Experiments) principles using specialized software (Stat-Ease) or advanced Excel functionality (Pivot tables or wrote custom VBA macros) over a wide range of areas (ink formulation, nanomaterial synthesis, and electrical device design)
+- Developed financial models for various business models
+- Implemented Statistical Process Control on key manufacturing activities to increase up-time
+
+Senior Scientist 2011- 2012
+
+Employee #1 of US Nano. Set-up company laboratory and offices in South Bend. Obtained funding through the National Science Foundation's Small Business Innovative Research (SBIR) program. Hired research team and managed daily operations. Performed research on nanowires synthesis and the application of nanowires to printed electronics.
+
+Ford Motor Company Summers1998, 1999
+
+Professional/Technical Trainee (Intern)
+
+Contributed to the development of a more sensitive and durable pressure sensitive paint (PSP) for aerodynamic applications. Research resulted in two Ford confidential papers for internal circulation only and Ford filed invention disclosure papers on one of the polymer systems. Research consisted of development of appropriate polymer base, identification of chromophores with high sensing potential, and design and implementation of standards in manufacturing and performance to effectively evaluate PSPs. Assisted in automation of lab. Helped implement Pressure Sensitive Paint measurement technique in a Ford wind tunnel. Demonstrated the technology both internally and to collaborators from the USAF and Boeing in live wind tunnel tests.
+
+**GRANTS AND AWARDS**
+
+● NSF SBIR Phase II: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Photosensors (April 2014- June 2016)
+
+● NSF SBIR Phase IB: Supplemental Funding to "Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics." (January 2013- June 2013)
+
+● NSF SBIR Phase I: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics. (June 2012-December 2012)
+
+● NIH National Research Service Award Postdoctoral Fellowship (January 2005- June 2007)
+
+**PATENTS**
+
+● Synthesis of CdSe/ZnS Core/Shell Semiconductor Nanowires, US Patent 9,627,299. Issued 4/18/2017
+
+● Apparatus and Methods for Continuous Flow Synthesis of Semiconductor
+
+Nanowires, US 9,306,110. Issued Apr 5, 2016
+

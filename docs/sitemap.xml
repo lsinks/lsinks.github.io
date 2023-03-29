@@ -1,39 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://lsinks.github.io/about.html</loc>
-    <lastmod>2023-03-29T18:24:03.686Z</lastmod>
-  </url>
-  <url>
     <loc>https://lsinks.github.io/blogroll.html</loc>
-    <lastmod>2023-03-29T18:24:04.417Z</lastmod>
+    <lastmod>2023-03-29T19:57:16.147Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/index.html</loc>
-    <lastmod>2023-03-29T18:24:05.191Z</lastmod>
+    <lastmod>2023-03-29T19:57:16.844Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</loc>
-    <lastmod>2023-03-29T18:24:06.100Z</lastmod>
+    <lastmod>2023-03-29T19:57:17.873Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</loc>
-    <lastmod>2023-03-29T18:24:20.896Z</lastmod>
+    <lastmod>2023-03-29T19:57:20.390Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-03-29T18:24:22.982Z</lastmod>
+    <lastmod>2023-03-29T19:57:22.273Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-25-twitter-cards/twitter-cards.html</loc>
-    <lastmod>2023-03-29T18:24:23.787Z</lastmod>
+    <lastmod>2023-03-29T19:57:23.071Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</loc>
-    <lastmod>2023-03-29T18:24:48.686Z</lastmod>
+    <lastmod>2023-03-29T19:57:25.020Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-03-29T18:25:40.461Z</lastmod>
+    <lastmod>2023-03-29T19:57:26.774Z</lastmod>
   </url>
 </urlset>
