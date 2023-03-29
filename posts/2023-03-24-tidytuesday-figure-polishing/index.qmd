@@ -2,7 +2,7 @@
 title: "TidyTuesday Week 12: Programming Languages Revisited"
 description: "TidyTuesday: Polishing"
 twitter-card:
-  image: "docs/posts/2023-03-24-tidytuesday-figure-polishing/thumbnail.png"
+  image: "thumbnail.png"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
