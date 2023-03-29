@@ -1,10 +1,15 @@
 ---
 title: "Blog Entries"
-listing: 
-  contents: posts # all Quarto docs in the `posts` directory will be included on your listing page
-  type: grid # or `default` or `table`; each type has its own set of yaml options to include
-  sort: "date desc" # can also sort on more than one field
-  categories: true # allows you to sort posts by assigned categories
+listing:
+  contents: posts/**/*.qmd
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: true
+  filter-ui: true
+  fields: [date, title, reading-time, description, categories, image]
   feed: 
     categories: [R-code]
+page-layout: full
+title-block-banner: false
 ---

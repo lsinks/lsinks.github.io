@@ -4,7 +4,7 @@ description: "Trying to create a Quarto Blog"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
-    date: 03-14-2023
+date: 03-14-2023
 categories: [Quarto, R, turtle] # self-defined categories
 citation:
   url: https://lsinks.github.io/2023-03-14_tester-post 

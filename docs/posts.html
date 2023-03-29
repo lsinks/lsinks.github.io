@@ -72,9 +72,9 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-date','listing-title','listing-reading-time','listing-description','listing-categories','listing-image',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -121,10 +121,10 @@ cookieconsent.run({
 
 <link rel="stylesheet" href="styles.css">
 <link rel="alternate" type="application/rss+xml" title="Louise E. Sinks" href="posts.xml"><meta name="twitter:title" content="Louise E. Sinks - Blog Entries">
-<meta name="twitter:image" content="https://lsinks.github.io/posts\2023-03-24-tidytuesday-figure-polishing\thumbnail.png">
+<meta name="twitter:image" content="https://lsinks.github.io/posts\2023-03-28-tidytuesday-timezones\thumbnail.png">
 <meta name="twitter:creator" content="@LouiseSinks">
-<meta name="twitter:image-height" content="960">
-<meta name="twitter:image-width" content="1344">
+<meta name="twitter:image-height" content="1500">
+<meta name="twitter:image-width" content="2427">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -172,14 +172,14 @@ cookieconsent.run({
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
     <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Code-Along">Code-Along <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Data-Viz">Data-Viz <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Quarto">Quarto <span class="quarto-category-count">(2)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(4)</span></div><div class="category" data-category="R-code">R-code <span class="quarto-category-count">(3)</span></div><div class="category" data-category="TidyTuesday">TidyTuesday <span class="quarto-category-count">(3)</span></div><div class="category" data-category="ggimage">ggimage <span class="quarto-category-count">(1)</span></div><div class="category" data-category="maps">maps <span class="quarto-category-count">(1)</span></div><div class="category" data-category="skimr">skimr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="turtle">turtle <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -202,156 +202,43 @@ cookieconsent.run({
 
 
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Quarto,R,turtle" data-listing-file-modified-sort="1679424599363" data-listing-reading-time-sort="1.48">
-<a href="./posts/2023-03-14-tester-post/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img src="./posts/2023-03-14-tester-post/mckinley.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Creating a Blog
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Quarto'); return false;">
-Quarto
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-title" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+     </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="R,TidyTuesday,R-code,Code-Along,Data-Viz,ggimage,maps" data-listing-date-sort="1679976000000" data-listing-file-modified-sort="1680111914576" data-listing-reading-time-sort="4.1">
+<div class="thumbnail">
+<p><a href="./posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html"> <img src="./posts/2023-03-28-tidytuesday-timezones/thumbnail.png" class="thumnail-image"> </a></p>
 </div>
-<div class="listing-category" onclick="window.quartoListingCategory('turtle'); return false;">
-turtle
-</div>
-</div>
-<div class="card-text listing-description">
-Trying to create a Quarto Blog
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Louise E. Sinks
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="R,TidyTuesday,R-code,Code-Along" data-listing-file-modified-sort="1679762135779" data-listing-reading-time-sort="6.14">
-<a href="./posts/2023-03-21-tidytuesday-programming-languages/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img src="./posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-TidyTuesday Week 12: Programming Languages
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('TidyTuesday'); return false;">
-TidyTuesday
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
-R-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Code-Along'); return false;">
-Code-Along
-</div>
-</div>
-<div class="card-text listing-description">
-TidyTuesday: How to comment in Various Programming Languages
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Louise E. Sinks
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="R,TidyTuesday,R-code,Code-Along,Data-Viz,skimr" data-listing-file-modified-sort="1679763966369" data-listing-reading-time-sort="5.67">
-<a href="./posts/2023-03-24-tidytuesday-figure-polishing/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img src="./posts/2023-03-24-tidytuesday-figure-polishing/thumbnail.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-TidyTuesday Week 12: Programming Languages Revisited
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
-R
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('TidyTuesday'); return false;">
-TidyTuesday
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
-R-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Code-Along'); return false;">
-Code-Along
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Data-Viz'); return false;">
-Data-Viz
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('skimr'); return false;">
-skimr
-</div>
-</div>
-<div class="card-text listing-description">
-TidyTuesday: Polishing
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Louise E. Sinks
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Quarto" data-listing-file-modified-sort="1679762298395" data-listing-reading-time-sort="0.18">
-<a href="./posts/2023-03-25-twitter-cards/twitter-cards.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img src="./posts/2023-03-25-twitter-cards/thumbnail.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Twitter Cards
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Quarto'); return false;">
-Quarto
-</div>
-</div>
-<div class="card-text listing-description">
-Making Twitter Cards
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Louise E. Sinks
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="R,TidyTuesday,R-code,Code-Along,Data-Viz,ggimage,maps" data-listing-file-modified-sort="1680035559501" data-listing-reading-time-sort="4.1">
-<a href="./posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img src="./posts/2023-03-28-tidytuesday-timezones/thumbnail.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
+<div class="body">
+<a href="./posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html">
+<h3 class="no-anchor listing-title">
 Tidy Tuesday: Daylight Savings Time
-</h5>
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
 R
@@ -375,17 +262,192 @@ ggimage
 maps
 </div>
 </div>
-<div class="card-text listing-description">
-TidyTuesday: Exploring Time Zones and Daylight Savings Time
-</div>
-<div class="card-attribution card-text-small start">
-<div class="listing-author">
-Louise E. Sinks
-</div>
-</div>
-</div>
+<a href="./posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html">
+<div class="listing-description">
+<p>TidyTuesday: Exploring Time Zones and Daylight Savings Time</p>
 </div>
 </a>
+</div>
+<div class="metadata">
+<a href="./posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html">
+<div class="listing-date">
+Mar 28, 2023
+</div>
+<div class="listing-reading-time">
+4 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="R,TidyTuesday,R-code,Code-Along,Data-Viz,skimr" data-listing-date-sort="1679630400000" data-listing-file-modified-sort="1680111854818" data-listing-reading-time-sort="5.67">
+<div class="thumbnail">
+<p><a href="./posts/2023-03-24-tidytuesday-figure-polishing/index.html"> <img src="./posts/2023-03-24-tidytuesday-figure-polishing/thumbnail.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2023-03-24-tidytuesday-figure-polishing/index.html">
+<h3 class="no-anchor listing-title">
+TidyTuesday Week 12: Programming Languages Revisited
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('TidyTuesday'); return false;">
+TidyTuesday
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
+R-code
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Code-Along'); return false;">
+Code-Along
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Data-Viz'); return false;">
+Data-Viz
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('skimr'); return false;">
+skimr
+</div>
+</div>
+<a href="./posts/2023-03-24-tidytuesday-figure-polishing/index.html">
+<div class="listing-description">
+<p>TidyTuesday: Polishing</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2023-03-24-tidytuesday-figure-polishing/index.html">
+<div class="listing-date">
+Mar 24, 2023
+</div>
+<div class="listing-reading-time">
+5 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="Quarto" data-listing-date-sort="1679630400000" data-listing-file-modified-sort="1680111893676" data-listing-reading-time-sort="0.225">
+<div class="thumbnail">
+<p><a href="./posts/2023-03-25-twitter-cards/twitter-cards.html"> <img src="./posts/2023-03-25-twitter-cards/thumbnail.jpg" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2023-03-25-twitter-cards/twitter-cards.html">
+<h3 class="no-anchor listing-title">
+Twitter Cards
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Quarto'); return false;">
+Quarto
+</div>
+</div>
+<a href="./posts/2023-03-25-twitter-cards/twitter-cards.html">
+<div class="listing-description">
+<p>Making Twitter Cards</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2023-03-25-twitter-cards/twitter-cards.html">
+<div class="listing-date">
+Mar 24, 2023
+</div>
+<div class="listing-reading-time">
+0 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="3" data-categories="R,TidyTuesday,R-code,Code-Along" data-listing-date-sort="1679371200000" data-listing-file-modified-sort="1680111786313" data-listing-reading-time-sort="6.14">
+<div class="thumbnail">
+<p><a href="./posts/2023-03-21-tidytuesday-programming-languages/index.html"> <img src="./posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2023-03-21-tidytuesday-programming-languages/index.html">
+<h3 class="no-anchor listing-title">
+TidyTuesday Week 12: Programming Languages
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('TidyTuesday'); return false;">
+TidyTuesday
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('R-code'); return false;">
+R-code
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('Code-Along'); return false;">
+Code-Along
+</div>
+</div>
+<a href="./posts/2023-03-21-tidytuesday-programming-languages/index.html">
+<div class="listing-description">
+<p>TidyTuesday: How to comment in Various Programming Languages</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2023-03-21-tidytuesday-programming-languages/index.html">
+<div class="listing-date">
+Mar 21, 2023
+</div>
+<div class="listing-reading-time">
+6 min
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="4" data-categories="Quarto,R,turtle" data-listing-date-sort="1678766400000" data-listing-file-modified-sort="1680111730043" data-listing-reading-time-sort="1.48">
+<div class="thumbnail">
+<p><a href="./posts/2023-03-14-tester-post/index.html"> <img src="./posts/2023-03-14-tester-post/mckinley.jpg" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2023-03-14-tester-post/index.html">
+<h3 class="no-anchor listing-title">
+Creating a Blog
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('Quarto'); return false;">
+Quarto
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('turtle'); return false;">
+turtle
+</div>
+</div>
+<a href="./posts/2023-03-14-tester-post/index.html">
+<div class="listing-description">
+<p>Trying to create a Quarto Blog</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2023-03-14-tester-post/index.html">
+<div class="listing-date">
+Mar 14, 2023
+</div>
+<div class="listing-reading-time">
+1 min
+</div>
+</a>
+</div>
 </div>
 </div>
 <div class="listing-no-matching d-none">

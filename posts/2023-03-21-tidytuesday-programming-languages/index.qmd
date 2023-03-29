@@ -6,7 +6,7 @@ twitter-card:
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
-    date: 03-21-2023
+date: 03-21-2023
 categories: [R, TidyTuesday, R-code, Code-Along] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/ 
