@@ -10,7 +10,7 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Tue, 28 Mar 2023 20:33:28 GMT</lastBuildDate>
+<lastBuildDate>Wed, 29 Mar 2023 17:11:36 GMT</lastBuildDate>
 <item>
   <title>TidyTuesday Week 12: Programming Languages</title>
   <dc:creator>Louise E. Sinks</dc:creator>
@@ -1970,7 +1970,7 @@ Languages.”</span> <a href="https://lsinks.github.io/posts/2023-03-21-tidytues
   <category>R-code</category>
   <category>Code-Along</category>
   <guid>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
+  <pubDate>Wed, 29 Mar 2023 17:11:36 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/pop-lang-by-token.png" medium="image" type="image/png" height="114" width="144"/>
 </item>
 <item>
@@ -3365,7 +3365,7 @@ Revisited.”</span> <a href="https://lsinks.github.io/posts/2023-03-24-tidytues
   <category>Data-Viz</category>
   <category>skimr</category>
   <guid>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
+  <pubDate>Wed, 29 Mar 2023 17:11:36 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/thumbnail.png" medium="image" type="image/png" height="103" width="144"/>
 </item>
 <item>
@@ -4560,7 +4560,7 @@ Time.”</span> <a href="https://lsinks.github.io/posts/2023-03-28-tidytuesday-t
   <category>ggimage</category>
   <category>maps</category>
   <guid>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</guid>
-  <pubDate>Tue, 28 Mar 2023 20:33:28 GMT</pubDate>
+  <pubDate>Wed, 29 Mar 2023 17:11:36 GMT</pubDate>
   <media:content url="https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
 </item>
 </channel>
