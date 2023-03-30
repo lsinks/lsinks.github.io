@@ -7,7 +7,7 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
 date: 03-30-2023
-categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, Machine Learning, caret, SVM, Classifiers] # self-defined categories
+categories: [R, R-code, Code-Along, Machine Learning, caret, SVM, Classifiers] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-03-30-One-Class-SVM
 image: "thumbnail.png"

@@ -10,7 +10,732 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Tue, 28 Mar 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Thu, 30 Mar 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>One Class SVM</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>I’ve recently been playing around with classification models, specifically on data sets with a skewed class distribution. In imbalanced classification problems, one class occurs infrequently. The minority class is often the class of interest (think fraudulent transaction, positive disease diagnosis, or intruder detection). Sometimes these applications are framed as a two-class classification problem, but other times they are called anomaly, outlier, or novelty detection.</p>
+<p>Imbalanced classification problems are tricky for a couple of reasons. Models can achieve high accuracy by classifying everything as the dominant class. You can somewhat mitigate this problem by choosing models based on other metrics, such as sensitivity. You can also downsample the data to balance the classes (which throws out a lot of data) or upsample the infrequent class using a technique like SMOTE or ROSE to create synthetic data points.</p>
+<p>Collecting enough labeled data can also be expensive in highly imbalanced classes. Techniques like SMOTE won’t help if you only have 2 of a class in the dataset; the model needs “sufficient” data to learn from.</p>
+<p>Another way to handle a minority class is to use a one-class classifier. One-class classifiers are one of the most widely used methods in anomaly detection because it does not require extensive labeled data for training. This method can either be semi-supervised, where only the normal (major) class is used for training, or unsupervised, where the method can handle anomalies in the training class. The one-class SVM is a popular implementation of one-class classifiers.</p>
+<p>Here I’m going to use a <a href="https://app.datacamp.com/learn/courses/introduction-to-anomaly-detection-in-r">toy dataset from Datacamp</a>. They have told me that all datasets used in their courses can be used outside Datacamp.</p>
+<p>I’m using some specialty packages here, specifically e1071 and caret for the machine learning.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(skimr) <span class="co" style="color: #5E5E5E;"># for EDA</span></span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(corrplot) <span class="co" style="color: #5E5E5E;"># for cool correlation graph</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(gt) <span class="co" style="color: #5E5E5E;"># for tables</span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(e1071) <span class="co" style="color: #5E5E5E;"># for svm</span></span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(caret) <span class="co" style="color: #5E5E5E;"># for data split</span></span>
+<span id="cb1-7">thyroid <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read.csv</span>(<span class="st" style="color: #20794D;">"~/R Projects/SVM/thyroid.csv"</span>, <span class="at" style="color: #657422;">header =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+</div>
+<section id="exploratory-data-analysis" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+<p>The dataset explores thyroid disease as a function of thyroid hormone levels. I’m using a custom skim function to tailor the output. More info on that can be found <a href="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/">here</a>.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">my_skim <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">skim_with</span>(<span class="at" style="color: #657422;">numeric =</span> <span class="fu" style="color: #4758AB;">sfl</span>(<span class="at" style="color: #657422;">p25 =</span> <span class="cn" style="color: #8f5902;">NULL</span>, <span class="at" style="color: #657422;">p50 =</span> <span class="cn" style="color: #8f5902;">NULL</span>, <span class="at" style="color: #657422;">p75 =</span> <span class="cn" style="color: #8f5902;">NULL</span>)) </span>
+<span id="cb2-2">thyroid_skim <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">my_skim</span>(thyroid)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4">thyroid_skim <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-5">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>skim_type)   <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb2-6">  <span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-7">  <span class="fu" style="color: #4758AB;">cols_label</span>(<span class="at" style="color: #657422;">n_missing =</span> <span class="st" style="color: #20794D;">"# Missing"</span>, <span class="at" style="color: #657422;">complete_rate =</span> <span class="st" style="color: #20794D;">"Completeness"</span>, </span>
+<span id="cb2-8">             <span class="at" style="color: #657422;">numeric.mean =</span> <span class="st" style="color: #20794D;">"Mean"</span>, <span class="at" style="color: #657422;">numeric.sd =</span> <span class="st" style="color: #20794D;">"Standard Deviation"</span>,</span>
+<span id="cb2-9">             <span class="at" style="color: #657422;">numeric.p0 =</span> <span class="st" style="color: #20794D;">"Min"</span>, <span class="at" style="color: #657422;">numeric.p100 =</span> <span class="st" style="color: #20794D;">"Max"</span>,</span>
+<span id="cb2-10">             <span class="at" style="color: #657422;">numeric.hist =</span> <span class="st" style="color: #20794D;">"Histogram"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-11">  <span class="fu" style="color: #4758AB;">opt_stylize</span>(<span class="at" style="color: #657422;">style =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="at" style="color: #657422;">add_row_striping =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-12">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Summary of Variables in Thyroid"</span>) </span></code></pre></div>
+<div class="cell-output-display column-page">
+
+<div id="mbnuqlqbzy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+:where(#mbnuqlqbzy) .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+:where(#mbnuqlqbzy) .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#mbnuqlqbzy) .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+:where(#mbnuqlqbzy) .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#mbnuqlqbzy) .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#mbnuqlqbzy) .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+:where(#mbnuqlqbzy) .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+:where(#mbnuqlqbzy) .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+:where(#mbnuqlqbzy) .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+:where(#mbnuqlqbzy) .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+:where(#mbnuqlqbzy) .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+:where(#mbnuqlqbzy) .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+:where(#mbnuqlqbzy) .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+:where(#mbnuqlqbzy) .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+:where(#mbnuqlqbzy) .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+:where(#mbnuqlqbzy) .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#mbnuqlqbzy) .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+:where(#mbnuqlqbzy) .gt_striped {
+  background-color: #EDF7FC;
+}
+
+:where(#mbnuqlqbzy) .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+:where(#mbnuqlqbzy) .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#mbnuqlqbzy) .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+:where(#mbnuqlqbzy) .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_left {
+  text-align: left;
+}
+
+:where(#mbnuqlqbzy) .gt_center {
+  text-align: center;
+}
+
+:where(#mbnuqlqbzy) .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(#mbnuqlqbzy) .gt_font_normal {
+  font-weight: normal;
+}
+
+:where(#mbnuqlqbzy) .gt_font_bold {
+  font-weight: bold;
+}
+
+:where(#mbnuqlqbzy) .gt_font_italic {
+  font-style: italic;
+}
+
+:where(#mbnuqlqbzy) .gt_super {
+  font-size: 65%;
+}
+
+:where(#mbnuqlqbzy) .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+:where(#mbnuqlqbzy) .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+:where(#mbnuqlqbzy) .gt_indent_1 {
+  text-indent: 5px;
+}
+
+:where(#mbnuqlqbzy) .gt_indent_2 {
+  text-indent: 10px;
+}
+
+:where(#mbnuqlqbzy) .gt_indent_3 {
+  text-indent: 15px;
+}
+
+:where(#mbnuqlqbzy) .gt_indent_4 {
+  text-indent: 20px;
+}
+
+:where(#mbnuqlqbzy) .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Variables in Thyroid</td>
+    </tr>
+    
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">label</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.0220000</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.1467567</td>
+<td headers="numeric.p0" class="gt_row gt_right">0.000000</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.00000000</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▁▁▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">TSH</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">-0.6881938</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4455654</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-4.532599</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">-0.02173999</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▁▃▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">T3</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">-6.5046015</td>
+<td headers="numeric.sd" class="gt_row gt_right">1.3994315</td>
+<td headers="numeric.p0" class="gt_row gt_right">-9.268609</td>
+<td headers="numeric.p100" class="gt_row gt_right">-1.43659510</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▇▁▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">TT4</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">-1.7235631</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4421667</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-5.350910</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">-0.37417607</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▁▇▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">T4U</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">-1.4666057</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4495771</td>
+<td headers="numeric.p0" class="gt_row gt_right">-6.164484</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.00000000</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▇▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">FTI</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">-1.0093125</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.2522809</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-3.569533</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">-0.17950862</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▁▁▇▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">TBG</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">-1.7932517</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4318577</td>
+<td headers="numeric.p0" class="gt_row gt_right">-6.636603</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.00000000</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▁▁▇▁</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>We see that the dataset is complete with no missing values. All data types are numeric. About 2% of the patients are diagnosed with thyroid disease.</p>
+<p>I like to look at a correlation plot to get an overview of how the predictors relate to each other and the outcome. The correlation plot created by <code>corrplot()</code> has the title truncated in a lot of notebook/ markdown environments. The solution, which I found <a href="https://stefaneng.github.io/corrplot-title-cut-off/">here</a>, is to add a margin.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="co" style="color: #5E5E5E;"># examining correlation between variables categories</span></span>
+<span id="cb3-2"><span class="co" style="color: #5E5E5E;"># moving the outcome to the first column to start</span></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;"># will be sorted by decreasing correlation with outcome</span></span>
+<span id="cb3-4">thyroid <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-5">    dplyr<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">select</span>(label, <span class="fu" style="color: #4758AB;">everything</span>()) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-6">    cor <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-7">        {.[<span class="fu" style="color: #4758AB;">order</span>(<span class="fu" style="color: #4758AB;">abs</span>(.[, <span class="dv" style="color: #AD0000;">1</span>]), <span class="at" style="color: #657422;">decreasing =</span> <span class="cn" style="color: #8f5902;">TRUE</span>), </span>
+<span id="cb3-8">       <span class="fu" style="color: #4758AB;">order</span>(<span class="fu" style="color: #4758AB;">abs</span>(.[, <span class="dv" style="color: #AD0000;">1</span>]), <span class="at" style="color: #657422;">decreasing =</span> <span class="cn" style="color: #8f5902;">TRUE</span>)]} <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb3-9">    <span class="fu" style="color: #4758AB;">corrplot</span>( <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">'lower'</span>, <span class="at" style="color: #657422;">tl.col =</span> <span class="st" style="color: #20794D;">'black'</span>, </span>
+<span id="cb3-10">            <span class="at" style="color: #657422;">addCoef.col =</span> <span class="st" style="color: #20794D;">'black'</span>, <span class="at" style="color: #657422;">cl.ratio =</span> <span class="fl" style="color: #AD0000;">0.2</span>, <span class="at" style="color: #657422;">tl.srt =</span> <span class="dv" style="color: #AD0000;">45</span>, </span>
+<span id="cb3-11">            <span class="at" style="color: #657422;">col =</span> <span class="fu" style="color: #4758AB;">COL2</span>(<span class="st" style="color: #20794D;">'PuOr'</span>, <span class="dv" style="color: #AD0000;">10</span>), <span class="at" style="color: #657422;">diag =</span> <span class="cn" style="color: #8f5902;">FALSE</span> , <span class="at" style="color: #657422;">mar =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">0</span>,<span class="dv" style="color: #AD0000;">2</span>,<span class="dv" style="color: #AD0000;">0</span>),</span>
+<span id="cb3-12">            <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">" Correlations between Thyroid Disease and hormone levels"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm_files/figure-html/corr-plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Many of the features are strongly correlated with the outcome. So, we can expect to get reasonably decent results from our model.</p>
+</section>
+<section id="setting-up-for-ml-with-caret" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-for-ml-with-caret">Setting up for ML with caret</h2>
+<p>I’m using the <a href="https://cran.r-project.org/web/packages/e1071/index.html">e1071 package</a> for SVM, which is not supported by tidymodels, so I will use <a href="https://topepo.github.io/caret/index.html">caret</a> as the wrapper for a lot of the machine modeling workflow. First, I’m going to make a train and test split. createDataPartition will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don’t want a scenario where the train or test dataset has most of the minority class observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;"># Relabel the classes to TRUE if it is normal data and FALSE if it is</span></span>
+<span id="cb4-2"><span class="co" style="color: #5E5E5E;"># an anomaly.  (That is, it is false that the outlier data is normal).  </span></span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;"># makes it easier to compare with the output of the SVM model.  </span></span>
+<span id="cb4-4">thyroid <span class="ot" style="color: #003B4F;">&lt;-</span> thyroid <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">label =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(label <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="cn" style="color: #8f5902;">FALSE</span>))</span>
+<span id="cb4-6"></span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;"># create data split for test and training</span></span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;"># will be split among strata</span></span>
+<span id="cb4-9"><span class="fu" style="color: #4758AB;">set.seed</span>(<span class="dv" style="color: #AD0000;">2346</span>)</span>
+<span id="cb4-10">inTrain <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">createDataPartition</span>(thyroid<span class="sc" style="color: #5E5E5E;">$</span>label, <span class="at" style="color: #657422;">p =</span> <span class="fl" style="color: #AD0000;">0.6</span>, <span class="at" style="color: #657422;">list =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) </span>
+<span id="cb4-11"></span>
+<span id="cb4-12"><span class="co" style="color: #5E5E5E;"># formatting the data as required for svm()</span></span>
+<span id="cb4-13">train_predictors <span class="ot" style="color: #003B4F;">&lt;-</span> thyroid[inTrain, <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">7</span>]</span>
+<span id="cb4-14">train_labels <span class="ot" style="color: #003B4F;">&lt;-</span> thyroid[inTrain, <span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb4-15"></span>
+<span id="cb4-16"><span class="co" style="color: #5E5E5E;"># Creating the test set</span></span>
+<span id="cb4-17">test <span class="ot" style="color: #003B4F;">&lt;-</span> thyroid[<span class="sc" style="color: #5E5E5E;">-</span>inTrain,]</span>
+<span id="cb4-18"></span>
+<span id="cb4-19"><span class="co" style="color: #5E5E5E;"># formatting the data as required for svm()</span></span>
+<span id="cb4-20">test_predictors <span class="ot" style="color: #003B4F;">&lt;-</span> test[,<span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">7</span>]</span>
+<span id="cb4-21">test_labels <span class="ot" style="color: #003B4F;">&lt;-</span> test[,<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb4-22"></span>
+<span id="cb4-23"><span class="co" style="color: #5E5E5E;">#double checking that the test and train sets do contain ~2% disease</span></span>
+<span id="cb4-24"><span class="co" style="color: #5E5E5E;"># or rather 98% normal.</span></span>
+<span id="cb4-25"><span class="fu" style="color: #4758AB;">mean</span>(train_labels)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9767055</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">mean</span>(test_labels)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9799499</code></pre>
+</div>
+</div>
+</section>
+<section id="two-class-svm" class="level2">
+<h2 class="anchored" data-anchor-id="two-class-svm">Two-class SVM</h2>
+<p>First, I’m going to fit the data with a traditional 2 class classifier. I’m using SVM for the classification. The option <code>type ='C-classification'</code> performs normal classification. I’m not going to get into the details of SVM here, but for more information check out <a href="https://www.r-bloggers.com/2017/04/machine-learning-using-support-vector-machines/">this tutorial</a>. I’m also not going to tune any hyper-parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;"># fitting SVM on training data </span></span>
+<span id="cb8-2">two_class_svm_model <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">svm</span>(train_predictors, <span class="at" style="color: #657422;">y =</span> train_labels,</span>
+<span id="cb8-3">               <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">'C-classification'</span>,</span>
+<span id="cb8-4">               <span class="at" style="color: #657422;">scale =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb8-5">               <span class="at" style="color: #657422;">kernel =</span> <span class="st" style="color: #20794D;">"radial"</span>)</span>
+<span id="cb8-6"></span>
+<span id="cb8-7"><span class="co" style="color: #5E5E5E;"># now predicting both classes on train and test data</span></span>
+<span id="cb8-8">two_class_svm_predtrain <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(two_class_svm_model,train_predictors)</span>
+<span id="cb8-9">two_class_svm_predtest <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(two_class_svm_model,test_predictors)</span>
+<span id="cb8-10"></span>
+<span id="cb8-11"></span>
+<span id="cb8-12"><span class="co" style="color: #5E5E5E;"># code below here will be provided</span></span>
+<span id="cb8-13"><span class="co" style="color: #5E5E5E;"># seeing how well the model did</span></span>
+<span id="cb8-14">two_class_confTrain <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(<span class="at" style="color: #657422;">Predicted =</span> two_class_svm_predtrain, <span class="at" style="color: #657422;">Reference =</span> train_labels)</span>
+<span id="cb8-15">two_class_confTest <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(<span class="at" style="color: #657422;">Predicted =</span> two_class_svm_predtest, <span class="at" style="color: #657422;">Reference =</span> test_labels)</span>
+<span id="cb8-16"></span>
+<span id="cb8-17"><span class="co" style="color: #5E5E5E;"># printing out the results</span></span>
+<span id="cb8-18"><span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"These are the predictions on the training data:"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "These are the predictions on the training data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">print</span>(two_class_confTrain)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Reference
+Predicted FALSE TRUE
+    FALSE    12    0
+    TRUE      2  587</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"These are the predictions on the test data:"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "These are the predictions on the test data:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;">print</span>(two_class_confTest)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Reference
+Predicted FALSE TRUE
+    FALSE     6    0
+    TRUE      2  391</code></pre>
+</div>
+</div>
+<p>We see that the two-class classifier does very well! In the test data set, it correctly predicts 397/ 399 data points. However, it misidentified a quarter of the disease patients as having normal thyroid. This is as I mentioned above- models can generally achieve good accuracy, but by over predicting the majority class. This result could potentially be unacceptable for a healthcare application.</p>
+</section>
+<section id="one-class-svm" class="level2">
+<h2 class="anchored" data-anchor-id="one-class-svm">One-class SVM</h2>
+<p>Now, let’s compare this to the one-class classifier. I will use the one-class classifier in supervised mode; that is, I will pass it labeled data, but only for the normal class. Then I will predict and calculate metrics based on both classes. There are a few different ways we can prepare this data. For ease of comparison with the regular classifier, I will use the same splits but filter out the anomalies from the training data. You might instead filter out all the outliers from the training set and add them to the test set, so you can get a better idea of how the model works for outlier detection. However, I want an apples-to-apples comparison, so I’m not doing that here. The regular and one class SVM will be predicting on the same test data set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><span class="co" style="color: #5E5E5E;"># subset the labeled data into the two classes</span></span>
+<span id="cb16-2"><span class="co" style="color: #5E5E5E;"># the normal class should be called "train_normal" and the anomaly</span></span>
+<span id="cb16-3"><span class="co" style="color: #5E5E5E;"># class should be called "test_outlier"</span></span>
+<span id="cb16-4"></span>
+<span id="cb16-5">train_normal_class <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">subset</span>(thyroid[inTrain, ], label <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb16-6"></span>
+<span id="cb16-7"></span>
+<span id="cb16-8">train_normal_class_pred <span class="ot" style="color: #003B4F;">&lt;-</span> train_normal_class[,<span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">7</span>]</span>
+<span id="cb16-9">train_normal_class_label <span class="ot" style="color: #003B4F;">&lt;-</span> train_normal_class[,<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb16-10"></span>
+<span id="cb16-11"></span>
+<span id="cb16-12"><span class="co" style="color: #5E5E5E;"># fitting one class SVM on training data- no labels needed! </span></span>
+<span id="cb16-13">one_class_svm_model <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">svm</span>(train_normal_class_pred, <span class="at" style="color: #657422;">y =</span> <span class="cn" style="color: #8f5902;">NULL</span>,</span>
+<span id="cb16-14">               <span class="at" style="color: #657422;">type =</span> <span class="st" style="color: #20794D;">'one-classification'</span>,</span>
+<span id="cb16-15">               <span class="at" style="color: #657422;">nu =</span> <span class="fl" style="color: #AD0000;">0.10</span>,</span>
+<span id="cb16-16">               <span class="at" style="color: #657422;">scale =</span> <span class="cn" style="color: #8f5902;">TRUE</span>,</span>
+<span id="cb16-17">               <span class="at" style="color: #657422;">kernel =</span> <span class="st" style="color: #20794D;">"radial"</span>)</span>
+<span id="cb16-18"></span>
+<span id="cb16-19"><span class="co" style="color: #5E5E5E;"># now predicting both classes on train and test data</span></span>
+<span id="cb16-20">one_class_svm_predtrain <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(one_class_svm_model,train_normal_class_pred)</span>
+<span id="cb16-21">one_class_svm_predtest <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">predict</span>(one_class_svm_model,test_predictors)</span>
+<span id="cb16-22"></span>
+<span id="cb16-23"></span>
+<span id="cb16-24"><span class="co" style="color: #5E5E5E;"># code below here will be provided</span></span>
+<span id="cb16-25"><span class="co" style="color: #5E5E5E;"># seeing how well the model did</span></span>
+<span id="cb16-26">one_class_confTrain <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(<span class="at" style="color: #657422;">Predicted =</span> one_class_svm_predtrain,</span>
+<span id="cb16-27">                             <span class="at" style="color: #657422;">Reference =</span> train_normal_class_label)</span>
+<span id="cb16-28">one_class_confTest <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">table</span>(<span class="at" style="color: #657422;">Predicted =</span> one_class_svm_predtest,</span>
+<span id="cb16-29">                            <span class="at" style="color: #657422;">Reference =</span> test_labels)</span>
+<span id="cb16-30"></span>
+<span id="cb16-31"><span class="co" style="color: #5E5E5E;"># printing out the results</span></span>
+<span id="cb16-32"><span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"These are the predictions on the normal class training data only:"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "These are the predictions on the normal class training data only:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="fu" style="color: #4758AB;">print</span>(one_class_confTrain)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Reference
+Predicted TRUE
+    FALSE   61
+    TRUE   526</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"These are the predictions on the test data with both classes:"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "These are the predictions on the test data with both classes:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="fu" style="color: #4758AB;">print</span>(one_class_confTest)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         Reference
+Predicted FALSE TRUE
+    FALSE     8   40
+    TRUE      0  351</code></pre>
+</div>
+</div>
+<p>This model doesn’t do quite as well, but it is pretty impressive given that it only learned on normal data. It correctly predicted 359/399 data points in the test set. It incorrectly classified 44 cases as abnormal when they were normal, but correctly found all 8 disease cases.</p>
+<p>So now I’ve showed you how to use a one-class SVM to predict outliers. This is an incredible useful tool to keep in mind for classification tasks.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {One {Class} {SVM}},
+  date = {2023-03-30},
+  url = {https://lsinks.github.io/posts/2023-03-30-One-Class-SVM},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“One Class SVM.”</span> March 30, 2023. <a href="https://lsinks.github.io/posts/2023-03-30-One-Class-SVM">https://lsinks.github.io/posts/2023-03-30-One-Class-SVM</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Machine Learning</category>
+  <category>caret</category>
+  <category>SVM</category>
+  <category>Classifiers</category>
+  <guid>https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html</guid>
+  <pubDate>Thu, 30 Mar 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>Tidy Tuesday: Daylight Savings Time</title>
   <dc:creator>Louise E. Sinks</dc:creator>
