@@ -1,0 +1,204 @@
+---
+title: "One Class SVM"
+description: "TidyTuesday: Exploring Time Zones and Daylight Savings Time"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 03-30-2023
+categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, Machine Learning, caret, SVM, Classifiers] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-03-30-One-Class-SVM
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+I've recently been playing around with classification models, specifically on data sets with a skewed class distribution. In imbalanced classification problems, one class occurs infrequently. The minority class is often the class of interest (think fraudulent transaction, positive disease diagnosis, or intruder detection). Sometimes these applications are framed as a two-class classification problem, but other times they are called anomaly, outlier, or novelty detection.
+
+Imbalanced classification problems are tricky for a couple of reasons. Models can achieve high accuracy by classifying everything as the dominant class. You can somewhat mitigate this problem by choosing models based on other metrics, such as sensitivity. You can also downsample the data to balance the classes (which throws out a lot of data) or upsample the infrequent class using a technique like SMOTE or ROSE to create synthetic data points.
+
+Collecting enough labeled data can also be expensive in highly imbalanced classes. Techniques like SMOTE won't help if you only have 2 of a class in the dataset; the model needs "sufficient" data to learn from.
+
+Another way to handle a minority class is to use a one-class classifier. One-class classifiers are one of the most widely used methods in anomaly detection because it does not require extensive labeled data for training. This method can either be semi-supervised, where only the normal (major) class is used for training, or unsupervised, where the method can handle anomalies in the training class. The one-class SVM is a popular implementation of one-class classifiers.
+
+Here I'm going to use a [toy dataset from Datacamp](https://app.datacamp.com/learn/courses/introduction-to-anomaly-detection-in-r). They have told me that all datasets used in their courses can be used outside Datacamp.
+
+I'm using some specialty packages here, specifically e1071 and caret for the machine learning.
+
+```{r}
+#| label: loading-libraries-data
+#| output: false
+#| warning: false
+#| 
+library(tidyverse)
+library(skimr) # for EDA
+library(corrplot) # for cool correlation graph
+library(gt) # for tables
+library(e1071) # for svm
+library(caret) # for data split
+thyroid <- read.csv("~/R Projects/SVM/thyroid.csv", header = TRUE)
+```
+
+## Exploratory Data Analysis
+
+The dataset explores thyroid disease as a function of thyroid hormone levels. I'm using a custom skim function to tailor the output. More info on that can be found [here](https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/).
+
+```{r}
+#| label: examine-data
+#| column: page
+my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL)) 
+thyroid_skim <- my_skim(thyroid)
+
+thyroid_skim %>%
+  select(-skim_type)   %>% 
+  gt() %>%
+  cols_label(n_missing = "# Missing", complete_rate = "Completeness", 
+             numeric.mean = "Mean", numeric.sd = "Standard Deviation",
+             numeric.p0 = "Min", numeric.p100 = "Max",
+             numeric.hist = "Histogram") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Summary of Variables in Thyroid") 
+
+
+```
+
+We see that the dataset is complete with no missing values. All data types are numeric. About 2% of the patients are diagnosed with thyroid disease.
+
+I like to look at a correlation plot to get an overview of how the predictors relate to each other and the outcome. The correlation plot created by `corrplot()` has the title truncated in a lot of notebook/ markdown environments. The solution, which I found [here](https://stefaneng.github.io/corrplot-title-cut-off/), is to add a margin.
+
+```{r}
+#| label: corr-plot
+
+# examining correlation between variables categories
+# moving the outcome to the first column to start
+# will be sorted by decreasing correlation with outcome
+thyroid %>%
+    dplyr::select(label, everything()) %>%
+    cor %>%
+    	{.[order(abs(.[, 1]), decreasing = TRUE), 
+       order(abs(.[, 1]), decreasing = TRUE)]} %>% 
+    corrplot( type = 'lower', tl.col = 'black', 
+            addCoef.col = 'black', cl.ratio = 0.2, tl.srt = 45, 
+            col = COL2('PuOr', 10), diag = FALSE , mar = c(0,0,2,0),
+            title = " Correlations between Thyroid Disease and hormone levels")
+
+```
+
+Many of the features are strongly correlated with the outcome. So, we can expect to get reasonably decent results from our model.
+
+## Setting up for ML with caret
+
+I'm using the [e1071 package](https://cran.r-project.org/web/packages/e1071/index.html) for SVM, which is not supported by tidymodels, so I will use [caret](https://topepo.github.io/caret/index.html) as the wrapper for a lot of the machine modeling workflow. First, I'm going to make a train and test split. createDataPartition will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don't want a scenario where the train or test dataset has most of the minority class observations.
+
+```{r}
+#| label: test-train-setup
+# Relabel the classes to TRUE if it is normal data and FALSE if it is
+# an anomaly.  (That is, it is false that the outlier data is normal).  
+# makes it easier to compare with the output of the SVM model.  
+thyroid <- thyroid %>%
+  mutate(label = ifelse(label == 0, TRUE, FALSE))
+
+# create data split for test and training
+# will be split among strata
+set.seed(2346)
+inTrain <- createDataPartition(thyroid$label, p = 0.6, list = FALSE) 
+
+# formatting the data as required for svm()
+train_predictors <- thyroid[inTrain, 2:7]
+train_labels <- thyroid[inTrain, 1]
+
+# Creating the test set
+test <- thyroid[-inTrain,]
+
+# formatting the data as required for svm()
+test_predictors <- test[,2:7]
+test_labels <- test[,1]
+
+#double checking that the test and train sets do contain ~2% disease
+# or rather 98% normal.
+mean(train_labels)
+mean(test_labels)
+
+
+```
+
+## Two-class SVM
+
+First, I'm going to fit the data with a traditional 2 class classifier. I'm using SVM for the classification. The option `type ='C-classification'` performs normal classification. I'm not going to get into the details of SVM here, but for more information check out [this tutorial](https://www.r-bloggers.com/2017/04/machine-learning-using-support-vector-machines/). I'm also not going to tune any hyper-parameters.
+
+```{r}
+#| label: regular-svm-classification
+# fitting SVM on training data 
+two_class_svm_model <- svm(train_predictors, y = train_labels,
+               type = 'C-classification',
+               scale = TRUE,
+               kernel = "radial")
+
+# now predicting both classes on train and test data
+two_class_svm_predtrain <- predict(two_class_svm_model,train_predictors)
+two_class_svm_predtest <- predict(two_class_svm_model,test_predictors)
+
+
+# code below here will be provided
+# seeing how well the model did
+two_class_confTrain <- table(Predicted = two_class_svm_predtrain, Reference = train_labels)
+two_class_confTest <- table(Predicted = two_class_svm_predtest, Reference = test_labels)
+
+# printing out the results
+print("These are the predictions on the training data:")
+print(two_class_confTrain)
+print("These are the predictions on the test data:")
+print(two_class_confTest)
+
+```
+
+We see that the two-class classifier does very well! In the test data set, it correctly predicts 397/ 399 data points. However, it misidentified a quarter of the disease patients as having normal thyroid. This is as I mentioned above- models can generally achieve good accuracy, but by over predicting the majority class. This result could potentially be unacceptable for a healthcare application.
+
+## One-class SVM
+
+Now, let's compare this to the one-class classifier. I will use the one-class classifier in supervised mode; that is, I will pass it labeled data, but only for the normal class. Then I will predict and calculate metrics based on both classes. There are a few different ways we can prepare this data. For ease of comparison with the regular classifier, I will use the same splits but filter out the anomalies from the training data. You might instead filter out all the outliers from the training set and add them to the test set, so you can get a better idea of how the model works for outlier detection. However, I want an apples-to-apples comparison, so I'm not doing that here. The regular and one class SVM will be predicting on the same test data set.
+
+```{r}
+#| label: one-class-svm-classification
+# subset the labeled data into the two classes
+# the normal class should be called "train_normal" and the anomaly
+# class should be called "test_outlier"
+
+train_normal_class <- subset(thyroid[inTrain, ], label == TRUE)
+
+
+train_normal_class_pred <- train_normal_class[,2:7]
+train_normal_class_label <- train_normal_class[,1]
+
+
+# fitting one class SVM on training data- no labels needed! 
+one_class_svm_model <- svm(train_normal_class_pred, y = NULL,
+               type = 'one-classification',
+               nu = 0.10,
+               scale = TRUE,
+               kernel = "radial")
+
+# now predicting both classes on train and test data
+one_class_svm_predtrain <- predict(one_class_svm_model,train_normal_class_pred)
+one_class_svm_predtest <- predict(one_class_svm_model,test_predictors)
+
+
+# code below here will be provided
+# seeing how well the model did
+one_class_confTrain <- table(Predicted = one_class_svm_predtrain,
+                             Reference = train_normal_class_label)
+one_class_confTest <- table(Predicted = one_class_svm_predtest,
+                            Reference = test_labels)
+
+# printing out the results
+print("These are the predictions on the normal class training data only:")
+print(one_class_confTrain)
+print("These are the predictions on the test data with both classes:")
+print(one_class_confTest)
+
+```
+
+This model doesn't do quite as well, but it is pretty impressive given that it only learned on normal data. It correctly predicted 359/399 data points in the test set. It incorrectly classified 44 cases as abnormal when they were normal, but correctly found all 8 disease cases.
+
+So now I've showed you how to use a one-class SVM to predict outliers. This is an incredible useful tool to keep in mind for classification tasks.
