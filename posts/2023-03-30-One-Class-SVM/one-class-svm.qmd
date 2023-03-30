@@ -1,6 +1,6 @@
 ---
 title: "One Class SVM"
-description: "TidyTuesday: Exploring Time Zones and Daylight Savings Time"
+description: "One Class SVM for Imbalanced Classes"
 twitter-card:
   image: "thumbnail.png"
 author:
