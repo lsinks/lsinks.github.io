@@ -9,7 +9,7 @@ author:
 date: 04-01-2023
 categories: [R, R-code] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser
+  url: https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1
 image: "thumbnail.png"
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 format:
