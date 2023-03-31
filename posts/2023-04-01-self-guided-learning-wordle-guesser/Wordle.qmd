@@ -1,5 +1,5 @@
 ---
-title: "Self-Guided Learning through a Wordle Guess Generator"
+title: "Self-Guided Learning through a Wordle Guess Generator: Part 1"
 description: "Skills improvement with a Wordle Guess Generator"
 twitter-card:
   image: "thumbnail.png"
@@ -362,4 +362,6 @@ The next day, I created a chart of all my variables, their sizes, and their type
 
 Proving that point, I put the wrong date in all the file names the next time I worked on the code. In that session, I devoted most of the time to figuring out item 4 on my task list. I wrote a function called remove_letters, which could be used instead of hard coding. I also played around with reshaping the data using pivot_longer from tidyr. I created a histogram of word scores as letters are removed from consideration, which required the reshaped data. Reshaping data can be tricky, so this was a good opportunity to work through that process. (Again, versioning by name, this was called "frequency_072422_tidyr", in case I really messed up.)
 
-# 5. Current Status
+# Current Status
+
+When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I've run through it here.
