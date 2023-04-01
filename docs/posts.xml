@@ -352,7 +352,7 @@ Guess Generator: Part 1.”</span> April 1, 2023. <a href="https://lsinks.github
 
 
 
-<p>This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.htmll">companion blog post</a> to this one.</p>
+<p>This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html">companion blog post</a> to this one.</p>
 <p>I’m not going to walk through this in much detail, but I’m going to point out some of the major lessons I learned as I revised the code. Again, both the <a href="https://github.com/lsinks/wordle">initial version</a> and <a href="https://github.com/lsinks/Word-Games">this version</a> are on GitHub in all their messiness.</p>
 <p>I learned how to put functions in a separate file and call them from my many script. This can make long code much easier to read. Here, I’ve included the helper functions in-line and commented out the <code>source("code/helper-functions.R")</code> in the main code. I’ve also set up switchable troubleshooting help with <code>verbose</code> and <code>debug_detail</code> parameters in my functions. Setting them to <code>TRUE</code> provide more info as the functions are executed.</p>
 <div class="cell">
