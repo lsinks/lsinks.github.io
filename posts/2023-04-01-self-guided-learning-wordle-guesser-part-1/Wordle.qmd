@@ -11,7 +11,7 @@ categories: [R, R-code] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1
 image: "thumbnail.png"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 format:
   html:
     toc: true
@@ -20,19 +20,19 @@ editor: visual
 
 ## Self-Guided Learning: The Ever Evolving Wordle Guess Generator
 
-Text Chunk 1 - rev a
+The best way to learn a programming language is to code. Obvious, but sometimes it can be daunting to start a project when you are a novice. Influenced by my time at a start-up, I've found the best approach is to create a minimum viable product. This is the smallest working part of the project. By continuing to revise and iterate the code, you can rapidly detect weaknesses in your knowledge and take active steps to fix them.
 
-I will show you how I used a portfolio project to create a self-guided learning plan. My learning project was a Wordle Guess Generator. Motivated partly by my desire to have good guesses for Septle (a seven-letter guessing game), this project has been a crucial part of my journey to learn R. Practicing and learning coding skills were more important to me than devising the optimal strategy; if you are interested in "the best" Wordle strategy, then you will probably find much better answers by Googling.
+My learning project was a Wordle Guess Generator. I will show you how I used this project to create a self-guided learning plan. Motivated partly by my desire to have good guesses for Septle (a seven-letter guessing game), this project has been a crucial part of my journey to learn R. Practicing and learning coding skills were more important to me than devising the optimal strategy; if you are interested in "the best" Wordle strategy, then you will probably find much better answers by Googling.
 
 For those who don't know, Wordle is a word-guessing gamer that gives you five guesses to identify a 5-letter word. Correct letters are shown in green or yellow with each guess, depending on whether they are appropriately placed or not. Incorrect letters are shown in gray.
 
 I wasn't interested in coming up with the global "best" answer. I wanted to come up with some guesses that fit my gameplay style. I guess three words in a row without trying to solve the game. Then, with a fair number of letters known, I attempt to solve the word.
 
-The code has undergone several significant overhauls as I've needed to learn new things and used this project as the test bed. And here it is again, as a vehicle to learn quarto/ markdown. Here I will show you the very first ugly code and how I critiqued and revised it over several months.
+The code has undergone several significant overhauls as I've needed to learn new things and used this project as the test bed. And here it is again, as a vehicle to learn quarto/ markdown. Here I will show you the very first ugly code and how I critiqued and revised it over several months. I've put it all on [GitHub](https://github.com/lsinks/wordle). The project is unstructured, the code is ugly, and all the versioning was by filename.
 
 ## 1. Brainstorming the project.
 
-Text Chunk 2- Rev A Brainstorm what you want this project to do. Try to have a very clear statement about the project's goal at the top. If you can think of self-contained modules, mark that. If you can sketch out the scaffold of the code- great! If you have some ideas about the results, even better. Put everything you can think of down. I had been thinking about this project for a while, so this brainstorming sheet is neat. Neatness and organization are not important at this point; getting stuff written down is.
+Brainstorm what you want this project to do. Try to have a very clear statement about the project's goal at the top. If you can think of self-contained modules, mark that. If you can sketch out the scaffold of the code- great! If you have some ideas about the results, even better. Put everything you can think of down. I had been thinking about this project for a while, so this brainstorming sheet is neat. Neatness and organization are not important at this point; getting stuff written down is.
 
 My goal was "I want 3 initial guesses for Septle. Ideally, I'll maximize the number of unique letters, and I want to preferentially pick from the most frequently used letters."
 
@@ -50,27 +50,27 @@ I also talk about how the frequency distribution of letters will likely differ b
 
 ## 2. Minimum Viable Product: What is the smallest program that works?
 
-Text Chunk 3- Rev A Pull out the minimum viable product from your brainstorming. What is the smallest result that would satisfy your goals? Is there a way to make things a bit smaller? I would size it so you can get working code to accomplish the goal in a few hours.
+Pull out the minimum viable product from your brainstorming. What is the smallest result that would satisfy your goals? Is there a way to make things a bit smaller? I would size it so you can get working code to accomplish the goal in a few hours.
 
 I chose to generate four guesses for Wordle. I also decided to generate my frequency table from the word list itself. I found a five-letter word list that I could download and read in, but all the letter frequency tables I found were on blogs or in articles, and the only way I could see to get them into my program was to type them in and I was too lazy to do that. I decided to implement the process I outlined in the brainstorming session and calculate four guesses.
 
 ## 3. Write some bad code.
 
-Text Chunk 4- Rev A Write some code that does that thing. It will be ugly. If you can't figure something out, do it the wrong way. Just get something running.
+Write some code that does that thing. It will be ugly. If you can't figure something out, do it the wrong way. Just get something running.
 
 This first attempt took me 3-4 hours to write.
 
-I googled how to calculate the frequency of letters in words (in R) and found this helpful tutorial at https://www.r-bloggers.com/ by https://www.yihanwu.ca/.
-
-Here's the tutorial: https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/
+I googled how to calculate the frequency of letters in words (in R) and found this [helpful tutorial](https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/).
 
 ### The Minimal Viable Product: Running Code
 
-I cleaned up the commenting/formatting of the initial code just for this post. I also added library(tidyverse)- apparently, I was just loading libraries through the gui back then. If you want to see the true initial, it is on GitHub at:
+I cleaned up the commenting/formatting of the initial code just for this post. I also added library(tidyverse)- apparently, I was just loading libraries through the gui back then. If you want to see the true initial version, it is on [GitHub](https://github.com/lsinks/wordle/blob/main/frequency_072222.R).
 
-Here's what my MVP does: 1. I found a list of words from: https://www-cs-faculty.stanford.edu/\~knuth/sgb-words.txt and imported it.
+Here's what my MVP does:
 
-2.  I calculated how often each letter occurred over the word list starting with the tutorial: https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/\
+1.  I found a [list of five letter words](https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt) online and imported it.
+
+2.  I calculated how often each letter occurred over the word list.\
     (This, or the scaled version, was the score assigned to each letter.)
 
 3.  I looped through the word list and calculated two scores for each word, one using all letters and one using only the unique letters.
@@ -148,11 +148,9 @@ Scoring_Word_Unique <- function(word){
 
 ```
 
-Text Chunk 5- Rev A
-
 I did run through most of the code with five words initially, and then later the whole word list, when I was more confident that things worked.
 
-I calculate how often each letter appears in the list and create the scaled version. I created two incredibly ugly graphs: one of the raw counts for each letter and one of the scaled frequencies. But I did figure out how to create the graphs in sorted order. This is also a moment to do a quick reality check on the results- are the most and least common letters what you'd expect?
+I calculate how often each letter appears in the list and create the scaled version. I created two incredibly ugly graphs: one of the raw counts for each letter and one of the scaled frequencies. This is also a moment to do a quick reality check on the results- are the most and least common letters what you'd expect?
 
 ```{r}
 #| label: letter_frequency-calc-graphs
@@ -173,15 +171,13 @@ y = (char_frequencies[,2]/common)
 
 ggplot(char_frequencies, 
        aes(x =  fct_reorder(char_frequencies[,1], char_frequencies[,2]), y )) +
-  geom_col()+
+  geom_col() +
   theme_classic()
 ```
 
-Text Chunk 6- Rev A
-
 Now I calculate the scores for the (hand-picked) words I've been playing with. I also hand-calculated these scores using the values from char_frequencies to ensure my scoring functions did what I thought they were.
 
-I initialized an object to store the words, scores, and guesses. You can also tell that I had no idea what data types my objects were since I called them a list. small_list is a matrix/array of characters, and none of my zeros are numbers. I wanted a dataframe, but I didn't know how to do that.
+I initialized an object to store the words, scores, and guesses. You can also tell that I had no idea what data types my objects were since I called them a list. small_list is a matrix/array of characters, and none of my zeros are numbers. I wanted a dataframe, but I didn't know how to do that. I didn't have a strong reason to prefer a dataframe other than it was widely used in the courses I was taking at Datacamp.
 
 This chunk also pulls out a single word and sends it to score to check that it works before I loop through the entire object and calculate all the scores.
 
@@ -225,21 +221,17 @@ for (ind2 in 1:num_words){
 }
 ```
 
-Text Chunk 7- Rev A
-
 In my attempt to sort the word scores and pick out the highest-scoring works, I created an unnecessary number of temporary variables. I forced one of these objects to be a dataframe, but I didn't check the types of the individual components. Note that all my numbers are still characters. It is funny that things worked even though they were the wrong type.
 
 ```{r}
 #| label: to-df-first-guess-chosen
 small_list1 <- small_list
-small_df<- as.data.frame(small_list1)
+small_df <- as.data.frame(small_list1)
 top_words <- small_df %>%
  arrange(desc(unique_score))
 
 word_1 <- top_words$word_name[1]
 ```
-
-Text Chunk 8- Rev A
 
 Now I calculate the second and third guesses. I wanted to penalize duplicate letters, so I used the unique letter scoring function and removed the letters from the first guess. I couldn't figure out how to do that automatically, so I hardcoded to remove the letters "a", "r", "o", "s", and "e" from the words before I sent them to be scored. This is precisely the kind of situation where you can get bogged down doing things "properly" and end up stuck. I quickly attempted to figure it out and then did it incorrectly. You can also see that I have a bunch of stuff commented out that didn't work and a bunch of print statements for debugging. This is not pretty code.
 
@@ -254,7 +246,7 @@ Then I loop through the list again and repeat for the last guess. Again, hardcod
 ind3 <- 1
 for (ind3 in 1:num_words) {
  # print(top_words$word_name[ind3])
-  test<- small_list[[ind3,1]]
+  test <- small_list[[ind3,1]]
   lvec <- gsub("[a r o s e]", "", test)  #this actually works.  How do I use the string?
   #lvec <-  unlist(strsplit(word_1, split = ""))
   #lvec<- "t|h|e|i|r" #how do I contruct this automatically
@@ -281,7 +273,7 @@ word_2 <- top_words2$word_name[1]
 ind4 <- 1
 for (ind4 in 1:num_words) {
   # print(top_words$word_name[ind3])
-  test<- small_list[[ind4,1]]
+  test <- small_list[[ind4,1]]
   lvec <- gsub("[u n t i l a r o s e]", "", test)  #this actually works.  How do I use the string?
   #lvec <-  unlist(strsplit(word_1, split = ""))
   #lvec<- "t|h|e|i|r" #how do I contruct this automatically
@@ -308,7 +300,7 @@ word_3 <- top_words2$word_name[1]
 
 ```
 
-Text Chunk 9 rev A Lastly, I calculated the total score of these three words compared to my hand-picked words.
+Lastly, I calculated the total score of these three words compared to my hand-picked words.
 
 ```{r}
 #| label: total-score-guesses
@@ -322,9 +314,7 @@ b = Scoring_Word_Unique("crone") +
 b
 ```
 
-text chunk 10 rev a
-
-Note that there is an error here too. Despite the penalty for duplicate letters, "u" appears in two words. The correct scoring call should have been:
+Note that there is an error here too. By calling Scoring_Words_Unique on individual words, I did not penalize duplicate letters. Thus "u" appears in two words. The correct scoring call should have been:
 
 ```{r}
 #| label: corrected-score-guesses
@@ -333,13 +323,9 @@ c = Scoring_Word_Unique("aroseuntildumpy")
 c
 ```
 
-text chunk 11 rev a
-
-But the program works! It generated three reasonable guesses for Wordle that use common letters. Note that by my scoring rules, the manually chosen set of words is a better choice.
+But the program works! It generated three reasonable guesses for Wordle that use common letters. (Note that by my scoring rules, the manually chosen set of words is a better choice.)
 
 ## 4. Critique the code
-
-text chunk 12 rev a
 
 This step is the critical step to accelerate your learning. You need to review your code and list everything you know is not done properly and everything confusing you. This should be done at the end of every session or at the start of the next. Be honest with yourself. If you don't understand something, put it on your list, even if your code works. The point of this exercise is to increase your coding proficiency.
 
@@ -364,4 +350,4 @@ Proving that point, I put the wrong date in all the file names the next time I w
 
 # Current Status
 
-When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I've run through it here.
+When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I've run through it [here](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2) as a blog post and the code is available on [GitHub](https://github.com/lsinks/Word-Games).

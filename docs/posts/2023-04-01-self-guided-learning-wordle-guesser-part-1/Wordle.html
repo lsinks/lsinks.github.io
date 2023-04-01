@@ -266,15 +266,15 @@ cookieconsent.run({
 
 <section id="self-guided-learning-the-ever-evolving-wordle-guess-generator" class="level2">
 <h2 class="anchored" data-anchor-id="self-guided-learning-the-ever-evolving-wordle-guess-generator">Self-Guided Learning: The Ever Evolving Wordle Guess Generator</h2>
-<p>Text Chunk 1 - rev a</p>
-<p>I will show you how I used a portfolio project to create a self-guided learning plan. My learning project was a Wordle Guess Generator. Motivated partly by my desire to have good guesses for Septle (a seven-letter guessing game), this project has been a crucial part of my journey to learn R. Practicing and learning coding skills were more important to me than devising the optimal strategy; if you are interested in “the best” Wordle strategy, then you will probably find much better answers by Googling.</p>
+<p>The best way to learn a programming language is to code. Obvious, but sometimes it can be daunting to start a project when you are a novice. Influenced by my time at a start-up, I’ve found the best approach is to create a minimum viable product. This is the smallest working part of the project. By continuing to revise and iterate the code, you can rapidly detect weaknesses in your knowledge and take active steps to fix them.</p>
+<p>My learning project was a Wordle Guess Generator. I will show you how I used this project to create a self-guided learning plan. Motivated partly by my desire to have good guesses for Septle (a seven-letter guessing game), this project has been a crucial part of my journey to learn R. Practicing and learning coding skills were more important to me than devising the optimal strategy; if you are interested in “the best” Wordle strategy, then you will probably find much better answers by Googling.</p>
 <p>For those who don’t know, Wordle is a word-guessing gamer that gives you five guesses to identify a 5-letter word. Correct letters are shown in green or yellow with each guess, depending on whether they are appropriately placed or not. Incorrect letters are shown in gray.</p>
 <p>I wasn’t interested in coming up with the global “best” answer. I wanted to come up with some guesses that fit my gameplay style. I guess three words in a row without trying to solve the game. Then, with a fair number of letters known, I attempt to solve the word.</p>
-<p>The code has undergone several significant overhauls as I’ve needed to learn new things and used this project as the test bed. And here it is again, as a vehicle to learn quarto/ markdown. Here I will show you the very first ugly code and how I critiqued and revised it over several months.</p>
+<p>The code has undergone several significant overhauls as I’ve needed to learn new things and used this project as the test bed. And here it is again, as a vehicle to learn quarto/ markdown. Here I will show you the very first ugly code and how I critiqued and revised it over several months. I’ve put it all on <a href="https://github.com/lsinks/wordle">GitHub</a>. The project is unstructured, the code is ugly, and all the versioning was by filename.</p>
 </section>
 <section id="brainstorming-the-project." class="level2">
 <h2 class="anchored" data-anchor-id="brainstorming-the-project.">1. Brainstorming the project.</h2>
-<p>Text Chunk 2- Rev A Brainstorm what you want this project to do. Try to have a very clear statement about the project’s goal at the top. If you can think of self-contained modules, mark that. If you can sketch out the scaffold of the code- great! If you have some ideas about the results, even better. Put everything you can think of down. I had been thinking about this project for a while, so this brainstorming sheet is neat. Neatness and organization are not important at this point; getting stuff written down is.</p>
+<p>Brainstorm what you want this project to do. Try to have a very clear statement about the project’s goal at the top. If you can think of self-contained modules, mark that. If you can sketch out the scaffold of the code- great! If you have some ideas about the results, even better. Put everything you can think of down. I had been thinking about this project for a while, so this brainstorming sheet is neat. Neatness and organization are not important at this point; getting stuff written down is.</p>
 <p>My goal was “I want 3 initial guesses for Septle. Ideally, I’ll maximize the number of unique letters, and I want to preferentially pick from the most frequently used letters.”</p>
 <p>I decided my scoring would be based on the frequency letters occur in English; more common letters get a higher score than uncommon letters. To generate the score for the word, I proposed the following process:</p>
 <ol type="1">
@@ -294,21 +294,21 @@ cookieconsent.run({
 </section>
 <section id="minimum-viable-product-what-is-the-smallest-program-that-works" class="level2">
 <h2 class="anchored" data-anchor-id="minimum-viable-product-what-is-the-smallest-program-that-works">2. Minimum Viable Product: What is the smallest program that works?</h2>
-<p>Text Chunk 3- Rev A Pull out the minimum viable product from your brainstorming. What is the smallest result that would satisfy your goals? Is there a way to make things a bit smaller? I would size it so you can get working code to accomplish the goal in a few hours.</p>
+<p>Pull out the minimum viable product from your brainstorming. What is the smallest result that would satisfy your goals? Is there a way to make things a bit smaller? I would size it so you can get working code to accomplish the goal in a few hours.</p>
 <p>I chose to generate four guesses for Wordle. I also decided to generate my frequency table from the word list itself. I found a five-letter word list that I could download and read in, but all the letter frequency tables I found were on blogs or in articles, and the only way I could see to get them into my program was to type them in and I was too lazy to do that. I decided to implement the process I outlined in the brainstorming session and calculate four guesses.</p>
 </section>
 <section id="write-some-bad-code." class="level2">
 <h2 class="anchored" data-anchor-id="write-some-bad-code.">3. Write some bad code.</h2>
-<p>Text Chunk 4- Rev A Write some code that does that thing. It will be ugly. If you can’t figure something out, do it the wrong way. Just get something running.</p>
+<p>Write some code that does that thing. It will be ugly. If you can’t figure something out, do it the wrong way. Just get something running.</p>
 <p>This first attempt took me 3-4 hours to write.</p>
-<p>I googled how to calculate the frequency of letters in words (in R) and found this helpful tutorial at https://www.r-bloggers.com/ by https://www.yihanwu.ca/.</p>
-<p>Here’s the tutorial: https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/</p>
+<p>I googled how to calculate the frequency of letters in words (in R) and found this <a href="https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/">helpful tutorial</a>.</p>
 <section id="the-minimal-viable-product-running-code" class="level3">
 <h3 class="anchored" data-anchor-id="the-minimal-viable-product-running-code">The Minimal Viable Product: Running Code</h3>
-<p>I cleaned up the commenting/formatting of the initial code just for this post. I also added library(tidyverse)- apparently, I was just loading libraries through the gui back then. If you want to see the true initial, it is on GitHub at:</p>
-<p>Here’s what my MVP does: 1. I found a list of words from: https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt and imported it.</p>
-<ol start="2" type="1">
-<li><p>I calculated how often each letter occurred over the word list starting with the tutorial: https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/<br>
+<p>I cleaned up the commenting/formatting of the initial code just for this post. I also added library(tidyverse)- apparently, I was just loading libraries through the gui back then. If you want to see the true initial version, it is on <a href="https://github.com/lsinks/wordle/blob/main/frequency_072222.R">GitHub</a>.</p>
+<p>Here’s what my MVP does:</p>
+<ol type="1">
+<li><p>I found a <a href="https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt">list of five letter words</a> online and imported it.</p></li>
+<li><p>I calculated how often each letter occurred over the word list.<br>
 (This, or the scaled version, was the score assigned to each letter.)</p></li>
 <li><p>I looped through the word list and calculated two scores for each word, one using all letters and one using only the unique letters.</p></li>
 <li><p>I picked the highest-scoring word as my first guess.</p></li>
@@ -374,9 +374,8 @@ cookieconsent.run({
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Text Chunk 5- Rev A</p>
 <p>I did run through most of the code with five words initially, and then later the whole word list, when I was more confident that things worked.</p>
-<p>I calculate how often each letter appears in the list and create the scaled version. I created two incredibly ugly graphs: one of the raw counts for each letter and one of the scaled frequencies. But I did figure out how to create the graphs in sorted order. This is also a moment to do a quick reality check on the results- are the most and least common letters what you’d expect?</p>
+<p>I calculate how often each letter appears in the list and create the scaled version. I created two incredibly ugly graphs: one of the raw counts for each letter and one of the scaled frequencies. This is also a moment to do a quick reality check on the results- are the most and least common letters what you’d expect?</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -397,15 +396,14 @@ cookieconsent.run({
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(char_frequencies, </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span>  <span class="fu">fct_reorder</span>(char_frequencies[,<span class="dv">1</span>], char_frequencies[,<span class="dv">2</span>]), y )) <span class="sc">+</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()<span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Wordle_files/figure-html/letter_frequency-calc-graphs-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Text Chunk 6- Rev A</p>
 <p>Now I calculate the scores for the (hand-picked) words I’ve been playing with. I also hand-calculated these scores using the values from char_frequencies to ensure my scoring functions did what I thought they were.</p>
-<p>I initialized an object to store the words, scores, and guesses. You can also tell that I had no idea what data types my objects were since I called them a list. small_list is a matrix/array of characters, and none of my zeros are numbers. I wanted a dataframe, but I didn’t know how to do that.</p>
+<p>I initialized an object to store the words, scores, and guesses. You can also tell that I had no idea what data types my objects were since I called them a list. small_list is a matrix/array of characters, and none of my zeros are numbers. I wanted a dataframe, but I didn’t know how to do that. I didn’t have a strong reason to prefer a dataframe other than it was widely used in the courses I was taking at Datacamp.</p>
 <p>This chunk also pulls out a single word and sends it to score to check that it works before I loop through the entire object and calculate all the scores.</p>
 <p>You can also see I hard-coded the number of words (again… I did this in the prior code chunk too.)</p>
 <div class="cell">
@@ -447,17 +445,15 @@ cookieconsent.run({
 <span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  small_list[[ind2,<span class="dv">3</span>]] <span class="ot">&lt;-</span> score_ind2</span>
 <span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Text Chunk 7- Rev A</p>
 <p>In my attempt to sort the word scores and pick out the highest-scoring works, I created an unnecessary number of temporary variables. I forced one of these objects to be a dataframe, but I didn’t check the types of the individual components. Note that all my numbers are still characters. It is funny that things worked even though they were the wrong type.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>small_list1 <span class="ot">&lt;-</span> small_list</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>small_df<span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(small_list1)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>small_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(small_list1)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>top_words <span class="ot">&lt;-</span> small_df <span class="sc">%&gt;%</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a> <span class="fu">arrange</span>(<span class="fu">desc</span>(unique_score))</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>word_1 <span class="ot">&lt;-</span> top_words<span class="sc">$</span>word_name[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Text Chunk 8- Rev A</p>
 <p>Now I calculate the second and third guesses. I wanted to penalize duplicate letters, so I used the unique letter scoring function and removed the letters from the first guess. I couldn’t figure out how to do that automatically, so I hardcoded to remove the letters “a”, “r”, “o”, “s”, and “e” from the words before I sent them to be scored. This is precisely the kind of situation where you can get bogged down doing things “properly” and end up stuck. I quickly attempted to figure it out and then did it incorrectly. You can also see that I have a bunch of stuff commented out that didn’t work and a bunch of print statements for debugging. This is not pretty code.</p>
 <p>Then I loop through the list again and repeat for the last guess. Again, hardcoded in the letters to remove from the first and second guesses.</p>
 <div class="cell">
@@ -468,7 +464,7 @@ cookieconsent.run({
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ind3 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (ind3 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_words) {</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a> <span class="co"># print(top_words$word_name[ind3])</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  test<span class="ot">&lt;-</span> small_list[[ind3,<span class="dv">1</span>]]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  test <span class="ot">&lt;-</span> small_list[[ind3,<span class="dv">1</span>]]</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  lvec <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"[a r o s e]"</span>, <span class="st">""</span>, test)  <span class="co">#this actually works.  How do I use the string?</span></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lvec &lt;-  unlist(strsplit(word_1, split = ""))</span></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lvec&lt;- "t|h|e|i|r" #how do I contruct this automatically</span></span>
@@ -495,7 +491,7 @@ cookieconsent.run({
 <span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>ind4 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
 <span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (ind4 <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_words) {</span>
 <span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print(top_words$word_name[ind3])</span></span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  test<span class="ot">&lt;-</span> small_list[[ind4,<span class="dv">1</span>]]</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  test <span class="ot">&lt;-</span> small_list[[ind4,<span class="dv">1</span>]]</span>
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>  lvec <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"[u n t i l a r o s e]"</span>, <span class="st">""</span>, test)  <span class="co">#this actually works.  How do I use the string?</span></span>
 <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lvec &lt;-  unlist(strsplit(word_1, split = ""))</span></span>
 <span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">#lvec&lt;- "t|h|e|i|r" #how do I contruct this automatically</span></span>
@@ -520,7 +516,7 @@ cookieconsent.run({
 <span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>word_3 <span class="ot">&lt;-</span> top_words2<span class="sc">$</span>word_name[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Text Chunk 9 rev A Lastly, I calculated the total score of these three words compared to my hand-picked words.</p>
+<p>Lastly, I calculated the total score of these three words compared to my hand-picked words.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">Scoring_Word_Unique</span>(<span class="st">"arose"</span>) <span class="sc">+</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Scoring_Word_Unique</span>(<span class="st">"until"</span>) <span class="sc">+</span> </span>
@@ -537,8 +533,7 @@ cookieconsent.run({
 <pre><code>[1] 8.081767</code></pre>
 </div>
 </div>
-<p>text chunk 10 rev a</p>
-<p>Note that there is an error here too. Despite the penalty for duplicate letters, “u” appears in two words. The correct scoring call should have been:</p>
+<p>Note that there is an error here too. By calling Scoring_Words_Unique on individual words, I did not penalize duplicate letters. Thus “u” appears in two words. The correct scoring call should have been:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>c <span class="ot">=</span> <span class="fu">Scoring_Word_Unique</span>(<span class="st">"aroseuntildumpy"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>c</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -546,13 +541,11 @@ cookieconsent.run({
 <pre><code>[1] 7.654468</code></pre>
 </div>
 </div>
-<p>text chunk 11 rev a</p>
-<p>But the program works! It generated three reasonable guesses for Wordle that use common letters. Note that by my scoring rules, the manually chosen set of words is a better choice.</p>
+<p>But the program works! It generated three reasonable guesses for Wordle that use common letters. (Note that by my scoring rules, the manually chosen set of words is a better choice.)</p>
 </section>
 </section>
 <section id="critique-the-code" class="level2">
 <h2 class="anchored" data-anchor-id="critique-the-code">4. Critique the code</h2>
-<p>text chunk 12 rev a</p>
 <p>This step is the critical step to accelerate your learning. You need to review your code and list everything you know is not done properly and everything confusing you. This should be done at the end of every session or at the start of the next. Be honest with yourself. If you don’t understand something, put it on your list, even if your code works. The point of this exercise is to increase your coding proficiency.</p>
 <p>This is my list from that code we just reviewed. I created this the next day before I started work. Note my versioning by file name.</p>
 <ol type="1">
@@ -573,7 +566,7 @@ cookieconsent.run({
 </section>
 <section id="current-status" class="level1">
 <h1>Current Status</h1>
-<p>When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I’ve run through it here.</p>
+<p>When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I’ve run through it <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2">here</a> as a blog post and the code is available on <a href="https://github.com/lsinks/Word-Games">GitHub</a>.</p>
 
 
 </section>

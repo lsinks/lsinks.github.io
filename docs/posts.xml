@@ -10,7 +10,651 @@
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Thu, 30 Mar 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 01 Apr 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Self-Guided Learning through a Wordle Guess Generator: Part 1</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html</link>
+  <description><![CDATA[ 
+
+
+
+<section id="self-guided-learning-the-ever-evolving-wordle-guess-generator" class="level2">
+<h2 class="anchored" data-anchor-id="self-guided-learning-the-ever-evolving-wordle-guess-generator">Self-Guided Learning: The Ever Evolving Wordle Guess Generator</h2>
+<p>The best way to learn a programming language is to code. Obvious, but sometimes it can be daunting to start a project when you are a novice. Influenced by my time at a start-up, I’ve found the best approach is to create a minimum viable product. This is the smallest working part of the project. By continuing to revise and iterate the code, you can rapidly detect weaknesses in your knowledge and take active steps to fix them.</p>
+<p>My learning project was a Wordle Guess Generator. I will show you how I used this project to create a self-guided learning plan. Motivated partly by my desire to have good guesses for Septle (a seven-letter guessing game), this project has been a crucial part of my journey to learn R. Practicing and learning coding skills were more important to me than devising the optimal strategy; if you are interested in “the best” Wordle strategy, then you will probably find much better answers by Googling.</p>
+<p>For those who don’t know, Wordle is a word-guessing gamer that gives you five guesses to identify a 5-letter word. Correct letters are shown in green or yellow with each guess, depending on whether they are appropriately placed or not. Incorrect letters are shown in gray.</p>
+<p>I wasn’t interested in coming up with the global “best” answer. I wanted to come up with some guesses that fit my gameplay style. I guess three words in a row without trying to solve the game. Then, with a fair number of letters known, I attempt to solve the word.</p>
+<p>The code has undergone several significant overhauls as I’ve needed to learn new things and used this project as the test bed. And here it is again, as a vehicle to learn quarto/ markdown. Here I will show you the very first ugly code and how I critiqued and revised it over several months. I’ve put it all on <a href="https://github.com/lsinks/wordle">GitHub</a>. The project is unstructured, the code is ugly, and all the versioning was by filename.</p>
+</section>
+<section id="brainstorming-the-project." class="level2">
+<h2 class="anchored" data-anchor-id="brainstorming-the-project.">1. Brainstorming the project.</h2>
+<p>Brainstorm what you want this project to do. Try to have a very clear statement about the project’s goal at the top. If you can think of self-contained modules, mark that. If you can sketch out the scaffold of the code- great! If you have some ideas about the results, even better. Put everything you can think of down. I had been thinking about this project for a while, so this brainstorming sheet is neat. Neatness and organization are not important at this point; getting stuff written down is.</p>
+<p>My goal was “I want 3 initial guesses for Septle. Ideally, I’ll maximize the number of unique letters, and I want to preferentially pick from the most frequently used letters.”</p>
+<p>I decided my scoring would be based on the frequency letters occur in English; more common letters get a higher score than uncommon letters. To generate the score for the word, I proposed the following process:</p>
+<ol type="1">
+<li>Read in letter frequencies</li>
+<li>Scoring [the letters, originally I thought it would be based on rank, with the most common letter getting a 26 and the least common getting a 1. That is what the confusing little sketch is attempting to convey. A is not the most common letter, nor is Z the least common.]</li>
+<li>Read in the list of words</li>
+<li>Calculate the scores [of the words]</li>
+<li>Pick the best word as a first guess [best meaning highest scoring]</li>
+</ol>
+<p>I also talk about how the frequency distribution of letters will likely differ between five and seven-letter words. I suggested looking at the frequency of letters in modern text instead of just frequency lists from linguists. I noted that certain letters are more likely to be in a specific position, and it could be valuable to constrain the guess to typical positions. An example is that “y” is almost always at the end of a word in English, so “sadly” might be a better guess than “yacht” for that reason. You are likelier to lock down a letter with a positionally accurate guess. I also said that I wanted a 4th Wordle guess. There are a lot of ideas here! That’s okay because I winnow them down in the next step.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/images/brainstorming_both.jpg" class="img-fluid figure-img" alt="Two handwritten pages entitled &quot;Programming Project 1&quot;"></p>
+<p></p><figcaption class="figure-caption">The initial brainstorming session</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="minimum-viable-product-what-is-the-smallest-program-that-works" class="level2">
+<h2 class="anchored" data-anchor-id="minimum-viable-product-what-is-the-smallest-program-that-works">2. Minimum Viable Product: What is the smallest program that works?</h2>
+<p>Pull out the minimum viable product from your brainstorming. What is the smallest result that would satisfy your goals? Is there a way to make things a bit smaller? I would size it so you can get working code to accomplish the goal in a few hours.</p>
+<p>I chose to generate four guesses for Wordle. I also decided to generate my frequency table from the word list itself. I found a five-letter word list that I could download and read in, but all the letter frequency tables I found were on blogs or in articles, and the only way I could see to get them into my program was to type them in and I was too lazy to do that. I decided to implement the process I outlined in the brainstorming session and calculate four guesses.</p>
+</section>
+<section id="write-some-bad-code." class="level2">
+<h2 class="anchored" data-anchor-id="write-some-bad-code.">3. Write some bad code.</h2>
+<p>Write some code that does that thing. It will be ugly. If you can’t figure something out, do it the wrong way. Just get something running.</p>
+<p>This first attempt took me 3-4 hours to write.</p>
+<p>I googled how to calculate the frequency of letters in words (in R) and found this <a href="https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/">helpful tutorial</a>.</p>
+<section id="the-minimal-viable-product-running-code" class="level3">
+<h3 class="anchored" data-anchor-id="the-minimal-viable-product-running-code">The Minimal Viable Product: Running Code</h3>
+<p>I cleaned up the commenting/formatting of the initial code just for this post. I also added library(tidyverse)- apparently, I was just loading libraries through the gui back then. If you want to see the true initial version, it is on <a href="https://github.com/lsinks/wordle/blob/main/frequency_072222.R">GitHub</a>.</p>
+<p>Here’s what my MVP does:</p>
+<ol type="1">
+<li><p>I found a <a href="https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt">list of five letter words</a> online and imported it.</p></li>
+<li><p>I calculated how often each letter occurred over the word list.<br>
+(This, or the scaled version, was the score assigned to each letter.)</p></li>
+<li><p>I looped through the word list and calculated two scores for each word, one using all letters and one using only the unique letters.</p></li>
+<li><p>I picked the highest-scoring word as my first guess.</p></li>
+<li><p>I then went through the word list and calculated a second score for the words minus the letters already guessed in the first guess (and ignoring duplicated letters).</p></li>
+<li><p>I picked the highest-scoring word as my second guess.</p></li>
+<li><p>I repeated steps 5 &amp; 6 to pick a third guess.</p></li>
+</ol>
+<p>Okay, so let’s look at some bad code. I will flag a few things as we go through, but I’m certain you can find much more that is not optimal.</p>
+<p>Here’s loading the data and writing two scoring functions. I first wrote these in the code but had time to convert them to functions in this initial work session. It was an opportunity to practice function writing, but it was not critical to the minimum viable product.</p>
+<p>I have lots of print statements commented out; this is a very simple way to debug and see how you are proceeding through the code. There are more sophisticated tools in R Studio, but I didn’t want to figure out how to use them at this moment. I use the global variable char_frequencies for the value of each letter. I create this variable in the next code chunk.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-2"></span>
+<span id="cb1-3">sgb.words <span class="ot" style="color: #003B4F;">&lt;-</span> </span>
+<span id="cb1-4">  <span class="fu" style="color: #4758AB;">read.delim</span>(<span class="st" style="color: #20794D;">"C:/Users/drsin/OneDrive/Documents/R Projects/wordle/sgb-words.txt"</span>,</span>
+<span id="cb1-5">             <span class="at" style="color: #657422;">sep =</span> <span class="st" style="color: #20794D;">""</span>)</span>
+<span id="cb1-6"></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;">#probably want this instead because it assumes no headers</span></span>
+<span id="cb1-8"><span class="co" style="color: #5E5E5E;">#test6 &lt;- read.table(file.choose())</span></span>
+<span id="cb1-9"></span>
+<span id="cb1-10">Scoring_Word <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word){</span>
+<span id="cb1-11">  <span class="co" style="color: #5E5E5E;">#i'm not handling duplicate letters at all right now</span></span>
+<span id="cb1-12">  letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb1-13">  value <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb1-14">  <span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">5</span>) {</span>
+<span id="cb1-15">    position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb1-16">    value[i] <span class="ot" style="color: #003B4F;">&lt;-</span> y[position]</span>
+<span id="cb1-17">   <span class="co" style="color: #5E5E5E;"># print(i)</span></span>
+<span id="cb1-18">    <span class="cf" style="color: #003B4F;">if</span> (i <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">5</span>) {</span>
+<span id="cb1-19">     <span class="co" style="color: #5E5E5E;"># print("I am here")</span></span>
+<span id="cb1-20">     <span class="co" style="color: #5E5E5E;"># print(sum(value))</span></span>
+<span id="cb1-21">      <span class="fu" style="color: #4758AB;">return</span>(total <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-22">      }</span>
+<span id="cb1-23">    </span>
+<span id="cb1-24">  }</span>
+<span id="cb1-25">} </span>
+<span id="cb1-26"></span>
+<span id="cb1-27"></span>
+<span id="cb1-28">Scoring_Word_Unique <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word){</span>
+<span id="cb1-29"></span>
+<span id="cb1-30"> <span class="co" style="color: #5E5E5E;"># print(word)</span></span>
+<span id="cb1-31">  letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb1-32">  unique_letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">unique</span>(letter_vec)</span>
+<span id="cb1-33">  <span class="co" style="color: #5E5E5E;">#print(unique_letter_vec)</span></span>
+<span id="cb1-34">  <span class="co" style="color: #5E5E5E;">#print(length(unique_letter_vec))</span></span>
+<span id="cb1-35">  </span>
+<span id="cb1-36">  value <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb1-37">  <span class="cf" style="color: #003B4F;">if</span> (<span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec) <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">0</span>) {</span>
+<span id="cb1-38">    <span class="fu" style="color: #4758AB;">return</span>(value)</span>
+<span id="cb1-39">  } <span class="cf" style="color: #003B4F;">else</span>{</span>
+<span id="cb1-40">      <span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec)) {</span>
+<span id="cb1-41">      position <span class="ot" style="color: #003B4F;">&lt;-</span> unique_letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb1-42">      value[i] <span class="ot" style="color: #003B4F;">&lt;-</span> y[position]</span>
+<span id="cb1-43">    <span class="co" style="color: #5E5E5E;"># print(i)</span></span>
+<span id="cb1-44">    <span class="co" style="color: #5E5E5E;"># print(value)</span></span>
+<span id="cb1-45">    <span class="cf" style="color: #003B4F;">if</span> (i <span class="sc" style="color: #5E5E5E;">==</span> <span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec)) {</span>
+<span id="cb1-46">      <span class="co" style="color: #5E5E5E;"># print("I am here")</span></span>
+<span id="cb1-47">      <span class="co" style="color: #5E5E5E;"># print(sum(value))</span></span>
+<span id="cb1-48">      <span class="fu" style="color: #4758AB;">return</span>(total <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-49">    }</span>
+<span id="cb1-50">    </span>
+<span id="cb1-51">  }</span>
+<span id="cb1-52">  }</span>
+<span id="cb1-53">}</span></code></pre></div>
+</div>
+<p>I did run through most of the code with five words initially, and then later the whole word list, when I was more confident that things worked.</p>
+<p>I calculate how often each letter appears in the list and create the scaled version. I created two incredibly ugly graphs: one of the raw counts for each letter and one of the scaled frequencies. This is also a moment to do a quick reality check on the results- are the most and least common letters what you’d expect?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">start_time <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
+<span id="cb2-2"></span>
+<span id="cb2-3">letters <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(sgb.words[,<span class="dv" style="color: #AD0000;">1</span>], <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb2-4">char_frequencies <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(<span class="fu" style="color: #4758AB;">table</span>(letters))</span>
+<span id="cb2-5"><span class="co" style="color: #5E5E5E;">#char_frequencies</span></span>
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="fu" style="color: #4758AB;">ggplot</span>(char_frequencies, </span>
+<span id="cb2-8">        <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">fct_reorder</span>(char_frequencies[,<span class="dv" style="color: #AD0000;">1</span>], char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>])</span>
+<span id="cb2-9">                              , char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>] )) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb2-10">   <span class="fu" style="color: #4758AB;">geom_col</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb2-11">   <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle_files/figure-html/letter_frequency-calc-graphs-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">common <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">max</span>(char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>])</span>
+<span id="cb3-2">y <span class="ot" style="color: #003B4F;">=</span> (char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>]<span class="sc" style="color: #5E5E5E;">/</span>common)</span>
+<span id="cb3-3"></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;">ggplot</span>(char_frequencies, </span>
+<span id="cb3-5">       <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span>  <span class="fu" style="color: #4758AB;">fct_reorder</span>(char_frequencies[,<span class="dv" style="color: #AD0000;">1</span>], char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>]), y )) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;">geom_col</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;">theme_classic</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle_files/figure-html/letter_frequency-calc-graphs-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Now I calculate the scores for the (hand-picked) words I’ve been playing with. I also hand-calculated these scores using the values from char_frequencies to ensure my scoring functions did what I thought they were.</p>
+<p>I initialized an object to store the words, scores, and guesses. You can also tell that I had no idea what data types my objects were since I called them a list. small_list is a matrix/array of characters, and none of my zeros are numbers. I wanted a dataframe, but I didn’t know how to do that. I didn’t have a strong reason to prefer a dataframe other than it was widely used in the courses I was taking at Datacamp.</p>
+<p>This chunk also pulls out a single word and sends it to score to check that it works before I loop through the entire object and calculate all the scores.</p>
+<p>You can also see I hard-coded the number of words (again… I did this in the prior code chunk too.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="co" style="color: #5E5E5E;">#calculate the score for crone</span></span>
+<span id="cb4-2">crone_score <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Scoring_Word</span>(<span class="st" style="color: #20794D;">"crone"</span>)</span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;">#might_score &lt;- Scoring_Word ("might")</span></span>
+<span id="cb4-4"><span class="co" style="color: #5E5E5E;">#sadly_score &lt;- Scoring_Word ("sadly")</span></span>
+<span id="cb4-5">num_words <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">5756</span></span>
+<span id="cb4-6"><span class="co" style="color: #5E5E5E;">#num_words &lt;- 5</span></span>
+<span id="cb4-7">small_list <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">cbind</span>(<span class="at" style="color: #657422;">word_name =</span> sgb.words[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words,<span class="dv" style="color: #AD0000;">1</span>], </span>
+<span id="cb4-8">                    <span class="at" style="color: #657422;">score =</span><span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words), </span>
+<span id="cb4-9">                    <span class="at" style="color: #657422;">unique_score =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb4-10">                    <span class="at" style="color: #657422;">post_word_one_unique =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb4-11">                    <span class="at" style="color: #657422;">post_word_two_unique =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb4-12">                    <span class="at" style="color: #657422;">post_word_three_unique =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words)</span>
+<span id="cb4-13">                                                )</span>
+<span id="cb4-14">word <span class="ot" style="color: #003B4F;">&lt;-</span> small_list[[<span class="dv" style="color: #AD0000;">1</span>,<span class="dv" style="color: #AD0000;">1</span>]]</span>
+<span id="cb4-15"><span class="fu" style="color: #4758AB;">Scoring_Word</span>(word)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.40422</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">ind2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb6-2"></span>
+<span id="cb6-3"><span class="cf" style="color: #003B4F;">for</span> (ind2 <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words){</span>
+<span id="cb6-4">  <span class="co" style="color: #5E5E5E;">#print(small_list[[ind2,1]])</span></span>
+<span id="cb6-5">  score_ind2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Scoring_Word</span>(small_list[[ind2,<span class="dv" style="color: #AD0000;">1</span>]])</span>
+<span id="cb6-6">  small_list[[ind2,<span class="dv" style="color: #AD0000;">2</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> score_ind2</span>
+<span id="cb6-7">}</span>
+<span id="cb6-8"></span>
+<span id="cb6-9"><span class="co" style="color: #5E5E5E;">#u_crone_score &lt;- Scoring_Word_Unique("crone")</span></span>
+<span id="cb6-10"><span class="co" style="color: #5E5E5E;">#u_there_core &lt;- Scoring_Word_Unique ("there")</span></span>
+<span id="cb6-11"><span class="co" style="color: #5E5E5E;">#sadly_score &lt;- Scoring_Word ("sadly")</span></span>
+<span id="cb6-12"></span>
+<span id="cb6-13">ind2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb6-14"><span class="cf" style="color: #003B4F;">for</span> (ind2 <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words){</span>
+<span id="cb6-15"> <span class="co" style="color: #5E5E5E;"># print(small_list[[ind2,1]])</span></span>
+<span id="cb6-16">  score_ind2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(small_list[[ind2,<span class="dv" style="color: #AD0000;">1</span>]])</span>
+<span id="cb6-17"> <span class="co" style="color: #5E5E5E;"># print(score_ind2)</span></span>
+<span id="cb6-18">  small_list[[ind2,<span class="dv" style="color: #AD0000;">3</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> score_ind2</span>
+<span id="cb6-19">}</span></code></pre></div>
+</div>
+<p>In my attempt to sort the word scores and pick out the highest-scoring works, I created an unnecessary number of temporary variables. I forced one of these objects to be a dataframe, but I didn’t check the types of the individual components. Note that all my numbers are still characters. It is funny that things worked even though they were the wrong type.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">small_list1 <span class="ot" style="color: #003B4F;">&lt;-</span> small_list</span>
+<span id="cb7-2">small_df <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(small_list1)</span>
+<span id="cb7-3">top_words <span class="ot" style="color: #003B4F;">&lt;-</span> small_df <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-4"> <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(unique_score))</span>
+<span id="cb7-5"></span>
+<span id="cb7-6">word_1 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span></code></pre></div>
+</div>
+<p>Now I calculate the second and third guesses. I wanted to penalize duplicate letters, so I used the unique letter scoring function and removed the letters from the first guess. I couldn’t figure out how to do that automatically, so I hardcoded to remove the letters “a”, “r”, “o”, “s”, and “e” from the words before I sent them to be scored. This is precisely the kind of situation where you can get bogged down doing things “properly” and end up stuck. I quickly attempted to figure it out and then did it incorrectly. You can also see that I have a bunch of stuff commented out that didn’t work and a bunch of print statements for debugging. This is not pretty code.</p>
+<p>Then I loop through the list again and repeat for the last guess. Again, hardcoded in the letters to remove from the first and second guesses.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;">#now we need a function that sees if a word has the letters of the word_1</span></span>
+<span id="cb8-2"><span class="co" style="color: #5E5E5E;">#and removes them and then calculates the word score</span></span>
+<span id="cb8-3"><span class="co" style="color: #5E5E5E;">#top word is arose</span></span>
+<span id="cb8-4"><span class="co" style="color: #5E5E5E;"># Word 1= arose -----</span></span>
+<span id="cb8-5">ind3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span>
+<span id="cb8-6"><span class="cf" style="color: #003B4F;">for</span> (ind3 <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words) {</span>
+<span id="cb8-7"> <span class="co" style="color: #5E5E5E;"># print(top_words$word_name[ind3])</span></span>
+<span id="cb8-8">  test <span class="ot" style="color: #003B4F;">&lt;-</span> small_list[[ind3,<span class="dv" style="color: #AD0000;">1</span>]]</span>
+<span id="cb8-9">  lvec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">gsub</span>(<span class="st" style="color: #20794D;">"[a r o s e]"</span>, <span class="st" style="color: #20794D;">""</span>, test)  <span class="co" style="color: #5E5E5E;">#this actually works.  How do I use the string?</span></span>
+<span id="cb8-10">  <span class="co" style="color: #5E5E5E;">#lvec &lt;-  unlist(strsplit(word_1, split = ""))</span></span>
+<span id="cb8-11">  <span class="co" style="color: #5E5E5E;">#lvec&lt;- "t|h|e|i|r" #how do I contruct this automatically</span></span>
+<span id="cb8-12"></span>
+<span id="cb8-13">  <span class="co" style="color: #5E5E5E;">#new_let &lt;- str_remove_all(pattern= lvec, string= test)</span></span>
+<span id="cb8-14"> <span class="co" style="color: #5E5E5E;"># print(lvec)</span></span>
+<span id="cb8-15">  score_ind3 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(lvec)</span>
+<span id="cb8-16"> <span class="co" style="color: #5E5E5E;"># print("writing score")</span></span>
+<span id="cb8-17"> <span class="co" style="color: #5E5E5E;"># print(c(ind3, " ", score_ind3, "for the word ", test, "sent as ", lvec))</span></span>
+<span id="cb8-18">  </span>
+<span id="cb8-19">  small_list[[ind3,<span class="dv" style="color: #AD0000;">4</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> score_ind3</span>
+<span id="cb8-20">  <span class="co" style="color: #5E5E5E;">#print (c("output of small list ", top_words[[ind3,4]]))</span></span>
+<span id="cb8-21">}</span>
+<span id="cb8-22"></span>
+<span id="cb8-23">small_df2 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(small_list)</span>
+<span id="cb8-24">top_words2 <span class="ot" style="color: #003B4F;">&lt;-</span> small_df2 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-25">  <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(post_word_one_unique))</span>
+<span id="cb8-26"></span>
+<span id="cb8-27"></span>
+<span id="cb8-28">word_2 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words2<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb8-29"></span>
+<span id="cb8-30"><span class="co" style="color: #5E5E5E;"># top word 2 is until</span></span>
+<span id="cb8-31"></span>
+<span id="cb8-32">ind4 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">1</span></span>
+<span id="cb8-33"><span class="cf" style="color: #003B4F;">for</span> (ind4 <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words) {</span>
+<span id="cb8-34">  <span class="co" style="color: #5E5E5E;"># print(top_words$word_name[ind3])</span></span>
+<span id="cb8-35">  test <span class="ot" style="color: #003B4F;">&lt;-</span> small_list[[ind4,<span class="dv" style="color: #AD0000;">1</span>]]</span>
+<span id="cb8-36">  lvec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">gsub</span>(<span class="st" style="color: #20794D;">"[u n t i l a r o s e]"</span>, <span class="st" style="color: #20794D;">""</span>, test)  <span class="co" style="color: #5E5E5E;">#this actually works.  How do I use the string?</span></span>
+<span id="cb8-37">  <span class="co" style="color: #5E5E5E;">#lvec &lt;-  unlist(strsplit(word_1, split = ""))</span></span>
+<span id="cb8-38">  <span class="co" style="color: #5E5E5E;">#lvec&lt;- "t|h|e|i|r" #how do I contruct this automatically</span></span>
+<span id="cb8-39">  </span>
+<span id="cb8-40">  <span class="co" style="color: #5E5E5E;">#new_let &lt;- str_remove_all(pattern= lvec, string= test)</span></span>
+<span id="cb8-41">  <span class="co" style="color: #5E5E5E;"># print(lvec)</span></span>
+<span id="cb8-42">  score_ind4 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(lvec)</span>
+<span id="cb8-43">  <span class="co" style="color: #5E5E5E;"># print("writing score")</span></span>
+<span id="cb8-44">  <span class="co" style="color: #5E5E5E;"># print(c(ind3, " ", score_ind3, "for the word ", test, "sent as ", lvec))</span></span>
+<span id="cb8-45">  </span>
+<span id="cb8-46">  end_time <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
+<span id="cb8-47">  end_time <span class="sc" style="color: #5E5E5E;">-</span> start_time</span>
+<span id="cb8-48">  </span>
+<span id="cb8-49">  small_list[[ind4,<span class="dv" style="color: #AD0000;">5</span>]] <span class="ot" style="color: #003B4F;">&lt;-</span> score_ind4</span>
+<span id="cb8-50">  <span class="co" style="color: #5E5E5E;">#print (c("output of small list ", top_words[[ind3,4]]))</span></span>
+<span id="cb8-51">}</span>
+<span id="cb8-52"></span>
+<span id="cb8-53">small_df3<span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(small_list)</span>
+<span id="cb8-54">top_words2 <span class="ot" style="color: #003B4F;">&lt;-</span> small_df3 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb8-55">  <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(post_word_two_unique))</span>
+<span id="cb8-56"></span>
+<span id="cb8-57"></span>
+<span id="cb8-58">word_3 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words2<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span></code></pre></div>
+</div>
+<p>Lastly, I calculated the total score of these three words compared to my hand-picked words.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">a <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"arose"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"until"</span>) <span class="sc" style="color: #5E5E5E;">+</span> </span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"dumpy"</span>)</span>
+<span id="cb9-4">a</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8.013518</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">b <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"crone"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-2">  <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"mighty"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb11-3">  <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"sadly"</span>)</span>
+<span id="cb11-4">b</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8.081767</code></pre>
+</div>
+</div>
+<p>Note that there is an error here too. By calling Scoring_Words_Unique on individual words, I did not penalize duplicate letters. Thus “u” appears in two words. The correct scoring call should have been:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">c <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">Scoring_Word_Unique</span>(<span class="st" style="color: #20794D;">"aroseuntildumpy"</span>)</span>
+<span id="cb13-2">c</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.654468</code></pre>
+</div>
+</div>
+<p>But the program works! It generated three reasonable guesses for Wordle that use common letters. (Note that by my scoring rules, the manually chosen set of words is a better choice.)</p>
+</section>
+</section>
+<section id="critique-the-code" class="level2">
+<h2 class="anchored" data-anchor-id="critique-the-code">4. Critique the code</h2>
+<p>This step is the critical step to accelerate your learning. You need to review your code and list everything you know is not done properly and everything confusing you. This should be done at the end of every session or at the start of the next. Be honest with yourself. If you don’t understand something, put it on your list, even if your code works. The point of this exercise is to increase your coding proficiency.</p>
+<p>This is my list from that code we just reviewed. I created this the next day before I started work. Note my versioning by file name.</p>
+<ol type="1">
+<li>Save current code as frequency_072222 and work on a new copy. This was functional code last night, so I want to keep it.</li>
+<li>Import is wrong because it takes the first word as a header.</li>
+<li>I need more concise variable names. Also, I create a bunch of temp variables that aren’t needed.</li>
+<li>I manually subtract out (hard-coded) words picked in previous cycles. I need that done on the fly.</li>
+<li>Once 4 is done, I’d like to write a function to generate however many guesses you ask for.</li>
+<li>I’d like to look at the histogram of the scores as you cycle through the guesses.</li>
+<li>I’m very unclear on when I need lists, dataframes, tibbles, etc., for the different functions.</li>
+<li>Give credit to the website where I took the string split code from.</li>
+<li>Some functions from the other code are out of date, so I should update them. [I got warnings in R Studio about this, which I didn’t understand.]</li>
+<li>Update scoring_word to have flexible word length.</li>
+</ol>
+<p>Again, there is a lot more wrong with this code, but this is the list of things I could identify with the knowledge I had at the time.</p>
+<p>The next day, I created a chart of all my variables, their sizes, and their types. I also proposed new, clearer names for them, though this wasn’t implemented until a few days later. I mostly played around with how long it took to calculate the initial score and unique score using separate or combined loops. I used sys.time() to benchmark, which didn’t seem terribly consistent in its output. However, there didn’t seem to be a huge difference between the methods, so I returned it to two loops for clarity. At the end of this day, I had four items on my task list after critiquing and reviewing. The last one was, “I need to figure out git_hub or come up with a better way of versioning than the date.”</p>
+<p>Proving that point, I put the wrong date in all the file names the next time I worked on the code. In that session, I devoted most of the time to figuring out item 4 on my task list. I wrote a function called remove_letters, which could be used instead of hard coding. I also played around with reshaping the data using pivot_longer from tidyr. I created a histogram of word scores as letters are removed from consideration, which required the reshaped data. Reshaping data can be tricky, so this was a good opportunity to work through that process. (Again, versioning by name, this was called “frequency_072422_tidyr”, in case I really messed up.)</p>
+</section>
+<section id="current-status" class="level1">
+<h1>Current Status</h1>
+<p>When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I’ve run through it <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2">here</a> as a blog post and the code is available on <a href="https://github.com/lsinks/Word-Games">GitHub</a>.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {Self-Guided {Learning} Through a {Wordle} {Guess}
+    {Generator:} {Part} 1},
+  date = {2023-04-01},
+  url = {https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“Self-Guided Learning Through a Wordle
+Guess Generator: Part 1.”</span> April 1, 2023. <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1">https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>R-code</category>
+  <guid>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html</guid>
+  <pubDate>Sat, 01 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/thumbnail.png" medium="image" type="image/png" height="155" width="144"/>
+</item>
+<item>
+  <title>Self-Guided Learning through a Wordle Guess Generator: Part 2</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1">companion blog post</a> to this one.</p>
+<p>I’m not going to walk through this in much detail, but I’m going to point out some of the major lessons I learned as I revised the code. Again, both the <a href="https://github.com/lsinks/wordle">initial version</a> and <a href="https://github.com/lsinks/Word-Games">this version</a> are on GitHub in all their messiness.</p>
+<p>I learned how to put functions in a separate file and call them from my many script. This can make long code much easier to read. Here, I’ve included the helper functions in-line and commented out the <code>source("code/helper-functions.R")</code> in the main code. I’ve also set up switchable troubleshooting help with <code>verbose</code> and <code>debug_detail</code> parameters in my functions. Setting them to <code>TRUE</code> provide more info as the functions are executed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;">#|label: helper-functions</span></span>
+<span id="cb1-2">Construct_Freq_Table <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word_list) {</span>
+<span id="cb1-3"></span>
+<span id="cb1-4"><span class="co" style="color: #5E5E5E;">#scoring code uses the counting code from</span></span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;">#https://www.r-bloggers.com/2018/12/rrrrs-in-r-letter-frequency-in-r-package-names/  </span></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;"># making the frequency table ----</span></span>
+<span id="cb1-8"></span>
+<span id="cb1-9">letters <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word_list[,<span class="dv" style="color: #AD0000;">1</span>], <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb1-10">char_frequencies <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.data.frame</span>(<span class="fu" style="color: #4758AB;">table</span>(letters))</span>
+<span id="cb1-11"></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;">#normalized</span></span>
+<span id="cb1-13">common <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">max</span>(char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>])</span>
+<span id="cb1-14">y <span class="ot" style="color: #003B4F;">=</span> (char_frequencies[,<span class="dv" style="color: #AD0000;">2</span>]<span class="sc" style="color: #5E5E5E;">/</span>common)</span>
+<span id="cb1-15">char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>normalized <span class="ot" style="color: #003B4F;">&lt;-</span> y</span>
+<span id="cb1-16"><span class="fu" style="color: #4758AB;">return</span>(char_frequencies)</span>
+<span id="cb1-17">}</span>
+<span id="cb1-18"></span>
+<span id="cb1-19">Scoring_Word <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word, <span class="at" style="color: #657422;">freqs =</span> char_frequencies,</span>
+<span id="cb1-20">                         <span class="at" style="color: #657422;">verbose =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">debug_detail =</span> <span class="cn" style="color: #8f5902;">FALSE</span>){</span>
+<span id="cb1-21">  letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb1-22">    <span class="cf" style="color: #003B4F;">if</span> (verbose <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb1-23">    {<span class="fu" style="color: #4758AB;">message</span>(<span class="st" style="color: #20794D;">"I'm in Scoring_words message and scoring: "</span>, word)}</span>
+<span id="cb1-24">  </span>
+<span id="cb1-25">  value <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb1-26">  <span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb1-27">    position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i]<span class="sc" style="color: #5E5E5E;">==</span> freqs<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb1-28">    value[i] <span class="ot" style="color: #003B4F;">&lt;-</span> freqs<span class="sc" style="color: #5E5E5E;">$</span>normalized[position]</span>
+<span id="cb1-29">    <span class="cf" style="color: #003B4F;">if</span> (debug_detail <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb1-30">    {</span>
+<span id="cb1-31">      <span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"I am in the scoring loop calculating value: "</span>)</span>
+<span id="cb1-32">      <span class="fu" style="color: #4758AB;">print</span>(i)</span>
+<span id="cb1-33">      <span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-34">      </span>
+<span id="cb1-35">    }</span>
+<span id="cb1-36">    </span>
+<span id="cb1-37">    <span class="cf" style="color: #003B4F;">if</span> (i <span class="sc" style="color: #5E5E5E;">==</span> <span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb1-38">      </span>
+<span id="cb1-39">      <span class="fu" style="color: #4758AB;">return</span>(total <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-40">    }</span>
+<span id="cb1-41">    </span>
+<span id="cb1-42">  }</span>
+<span id="cb1-43">  }</span>
+<span id="cb1-44">  </span>
+<span id="cb1-45"></span>
+<span id="cb1-46">Scoring_Word_Unique <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word, <span class="at" style="color: #657422;">freqs =</span> char_frequencies, </span>
+<span id="cb1-47">                                <span class="at" style="color: #657422;">verbose =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">debug_detail =</span> <span class="cn" style="color: #8f5902;">FALSE</span>){</span>
+<span id="cb1-48">  <span class="co" style="color: #5E5E5E;"># This does only score on unique letters</span></span>
+<span id="cb1-49">  letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb1-50">  unique_letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">unique</span>(letter_vec)</span>
+<span id="cb1-51">  <span class="co" style="color: #5E5E5E;">#unique_letter_vec &lt;- letter_vec</span></span>
+<span id="cb1-52">  <span class="cf" style="color: #003B4F;">if</span> (verbose <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb1-53">  {<span class="fu" style="color: #4758AB;">message</span>(<span class="st" style="color: #20794D;">"I'm in Scoring_words_Unique and scoring: "</span>, word)}</span>
+<span id="cb1-54">  </span>
+<span id="cb1-55">  value <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="dv" style="color: #AD0000;">0</span></span>
+<span id="cb1-56">  <span class="cf" style="color: #003B4F;">if</span> (<span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec) <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">0</span>) {</span>
+<span id="cb1-57">    <span class="fu" style="color: #4758AB;">return</span>(value)</span>
+<span id="cb1-58">  } <span class="cf" style="color: #003B4F;">else</span>{</span>
+<span id="cb1-59">    <span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec)) {</span>
+<span id="cb1-60">           position <span class="ot" style="color: #003B4F;">&lt;-</span> unique_letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> freqs<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb1-61">          value[i] <span class="ot" style="color: #003B4F;">&lt;-</span> freqs<span class="sc" style="color: #5E5E5E;">$</span>normalized[position]</span>
+<span id="cb1-62">      <span class="cf" style="color: #003B4F;">if</span> (debug_detail <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span>
+<span id="cb1-63">      {</span>
+<span id="cb1-64">        <span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"I am in the unique scoring loop calculating value: "</span>)</span>
+<span id="cb1-65">        <span class="fu" style="color: #4758AB;">print</span>(i)</span>
+<span id="cb1-66">        <span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-67">      }</span>
+<span id="cb1-68">      </span>
+<span id="cb1-69">      <span class="cf" style="color: #003B4F;">if</span> (i <span class="sc" style="color: #5E5E5E;">==</span> <span class="fu" style="color: #4758AB;">length</span>(unique_letter_vec)) {</span>
+<span id="cb1-70">        </span>
+<span id="cb1-71">        <span class="fu" style="color: #4758AB;">return</span>(total <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">sum</span>(value))</span>
+<span id="cb1-72">      }</span>
+<span id="cb1-73">      </span>
+<span id="cb1-74">    }</span>
+<span id="cb1-75">  }</span>
+<span id="cb1-76">}</span>
+<span id="cb1-77"></span>
+<span id="cb1-78">Removing_Letters <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="cf" style="color: #003B4F;">function</span>(word, chosen_word, </span>
+<span id="cb1-79">                              <span class="at" style="color: #657422;">verbose =</span> <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="at" style="color: #657422;">debug_detail =</span> <span class="cn" style="color: #8f5902;">FALSE</span>) {</span>
+<span id="cb1-80">  lvec <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">gsub</span>(<span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">"["</span>, chosen_word, <span class="st" style="color: #20794D;">"]"</span>), <span class="st" style="color: #20794D;">""</span>, word)  </span>
+<span id="cb1-81">  <span class="fu" style="color: #4758AB;">return</span>(lvec)}</span></code></pre></div>
+</div>
+<p>I finally did figure out how to make variables the types I wanted. I also replaced several loops with map functions from <a href="https://purrr.tidyverse.org/">purrr</a>. I also made a reshaped version of my dataframe using <code>pivot_longer</code> from <a href="https://tidyr.tidyverse.org/articles/pivot.html">tidyr</a>. Reshaping data is a really useful skill, but might be a bit confusing at first. So I certainly wanted to make sure I could do it correctly. The reshaped data is used to make a nice density plot later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Loading libraries and data ----</span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;">library</span>(<span class="st" style="color: #20794D;">"tidyverse"</span>)</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"></span>
+<span id="cb2-5"><span class="co" style="color: #5E5E5E;">#from https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt</span></span>
+<span id="cb2-6">word_list <span class="ot" style="color: #003B4F;">&lt;-</span> </span>
+<span id="cb2-7">  <span class="fu" style="color: #4758AB;">read.table</span>(<span class="st" style="color: #20794D;">"C:/Users/drsin/OneDrive/Documents/R Projects/Word-Games/input/sgb-words.txt"</span>) </span>
+<span id="cb2-8"></span>
+<span id="cb2-9"><span class="co" style="color: #5E5E5E;"># Functions ----</span></span>
+<span id="cb2-10"><span class="co" style="color: #5E5E5E;">#source("code/helper-functions.R")</span></span>
+<span id="cb2-11"></span>
+<span id="cb2-12"><span class="co" style="color: #5E5E5E;"># calculate letter frequencies from word list</span></span>
+<span id="cb2-13">char_frequencies <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Construct_Freq_Table</span>(word_list)</span>
+<span id="cb2-14"></span>
+<span id="cb2-15"><span class="co" style="color: #5E5E5E;"># Initialize the word_scores dataframe ----</span></span>
+<span id="cb2-16">num_words <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">nrow</span>(word_list)</span>
+<span id="cb2-17"><span class="co" style="color: #5E5E5E;">#num_words &lt;- 5</span></span>
+<span id="cb2-18">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">data.frame</span>(<span class="at" style="color: #657422;">word_name =</span> word_list[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span>num_words,<span class="dv" style="color: #AD0000;">1</span>],</span>
+<span id="cb2-19">                    <span class="at" style="color: #657422;">word_length =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-20">                    <span class="at" style="color: #657422;">word_guess1 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-21">                    <span class="at" style="color: #657422;">word_guess2 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-22">                    <span class="at" style="color: #657422;">word_guess3 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-23">                    <span class="at" style="color: #657422;">word_guess4 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-24">                    <span class="at" style="color: #657422;">score =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words), </span>
+<span id="cb2-25">                    <span class="at" style="color: #657422;">score_guess1 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-26">                    <span class="at" style="color: #657422;">score_guess2 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-27">                    <span class="at" style="color: #657422;">score_guess3 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words),</span>
+<span id="cb2-28">                    <span class="at" style="color: #657422;">score_guess4 =</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">times =</span> num_words)</span>
+<span id="cb2-29">                                                )</span>
+<span id="cb2-30"><span class="co" style="color: #5E5E5E;">#fill in word lengths.  This is so code can be expended to longer words</span></span>
+<span id="cb2-31">word_scores<span class="sc" style="color: #5E5E5E;">$</span>word_length <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">str_length</span>(word_scores<span class="sc" style="color: #5E5E5E;">$</span>word_name)</span>
+<span id="cb2-32"></span>
+<span id="cb2-33"><span class="co" style="color: #5E5E5E;"># Calculates the initial scores for all words -----</span></span>
+<span id="cb2-34"></span>
+<span id="cb2-35">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb2-36">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">score =</span> <span class="fu" style="color: #4758AB;">map_dbl</span>(word_name, Scoring_Word))</span>
+<span id="cb2-37"></span>
+<span id="cb2-38">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-39">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">score_guess1 =</span> <span class="fu" style="color: #4758AB;">map_dbl</span>(word_name, Scoring_Word_Unique))</span>
+<span id="cb2-40"></span>
+<span id="cb2-41"></span>
+<span id="cb2-42"><span class="co" style="color: #5E5E5E;"># Finding the best first word</span></span>
+<span id="cb2-43">top_words <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-44"> <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(score_guess1))</span>
+<span id="cb2-45">word_1 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb2-46"></span>
+<span id="cb2-47"><span class="co" style="color: #5E5E5E;"># Scoring for second guess</span></span>
+<span id="cb2-48">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-49">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">word_guess2 =</span> </span>
+<span id="cb2-50">           <span class="fu" style="color: #4758AB;">map_chr</span>(word_name, Removing_Letters, <span class="at" style="color: #657422;">chosen_word =</span> word_1))</span>
+<span id="cb2-51">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-52">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">score_guess2 =</span> <span class="fu" style="color: #4758AB;">map_dbl</span>(word_guess2, Scoring_Word_Unique))</span>
+<span id="cb2-53"></span>
+<span id="cb2-54">top_words <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-55">  <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(score_guess2))</span>
+<span id="cb2-56"></span>
+<span id="cb2-57">word_2 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb2-58"></span>
+<span id="cb2-59"><span class="co" style="color: #5E5E5E;"># Scoring for third guess</span></span>
+<span id="cb2-60">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb2-61">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">word_guess3 =</span></span>
+<span id="cb2-62">           <span class="fu" style="color: #4758AB;">map_chr</span>(word_guess2, Removing_Letters, <span class="at" style="color: #657422;">chosen_word =</span> word_2))</span>
+<span id="cb2-63">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-64">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">score_guess3 =</span> <span class="fu" style="color: #4758AB;">map_dbl</span>(word_guess3, Scoring_Word_Unique))</span>
+<span id="cb2-65"></span>
+<span id="cb2-66"></span>
+<span id="cb2-67">top_words <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-68">  <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(score_guess3))</span>
+<span id="cb2-69">word_3 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb2-70"></span>
+<span id="cb2-71"><span class="co" style="color: #5E5E5E;"># Scoring for fourth guess</span></span>
+<span id="cb2-72">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-73">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">word_guess4 =</span> </span>
+<span id="cb2-74">           <span class="fu" style="color: #4758AB;">map_chr</span>(word_guess3, Removing_Letters, <span class="at" style="color: #657422;">chosen_word =</span> word_3))</span>
+<span id="cb2-75">word_scores <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-76">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">score_guess4 =</span> <span class="fu" style="color: #4758AB;">map_dbl</span>(word_guess4, Scoring_Word_Unique))</span>
+<span id="cb2-77"></span>
+<span id="cb2-78"></span>
+<span id="cb2-79">top_words <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-80">  <span class="fu" style="color: #4758AB;">arrange</span>(<span class="fu" style="color: #4758AB;">desc</span>(score_guess4))</span>
+<span id="cb2-81"></span>
+<span id="cb2-82">word_4 <span class="ot" style="color: #003B4F;">&lt;-</span> top_words<span class="sc" style="color: #5E5E5E;">$</span>word_name[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb2-83"></span>
+<span id="cb2-84"><span class="co" style="color: #5E5E5E;"># subsetting this dataframe and reshaping it.</span></span>
+<span id="cb2-85"><span class="co" style="color: #5E5E5E;"># This is used to make a density plot later.</span></span>
+<span id="cb2-86">word_scores2 <span class="ot" style="color: #003B4F;">&lt;-</span> word_scores <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb2-87">   <span class="fu" style="color: #4758AB;">select</span>(word_name, score_guess1, score_guess2, score_guess3, score_guess4)</span>
+<span id="cb2-88">word_scores_reshaped <span class="ot" style="color: #003B4F;">&lt;-</span> </span>
+<span id="cb2-89">  <span class="fu" style="color: #4758AB;">pivot_longer</span>(word_scores2, <span class="at" style="color: #657422;">cols =</span> <span class="dv" style="color: #AD0000;">2</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">5</span>, </span>
+<span id="cb2-90">               <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"score_type"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"score"</span>)</span></code></pre></div>
+</div>
+<p>Nice visualizations were definitely not part of the initial code. In the next chunk, I make some prettier visualizations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="do" style="color: #5E5E5E;
+font-style: italic;">### This is now just visualizing what we've done. ------</span></span>
+<span id="cb3-2"></span>
+<span id="cb3-3"><span class="co" style="color: #5E5E5E;">#plotting the frequency of the letters in our word_set</span></span>
+<span id="cb3-4"><span class="fu" style="color: #4758AB;">ggplot</span>(char_frequencies, </span>
+<span id="cb3-5">       <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">fct_rev</span>(<span class="fu" style="color: #4758AB;">fct_reorder</span>(letters,  normalized)), <span class="at" style="color: #657422;">y =</span> normalized )) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;">geom_col</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-8">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-9">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Frequencies of Letters"</span>, <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"from 5 letter words"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-10">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">plot.title =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">hjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-11">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Letter"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-12">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Frequency"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb3-13">    <span class="fu" style="color: #4758AB;">scale_y_continuous</span>(<span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="do" style="color: #5E5E5E;
+font-style: italic;">## This looks at the distribution of scores as guessing occurs.  Initially, you have a</span></span>
+<span id="cb4-2"></span>
+<span id="cb4-3">word_scores_reshaped<span class="sc" style="color: #5E5E5E;">$</span>score_type <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.factor</span>(word_scores_reshaped<span class="sc" style="color: #5E5E5E;">$</span>score_type)</span>
+<span id="cb4-4"></span>
+<span id="cb4-5"><span class="fu" style="color: #4758AB;">ggplot</span>(word_scores_reshaped, <span class="fu" style="color: #4758AB;">aes</span>(score, <span class="at" style="color: #657422;">fill =</span> score_type)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;">geom_density</span>(<span class="at" style="color: #657422;">alpha =</span> <span class="fl" style="color: #AD0000;">0.5</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Evolution of Word Scores as Guessing Progresses"</span>,</span>
+<span id="cb4-9">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"for 5 letter words"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-10">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Score"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-11">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Density"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-12">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">""</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.7</span>, <span class="fl" style="color: #AD0000;">0.8</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-14">  <span class="fu" style="color: #4758AB;">scale_x_continuous</span>( <span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb4-15">  <span class="fu" style="color: #4758AB;">scale_y_continuous</span>( <span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>)) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="do" style="color: #5E5E5E;
+font-style: italic;">## Now we are visualizing what letters are picked in each guess</span></span>
+<span id="cb5-2">guess <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">rep</span>(<span class="st" style="color: #20794D;">"not guessed"</span>, <span class="at" style="color: #657422;">times =</span> <span class="dv" style="color: #AD0000;">26</span>)</span>
+<span id="cb5-3">char_frequencies <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">cbind</span>(char_frequencies, guess)</span>
+<span id="cb5-4"></span>
+<span id="cb5-5"><span class="co" style="color: #5E5E5E;"># this is done in reverse order because some letters are guessed in more than</span></span>
+<span id="cb5-6"><span class="co" style="color: #5E5E5E;"># one word and I'd like them marked at the earliest guess.</span></span>
+<span id="cb5-7">letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word_4, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb5-8"><span class="fu" style="color: #4758AB;">print</span>(letter_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "w" "h" "a" "c" "k"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb7-2">  position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb7-3">  char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>guess[position] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"Guess 4"</span></span>
+<span id="cb7-4">}</span>
+<span id="cb7-5"></span>
+<span id="cb7-6">letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word_3, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb7-7"><span class="fu" style="color: #4758AB;">print</span>(letter_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "d" "u" "m" "p" "y"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb9-2">  position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb9-3">  char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>guess[position] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"Guess 3"</span></span>
+<span id="cb9-4">}</span>
+<span id="cb9-5"></span>
+<span id="cb9-6">letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word_2, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb9-7"><span class="fu" style="color: #4758AB;">print</span>(letter_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "u" "n" "t" "i" "l"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb11-2">  position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb11-3">  char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>guess[position] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"Guess 2"</span></span>
+<span id="cb11-4">}</span>
+<span id="cb11-5"></span>
+<span id="cb11-6"></span>
+<span id="cb11-7">letter_vec <span class="ot" style="color: #003B4F;">&lt;-</span>  <span class="fu" style="color: #4758AB;">unlist</span>(<span class="fu" style="color: #4758AB;">strsplit</span>(word_1, <span class="at" style="color: #657422;">split =</span> <span class="st" style="color: #20794D;">""</span>))</span>
+<span id="cb11-8"><span class="fu" style="color: #4758AB;">print</span>(letter_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "a" "r" "o" "s" "e"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><span class="cf" style="color: #003B4F;">for</span> (i <span class="cf" style="color: #003B4F;">in</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="fu" style="color: #4758AB;">length</span>(letter_vec)) {</span>
+<span id="cb13-2">  position <span class="ot" style="color: #003B4F;">&lt;-</span> letter_vec[i] <span class="sc" style="color: #5E5E5E;">==</span> char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>letters</span>
+<span id="cb13-3">  char_frequencies<span class="sc" style="color: #5E5E5E;">$</span>guess[position] <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">"Guess 1"</span></span>
+<span id="cb13-4">}</span>
+<span id="cb13-5"></span>
+<span id="cb13-6"></span>
+<span id="cb13-7"><span class="fu" style="color: #4758AB;">ggplot</span>(char_frequencies, <span class="fu" style="color: #4758AB;">aes</span>(</span>
+<span id="cb13-8">  <span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">fct_rev</span>(<span class="fu" style="color: #4758AB;">fct_reorder</span>(letters,  normalized)),</span>
+<span id="cb13-9">  <span class="at" style="color: #657422;">y =</span> normalized,</span>
+<span id="cb13-10">  <span class="at" style="color: #657422;">fill =</span> guess)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-11">  <span class="fu" style="color: #4758AB;">geom_col</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-12">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"When Letters are Guessed"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-13">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"Normalized Counts"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-14">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Letter"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-15">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-16">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">0.6</span>, <span class="fl" style="color: #AD0000;">0.6</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-17">  <span class="fu" style="color: #4758AB;">scale_y_continuous</span>(<span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="dv" style="color: #AD0000;">0</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So that’s the current state of this project. This was a really useful project for me and it really strengthened by R and Tidyverse skills.</p>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {Self-Guided {Learning} Through a {Wordle} {Guess}
+    {Generator:} {Part} 2},
+  date = {2023-04-01},
+  url = {https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“Self-Guided Learning Through a Wordle
+Guess Generator: Part 2.”</span> April 1, 2023. <a href="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2">https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>R-code</category>
+  <guid>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html</guid>
+  <pubDate>Sat, 01 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>One Class SVM</title>
   <dc:creator>Louise E. Sinks</dc:creator>

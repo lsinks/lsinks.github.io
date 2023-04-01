@@ -11,12 +11,18 @@ categories: [R, R-code] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2
 image: "thumbnail.png"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 format:
   html:
     toc: true
 editor: visual
 ---
+
+This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the [companion blog post](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1) to this one.
+
+I'm not going to walk through this in much detail, but I'm going to point out some of the major lessons I learned as I revised the code. Again, both the [initial version](https://github.com/lsinks/wordle) and [this version](https://github.com/lsinks/Word-Games) are on GitHub in all their messiness.
+
+I learned how to put functions in a separate file and call them from my many script. This can make long code much easier to read. Here, I've included the helper functions in-line and commented out the `source("code/helper-functions.R")` in the main code. I've also set up switchable troubleshooting help with `verbose` and `debug_detail` parameters in my functions. Setting them to `TRUE` provide more info as the functions are executed.
 
 ```{r}
 #|label: helper-functions
@@ -32,12 +38,13 @@ char_frequencies <- as.data.frame(table(letters))
 
 #normalized
 common <- max(char_frequencies[,2])
-y=(char_frequencies[,2]/common)
+y = (char_frequencies[,2]/common)
 char_frequencies$normalized <- y
 return(char_frequencies)
 }
 
-Scoring_Word <- function(word, freqs = char_frequencies, verbose = FALSE, debug_detail = FALSE){
+Scoring_Word <- function(word, freqs = char_frequencies,
+                         verbose = FALSE, debug_detail = FALSE){
   letter_vec <-  unlist(strsplit(word, split = ""))
     if (verbose == TRUE)
     {message("I'm in Scoring_words message and scoring: ", word)}
@@ -63,7 +70,8 @@ Scoring_Word <- function(word, freqs = char_frequencies, verbose = FALSE, debug_
   }
   
 
-Scoring_Word_Unique <- function(word, freqs = char_frequencies, verbose = FALSE, debug_detail = FALSE){
+Scoring_Word_Unique <- function(word, freqs = char_frequencies, 
+                                verbose = FALSE, debug_detail = FALSE){
   # This does only score on unique letters
   letter_vec <-  unlist(strsplit(word, split = ""))
   unique_letter_vec <- unique(letter_vec)
@@ -72,7 +80,7 @@ Scoring_Word_Unique <- function(word, freqs = char_frequencies, verbose = FALSE,
   {message("I'm in Scoring_words_Unique and scoring: ", word)}
   
   value <- 0
-  if (length(unique_letter_vec)== 0) {
+  if (length(unique_letter_vec) == 0) {
     return(value)
   } else{
     for (i in 1:length(unique_letter_vec)) {
@@ -85,7 +93,7 @@ Scoring_Word_Unique <- function(word, freqs = char_frequencies, verbose = FALSE,
         print(sum(value))
       }
       
-      if (i==length(unique_letter_vec)) {
+      if (i == length(unique_letter_vec)) {
         
         return(total <- sum(value))
       }
@@ -94,20 +102,24 @@ Scoring_Word_Unique <- function(word, freqs = char_frequencies, verbose = FALSE,
   }
 }
 
-Removing_Letters <- function (word, chosen_word, verbose = TRUE, debug_detail = TRUE) {
+Removing_Letters <- function(word, chosen_word, 
+                              verbose = FALSE, debug_detail = FALSE) {
   lvec <- gsub(paste0("[", chosen_word, "]"), "", word)  
   return(lvec)}
  
 ```
 
+I finally did figure out how to make variables the types I wanted. I also replaced several loops with map functions from [purrr](https://purrr.tidyverse.org/). I also made a reshaped version of my dataframe using `pivot_longer` from [tidyr](https://tidyr.tidyverse.org/articles/pivot.html). Reshaping data is a really useful skill, but might be a bit confusing at first. So I certainly wanted to make sure I could do it correctly. The reshaped data is used to make a nice density plot later.
+
 ```{r}
+#| warning: false
 # Loading libraries and data ----
 library("tidyverse")
-library("assertive")
 
 
 #from https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt
-word_list <- read.table("C:/Users/drsin/OneDrive/Documents/R Projects/Word-Games/input/sgb-words.txt") 
+word_list <- 
+  read.table("C:/Users/drsin/OneDrive/Documents/R Projects/Word-Games/input/sgb-words.txt") 
 
 # Functions ----
 #source("code/helper-functions.R")
@@ -185,13 +197,19 @@ top_words <- word_scores %>%
 word_4 <- top_words$word_name[1]
 
 # subsetting this dataframe and reshaping it.
-# This is used to make a histogram later.
+# This is used to make a density plot later.
 word_scores2 <- word_scores %>%
    select(word_name, score_guess1, score_guess2, score_guess3, score_guess4)
 word_scores_reshaped <- 
   pivot_longer(word_scores2, cols = 2:5, 
                names_to = "score_type", values_to = "score")
 
+
+```
+
+Nice visualizations were definitely not part of the initial code. In the next chunk, I make some prettier visualizations.
+
+```{r}
 ### This is now just visualizing what we've done. ------
 
 #plotting the frequency of the letters in our word_set
@@ -270,9 +288,11 @@ ggplot(char_frequencies, aes(
   ylab("Normalized Counts") +
   xlab("Letter") +
   theme_classic() +
-  theme(legend.position = c(0.7, 0.8)) +
+  theme(legend.position = c(0.6, 0.6)) +
   scale_y_continuous(expand = c(0, 0))
 
-ggsave("thumbnail.png")
+
 
 ```
+
+So that's the current state of this project. This was a really useful project for me and it really strengthened by R and Tidyverse skills.

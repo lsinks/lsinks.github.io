@@ -138,6 +138,215 @@
       ],
       "Hash": "e8a22846fff485f0be3770c2da758713"
     },
+    "assertive": {
+      "Package": "assertive",
+      "Version": "0.3-6",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.code",
+        "assertive.data",
+        "assertive.data.uk",
+        "assertive.data.us",
+        "assertive.datetimes",
+        "assertive.files",
+        "assertive.matrices",
+        "assertive.models",
+        "assertive.numbers",
+        "assertive.properties",
+        "assertive.reflection",
+        "assertive.sets",
+        "assertive.strings",
+        "assertive.types",
+        "knitr"
+      ],
+      "Hash": "03ec33ffb1b1d80deba944f4a6e50610"
+    },
+    "assertive.base": {
+      "Package": "assertive.base",
+      "Version": "0.0-9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "methods",
+        "utils"
+      ],
+      "Hash": "b13489d382536049f19cd7b205fbc12a"
+    },
+    "assertive.code": {
+      "Package": "assertive.code",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.properties",
+        "assertive.types",
+        "methods"
+      ],
+      "Hash": "d990d0a691a7c2977357bfd85e888c87"
+    },
+    "assertive.data": {
+      "Package": "assertive.data",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.strings"
+      ],
+      "Hash": "de2b0e46f52103fadb61d9e8468323aa"
+    },
+    "assertive.data.uk": {
+      "Package": "assertive.data.uk",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.strings"
+      ],
+      "Hash": "7a2c08260806e39370aa0b62fd2ab00f"
+    },
+    "assertive.data.us": {
+      "Package": "assertive.data.us",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.strings"
+      ],
+      "Hash": "c694a3bf0c58a6827d58de53710ef889"
+    },
+    "assertive.datetimes": {
+      "Package": "assertive.datetimes",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.types"
+      ],
+      "Hash": "f221ead87778e6081e2767c74d6e0f75"
+    },
+    "assertive.files": {
+      "Package": "assertive.files",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.numbers"
+      ],
+      "Hash": "946a8b6f9951bc8e4931eb5b892ae56e"
+    },
+    "assertive.matrices": {
+      "Package": "assertive.matrices",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base"
+      ],
+      "Hash": "04e0d9bb4e0a89a632c2e89b6e681a95"
+    },
+    "assertive.models": {
+      "Package": "assertive.models",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "stats"
+      ],
+      "Hash": "0039faf687147d63758ad0126a0f917c"
+    },
+    "assertive.numbers": {
+      "Package": "assertive.numbers",
+      "Version": "0.0-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base"
+      ],
+      "Hash": "cf44804c431986c64dfd2f577031c9f4"
+    },
+    "assertive.properties": {
+      "Package": "assertive.properties",
+      "Version": "0.0-5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "methods"
+      ],
+      "Hash": "78281e9da959f070ee617331ba876fde"
+    },
+    "assertive.reflection": {
+      "Package": "assertive.reflection",
+      "Version": "0.0-5",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "utils"
+      ],
+      "Hash": "4eb9e99fa4cd2b04439f0a080d5a90c9"
+    },
+    "assertive.sets": {
+      "Package": "assertive.sets",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base"
+      ],
+      "Hash": "7e10f191b5d6f423fb0e056096e4cc96"
+    },
+    "assertive.strings": {
+      "Package": "assertive.strings",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.types",
+        "stringi"
+      ],
+      "Hash": "562f6445125dad322cb8f57c26286713"
+    },
+    "assertive.types": {
+      "Package": "assertive.types",
+      "Version": "0.0-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "assertive.base",
+        "assertive.properties",
+        "codetools",
+        "methods",
+        "stats"
+      ],
+      "Hash": "c4837a5ed530b4327914b54a2644990e"
+    },
     "backports": {
       "Package": "backports",
       "Version": "1.4.1",
