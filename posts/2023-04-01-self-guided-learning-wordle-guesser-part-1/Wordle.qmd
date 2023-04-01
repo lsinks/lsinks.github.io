@@ -350,4 +350,4 @@ Proving that point, I put the wrong date in all the file names the next time I w
 
 # Current Status
 
-When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I've run through it [here](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2) as a blog post and the code is available on [GitHub](https://github.com/lsinks/Word-Games).
+When I set-up git/ GitHub, I created a new project using the structure for folders and subfolders that I learned in a class at Datacamp. This project is also a work in progress, so it is also messy. I've run through it [here](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html) as a blog post and the code is available on [GitHub](https://github.com/lsinks/Word-Games).

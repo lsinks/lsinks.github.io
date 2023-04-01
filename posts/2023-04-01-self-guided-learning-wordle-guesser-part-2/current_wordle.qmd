@@ -18,7 +18,7 @@ format:
 editor: visual
 ---
 
-This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the [companion blog post](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1) to this one.
+This is the current version of the word game guesser. I discussed how I used this project to hone my coding skills in the [companion blog post](https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.htmll) to this one.
 
 I'm not going to walk through this in much detail, but I'm going to point out some of the major lessons I learned as I revised the code. Again, both the [initial version](https://github.com/lsinks/wordle) and [this version](https://github.com/lsinks/Word-Games) are on GitHub in all their messiness.
 
