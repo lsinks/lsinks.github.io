@@ -10,7 +10,162 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sat, 01 Apr 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 02 Apr 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>30 Day Chart Challenge -Arlington Parks</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>When I looked at Twitter this morning, my feed was filled with amazing charts. Apparently, April is month for the #30DayChartChallenge. More info can be found at the <a href="https://github.com/30DayChartChallenge/Edition2023">challenge’s Github page</a>. Each day, the challenge specifies a type of chart, but not a dataset. Today’s challenge is to create a waffle chart. I’d never heard of a waffle chart, but luckily, R has a <a href="https://cran.r-project.org/web/packages/waffle/">package</a> for that!</p>
+<p>Keeping it simple and just using tidyverse and waffle packages today. (Spoiler, I had incredible difficulties with this package.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(waffle)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span></code></pre></div>
+</div>
+<p>A waffle chart is similar to a pie chart, but since it is constructed from squares, instead of wedges, it is a bit easier to correctly judge the relative areas.</p>
+<p>I discovered that Arlington County has a website with a bunch of <a href="https://data.arlingtonva.us/">open source data</a>, so I poked around there to find a dataset for today’s challenge. I decided to use the dataset on <a href="https://data.arlingtonva.us/dataset/213">parks and acreage</a>. In addition to having local and federally owned parks, Arlington is park of a consortium of Northern Virginia jurisdictions that also operate <a href="https://www.novaparks.com/">regional parks</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">parks <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"parks.csv"</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 10 Columns: 6
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (6): Profile Year, County Owned Parkland (Acreage), NOVA Parks (Acreage)...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+<p>The dataset contains 3 years worth of data (2019-2021) and the total number of acres owned by the county, NOVA parks, and the National Park Service. It also includes the number of parks own by NOVA parks and the county, but not the number of NPS parks. I did try to find the number of NPS parks and the answer isn’t easily obtainable. The NPS owns one park in Arlington (Arlington House), but there are a couple of multi-state trails that might go through the county, but I wasn’t interested in pulling up maps to check.</p>
+<p>The dataset comes as an excel sheet and the column names aren’t nice. I’ve been working with so many datasets designed for R or SQL that it was a shock to see long column names with spaces and punctuation. I had to look up how to handle that! The answer is backticks, as below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">parks_2021 <span class="ot" style="color: #003B4F;">&lt;-</span> parks <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">filter</span>(<span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Profile Year</span><span class="st" style="color: #20794D;">`</span> <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">2021</span>)</span></code></pre></div>
+</div>
+<p>I’m going to rename the columns and in this filtered dataset. There isn’t much year to year change in this dataset (there is one extra park in 2020), so I’m not going to do anything with the entire dataset. If I were, I’d rename the parent dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">parks_2021 <span class="ot" style="color: #003B4F;">&lt;-</span> parks_2021 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">transmute</span>(<span class="at" style="color: #657422;">year =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">Profile Year</span><span class="st" style="color: #20794D;">`</span>,</span>
+<span id="cb5-3">         <span class="at" style="color: #657422;">county_acres =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">County Owned Parkland (Acreage)</span><span class="st" style="color: #20794D;">`</span>,</span>
+<span id="cb5-4">         <span class="at" style="color: #657422;">NOVA_acres =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">NOVA Parks (Acreage)</span><span class="st" style="color: #20794D;">`</span>,</span>
+<span id="cb5-5">         <span class="at" style="color: #657422;">NPS_acres =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">National Parks Service (Acreage)</span><span class="st" style="color: #20794D;">`</span>) </span>
+<span id="cb5-6"></span>
+<span id="cb5-7">parks_2021 <span class="ot" style="color: #003B4F;">&lt;-</span> parks_2021 <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span>year)</span></code></pre></div>
+</div>
+<p>Now let’s get waffling!</p>
+<p>Allegedly, you can both <a href="https://rud.is/rpubs/building-waffle-charts.html">pass waffle dataframes or use the provided geom_waffle</a>, but neither was successful for me. With respect to the geom_waffle, I found a suggestion to <a href="https://github.com/hrbrmstr/waffle/issues/76">install waffle from the github repo and restart R Studio</a>, but that didn’t work for me. Others stated that re-installing R Studio fixed the problem, but my commitment to waffle charts is not that great.</p>
+<p>As to passing it dataframes, waffle constantly complained about <code>'list' object cannot be coerced to type 'double'</code> even when using code from other folk’s tutorial. Passing waffle a simple vector did work.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;"># Vector</span></span>
+<span id="cb6-2">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">30</span>, <span class="dv" style="color: #AD0000;">25</span>, <span class="dv" style="color: #AD0000;">20</span>, <span class="dv" style="color: #AD0000;">5</span>)</span>
+<span id="cb6-3"></span>
+<span id="cb6-4"><span class="co" style="color: #5E5E5E;"># Waffle chart</span></span>
+<span id="cb6-5"><span class="fu" style="color: #4758AB;">waffle</span>(x, <span class="at" style="color: #657422;">rows =</span> <span class="dv" style="color: #AD0000;">8</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/test-vector-waffle-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So, I converted my dataframe to a vector. First, I reshaped it to long rather than wide. (Neither the long nor the wide df waffled.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">parks_2021_long <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">pivot_longer</span>(parks_2021, <span class="at" style="color: #657422;">cols =</span> <span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">3</span>, <span class="at" style="color: #657422;">names_to =</span> <span class="st" style="color: #20794D;">"owner"</span>, <span class="at" style="color: #657422;">values_to =</span> <span class="st" style="color: #20794D;">"acreage"</span>)</span></code></pre></div>
+</div>
+<p>Then I converted it to a vector. This should be a named vector of numbers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">parks_2021_vec <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">deframe</span>(parks_2021_long)</span>
+<span id="cb8-2"><span class="fu" style="color: #4758AB;">class</span>(parks_2021_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">print</span>(parks_2021_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>county_acres   NOVA_acres    NPS_acres 
+         924          136          417 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="fu" style="color: #4758AB;">str</span>(parks_2021_vec)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Named num [1:3] 924 136 417
+ - attr(*, "names")= chr [1:3] "county_acres" "NOVA_acres" "NPS_acres"</code></pre>
+</div>
+</div>
+<p>Let’s waffle it. When I first waffled it, I got 4 categories instead of 3. I found an example that said you needed to <a href="https://imuhovic.com/posts/waffle-plots-square-pies-ggplot/">explicitly pass it 3 colors</a> or else it would fill in the blank space with a 4th color. Then you get the correct labels, but no chart!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="co" style="color: #5E5E5E;">#This waffles, it seems like nonsense to me</span></span>
+<span id="cb14-2"></span>
+<span id="cb14-3"><span class="fu" style="color: #4758AB;">waffle</span>(parks_2021_vec, <span class="at" style="color: #657422;">colors =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#FFC0CB"</span>, <span class="st" style="color: #20794D;">"#FFC0AB"</span>, <span class="st" style="color: #20794D;">"green"</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/nonsense-waffle-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So now we reached the sad state of affairs where I type in the values to make this work. And that also does not work.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">x <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="at" style="color: #657422;">county =</span> <span class="dv" style="color: #AD0000;">924</span>, <span class="at" style="color: #657422;">nova =</span> <span class="dv" style="color: #AD0000;">136</span>, <span class="at" style="color: #657422;">nps =</span> <span class="dv" style="color: #AD0000;">417</span>)</span>
+<span id="cb15-2"></span>
+<span id="cb15-3"><span class="co" style="color: #5E5E5E;"># Waffle chart</span></span>
+<span id="cb15-4"><span class="fu" style="color: #4758AB;">waffle</span>(x , <span class="at" style="color: #657422;">rows =</span> <span class="dv" style="color: #AD0000;">10</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/typing_vector-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Small numbers work</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="at" style="color: #657422;">county =</span> <span class="fl" style="color: #AD0000;">9.24</span>, <span class="at" style="color: #657422;">nova =</span> <span class="fl" style="color: #AD0000;">1.36</span>, <span class="at" style="color: #657422;">nps =</span> <span class="fl" style="color: #AD0000;">4.17</span>)</span>
+<span id="cb16-2"></span>
+<span id="cb16-3"><span class="co" style="color: #5E5E5E;"># Waffle chart</span></span>
+<span id="cb16-4"><span class="fu" style="color: #4758AB;">waffle</span>(y ,  <span class="at" style="color: #657422;">rows =</span> <span class="dv" style="color: #AD0000;">10</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/trying-random-things-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>If I convert everything to percentages…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">total <span class="ot" style="color: #003B4F;">=</span> <span class="dv" style="color: #AD0000;">924</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">136</span> <span class="sc" style="color: #5E5E5E;">+</span> <span class="dv" style="color: #AD0000;">417</span></span>
+<span id="cb17-2">y <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="at" style="color: #657422;">county =</span> (<span class="dv" style="color: #AD0000;">924</span><span class="sc" style="color: #5E5E5E;">/</span>total)<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">100</span>, <span class="at" style="color: #657422;">nova =</span> (<span class="dv" style="color: #AD0000;">136</span><span class="sc" style="color: #5E5E5E;">/</span>total)<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">100</span>, <span class="at" style="color: #657422;">nps =</span> (<span class="dv" style="color: #AD0000;">417</span><span class="sc" style="color: #5E5E5E;">/</span>total)<span class="sc" style="color: #5E5E5E;">*</span><span class="dv" style="color: #AD0000;">100</span>)</span>
+<span id="cb17-3"></span>
+<span id="cb17-4"><span class="co" style="color: #5E5E5E;"># Waffle chart</span></span>
+<span id="cb17-5"><span class="fu" style="color: #4758AB;">waffle</span>(y ,  <span class="at" style="color: #657422;">rows =</span> <span class="dv" style="color: #AD0000;">10</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/trying-percents-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I don’t find any documentation about the size of the numbers. It is not a requirement that the totals must add up to 100 (100%); small numbers adding up to anything works. Waffle charts are not only for proportional data, but can also be used to track progress. There is nothing in the documentation on CRAN that gives a clue about this, nor did I see anything in the tutorials I looked at.</p>
+<p>I’m going to pretty up the chart and call it a day. I thought this would take me about 20 minutes to make a nice chart and instead I’ve spent several hours and I don’t even understand what went wrong. Also, the named vector does work when I adjust the size of the numbers to “smaller” values. I picked nice forest colors since we are talking about parks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">parks_2021_percent <span class="ot" style="color: #003B4F;">=</span> (parks_2021_vec <span class="sc" style="color: #5E5E5E;">/</span> total) <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">100</span></span>
+<span id="cb18-2"></span>
+<span id="cb18-3"></span>
+<span id="cb18-4"><span class="fu" style="color: #4758AB;">waffle</span>(parks_2021_percent, <span class="at" style="color: #657422;">colors =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"darkgreen"</span>, <span class="st" style="color: #20794D;">"darkseagreen"</span>, <span class="st" style="color: #20794D;">"darkolivegreen"</span>), <span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Who owns the parks in Arlington, Virginia?"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks_files/figure-html/final-waffle-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I don’t really understand the waffle package. I don’t find the graphic particularly understandable. I’d like there to be some sort of indication about what each square represents. And I find it very annoying that there are not 100 squares. I know this is a rounding issue, but given that the dataset, by the nature of how it was created, should equal 100%, the chart is just confusing. And for what it is worth, I had to repeatedly restart RStudio, because code chunks would just fail to do anything. They’d run, but there would be no output, not even warnings or errors.</p>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {30 {Day} {Chart} {Challenge} {-Arlington} {Parks}},
+  date = {2023-04-02},
+  url = {https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“30 Day Chart Challenge -Arlington
+Parks.”</span> April 2, 2023. <a href="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks">https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Waffle</category>
+  <category>30DayChartChallenge</category>
+  <guid>https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html</guid>
+  <pubDate>Sun, 02 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/thumbnail.png" medium="image" type="image/png" height="131" width="144"/>
+</item>
 <item>
   <title>Self-Guided Learning through a Wordle Guess Generator: Part 1</title>
   <dc:creator>Louise E. Sinks</dc:creator>
