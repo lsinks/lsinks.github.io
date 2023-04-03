@@ -54,7 +54,6 @@ fauna_cleaned <- fauna %>%
 
 ```
 
-
 We have data on more than just reptiles, the dataset includes information about birds and mammals as well. But I'm only interested in reptiles.
 
 ```{r}
@@ -104,42 +103,45 @@ Ollie Burger fun.
 ```{r}
 #| label: box-turtle-fun
 
-pond_turtles <- turtles %>%
-  filter(family == 'Emydidae') %>%
-  mutate(box_turtle = ifelse(name == "Terrapene carolina", TRUE, FALSE)) 
+eurasian_pond_turtles <- turtles %>%
+  filter(family == 'Geoemydidae') %>%
+  mutate(reeves_turtle = ifelse(name == "Mauremys reevesii", TRUE, FALSE)) 
 ```
 
 Okay, let's look at mightiness of the turtles in this family.
 
 ```{r}
-turtle_plot_ollie <- pond_turtles %>%
-  ggplot(aes(x = fct_reorder(name, mass_g), y = mass_g, fill = box_turtle)) +
-  scale_fill_manual(values=c("#999999", "#E69F00")) +
+turtle_plot_ollie <- eurasian_pond_turtles %>%
+  ggplot(aes(x = fct_reorder(name, mass_g), y = mass_g, fill = reeves_turtle)) +
+  scale_fill_manual(values = c("#999999", "darkgreen")) +
   geom_col(width = 0.7, position = position_dodge(10)) +
+  geom_hline(yintercept = 285, color = "darkgreen", linetype = "dotted") +
+  scale_y_log10() +
   coord_flip() +
   ylab("mass (g)") +
   xlab("") +
-  ggtitle("Mightiness of Different Turtles in family Emydidae") +
-  labs(caption = "Data from https://doi.org/10.1186/s40709-021-00134-9") +
+  ggtitle("Mightiness of Different Turtles in family Geoemydidae") +
+  labs(subtitle = "Ollie Burger Mightiness: https://twitter.com/pthelo/",
+         caption = "Data from https://doi.org/10.1186/s40709-021-00134-9") +
   theme_classic() +
-  theme(axis.text = element_text(size = 6)) +
+  theme(axis.text = element_text(size = 4)) +
   theme(legend.position = "none")
 
 
 #found how to add an image to my graph on stack overflow
 #https://stackoverflow.com/questions/63442933/how-can-i-add-a-logo-to-a-ggplot-visualisation
 
-#img <- image_read("pqtk5r.jpg")
+img <- image_read("OllieBurger.jpg")
 
 # Set the canvas where you are going to draw the plot and the image
-#ggdraw() +
+ggdraw() +
 # Draw the plot in the canvas setting the x and y positions, which go from 0,0
 # (lower left corner) to 1,1 (upper right corner) and set the width and height of
 # the plot. It's advisable that x + width = 1 and y + height = 1, to avoid clipping # the plot
-#draw_plot(turtle_plot,x = 0, y = 0.15, width = 1, height = 0.85) +
+draw_plot(turtle_plot_ollie,x = 0, y = 0.15, width = 1, height = 0.85) +
 # Draw image in the canvas using the same concept as for the plot. Might need to 
 # play with the x, y, width and height values to obtain the desired result
-#draw_image(img, x = 0.6, y = 0.35, width = 0.45, height = 0.45) 
+draw_image(img, x = 0.7, y = 0.3, width = 0.30, height = 0.30) 
 
   
 ```
