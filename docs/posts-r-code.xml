@@ -10,7 +10,1589 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.335</generator>
-<lastBuildDate>Sun, 02 Apr 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 03 Apr 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>30 Day Chart Challenge- Flora and Fauna</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>It is Day 3 of the #30DayChartChallenge. More info can be found at the <a href="https://github.com/30DayChartChallenge/Edition2023">challenge’s Github page</a>. Today’s theme is flora and fauna. I found a trove of fascinating data at <a href="http://www.gardinitiative.org/data.html">Global Assessment of Reptile Distributions</a>. I chose the dataset on body size/ mass from the paper: <a href="https://doi.org/10.1186/s40709-021-00134-9">“Different solutions lead to similar life history traits across the great divides of the amniote tree of life.” by Shai&nbsp;Meiri, Gopal Murali, Anna Zimin, Lior Shak, Yuval Itescu, Gabriel Caetano, and Uri Roll (Journal of Biological Research-Thessaloniki), 202128: 3</a>.</p>
+<p>Okay, let’s go. I’m going to keep the libraries to a minimum.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(gt)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(cowplot)</span>
+<span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(magick)</span></code></pre></div>
+</div>
+<p>More blah words</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">fauna <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_csv</span>(<span class="st" style="color: #20794D;">"animals.csv"</span>, <span class="at" style="color: #657422;">show_col_types =</span> <span class="cn" style="color: #8f5902;">FALSE</span>)</span></code></pre></div>
+</div>
+<p>I’m going to change the class, clade, order, family and bionomial_2020 to factors. I’m keeping those columns and the mass and discarding the rest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">fauna_cleaned <span class="ot" style="color: #003B4F;">&lt;-</span> fauna <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;">select</span>(Class<span class="sc" style="color: #5E5E5E;">:</span><span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">body mass (g)</span><span class="st" style="color: #20794D;">`</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;">select</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">binomial_(original files)</span><span class="st" style="color: #20794D;">`</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-4">  <span class="fu" style="color: #4758AB;">rename</span>(<span class="at" style="color: #657422;">mass_g =</span> <span class="st" style="color: #20794D;">`</span><span class="at" style="color: #657422;">body mass (g)</span><span class="st" style="color: #20794D;">`</span>, <span class="at" style="color: #657422;">name =</span> binomial_2020) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-5">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Class =</span> <span class="fu" style="color: #4758AB;">factor</span>(Class),</span>
+<span id="cb3-6">         <span class="at" style="color: #657422;">Clade =</span> <span class="fu" style="color: #4758AB;">factor</span>(Clade),</span>
+<span id="cb3-7">         <span class="at" style="color: #657422;">order =</span> <span class="fu" style="color: #4758AB;">factor</span>(order),</span>
+<span id="cb3-8">         <span class="at" style="color: #657422;">family =</span> <span class="fu" style="color: #4758AB;">factor</span>(family),</span>
+<span id="cb3-9">         <span class="at" style="color: #657422;">name =</span> <span class="fu" style="color: #4758AB;">factor</span>(name))</span></code></pre></div>
+</div>
+<p>So, let’s see what kind of data we have.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">table1 <span class="ot" style="color: #003B4F;">&lt;-</span> fauna_cleaned <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">count</span>(Class)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"><span class="fu" style="color: #4758AB;">gt</span>(table1)</span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="owstvoxunc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#owstvoxunc table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#owstvoxunc thead, #owstvoxunc tbody, #owstvoxunc tfoot, #owstvoxunc tr, #owstvoxunc td, #owstvoxunc th {
+  border-style: none;
+}
+
+#owstvoxunc p {
+  margin: 0;
+  padding: 0;
+}
+
+#owstvoxunc .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#owstvoxunc .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#owstvoxunc .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#owstvoxunc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#owstvoxunc .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#owstvoxunc .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#owstvoxunc .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#owstvoxunc .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#owstvoxunc .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#owstvoxunc .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#owstvoxunc .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#owstvoxunc .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#owstvoxunc .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#owstvoxunc .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#owstvoxunc .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owstvoxunc .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#owstvoxunc .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#owstvoxunc .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#owstvoxunc .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owstvoxunc .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#owstvoxunc .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owstvoxunc .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#owstvoxunc .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owstvoxunc .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#owstvoxunc .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owstvoxunc .gt_left {
+  text-align: left;
+}
+
+#owstvoxunc .gt_center {
+  text-align: center;
+}
+
+#owstvoxunc .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#owstvoxunc .gt_font_normal {
+  font-weight: normal;
+}
+
+#owstvoxunc .gt_font_bold {
+  font-weight: bold;
+}
+
+#owstvoxunc .gt_font_italic {
+  font-style: italic;
+}
+
+#owstvoxunc .gt_super {
+  font-size: 65%;
+}
+
+#owstvoxunc .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#owstvoxunc .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#owstvoxunc .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#owstvoxunc .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#owstvoxunc .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#owstvoxunc .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#owstvoxunc .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Class">Class</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Class" class="gt_row gt_center">Aves</td>
+<td headers="n" class="gt_row gt_right">9534</td></tr>
+    <tr><td headers="Class" class="gt_row gt_center">Mammalia</td>
+<td headers="n" class="gt_row gt_right">5840</td></tr>
+    <tr><td headers="Class" class="gt_row gt_center">Reptilia</td>
+<td headers="n" class="gt_row gt_right">11240</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>We have data on more than just reptiles, the dataset includes information about birds and mammals as well. But I’m only interested in reptiles.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">reptiles <span class="ot" style="color: #003B4F;">&lt;-</span> fauna_cleaned <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">filter</span>(Class <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Reptilia"</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">table2 <span class="ot" style="color: #003B4F;">&lt;-</span> reptiles <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;">count</span>(Clade, order)</span>
+<span id="cb6-3"></span>
+<span id="cb6-4"><span class="fu" style="color: #4758AB;">gt</span>(table2)</span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="bgrkltgzoh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bgrkltgzoh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#bgrkltgzoh thead, #bgrkltgzoh tbody, #bgrkltgzoh tfoot, #bgrkltgzoh tr, #bgrkltgzoh td, #bgrkltgzoh th {
+  border-style: none;
+}
+
+#bgrkltgzoh p {
+  margin: 0;
+  padding: 0;
+}
+
+#bgrkltgzoh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#bgrkltgzoh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bgrkltgzoh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bgrkltgzoh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bgrkltgzoh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bgrkltgzoh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bgrkltgzoh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bgrkltgzoh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bgrkltgzoh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bgrkltgzoh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#bgrkltgzoh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bgrkltgzoh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bgrkltgzoh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bgrkltgzoh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bgrkltgzoh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bgrkltgzoh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#bgrkltgzoh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#bgrkltgzoh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bgrkltgzoh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bgrkltgzoh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#bgrkltgzoh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bgrkltgzoh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bgrkltgzoh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bgrkltgzoh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bgrkltgzoh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bgrkltgzoh .gt_left {
+  text-align: left;
+}
+
+#bgrkltgzoh .gt_center {
+  text-align: center;
+}
+
+#bgrkltgzoh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bgrkltgzoh .gt_font_normal {
+  font-weight: normal;
+}
+
+#bgrkltgzoh .gt_font_bold {
+  font-weight: bold;
+}
+
+#bgrkltgzoh .gt_font_italic {
+  font-style: italic;
+}
+
+#bgrkltgzoh .gt_super {
+  font-size: 65%;
+}
+
+#bgrkltgzoh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#bgrkltgzoh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#bgrkltgzoh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#bgrkltgzoh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#bgrkltgzoh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#bgrkltgzoh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#bgrkltgzoh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Clade">Clade</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="order">order</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Clade" class="gt_row gt_center">Crocodylia</td>
+<td headers="order" class="gt_row gt_center">Crocodylia</td>
+<td headers="n" class="gt_row gt_right">24</td></tr>
+    <tr><td headers="Clade" class="gt_row gt_center">Rhynchocephalia</td>
+<td headers="order" class="gt_row gt_center">Rhynchocephalia</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="Clade" class="gt_row gt_center">Squamata</td>
+<td headers="order" class="gt_row gt_center">Squamata (Amphisbaenia)</td>
+<td headers="n" class="gt_row gt_right">195</td></tr>
+    <tr><td headers="Clade" class="gt_row gt_center">Squamata</td>
+<td headers="order" class="gt_row gt_center">Squamata (Sauria)</td>
+<td headers="n" class="gt_row gt_right">6868</td></tr>
+    <tr><td headers="Clade" class="gt_row gt_center">Squamata</td>
+<td headers="order" class="gt_row gt_center">Squamata (Serpentes)</td>
+<td headers="n" class="gt_row gt_right">3837</td></tr>
+    <tr><td headers="Clade" class="gt_row gt_center">Testudines</td>
+<td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="n" class="gt_row gt_right">315</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Everyone knows that turtles are the best type of reptile, so let’s filter even further.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">turtles <span class="ot" style="color: #003B4F;">&lt;-</span> reptiles <span class="sc" style="color: #5E5E5E;">%&gt;%</span> </span>
+<span id="cb7-2">  <span class="fu" style="color: #4758AB;">filter</span>(Clade <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Testudines"</span>)</span>
+<span id="cb7-3"></span>
+<span id="cb7-4">table3 <span class="ot" style="color: #003B4F;">&lt;-</span> turtles <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb7-5">  <span class="fu" style="color: #4758AB;">count</span>(order, family)</span>
+<span id="cb7-6"></span>
+<span id="cb7-7"><span class="fu" style="color: #4758AB;">gt</span>(table3)</span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="zzfdgzhvsw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zzfdgzhvsw table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zzfdgzhvsw thead, #zzfdgzhvsw tbody, #zzfdgzhvsw tfoot, #zzfdgzhvsw tr, #zzfdgzhvsw td, #zzfdgzhvsw th {
+  border-style: none;
+}
+
+#zzfdgzhvsw p {
+  margin: 0;
+  padding: 0;
+}
+
+#zzfdgzhvsw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zzfdgzhvsw .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zzfdgzhvsw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zzfdgzhvsw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zzfdgzhvsw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zzfdgzhvsw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zzfdgzhvsw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zzfdgzhvsw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zzfdgzhvsw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#zzfdgzhvsw .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zzfdgzhvsw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#zzfdgzhvsw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zzfdgzhvsw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zzfdgzhvsw .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zzfdgzhvsw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zzfdgzhvsw .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zzfdgzhvsw .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zzfdgzhvsw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#zzfdgzhvsw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zzfdgzhvsw .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zzfdgzhvsw .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zzfdgzhvsw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#zzfdgzhvsw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zzfdgzhvsw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zzfdgzhvsw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zzfdgzhvsw .gt_left {
+  text-align: left;
+}
+
+#zzfdgzhvsw .gt_center {
+  text-align: center;
+}
+
+#zzfdgzhvsw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zzfdgzhvsw .gt_font_normal {
+  font-weight: normal;
+}
+
+#zzfdgzhvsw .gt_font_bold {
+  font-weight: bold;
+}
+
+#zzfdgzhvsw .gt_font_italic {
+  font-style: italic;
+}
+
+#zzfdgzhvsw .gt_super {
+  font-size: 65%;
+}
+
+#zzfdgzhvsw .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#zzfdgzhvsw .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zzfdgzhvsw .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zzfdgzhvsw .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zzfdgzhvsw .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zzfdgzhvsw .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zzfdgzhvsw .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="order">order</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="family">family</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Carettochelyidae</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Chelidae</td>
+<td headers="n" class="gt_row gt_right">53</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Cheloniidae</td>
+<td headers="n" class="gt_row gt_right">6</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Chelydridae</td>
+<td headers="n" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Dermatemydidae</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Dermochelyidae</td>
+<td headers="n" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Emydidae</td>
+<td headers="n" class="gt_row gt_right">47</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Geoemydidae</td>
+<td headers="n" class="gt_row gt_right">69</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Kinosternidae</td>
+<td headers="n" class="gt_row gt_right">24</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Pelomedusidae</td>
+<td headers="n" class="gt_row gt_right">18</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Podocnemididae</td>
+<td headers="n" class="gt_row gt_right">8</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Testudinidae</td>
+<td headers="n" class="gt_row gt_right">54</td></tr>
+    <tr><td headers="order" class="gt_row gt_center">Testudines</td>
+<td headers="family" class="gt_row gt_center">Trionychidae</td>
+<td headers="n" class="gt_row gt_right">30</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Let’s take a look at how big (or mighty, as some might say) the different families of turtles are. There is a very large range of masses so I’m using a log scale.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">ggplot</span>(turtles, <span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> family, <span class="at" style="color: #657422;">y =</span> mass_g, <span class="at" style="color: #657422;">color =</span> family)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-2">  <span class="fu" style="color: #4758AB;">scale_y_log10</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-3">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-4">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Mightiness of Different Families of Turtle and Tortoise"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-5">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"mass (g)"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb8-6">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span> , </span>
+<span id="cb8-7">        <span class="at" style="color: #657422;">axis.text.x =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">angle =</span> <span class="dv" style="color: #AD0000;">90</span>, <span class="at" style="color: #657422;">vjust =</span> <span class="fl" style="color: #AD0000;">0.5</span>, <span class="at" style="color: #657422;">hjust =</span> <span class="dv" style="color: #AD0000;">1</span>))</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The heaviest turtles are the giantic leatherback turtles, a species of SEA TURTLE that weigh hundred of kg (around 1,000 lbs). The smallest turtle is the African dwarf mud turtle (Pelusios nanus), family Pelomedusidae, which full grown weighs under 100 grams.</p>
+<p>Now let’s look at everyone’s favorite family of turtles, <a href="https://en.wikipedia.org/wiki/Emydidae">Emydidae</a>. This family is often known as pond or marsh turtles. Filter them out, and add a category for <a href="https://www.nwf.org/Educational-Resources/Wildlife-Guide/Reptiles/Eastern-Box-Turtle">Eastern Box Turtles</a>. I called the variable box_turtle, but I’m only marking Eastern. There are other types of box turtles though not all of them are in Emydidae. Asian box turtle species were reassigned to the family Geoemydidae.</p>
+<p>The common name box turtle, arises from the fact that these species have a hinge on the bottom shell, and can close up/ box up completely. Other turtles and tortoises can only pull their bits within their shell.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/mac-closed.jpg" class="img-fluid figure-img" alt="A closed up eastern box turtle held in a woman's hand." width="600"></p>
+<p></p><figcaption class="figure-caption">A closed Eastern Box Turtle</figcaption><p></p>
+</figure>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">pond_turtles <span class="ot" style="color: #003B4F;">&lt;-</span> turtles <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-2">  <span class="fu" style="color: #4758AB;">filter</span>(family <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">'Emydidae'</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb9-3">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">box_turtle =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(name <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Terrapene carolina"</span>, <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="cn" style="color: #8f5902;">FALSE</span>)) </span></code></pre></div>
+</div>
+<p>Okay, let’s look at mightiness of the turtles in this family.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">turtle_plot <span class="ot" style="color: #003B4F;">&lt;-</span> pond_turtles <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(<span class="at" style="color: #657422;">x =</span> <span class="fu" style="color: #4758AB;">fct_reorder</span>(name, mass_g), <span class="at" style="color: #657422;">y =</span> mass_g, <span class="at" style="color: #657422;">fill =</span> box_turtle)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-3">  <span class="fu" style="color: #4758AB;">scale_fill_manual</span>(<span class="at" style="color: #657422;">values=</span><span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"#999999"</span>, <span class="st" style="color: #20794D;">"#E69F00"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-4">  <span class="fu" style="color: #4758AB;">geom_col</span>(<span class="at" style="color: #657422;">width =</span> <span class="fl" style="color: #AD0000;">0.7</span>, <span class="at" style="color: #657422;">position =</span> <span class="fu" style="color: #4758AB;">position_dodge</span>(<span class="dv" style="color: #AD0000;">10</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-5">  <span class="fu" style="color: #4758AB;">coord_flip</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-6">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"mass (g)"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-7">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">""</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-8">  <span class="fu" style="color: #4758AB;">ggtitle</span>(<span class="st" style="color: #20794D;">"Mightiness of Different Turtles in family Emydidae"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-9">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Data from https://doi.org/10.1186/s40709-021-00134-9"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-10">  <span class="fu" style="color: #4758AB;">theme_classic</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-11">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">axis.text =</span> <span class="fu" style="color: #4758AB;">element_text</span>(<span class="at" style="color: #657422;">size =</span> <span class="dv" style="color: #AD0000;">6</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-12">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>)</span>
+<span id="cb10-13"></span>
+<span id="cb10-14"></span>
+<span id="cb10-15"><span class="co" style="color: #5E5E5E;">#found how to add an image to my graph on stack overflow</span></span>
+<span id="cb10-16"><span class="co" style="color: #5E5E5E;">#https://stackoverflow.com/questions/63442933/how-can-i-add-a-logo-to-a-ggplot-visualisation</span></span>
+<span id="cb10-17"></span>
+<span id="cb10-18">img <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">image_read</span>(<span class="st" style="color: #20794D;">"pqtk5r.jpg"</span>)</span>
+<span id="cb10-19"></span>
+<span id="cb10-20"><span class="co" style="color: #5E5E5E;"># Set the canvas where you are going to draw the plot and the image</span></span>
+<span id="cb10-21"><span class="fu" style="color: #4758AB;">ggdraw</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-22"><span class="co" style="color: #5E5E5E;"># Draw the plot in the canvas setting the x and y positions, which go from 0,0</span></span>
+<span id="cb10-23"><span class="co" style="color: #5E5E5E;"># (lower left corner) to 1,1 (upper right corner) and set the width and height of</span></span>
+<span id="cb10-24"><span class="co" style="color: #5E5E5E;"># the plot. It's advisable that x + width = 1 and y + height = 1, to avoid clipping # the plot</span></span>
+<span id="cb10-25"><span class="fu" style="color: #4758AB;">draw_plot</span>(turtle_plot,<span class="at" style="color: #657422;">x =</span> <span class="dv" style="color: #AD0000;">0</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">0.15</span>, <span class="at" style="color: #657422;">width =</span> <span class="dv" style="color: #AD0000;">1</span>, <span class="at" style="color: #657422;">height =</span> <span class="fl" style="color: #AD0000;">0.85</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb10-26"><span class="co" style="color: #5E5E5E;"># Draw image in the canvas using the same concept as for the plot. Might need to </span></span>
+<span id="cb10-27"><span class="co" style="color: #5E5E5E;"># play with the x, y, width and height values to obtain the desired result</span></span>
+<span id="cb10-28"><span class="fu" style="color: #4758AB;">draw_image</span>(img, <span class="at" style="color: #657422;">x =</span> <span class="fl" style="color: #AD0000;">0.6</span>, <span class="at" style="color: #657422;">y =</span> <span class="fl" style="color: #AD0000;">0.35</span>, <span class="at" style="color: #657422;">width =</span> <span class="fl" style="color: #AD0000;">0.45</span>, <span class="at" style="color: #657422;">height =</span> <span class="fl" style="color: #AD0000;">0.45</span>) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {30 {Day} {Chart} {Challenge-} {Flora} and {Fauna}},
+  date = {2023-04-03},
+  url = {https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“30 Day Chart Challenge- Flora and
+Fauna.”</span> April 3, 2023. <a href="https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3">https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>turtle</category>
+  <category>30DayChartChallenge</category>
+  <guid>https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3.html</guid>
+  <pubDate>Mon, 03 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>30 Day Chart Challenge -Arlington Parks</title>
   <dc:creator>Louise E. Sinks</dc:creator>
