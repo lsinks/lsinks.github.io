@@ -156,10 +156,8 @@ cookieconsent.run({
 <link rel="stylesheet" href="../../styles.css">
 <meta name="twitter:title" content="Louise E. Sinks - 30 Day Chart Challenge- Flora and Fauna">
 <meta name="twitter:description" content="How Large are Different Types of Turtles?">
-<meta name="twitter:image" content="https://lsinks.github.io/posts\2023-04-03-chart-challenge-3\thumbnail.png">
+<meta name="twitter:image" content="https://lsinks.github.io/posts\2023-04-03-twitter-friends\thumbnail.png">
 <meta name="twitter:creator" content="@LouiseSinks">
-<meta name="twitter:image-height" content="510">
-<meta name="twitter:image-width" content="826">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -254,7 +252,7 @@ cookieconsent.run({
 </header>
 
 <p>It is Day 3 of the #30DayChartChallenge. More info can be found at the <a href="https://github.com/30DayChartChallenge/Edition2023">challenge’s Github page</a>. Today’s theme is flora and fauna. I found a trove of fascinating data at <a href="http://www.gardinitiative.org/data.html">Global Assessment of Reptile Distributions</a>. I chose the dataset on body size/ mass from the paper: <a href="https://doi.org/10.1186/s40709-021-00134-9">“Different solutions lead to similar life history traits across the great divides of the amniote tree of life.” by Shai&nbsp;Meiri, Gopal Murali, Anna Zimin, Lior Shak, Yuval Itescu, Gabriel Caetano, and Uri Roll (Journal of Biological Research-Thessaloniki), 202128: 3</a>.</p>
-<p>Okay, let’s go. I’m going to keep the libraries to a minimum. That’s always my goal, but yet I ended up with 6!</p>
+<p>Okay, let’s go. I’m going to keep the libraries to a minimum.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
@@ -278,505 +276,35 @@ cookieconsent.run({
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">family =</span> <span class="fu">factor</span>(family),</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">name =</span> <span class="fu">factor</span>(name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>So, let’s see what kind of data we have.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> fauna_cleaned <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Class)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(table1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-
-<div id="qficwodanr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qficwodanr table {
-  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#qficwodanr thead, #qficwodanr tbody, #qficwodanr tfoot, #qficwodanr tr, #qficwodanr td, #qficwodanr th {
-  border-style: none;
-}
-
-#qficwodanr p {
-  margin: 0;
-  padding: 0;
-}
-
-#qficwodanr .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#qficwodanr .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#qficwodanr .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#qficwodanr .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#qficwodanr .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#qficwodanr .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#qficwodanr .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#qficwodanr .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#qficwodanr .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#qficwodanr .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#qficwodanr .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#qficwodanr .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#qficwodanr .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#qficwodanr .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#qficwodanr .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#qficwodanr .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#qficwodanr .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#qficwodanr .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#qficwodanr .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#qficwodanr .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#qficwodanr .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#qficwodanr .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#qficwodanr .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#qficwodanr .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#qficwodanr .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#qficwodanr .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#qficwodanr .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#qficwodanr .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#qficwodanr .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#qficwodanr .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#qficwodanr .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#qficwodanr .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#qficwodanr .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#qficwodanr .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#qficwodanr .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#qficwodanr .gt_left {
-  text-align: left;
-}
-
-#qficwodanr .gt_center {
-  text-align: center;
-}
-
-#qficwodanr .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#qficwodanr .gt_font_normal {
-  font-weight: normal;
-}
-
-#qficwodanr .gt_font_bold {
-  font-weight: bold;
-}
-
-#qficwodanr .gt_font_italic {
-  font-style: italic;
-}
-
-#qficwodanr .gt_super {
-  font-size: 65%;
-}
-
-#qficwodanr .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#qficwodanr .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#qficwodanr .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#qficwodanr .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#qficwodanr .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#qficwodanr .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#qficwodanr .gt_indent_5 {
-  text-indent: 25px;
-}
-</style>
-<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <thead>
-    
-    <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Class">Class</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
-    </tr>
-  </thead>
-  <tbody class="gt_table_body">
-    <tr><td headers="Class" class="gt_row gt_center">Aves</td>
-<td headers="n" class="gt_row gt_right">9534</td></tr>
-    <tr><td headers="Class" class="gt_row gt_center">Mammalia</td>
-<td headers="n" class="gt_row gt_right">5840</td></tr>
-    <tr><td headers="Class" class="gt_row gt_center">Reptilia</td>
-<td headers="n" class="gt_row gt_right">11240</td></tr>
-  </tbody>
-  
-  
-</table>
-</div>
-</div>
-</div>
 <p>We have data on more than just reptiles, the dataset includes information about birds and mammals as well. But I’m only interested in reptiles.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>reptiles <span class="ot">&lt;-</span> fauna_cleaned <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Class <span class="sc">==</span> <span class="st">"Reptilia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>reptiles <span class="ot">&lt;-</span> fauna_cleaned <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Class <span class="sc">==</span> <span class="st">"Reptilia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>table2 <span class="ot">&lt;-</span> reptiles <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Clade, order)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(table2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>table2 <span class="ot">&lt;-</span> reptiles <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Clade, order)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(table2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="pxyiiwfmjh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#pxyiiwfmjh table {
+<div id="mkgpnzmkjk" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#mkgpnzmkjk table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#pxyiiwfmjh thead, #pxyiiwfmjh tbody, #pxyiiwfmjh tfoot, #pxyiiwfmjh tr, #pxyiiwfmjh td, #pxyiiwfmjh th {
+#mkgpnzmkjk thead, #mkgpnzmkjk tbody, #mkgpnzmkjk tfoot, #mkgpnzmkjk tr, #mkgpnzmkjk td, #mkgpnzmkjk th {
   border-style: none;
 }
 
-#pxyiiwfmjh p {
+#mkgpnzmkjk p {
   margin: 0;
   padding: 0;
 }
 
-#pxyiiwfmjh .gt_table {
+#mkgpnzmkjk .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -802,12 +330,12 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_caption {
+#mkgpnzmkjk .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#pxyiiwfmjh .gt_title {
+#mkgpnzmkjk .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -819,7 +347,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-#pxyiiwfmjh .gt_subtitle {
+#mkgpnzmkjk .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -831,7 +359,7 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-#pxyiiwfmjh .gt_heading {
+#mkgpnzmkjk .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -843,13 +371,13 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_bottom_border {
+#mkgpnzmkjk .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_col_headings {
+#mkgpnzmkjk .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -864,7 +392,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_col_heading {
+#mkgpnzmkjk .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -884,7 +412,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#pxyiiwfmjh .gt_column_spanner_outer {
+#mkgpnzmkjk .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -896,15 +424,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-#pxyiiwfmjh .gt_column_spanner_outer:first-child {
+#mkgpnzmkjk .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#pxyiiwfmjh .gt_column_spanner_outer:last-child {
+#mkgpnzmkjk .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#pxyiiwfmjh .gt_column_spanner {
+#mkgpnzmkjk .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -916,11 +444,11 @@ cookieconsent.run({
   width: 100%;
 }
 
-#pxyiiwfmjh .gt_spanner_row {
+#mkgpnzmkjk .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#pxyiiwfmjh .gt_group_heading {
+#mkgpnzmkjk .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -946,7 +474,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-#pxyiiwfmjh .gt_empty_group_heading {
+#mkgpnzmkjk .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -961,15 +489,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-#pxyiiwfmjh .gt_from_md > :first-child {
+#mkgpnzmkjk .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#pxyiiwfmjh .gt_from_md > :last-child {
+#mkgpnzmkjk .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#pxyiiwfmjh .gt_row {
+#mkgpnzmkjk .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -988,7 +516,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#pxyiiwfmjh .gt_stub {
+#mkgpnzmkjk .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1001,7 +529,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#pxyiiwfmjh .gt_stub_row_group {
+#mkgpnzmkjk .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1015,15 +543,15 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-#pxyiiwfmjh .gt_row_group_first td {
+#mkgpnzmkjk .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#pxyiiwfmjh .gt_row_group_first th {
+#mkgpnzmkjk .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#pxyiiwfmjh .gt_summary_row {
+#mkgpnzmkjk .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1033,16 +561,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#pxyiiwfmjh .gt_first_summary_row {
+#mkgpnzmkjk .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_first_summary_row.thick {
+#mkgpnzmkjk .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#pxyiiwfmjh .gt_last_summary_row {
+#mkgpnzmkjk .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1052,7 +580,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_grand_summary_row {
+#mkgpnzmkjk .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1062,7 +590,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#pxyiiwfmjh .gt_first_grand_summary_row {
+#mkgpnzmkjk .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1072,7 +600,7 @@ cookieconsent.run({
   border-top-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_last_grand_summary_row_top {
+#mkgpnzmkjk .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1082,11 +610,11 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_striped {
+#mkgpnzmkjk .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#pxyiiwfmjh .gt_table_body {
+#mkgpnzmkjk .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1095,7 +623,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_footnotes {
+#mkgpnzmkjk .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1109,7 +637,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_footnote {
+#mkgpnzmkjk .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1118,7 +646,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#pxyiiwfmjh .gt_sourcenotes {
+#mkgpnzmkjk .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1132,7 +660,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#pxyiiwfmjh .gt_sourcenote {
+#mkgpnzmkjk .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1140,63 +668,63 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#pxyiiwfmjh .gt_left {
+#mkgpnzmkjk .gt_left {
   text-align: left;
 }
 
-#pxyiiwfmjh .gt_center {
+#mkgpnzmkjk .gt_center {
   text-align: center;
 }
 
-#pxyiiwfmjh .gt_right {
+#mkgpnzmkjk .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#pxyiiwfmjh .gt_font_normal {
+#mkgpnzmkjk .gt_font_normal {
   font-weight: normal;
 }
 
-#pxyiiwfmjh .gt_font_bold {
+#mkgpnzmkjk .gt_font_bold {
   font-weight: bold;
 }
 
-#pxyiiwfmjh .gt_font_italic {
+#mkgpnzmkjk .gt_font_italic {
   font-style: italic;
 }
 
-#pxyiiwfmjh .gt_super {
+#mkgpnzmkjk .gt_super {
   font-size: 65%;
 }
 
-#pxyiiwfmjh .gt_footnote_marks {
+#mkgpnzmkjk .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#pxyiiwfmjh .gt_asterisk {
+#mkgpnzmkjk .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#pxyiiwfmjh .gt_indent_1 {
+#mkgpnzmkjk .gt_indent_1 {
   text-indent: 5px;
 }
 
-#pxyiiwfmjh .gt_indent_2 {
+#mkgpnzmkjk .gt_indent_2 {
   text-indent: 10px;
 }
 
-#pxyiiwfmjh .gt_indent_3 {
+#mkgpnzmkjk .gt_indent_3 {
   text-indent: 15px;
 }
 
-#pxyiiwfmjh .gt_indent_4 {
+#mkgpnzmkjk .gt_indent_4 {
   text-indent: 20px;
 }
 
-#pxyiiwfmjh .gt_indent_5 {
+#mkgpnzmkjk .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1237,32 +765,32 @@ cookieconsent.run({
 </div>
 <p>Everyone knows that turtles are the best type of reptile, so let’s filter even further.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>turtles <span class="ot">&lt;-</span> reptiles <span class="sc">%&gt;%</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Clade <span class="sc">==</span> <span class="st">"Testudines"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>table3 <span class="ot">&lt;-</span> turtles <span class="sc">%&gt;%</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(order, family)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(table3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>turtles <span class="ot">&lt;-</span> reptiles <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Clade <span class="sc">==</span> <span class="st">"Testudines"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>table3 <span class="ot">&lt;-</span> turtles <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(order, family)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(table3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="ogbkiydtgo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ogbkiydtgo table {
+<div id="jnoqrpviav" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jnoqrpviav table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ogbkiydtgo thead, #ogbkiydtgo tbody, #ogbkiydtgo tfoot, #ogbkiydtgo tr, #ogbkiydtgo td, #ogbkiydtgo th {
+#jnoqrpviav thead, #jnoqrpviav tbody, #jnoqrpviav tfoot, #jnoqrpviav tr, #jnoqrpviav td, #jnoqrpviav th {
   border-style: none;
 }
 
-#ogbkiydtgo p {
+#jnoqrpviav p {
   margin: 0;
   padding: 0;
 }
 
-#ogbkiydtgo .gt_table {
+#jnoqrpviav .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1288,12 +816,12 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_caption {
+#jnoqrpviav .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ogbkiydtgo .gt_title {
+#jnoqrpviav .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1305,7 +833,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-#ogbkiydtgo .gt_subtitle {
+#jnoqrpviav .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1317,7 +845,7 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-#ogbkiydtgo .gt_heading {
+#jnoqrpviav .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1329,13 +857,13 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_bottom_border {
+#jnoqrpviav .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_col_headings {
+#jnoqrpviav .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1350,7 +878,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_col_heading {
+#jnoqrpviav .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1370,7 +898,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#ogbkiydtgo .gt_column_spanner_outer {
+#jnoqrpviav .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1382,15 +910,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-#ogbkiydtgo .gt_column_spanner_outer:first-child {
+#jnoqrpviav .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ogbkiydtgo .gt_column_spanner_outer:last-child {
+#jnoqrpviav .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ogbkiydtgo .gt_column_spanner {
+#jnoqrpviav .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1402,11 +930,11 @@ cookieconsent.run({
   width: 100%;
 }
 
-#ogbkiydtgo .gt_spanner_row {
+#jnoqrpviav .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ogbkiydtgo .gt_group_heading {
+#jnoqrpviav .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1432,7 +960,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-#ogbkiydtgo .gt_empty_group_heading {
+#jnoqrpviav .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1447,15 +975,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-#ogbkiydtgo .gt_from_md > :first-child {
+#jnoqrpviav .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ogbkiydtgo .gt_from_md > :last-child {
+#jnoqrpviav .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ogbkiydtgo .gt_row {
+#jnoqrpviav .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1474,7 +1002,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#ogbkiydtgo .gt_stub {
+#jnoqrpviav .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1487,7 +1015,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ogbkiydtgo .gt_stub_row_group {
+#jnoqrpviav .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1501,15 +1029,15 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-#ogbkiydtgo .gt_row_group_first td {
+#jnoqrpviav .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ogbkiydtgo .gt_row_group_first th {
+#jnoqrpviav .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ogbkiydtgo .gt_summary_row {
+#jnoqrpviav .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1519,16 +1047,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ogbkiydtgo .gt_first_summary_row {
+#jnoqrpviav .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_first_summary_row.thick {
+#jnoqrpviav .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ogbkiydtgo .gt_last_summary_row {
+#jnoqrpviav .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1538,7 +1066,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_grand_summary_row {
+#jnoqrpviav .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1548,7 +1076,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ogbkiydtgo .gt_first_grand_summary_row {
+#jnoqrpviav .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1558,7 +1086,7 @@ cookieconsent.run({
   border-top-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_last_grand_summary_row_top {
+#jnoqrpviav .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1568,11 +1096,11 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_striped {
+#jnoqrpviav .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ogbkiydtgo .gt_table_body {
+#jnoqrpviav .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1581,7 +1109,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_footnotes {
+#jnoqrpviav .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1595,7 +1123,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_footnote {
+#jnoqrpviav .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1604,7 +1132,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ogbkiydtgo .gt_sourcenotes {
+#jnoqrpviav .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1618,7 +1146,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ogbkiydtgo .gt_sourcenote {
+#jnoqrpviav .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1626,63 +1154,63 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ogbkiydtgo .gt_left {
+#jnoqrpviav .gt_left {
   text-align: left;
 }
 
-#ogbkiydtgo .gt_center {
+#jnoqrpviav .gt_center {
   text-align: center;
 }
 
-#ogbkiydtgo .gt_right {
+#jnoqrpviav .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ogbkiydtgo .gt_font_normal {
+#jnoqrpviav .gt_font_normal {
   font-weight: normal;
 }
 
-#ogbkiydtgo .gt_font_bold {
+#jnoqrpviav .gt_font_bold {
   font-weight: bold;
 }
 
-#ogbkiydtgo .gt_font_italic {
+#jnoqrpviav .gt_font_italic {
   font-style: italic;
 }
 
-#ogbkiydtgo .gt_super {
+#jnoqrpviav .gt_super {
   font-size: 65%;
 }
 
-#ogbkiydtgo .gt_footnote_marks {
+#jnoqrpviav .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ogbkiydtgo .gt_asterisk {
+#jnoqrpviav .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ogbkiydtgo .gt_indent_1 {
+#jnoqrpviav .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ogbkiydtgo .gt_indent_2 {
+#jnoqrpviav .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ogbkiydtgo .gt_indent_3 {
+#jnoqrpviav .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ogbkiydtgo .gt_indent_4 {
+#jnoqrpviav .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ogbkiydtgo .gt_indent_5 {
+#jnoqrpviav .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1744,64 +1272,53 @@ cookieconsent.run({
 </div>
 <p>Let’s take a look at how big (or mighty, as some might say) the different families of turtles are. There is a very large range of masses so I’m using a log scale.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(turtles, <span class="fu">aes</span>(<span class="at">x =</span> family, <span class="at">y =</span> mass_g, <span class="at">color =</span> family)) <span class="sc">+</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mightiness of Different Families of Turtle and Tortoise"</span>) <span class="sc">+</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"mass (g)"</span>) <span class="sc">+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span> , </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(turtles, <span class="fu">aes</span>(<span class="at">x =</span> family, <span class="at">y =</span> mass_g, <span class="at">color =</span> family)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_log10</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mightiness of Different Families of Turtle and Tortoise"</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"mass (g)"</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span> , </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="day3_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="twitter_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The heaviest turtles are the giantic leatherback turtles, a species of SEA TURTLE that weigh hundred of kg (around 1,000 lbs). The smallest turtle is the African dwarf mud turtle (Pelusios nanus), family Pelomedusidae, which full grown weighs under 100 grams.</p>
-<p>Now let’s look at everyone’s favorite family of turtles, <a href="https://en.wikipedia.org/wiki/Emydidae">Emydidae</a>. This family is often known as pond or marsh turtles. Filter them out, and add a category for <a href="https://www.nwf.org/Educational-Resources/Wildlife-Guide/Reptiles/Eastern-Box-Turtle">Eastern Box Turtles</a>. I called the variable box_turtle, but I’m only marking Eastern. There are other types of box turtles though not all of them are in Emydidae. Asian box turtle species were reassigned to the family Geoemydidae.</p>
-<p>The common name box turtle, arises from the fact that these species have a hinge on the bottom shell, and can close up/ box up completely. Other turtles and tortoises can only pull their bits within their shell.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="../..\posts/2023-04-03-chart-challenge-3/mac-closed.jpg" class="img-fluid figure-img" alt="A closed up eastern box turtle held in a woman's hand." width="600"></p>
-<p></p><figcaption class="figure-caption">A closed Eastern Box Turtle</figcaption><p></p>
-</figure>
-</div>
+<p>Ollie Burger fun.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pond_turtles <span class="ot">&lt;-</span> turtles <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">'Emydidae'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">box_turtle =</span> <span class="fu">ifelse</span>(name <span class="sc">==</span> <span class="st">"Terrapene carolina"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pond_turtles <span class="ot">&lt;-</span> turtles <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(family <span class="sc">==</span> <span class="st">'Emydidae'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">box_turtle =</span> <span class="fu">ifelse</span>(name <span class="sc">==</span> <span class="st">"Terrapene carolina"</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Okay, let’s look at mightiness of the turtles in this family.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>turtle_plot <span class="ot">&lt;-</span> pond_turtles <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_reorder</span>(name, mass_g), <span class="at">y =</span> mass_g, <span class="at">fill =</span> box_turtle)) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#999999"</span>, <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"mass (g)"</span>) <span class="sc">+</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mightiness of Different Turtles in family Emydidae"</span>) <span class="sc">+</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"Data from https://doi.org/10.1186/s40709-021-00134-9"</span>) <span class="sc">+</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>)) <span class="sc">+</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#found how to add an image to my graph on stack overflow</span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#https://stackoverflow.com/questions/63442933/how-can-i-add-a-logo-to-a-ggplot-visualisation</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="fu">image_read</span>(<span class="st">"pqtk5r.jpg"</span>)</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the canvas where you are going to draw the plot and the image</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggdraw</span>() <span class="sc">+</span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw the plot in the canvas setting the x and y positions, which go from 0,0</span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># (lower left corner) to 1,1 (upper right corner) and set the width and height of</span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co"># the plot. It's advisable that x + width = 1 and y + height = 1, to avoid clipping # the plot</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_plot</span>(turtle_plot,<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="fl">0.15</span>, <span class="at">width =</span> <span class="dv">1</span>, <span class="at">height =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw image in the canvas using the same concept as for the plot. Might need to </span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co"># play with the x, y, width and height values to obtain the desired result</span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="fu">draw_image</span>(img, <span class="at">x =</span> <span class="fl">0.6</span>, <span class="at">y =</span> <span class="fl">0.35</span>, <span class="at">width =</span> <span class="fl">0.45</span>, <span class="at">height =</span> <span class="fl">0.45</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="day3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
-</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>turtle_plot_ollie <span class="ot">&lt;-</span> pond_turtles <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">fct_reorder</span>(name, mass_g), <span class="at">y =</span> mass_g, <span class="at">fill =</span> box_turtle)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#999999"</span>, <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"mass (g)"</span>) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mightiness of Different Turtles in family Emydidae"</span>) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span> <span class="st">"Data from https://doi.org/10.1186/s40709-021-00134-9"</span>) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>)) <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#found how to add an image to my graph on stack overflow</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#https://stackoverflow.com/questions/63442933/how-can-i-add-a-logo-to-a-ggplot-visualisation</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#img &lt;- image_read("pqtk5r.jpg")</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the canvas where you are going to draw the plot and the image</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#ggdraw() +</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw the plot in the canvas setting the x and y positions, which go from 0,0</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># (lower left corner) to 1,1 (upper right corner) and set the width and height of</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># the plot. It's advisable that x + width = 1 and y + height = 1, to avoid clipping # the plot</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#draw_plot(turtle_plot,x = 0, y = 0.15, width = 1, height = 0.85) +</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Draw image in the canvas using the same concept as for the plot. Might need to </span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co"># play with the x, y, width and height values to obtain the desired result</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#draw_image(img, x = 0.6, y = 0.35, width = 0.45, height = 0.45) </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

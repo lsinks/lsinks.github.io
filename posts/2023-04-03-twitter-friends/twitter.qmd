@@ -52,22 +52,8 @@ fauna_cleaned <- fauna %>%
          family = factor(family),
          name = factor(name))
 
-
-
-
-
 ```
 
-So, let's see what kind of data we have.
-
-```{r}
-
-table1 <- fauna_cleaned %>%
-  count(Class)
-
-gt(table1)
-
-```
 
 We have data on more than just reptiles, the dataset includes information about birds and mammals as well. But I'm only interested in reptiles.
 
@@ -113,13 +99,7 @@ ggplot(turtles, aes(x = family, y = mass_g, color = family)) +
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 ```
 
-The heaviest turtles are the giantic leatherback turtles, a species of SEA TURTLE that weigh hundred of kg (around 1,000 lbs). The smallest turtle is the African dwarf mud turtle (Pelusios nanus), family Pelomedusidae, which full grown weighs under 100 grams.
-
-Now let's look at everyone's favorite family of turtles, [Emydidae](https://en.wikipedia.org/wiki/Emydidae). This family is often known as pond or marsh turtles. Filter them out, and add a category for [Eastern Box Turtles](https://www.nwf.org/Educational-Resources/Wildlife-Guide/Reptiles/Eastern-Box-Turtle). I called the variable box_turtle, but I'm only marking Eastern. There are other types of box turtles though not all of them are in Emydidae. Asian box turtle species were reassigned to the family Geoemydidae.
-
-The common name box turtle, arises from the fact that these species have a hinge on the bottom shell, and can close up/ box up completely. Other turtles and tortoises can only pull their bits within their shell.
-
-![A closed Eastern Box Turtle](/posts/2023-04-03-chart-challenge-3/mac-closed.jpg){fig-alt="A closed up eastern box turtle held in a woman's hand." width="600"}
+Ollie Burger fun.
 
 ```{r}
 #| label: box-turtle-fun
@@ -132,7 +112,7 @@ pond_turtles <- turtles %>%
 Okay, let's look at mightiness of the turtles in this family.
 
 ```{r}
-turtle_plot <- pond_turtles %>%
+turtle_plot_ollie <- pond_turtles %>%
   ggplot(aes(x = fct_reorder(name, mass_g), y = mass_g, fill = box_turtle)) +
   scale_fill_manual(values=c("#999999", "#E69F00")) +
   geom_col(width = 0.7, position = position_dodge(10)) +
@@ -149,17 +129,17 @@ turtle_plot <- pond_turtles %>%
 #found how to add an image to my graph on stack overflow
 #https://stackoverflow.com/questions/63442933/how-can-i-add-a-logo-to-a-ggplot-visualisation
 
-img <- image_read("pqtk5r.jpg")
+#img <- image_read("pqtk5r.jpg")
 
 # Set the canvas where you are going to draw the plot and the image
-ggdraw() +
+#ggdraw() +
 # Draw the plot in the canvas setting the x and y positions, which go from 0,0
 # (lower left corner) to 1,1 (upper right corner) and set the width and height of
 # the plot. It's advisable that x + width = 1 and y + height = 1, to avoid clipping # the plot
-draw_plot(turtle_plot,x = 0, y = 0.15, width = 1, height = 0.85) +
+#draw_plot(turtle_plot,x = 0, y = 0.15, width = 1, height = 0.85) +
 # Draw image in the canvas using the same concept as for the plot. Might need to 
 # play with the x, y, width and height values to obtain the desired result
-draw_image(img, x = 0.6, y = 0.35, width = 0.45, height = 0.45) 
+#draw_image(img, x = 0.6, y = 0.35, width = 0.45, height = 0.45) 
 
   
 ```
