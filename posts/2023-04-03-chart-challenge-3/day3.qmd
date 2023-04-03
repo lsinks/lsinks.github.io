@@ -14,10 +14,9 @@ image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-It is Day 3 of the #30DayChartChallenge. More info can be found at the [challenge's Github page](https://github.com/30DayChartChallenge/Edition2023). Today's theme is flora and fauna. I found a trove of fascinating data at [Global Assessment of Reptile Distributions](http://www.gardinitiative.org/data.html). I chose the dataset on body size/ mass from the paper:
-["Different solutions lead to similar life history traits across the great divides of the amniote tree of life." by Shai Meiri, Gopal Murali, Anna Zimin, Lior Shak, Yuval Itescu, Gabriel Caetano, and Uri Roll (Journal of Biological Research-Thessaloniki), 202128: 3](https://doi.org/10.1186/s40709-021-00134-9).
+It is Day 3 of the #30DayChartChallenge. More info can be found at the [challenge's Github page](https://github.com/30DayChartChallenge/Edition2023). Today's theme is flora and fauna. I found a trove of fascinating data at [Global Assessment of Reptile Distributions](http://www.gardinitiative.org/data.html). I chose the dataset on body size/ mass from the paper: ["Different solutions lead to similar life history traits across the great divides of the amniote tree of life." by Shai Meiri, Gopal Murali, Anna Zimin, Lior Shak, Yuval Itescu, Gabriel Caetano, and Uri Roll (Journal of Biological Research-Thessaloniki), 202128: 3](https://doi.org/10.1186/s40709-021-00134-9).
 
-Okay, let's go. I'm going to keep the libraries to a minimum.
+Okay, let's go. I'm going to keep the libraries to a minimum. That's always my goal, but yet I ended up with 6!
 
 ```{r}
 #| label: loading-libraries
@@ -29,8 +28,6 @@ library(ggthemes)
 library(cowplot)
 library(magick)
 ```
-
-More blah words
 
 ```{r}
 #| label: loading-data
