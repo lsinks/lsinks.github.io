@@ -1,0 +1,203 @@
+---
+title: "30 Day Chart Challenge- Endangered Species"
+description: "How many species have been delisted?"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 04-03-2023
+categories: [R, R-code, Code-Along, 30DayChartChallenge] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+It is Day 4 of the #30DayChartChallenge. More info can be found at the [challenge's Github page](https://github.com/30DayChartChallenge/Edition2023). Today's theme is history. But this is a subtheme of "comparisions", so I'd like to avoid doing a simple time series.
+
+I decided to look at the [endangered species list](https://ecos.fws.gov/ecp/report/species) the US Fish and Wildlife Service maintains. They have a bunch of data spread over multiple tables. I decided to look at the 5 year review data. A 5 year review is the assessment to decide if a species remains list or delisted. The dataset also contains the year the species was first listed. So I'd like to compare how many species have been listed vs. delisted.
+
+The key to the different listing types is found [here](https://ecos.fws.gov/ecp0/html/db-status.html).
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+library(tidyverse)
+library(gt)
+#library(rjson)
+library(jsonlite)
+library(skimr)
+library(waffle)
+
+```
+
+Today, I'm was going to load the data directly from the website. I've been downloading it and reading it in from a local folder, but I thought it would be nice to download directly. However, the data uses a "blob:" url, which is [not donwloadable directly](https://stackoverflow.com/questions/66609070/is-there-a-way-to-download-file-in-r-from-a-blob-url). There is a [way around this](https://stackoverflow.com/questions/72922306/how-to-download-csv-from-url-starting-with-blobhttps) which might work for some datasets.
+
+```{r}
+#| label: read-data-json
+
+#endangered <- fromJSON(file = #"https://ecos.fws.gov/ecp/report/speciesFiveYearReview?format=json&_=1680620711873")
+
+```
+
+```{r}
+#json_flat <- flatten(endangered)
+```
+
+Let's build our viz with the csv.
+
+```{r}
+#| label: load-csv
+
+endangered_df <- read_csv("five_year.csv", show_col_types = FALSE)
+```
+
+```{r}
+#| label:  selecting-columns
+
+endangered_df_sub <- endangered_df %>%
+  select(name = `Common Name`, 
+         status = `ESA Listing Status`, 
+         date = `Listing Date`,
+         rec = `5YSR Recommendation`)
+
+```
+
+Let's see what kind of categories we have.
+
+```{r}
+#| label: making-factors
+endangered_df_sub <- endangered_df_sub %>%
+  mutate(status = factor(status), rec = factor(rec))
+
+```
+
+Skim this bad boy
+
+```{r}
+#| label: skimming
+
+skim(endangered_df_sub)
+```
+
+rec
+
+```{r}
+summary(endangered_df_sub$rec)
+```
+
+The recommendations don't always match the current status. I'm assuming the recommendations will be enacted/adopted eventually, so I am using them as the correct current status.
+
+We have 7 levels in recommendations. We need to consolidate them. I'm going to combine "Delist: The listed entity does not meet the statutory definition of a species" and "Delist: The species does not meet the definition of an endangered species or a threatened species" into a level called delisted. The delisting because the species is extinct will be made into a level called extinct later.
+
+```{r}
+#| label: combine-factors-delisted
+
+#all delist into one
+
+endangered_df_sub <- endangered_df_sub %>%
+  mutate(condensed = fct_collapse(rec, delisted = c("Delist: The listed entity does not meet the statutory definition of a species",
+    "Delist: The species does not meet the definition of an endangered species or a threatened species")
+  ))
+```
+
+I'm going to count both "Downlist to threatened" and "uplist to Endangered" as endangered. I don't know the original listing level, so it doesn't make too much difference to me.
+
+```{r}
+#| label: combine-factors-endangered
+
+endangered_df_sub <- endangered_df_sub %>%
+  mutate(condensed = fct_collapse(condensed, endangered = c("Downlist to T",
+    "Uplist to E")  ))
+```
+
+Now, I'm pulling in the status for the entries that have "No change in Status" as the recommendation. I'm using a case_when and listing every combination. I could get this done if fewer lines if I used or statements (E or T is endangered), but I left it more granular in case I wanted to come back and change the levels. Maybe later I do care about the different between threatened and endangered and want to break them out separately.
+
+```{r}
+#| label: current_status
+
+endangered_df_sub <- endangered_df_sub %>%
+  mutate(condensed = case_when(
+    condensed == "No change in Status" & status == "E" ~ "endangered",
+    condensed == "No change in Status" & status == "T" ~ "endangered",
+    condensed == "No change in Status" & status == "RT" ~ "delisted",
+    condensed == "No change in Status" & status == "D3A" ~ "extinct",
+    condensed == "No change in Status" & status == "DM" ~ "delisted",
+    condensed == "No change in Status" & status == "DP" ~ "delisted",
+    condensed == "No change in Status" & status == "DR" ~ "delisted",
+    condensed == "No change in Status" & status == "DNS" ~ "delisted",
+    condensed != "No change in Status" ~ condensed)
+    )
+```
+
+Now I'm going to group my extincts.
+
+```{r}
+#| label: combine-factors-extinct
+#| warning: false
+
+endangered_df_sub <- endangered_df_sub %>%
+  mutate(condensed = 
+           fct_collapse(condensed, extinct = 
+                          c("Delist: The species is extinct", "extinct")))
+```
+
+I'm not sure what : Revision of listed entity means. I'm going to see if there are comments back in the full dataset.
+
+```{r}
+#| label: revision-entity
+
+endangered_df %>% 
+  filter(`5YSR Recommendation` == "Revision of listed entity") %>% gt()
+```
+
+I'm not seeing any explanation. There is not an entry in the code key either.
+
+Okay, now for a visualization. This actually seems perfect for a waffle. There were 1533 endangered or threatened species.
+
+Try waffling again. I did try a different package (ggwaffle) that also doesn't work. It does let you use a dataframe, but it also doesn't handle large numbers well. It soes let you downsample the data if the numbers are too large, but I'd rather just process the data myself to make it waffle.
+
+So, first I need to summarize the data to get the counts per class.
+
+```{r}
+#| label: summary-table
+progress <- endangered_df_sub %>%
+  count(condensed)
+
+gt(progress)
+```
+
+Now let's change to percentages for optimal waffling
+
+```{r}
+#| label: prepping-data-for-waffle
+
+num_species <- nrow(endangered_df_sub)
+progress_percent <- progress %>%
+  mutate(n = ( n/num_species) * 100)
+
+progress_percent <- progress_percent %>%
+  mutate(n = round(n,1))
+
+gt(progress_percent)
+
+#Values below 1 won't show in a waffle graph anyway, so remove them.
+progress_percent <- progress_percent %>%
+  filter(n >= 1)
+```
+
+The waffle package won't work with dataframes for me, so make it a vector.
+
+```{r}
+#| label: deframe-df-to-vec
+progress_vec = deframe(progress_percent)
+```
+
+```{r}
+#| label: waffle_chart
+
+waffle::waffle(progress_vec, colors = c("black", "darkgreen", "darkred"),
+               title = "How has the US done with our Endangered species?",
+               xlab = "1 square = 1%") 
+```
