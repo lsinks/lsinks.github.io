@@ -158,6 +158,8 @@ cookieconsent.run({
 <meta name="twitter:description" content="How many species have been delisted?">
 <meta name="twitter:image" content="https://lsinks.github.io/posts\2023-04-04-chart-challenge-4\thumbnail.png">
 <meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:image-height" content="540">
+<meta name="twitter:image-width" content="875">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -218,6 +220,7 @@ cookieconsent.run({
     <div class="quarto-category">R-code</div>
     <div class="quarto-category">Code-Along</div>
     <div class="quarto-category">30DayChartChallenge</div>
+    <div class="quarto-category">waffle</div>
   </div>
   </div>
 
@@ -254,232 +257,589 @@ cookieconsent.run({
 <p>I decided to look at the <a href="https://ecos.fws.gov/ecp/report/species">endangered species list</a> the US Fish and Wildlife Service maintains. They have a bunch of data spread over multiple tables. I decided to look at the 5 year review data. A 5 year review is the assessment to decide if a species remains list or delisted. The dataset also contains the year the species was first listed. So I’d like to compare how many species have been listed vs.&nbsp;delisted.</p>
 <p>The key to the different listing types is found <a href="https://ecos.fws.gov/ecp0/html/db-status.html">here</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.1     ✔ readr     2.1.4
-✔ forcats   1.0.0     ✔ stringr   1.5.0
-✔ ggplot2   3.4.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.2     ✔ tidyr     1.3.0
-✔ purrr     1.0.1     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(waffle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#library(rjson)</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'jsonlite'
-
-The following object is masked from 'package:purrr':
-
-    flatten</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(waffle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Today, I’m was going to load the data directly from the website. I’ve been downloading it and reading it in from a local folder, but I thought it would be nice to download directly. However, the data uses a “blob:” url, which is <a href="https://stackoverflow.com/questions/66609070/is-there-a-way-to-download-file-in-r-from-a-blob-url">not donwloadable directly</a>. There is a <a href="https://stackoverflow.com/questions/72922306/how-to-download-csv-from-url-starting-with-blobhttps">way around this</a> which might work for some datasets.</p>
+<p>Today, I’m was going to load the data directly from the website. I’ve been downloading it and reading it in from a local folder, but I thought it would be nice to download directly. However, the data uses a “blob:” url, which is <a href="https://stackoverflow.com/questions/66609070/is-there-a-way-to-download-file-in-r-from-a-blob-url">not donwloadable directly</a>. There is a <a href="https://stackoverflow.com/questions/72922306/how-to-download-csv-from-url-starting-with-blobhttps">way around this</a> but then you have to process some JSON data. I”ll come back to this later, but for now, I’m just going to use a csv.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#endangered &lt;- fromJSON(file = #"https://ecos.fws.gov/ecp/report/speciesFiveYearReview?format=json&amp;_=1680620711873")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>endangered_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"five_year.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#json_flat &lt;- flatten(endangered)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Let’s build our viz with the csv.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>endangered_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"five_year.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">name =</span> <span class="st">`</span><span class="at">Common Name</span><span class="st">`</span>, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">status =</span> <span class="st">`</span><span class="at">ESA Listing Status</span><span class="st">`</span>, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">date =</span> <span class="st">`</span><span class="at">Listing Date</span><span class="st">`</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">rec =</span> <span class="st">`</span><span class="at">5YSR Recommendation</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">name =</span> <span class="st">`</span><span class="at">Common Name</span><span class="st">`</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">status =</span> <span class="st">`</span><span class="at">ESA Listing Status</span><span class="st">`</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">date =</span> <span class="st">`</span><span class="at">Listing Date</span><span class="st">`</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">rec =</span> <span class="st">`</span><span class="at">5YSR Recommendation</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s see what kind of categories we have.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">status =</span> <span class="fu">factor</span>(status), <span class="at">rec =</span> <span class="fu">factor</span>(rec))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">status =</span> <span class="fu">factor</span>(status), <span class="at">rec =</span> <span class="fu">factor</span>(rec))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Skim this bad boy</p>
+<p>Skim this bad boy.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(endangered_df_sub)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(endangered_df_sub) <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<table class="table table-sm table-striped">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">endangered_df_sub</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">1533</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">4</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">factor</td>
-<td style="text-align: left;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
+
+<div id="iegyspukob" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#iegyspukob table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#iegyspukob thead, #iegyspukob tbody, #iegyspukob tfoot, #iegyspukob tr, #iegyspukob td, #iegyspukob th {
+  border-style: none;
+}
+
+#iegyspukob p {
+  margin: 0;
+  padding: 0;
+}
+
+#iegyspukob .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#iegyspukob .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#iegyspukob .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#iegyspukob .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#iegyspukob .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iegyspukob .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iegyspukob .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iegyspukob .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#iegyspukob .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#iegyspukob .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#iegyspukob .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#iegyspukob .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#iegyspukob .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#iegyspukob .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#iegyspukob .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#iegyspukob .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#iegyspukob .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#iegyspukob .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#iegyspukob .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iegyspukob .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#iegyspukob .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#iegyspukob .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#iegyspukob .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iegyspukob .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#iegyspukob .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#iegyspukob .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iegyspukob .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iegyspukob .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#iegyspukob .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iegyspukob .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#iegyspukob .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iegyspukob .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iegyspukob .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iegyspukob .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iegyspukob .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iegyspukob .gt_left {
+  text-align: left;
+}
+
+#iegyspukob .gt_center {
+  text-align: center;
+}
+
+#iegyspukob .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#iegyspukob .gt_font_normal {
+  font-weight: normal;
+}
+
+#iegyspukob .gt_font_bold {
+  font-weight: bold;
+}
+
+#iegyspukob .gt_font_italic {
+  font-style: italic;
+}
+
+#iegyspukob .gt_super {
+  font-size: 65%;
+}
+
+#iegyspukob .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#iegyspukob .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#iegyspukob .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#iegyspukob .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#iegyspukob .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#iegyspukob .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#iegyspukob .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_type">skim_type</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n_missing">n_missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="complete_rate">complete_rate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="character.min">character.min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="character.max">character.max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="character.empty">character.empty</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="character.n_unique">character.n_unique</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="character.whitespace">character.whitespace</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="factor.ordered">factor.ordered</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="factor.n_unique">factor.n_unique</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="factor.top_counts">factor.top_counts</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.mean">numeric.mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.sd">numeric.sd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p0">numeric.p0</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p25">numeric.p25</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p50">numeric.p50</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p75">numeric.p75</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="numeric.p100">numeric.p100</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="numeric.hist">numeric.hist</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_type" class="gt_row gt_left">character</td>
+<td headers="skim_variable" class="gt_row gt_left">name</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="character.min" class="gt_row gt_right">3</td>
+<td headers="character.max" class="gt_row gt_right">51</td>
+<td headers="character.empty" class="gt_row gt_right">0</td>
+<td headers="character.n_unique" class="gt_row gt_right">1159</td>
+<td headers="character.whitespace" class="gt_row gt_right">0</td>
+<td headers="factor.ordered" class="gt_row gt_center">NA</td>
+<td headers="factor.n_unique" class="gt_row gt_right">NA</td>
+<td headers="factor.top_counts" class="gt_row gt_left">NA</td>
+<td headers="numeric.mean" class="gt_row gt_right">NA</td>
+<td headers="numeric.sd" class="gt_row gt_right">NA</td>
+<td headers="numeric.p0" class="gt_row gt_right">NA</td>
+<td headers="numeric.p25" class="gt_row gt_right">NA</td>
+<td headers="numeric.p50" class="gt_row gt_right">NA</td>
+<td headers="numeric.p75" class="gt_row gt_right">NA</td>
+<td headers="numeric.p100" class="gt_row gt_right">NA</td>
+<td headers="numeric.hist" class="gt_row gt_left">NA</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">factor</td>
+<td headers="skim_variable" class="gt_row gt_left">status</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="character.min" class="gt_row gt_right">NA</td>
+<td headers="character.max" class="gt_row gt_right">NA</td>
+<td headers="character.empty" class="gt_row gt_right">NA</td>
+<td headers="character.n_unique" class="gt_row gt_right">NA</td>
+<td headers="character.whitespace" class="gt_row gt_right">NA</td>
+<td headers="factor.ordered" class="gt_row gt_center">FALSE</td>
+<td headers="factor.n_unique" class="gt_row gt_right">8</td>
+<td headers="factor.top_counts" class="gt_row gt_left">E: 1173, T: 316, DM: 35, DNS: 3</td>
+<td headers="numeric.mean" class="gt_row gt_right">NA</td>
+<td headers="numeric.sd" class="gt_row gt_right">NA</td>
+<td headers="numeric.p0" class="gt_row gt_right">NA</td>
+<td headers="numeric.p25" class="gt_row gt_right">NA</td>
+<td headers="numeric.p50" class="gt_row gt_right">NA</td>
+<td headers="numeric.p75" class="gt_row gt_right">NA</td>
+<td headers="numeric.p100" class="gt_row gt_right">NA</td>
+<td headers="numeric.hist" class="gt_row gt_left">NA</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">factor</td>
+<td headers="skim_variable" class="gt_row gt_left">rec</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="character.min" class="gt_row gt_right">NA</td>
+<td headers="character.max" class="gt_row gt_right">NA</td>
+<td headers="character.empty" class="gt_row gt_right">NA</td>
+<td headers="character.n_unique" class="gt_row gt_right">NA</td>
+<td headers="character.whitespace" class="gt_row gt_right">NA</td>
+<td headers="factor.ordered" class="gt_row gt_center">FALSE</td>
+<td headers="factor.n_unique" class="gt_row gt_right">7</td>
+<td headers="factor.top_counts" class="gt_row gt_left">No : 1389, Del: 49, Dow: 40, Del: 27</td>
+<td headers="numeric.mean" class="gt_row gt_right">NA</td>
+<td headers="numeric.sd" class="gt_row gt_right">NA</td>
+<td headers="numeric.p0" class="gt_row gt_right">NA</td>
+<td headers="numeric.p25" class="gt_row gt_right">NA</td>
+<td headers="numeric.p50" class="gt_row gt_right">NA</td>
+<td headers="numeric.p75" class="gt_row gt_right">NA</td>
+<td headers="numeric.p100" class="gt_row gt_right">NA</td>
+<td headers="numeric.hist" class="gt_row gt_left">NA</td></tr>
+    <tr><td headers="skim_type" class="gt_row gt_left">numeric</td>
+<td headers="skim_variable" class="gt_row gt_left">date</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="character.min" class="gt_row gt_right">NA</td>
+<td headers="character.max" class="gt_row gt_right">NA</td>
+<td headers="character.empty" class="gt_row gt_right">NA</td>
+<td headers="character.n_unique" class="gt_row gt_right">NA</td>
+<td headers="character.whitespace" class="gt_row gt_right">NA</td>
+<td headers="factor.ordered" class="gt_row gt_center">NA</td>
+<td headers="factor.n_unique" class="gt_row gt_right">NA</td>
+<td headers="factor.top_counts" class="gt_row gt_left">NA</td>
+<td headers="numeric.mean" class="gt_row gt_right">1993.5</td>
+<td headers="numeric.sd" class="gt_row gt_right">12.4735</td>
+<td headers="numeric.p0" class="gt_row gt_right">1967</td>
+<td headers="numeric.p25" class="gt_row gt_right">1987</td>
+<td headers="numeric.p50" class="gt_row gt_right">1993</td>
+<td headers="numeric.p75" class="gt_row gt_right">1999</td>
+<td headers="numeric.p100" class="gt_row gt_right">2017</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▃▇▂▃</td></tr>
+  </tbody>
+  
+  
 </table>
-<p><strong>Variable type: character</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">name</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">51</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1159</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: factor</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 10%">
-<col style="width: 15%">
-<col style="width: 8%">
-<col style="width: 9%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: left;">ordered</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: left;">top_counts</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">status</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: left;">E: 1173, T: 316, DM: 35, DNS: 3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">rec</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: left;">No : 1389, Del: 49, Dow: 40, Del: 27</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="table table-sm table-striped">
-<colgroup>
-<col style="width: 17%">
-<col style="width: 12%">
-<col style="width: 17%">
-<col style="width: 8%">
-<col style="width: 7%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 7%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">date</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1993.5</td>
-<td style="text-align: right;">12.47</td>
-<td style="text-align: right;">1967</td>
-<td style="text-align: right;">1987</td>
-<td style="text-align: right;">1993</td>
-<td style="text-align: right;">1999</td>
-<td style="text-align: right;">2017</td>
-<td style="text-align: left;">▂▃▇▂▃</td>
-</tr>
-</tbody>
-</table>
+</div>
 </div>
 </div>
 <p>rec</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(endangered_df_sub<span class="sc">$</span>rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(endangered_df_sub<span class="sc">$</span>rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    Delist: The listed entity does not meet the statutory definition of a species 
                                                                                                 8 
@@ -500,91 +860,62 @@ Delist: The species does not meet the definition of an endangered species or a t
 <p>The recommendations don’t always match the current status. I’m assuming the recommendations will be enacted/adopted eventually, so I am using them as the correct current status.</p>
 <p>We have 7 levels in recommendations. We need to consolidate them. I’m going to combine “Delist: The listed entity does not meet the statutory definition of a species” and “Delist: The species does not meet the definition of an endangered species or a threatened species” into a level called delisted. The delisting because the species is extinct will be made into a level called extinct later.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#all delist into one</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">fct_collapse</span>(rec, <span class="at">delisted =</span> <span class="fu">c</span>(<span class="st">"Delist: The listed entity does not meet the statutory definition of a species"</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Delist: The species does not meet the definition of an endangered species or a threatened species"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">fct_collapse</span>(rec, <span class="at">delisted =</span> <span class="fu">c</span>(<span class="st">"Delist: The listed entity does not meet the statutory definition of a species"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Delist: The species does not meet the definition of an endangered species or a threatened species"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I’m going to count both “Downlist to threatened” and “uplist to Endangered” as endangered. I don’t know the original listing level, so it doesn’t make too much difference to me.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">fct_collapse</span>(condensed, <span class="at">endangered =</span> <span class="fu">c</span>(<span class="st">"Downlist to T"</span>,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Uplist to E"</span>)  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">fct_collapse</span>(condensed, <span class="at">endangered =</span> <span class="fu">c</span>(<span class="st">"Downlist to T"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Uplist to E"</span>)  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, I’m pulling in the status for the entries that have “No change in Status” as the recommendation. I’m using a case_when and listing every combination. I could get this done if fewer lines if I used or statements (E or T is endangered), but I left it more granular in case I wanted to come back and change the levels. Maybe later I do care about the different between threatened and endangered and want to break them out separately.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">case_when</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"E"</span> <span class="sc">~</span> <span class="st">"endangered"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"T"</span> <span class="sc">~</span> <span class="st">"endangered"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"RT"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"D3A"</span> <span class="sc">~</span> <span class="st">"extinct"</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DM"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DP"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DR"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DNS"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">!=</span> <span class="st">"No change in Status"</span> <span class="sc">~</span> condensed)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> <span class="fu">case_when</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"E"</span> <span class="sc">~</span> <span class="st">"endangered"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"T"</span> <span class="sc">~</span> <span class="st">"endangered"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"RT"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"D3A"</span> <span class="sc">~</span> <span class="st">"extinct"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DM"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DP"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DR"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">==</span> <span class="st">"No change in Status"</span> <span class="sc">&amp;</span> status <span class="sc">==</span> <span class="st">"DNS"</span> <span class="sc">~</span> <span class="st">"delisted"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    condensed <span class="sc">!=</span> <span class="st">"No change in Status"</span> <span class="sc">~</span> condensed)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now I’m going to group my extincts.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">fct_collapse</span>(condensed, <span class="at">extinct =</span> </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"Delist: The species is extinct"</span>, <span class="st">"extinct"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: There was 1 warning in `mutate()`.
-ℹ In argument: `condensed = fct_collapse(...)`.
-Caused by warning:
-! Unknown levels in `f`: extinct</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>endangered_df_sub <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condensed =</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">fct_collapse</span>(condensed, <span class="at">extinct =</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">c</span>(<span class="st">"Delist: The species is extinct"</span>, <span class="st">"extinct"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>I’m not sure what : Revision of listed entity means. I’m going to see if there are comments back in the full dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>endangered_df <span class="sc">%&gt;%</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">5YSR Recommendation</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Revision of listed entity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 11
-  `Scientific Name`            `Common Name` `Where Listed` `ESA Listing Status`
-  &lt;chr&gt;                        &lt;chr&gt;         &lt;chr&gt;          &lt;chr&gt;               
-1 Rangifer tarandus ssp. cari… Caribou DPS,… &lt;div&gt;Southern… E                   
-2 Cereus eriophorus var. frag… Prickly-appl… &lt;div&gt;&lt;/div&gt;    E                   
-# ℹ 7 more variables: `Lead Region` &lt;dbl&gt;, `Listing Date` &lt;dbl&gt;,
-#   `Most Recently Completed 5YSR` &lt;date&gt;, `5YSR Recommendation` &lt;chr&gt;,
-#   `Notice of In Progress 5YSR` &lt;chr&gt;,
-#   `Notice Date of In Progress 5YSR` &lt;date&gt;, Group &lt;chr&gt;</code></pre>
-</div>
-</div>
-<p>I’m not seeing any explanation. There is not an entry in the code key either.</p>
-<p>Okay, now for a visualization. This actually seems perfect for a waffle. There were 1533 endangered or threatened species.</p>
-<p>Try waffling again. I did try a different package (ggwaffle) that also doesn’t work. It does let you use a dataframe, but it also doesn’t handle large numbers well. It soes let you downsample the data if the numbers are too large, but I’d rather just process the data myself to make it waffle.</p>
-<p>So, first I need to summarize the data to get the counts per class.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>progress <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(condensed)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(progress)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>endangered_df <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">5YSR Recommendation</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Revision of listed entity"</span>) <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="vorlexbkrf" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#vorlexbkrf table {
+<div id="hyuqqmonbw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hyuqqmonbw table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#vorlexbkrf thead, #vorlexbkrf tbody, #vorlexbkrf tfoot, #vorlexbkrf tr, #vorlexbkrf td, #vorlexbkrf th {
+#hyuqqmonbw thead, #hyuqqmonbw tbody, #hyuqqmonbw tfoot, #hyuqqmonbw tr, #hyuqqmonbw td, #hyuqqmonbw th {
   border-style: none;
 }
 
-#vorlexbkrf p {
+#hyuqqmonbw p {
   margin: 0;
   padding: 0;
 }
 
-#vorlexbkrf .gt_table {
+#hyuqqmonbw .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -610,12 +941,12 @@ Caused by warning:
   border-left-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_caption {
+#hyuqqmonbw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#vorlexbkrf .gt_title {
+#hyuqqmonbw .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -627,7 +958,7 @@ Caused by warning:
   border-bottom-width: 0;
 }
 
-#vorlexbkrf .gt_subtitle {
+#hyuqqmonbw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -639,7 +970,7 @@ Caused by warning:
   border-top-width: 0;
 }
 
-#vorlexbkrf .gt_heading {
+#hyuqqmonbw .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -651,13 +982,13 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_bottom_border {
+#hyuqqmonbw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_col_headings {
+#hyuqqmonbw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -672,7 +1003,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_col_heading {
+#hyuqqmonbw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -692,7 +1023,7 @@ Caused by warning:
   overflow-x: hidden;
 }
 
-#vorlexbkrf .gt_column_spanner_outer {
+#hyuqqmonbw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -704,15 +1035,15 @@ Caused by warning:
   padding-right: 4px;
 }
 
-#vorlexbkrf .gt_column_spanner_outer:first-child {
+#hyuqqmonbw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vorlexbkrf .gt_column_spanner_outer:last-child {
+#hyuqqmonbw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vorlexbkrf .gt_column_spanner {
+#hyuqqmonbw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -724,11 +1055,11 @@ Caused by warning:
   width: 100%;
 }
 
-#vorlexbkrf .gt_spanner_row {
+#hyuqqmonbw .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#vorlexbkrf .gt_group_heading {
+#hyuqqmonbw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -754,7 +1085,7 @@ Caused by warning:
   text-align: left;
 }
 
-#vorlexbkrf .gt_empty_group_heading {
+#hyuqqmonbw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -769,15 +1100,15 @@ Caused by warning:
   vertical-align: middle;
 }
 
-#vorlexbkrf .gt_from_md > :first-child {
+#hyuqqmonbw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vorlexbkrf .gt_from_md > :last-child {
+#hyuqqmonbw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vorlexbkrf .gt_row {
+#hyuqqmonbw .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -796,7 +1127,7 @@ Caused by warning:
   overflow-x: hidden;
 }
 
-#vorlexbkrf .gt_stub {
+#hyuqqmonbw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -809,7 +1140,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#vorlexbkrf .gt_stub_row_group {
+#hyuqqmonbw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -823,15 +1154,15 @@ Caused by warning:
   vertical-align: top;
 }
 
-#vorlexbkrf .gt_row_group_first td {
+#hyuqqmonbw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#vorlexbkrf .gt_row_group_first th {
+#hyuqqmonbw .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#vorlexbkrf .gt_summary_row {
+#hyuqqmonbw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -841,16 +1172,16 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#vorlexbkrf .gt_first_summary_row {
+#hyuqqmonbw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_first_summary_row.thick {
+#hyuqqmonbw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#vorlexbkrf .gt_last_summary_row {
+#hyuqqmonbw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -860,7 +1191,7 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_grand_summary_row {
+#hyuqqmonbw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -870,7 +1201,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#vorlexbkrf .gt_first_grand_summary_row {
+#hyuqqmonbw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -880,7 +1211,7 @@ Caused by warning:
   border-top-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_last_grand_summary_row_top {
+#hyuqqmonbw .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -890,11 +1221,11 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_striped {
+#hyuqqmonbw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vorlexbkrf .gt_table_body {
+#hyuqqmonbw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -903,7 +1234,7 @@ Caused by warning:
   border-bottom-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_footnotes {
+#hyuqqmonbw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -917,7 +1248,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_footnote {
+#hyuqqmonbw .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -926,7 +1257,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#vorlexbkrf .gt_sourcenotes {
+#hyuqqmonbw .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -940,7 +1271,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#vorlexbkrf .gt_sourcenote {
+#hyuqqmonbw .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -948,63 +1279,63 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#vorlexbkrf .gt_left {
+#hyuqqmonbw .gt_left {
   text-align: left;
 }
 
-#vorlexbkrf .gt_center {
+#hyuqqmonbw .gt_center {
   text-align: center;
 }
 
-#vorlexbkrf .gt_right {
+#hyuqqmonbw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vorlexbkrf .gt_font_normal {
+#hyuqqmonbw .gt_font_normal {
   font-weight: normal;
 }
 
-#vorlexbkrf .gt_font_bold {
+#hyuqqmonbw .gt_font_bold {
   font-weight: bold;
 }
 
-#vorlexbkrf .gt_font_italic {
+#hyuqqmonbw .gt_font_italic {
   font-style: italic;
 }
 
-#vorlexbkrf .gt_super {
+#hyuqqmonbw .gt_super {
   font-size: 65%;
 }
 
-#vorlexbkrf .gt_footnote_marks {
+#hyuqqmonbw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#vorlexbkrf .gt_asterisk {
+#hyuqqmonbw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#vorlexbkrf .gt_indent_1 {
+#hyuqqmonbw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#vorlexbkrf .gt_indent_2 {
+#hyuqqmonbw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#vorlexbkrf .gt_indent_3 {
+#hyuqqmonbw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#vorlexbkrf .gt_indent_4 {
+#hyuqqmonbw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#vorlexbkrf .gt_indent_5 {
+#hyuqqmonbw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1012,19 +1343,523 @@ Caused by warning:
   <thead>
     
     <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="condensed">condensed</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Scientific Name">Scientific Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Common Name">Common Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Where Listed">Where Listed</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ESA Listing Status">ESA Listing Status</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Lead Region">Lead Region</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Listing Date">Listing Date</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Most Recently Completed 5YSR">Most Recently Completed 5YSR</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="5YSR Recommendation">5YSR Recommendation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Notice of In Progress 5YSR">Notice of In Progress 5YSR</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Notice Date of In Progress 5YSR">Notice Date of In Progress 5YSR</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Group">Group</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="Scientific Name" class="gt_row gt_left">Rangifer tarandus ssp. caribou</td>
+<td headers="Common Name" class="gt_row gt_left">Caribou DPS, Southern Mountain</td>
+<td headers="Where Listed" class="gt_row gt_left">&lt;div&gt;Southern Mountain DPS&lt;/div&gt;</td>
+<td headers="ESA Listing Status" class="gt_row gt_left">E</td>
+<td headers="Lead Region" class="gt_row gt_right">1</td>
+<td headers="Listing Date" class="gt_row gt_right">1983</td>
+<td headers="Most Recently Completed 5YSR" class="gt_row gt_right">2019-10-02</td>
+<td headers="5YSR Recommendation" class="gt_row gt_left">Revision of listed entity</td>
+<td headers="Notice of In Progress 5YSR" class="gt_row gt_left">No Five Year Review In Progress</td>
+<td headers="Notice Date of In Progress 5YSR" class="gt_row gt_right">NA</td>
+<td headers="Group" class="gt_row gt_left">Mammals</td></tr>
+    <tr><td headers="Scientific Name" class="gt_row gt_left">Cereus eriophorus var. fragrans</td>
+<td headers="Common Name" class="gt_row gt_left">Prickly-apple, fragrant</td>
+<td headers="Where Listed" class="gt_row gt_left">&lt;div&gt;&lt;/div&gt;</td>
+<td headers="ESA Listing Status" class="gt_row gt_left">E</td>
+<td headers="Lead Region" class="gt_row gt_right">4</td>
+<td headers="Listing Date" class="gt_row gt_right">1985</td>
+<td headers="Most Recently Completed 5YSR" class="gt_row gt_right">2021-10-19</td>
+<td headers="5YSR Recommendation" class="gt_row gt_left">Revision of listed entity</td>
+<td headers="Notice of In Progress 5YSR" class="gt_row gt_left">No Five Year Review In Progress</td>
+<td headers="Notice Date of In Progress 5YSR" class="gt_row gt_right">NA</td>
+<td headers="Group" class="gt_row gt_left">Flowering Plants</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>I’m not seeing any explanation. There is not an entry in the code key either.</p>
+<p>Okay, now for a visualization. This actually seems perfect for a waffle. I’ve had <a href="https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html">bad luck with the waffle package</a>, but know how to make it output something now. So, I will try waffling again. I did try a different package (ggwaffle) that also doesn’t work. It does let you use a dataframe, but it also doesn’t handle large numbers well. It soes let you downsample the data if the numbers are too large, but I’d rather just process the data myself to make it waffle.</p>
+<p>So, first I need to summarize the data to get the counts per class.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>progress <span class="ot">&lt;-</span> endangered_df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(condensed)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>progress <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">condensed =</span> <span class="st">"Status"</span>, <span class="at">n =</span> <span class="st">"Number of species"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Progess of Endangered/Threatened species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="nfewaebgis" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nfewaebgis table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nfewaebgis thead, #nfewaebgis tbody, #nfewaebgis tfoot, #nfewaebgis tr, #nfewaebgis td, #nfewaebgis th {
+  border-style: none;
+}
+
+#nfewaebgis p {
+  margin: 0;
+  padding: 0;
+}
+
+#nfewaebgis .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nfewaebgis .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nfewaebgis .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nfewaebgis .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nfewaebgis .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nfewaebgis .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nfewaebgis .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nfewaebgis .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nfewaebgis .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nfewaebgis .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nfewaebgis .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nfewaebgis .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nfewaebgis .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nfewaebgis .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#nfewaebgis .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nfewaebgis .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nfewaebgis .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nfewaebgis .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nfewaebgis .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nfewaebgis .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nfewaebgis .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nfewaebgis .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nfewaebgis .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nfewaebgis .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nfewaebgis .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#nfewaebgis .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nfewaebgis .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nfewaebgis .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nfewaebgis .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nfewaebgis .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nfewaebgis .gt_left {
+  text-align: left;
+}
+
+#nfewaebgis .gt_center {
+  text-align: center;
+}
+
+#nfewaebgis .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nfewaebgis .gt_font_normal {
+  font-weight: normal;
+}
+
+#nfewaebgis .gt_font_bold {
+  font-weight: bold;
+}
+
+#nfewaebgis .gt_font_italic {
+  font-style: italic;
+}
+
+#nfewaebgis .gt_super {
+  font-size: 65%;
+}
+
+#nfewaebgis .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nfewaebgis .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nfewaebgis .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nfewaebgis .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nfewaebgis .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nfewaebgis .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nfewaebgis .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Progess of Endangered/Threatened species</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Status">Status</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Number of species">Number of species</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="condensed" class="gt_row gt_center">extinct</td>
 <td headers="n" class="gt_row gt_right">27</td></tr>
-    <tr><td headers="condensed" class="gt_row gt_center">delisted</td>
-<td headers="n" class="gt_row gt_right">64</td></tr>
+    <tr><td headers="condensed" class="gt_row gt_center gt_striped">delisted</td>
+<td headers="n" class="gt_row gt_right gt_striped">64</td></tr>
     <tr><td headers="condensed" class="gt_row gt_center">endangered</td>
 <td headers="n" class="gt_row gt_right">1440</td></tr>
-    <tr><td headers="condensed" class="gt_row gt_center">Revision of listed entity</td>
-<td headers="n" class="gt_row gt_right">2</td></tr>
+    <tr><td headers="condensed" class="gt_row gt_center gt_striped">Revision of listed entity</td>
+<td headers="n" class="gt_row gt_right gt_striped">2</td></tr>
   </tbody>
   
   
@@ -1034,33 +1869,36 @@ Caused by warning:
 </div>
 <p>Now let’s change to percentages for optimal waffling</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>num_species <span class="ot">&lt;-</span> <span class="fu">nrow</span>(endangered_df_sub)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> ( n<span class="sc">/</span>num_species) <span class="sc">*</span> <span class="dv">100</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress_percent <span class="sc">%&gt;%</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">round</span>(n,<span class="dv">1</span>))</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(progress_percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>num_species <span class="ot">&lt;-</span> <span class="fu">nrow</span>(endangered_df_sub)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> ( n<span class="sc">/</span>num_species) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress_percent <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">round</span>(n,<span class="dv">1</span>))</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">gt</span>(progress_percent) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cols_label</span>(<span class="at">condensed =</span> <span class="st">"Status"</span>, <span class="at">n =</span> <span class="st">"% of species"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Progess of Endangered/Threatened species"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="kposcyxavu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#kposcyxavu table {
+<div id="zobggvhuag" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zobggvhuag table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#kposcyxavu thead, #kposcyxavu tbody, #kposcyxavu tfoot, #kposcyxavu tr, #kposcyxavu td, #kposcyxavu th {
+#zobggvhuag thead, #zobggvhuag tbody, #zobggvhuag tfoot, #zobggvhuag tr, #zobggvhuag td, #zobggvhuag th {
   border-style: none;
 }
 
-#kposcyxavu p {
+#zobggvhuag p {
   margin: 0;
   padding: 0;
 }
 
-#kposcyxavu .gt_table {
+#zobggvhuag .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1074,24 +1912,24 @@ Caused by warning:
   width: auto;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #A8A8A8;
+  border-top-color: #5F5F5F;
   border-right-style: none;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 2px;
   border-left-color: #D3D3D3;
 }
 
-#kposcyxavu .gt_caption {
+#zobggvhuag .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kposcyxavu .gt_title {
+#zobggvhuag .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1103,7 +1941,7 @@ Caused by warning:
   border-bottom-width: 0;
 }
 
-#kposcyxavu .gt_subtitle {
+#zobggvhuag .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1115,7 +1953,7 @@ Caused by warning:
   border-top-width: 0;
 }
 
-#kposcyxavu .gt_heading {
+#zobggvhuag .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1127,19 +1965,19 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#kposcyxavu .gt_bottom_border {
+#zobggvhuag .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_col_headings {
+#zobggvhuag .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 1px;
   border-left-color: #D3D3D3;
@@ -1148,9 +1986,9 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#kposcyxavu .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
+#zobggvhuag .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
   font-size: 100%;
   font-weight: normal;
   text-transform: inherit;
@@ -1168,9 +2006,9 @@ Caused by warning:
   overflow-x: hidden;
 }
 
-#kposcyxavu .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
+#zobggvhuag .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
   font-size: 100%;
   font-weight: normal;
   text-transform: inherit;
@@ -1180,18 +2018,18 @@ Caused by warning:
   padding-right: 4px;
 }
 
-#kposcyxavu .gt_column_spanner_outer:first-child {
+#zobggvhuag .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kposcyxavu .gt_column_spanner_outer:last-child {
+#zobggvhuag .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kposcyxavu .gt_column_spanner {
+#zobggvhuag .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
   vertical-align: bottom;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -1200,11 +2038,11 @@ Caused by warning:
   width: 100%;
 }
 
-#kposcyxavu .gt_spanner_row {
+#zobggvhuag .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#kposcyxavu .gt_group_heading {
+#zobggvhuag .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1216,10 +2054,10 @@ Caused by warning:
   text-transform: inherit;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
   border-left-style: none;
   border-left-width: 1px;
   border-left-color: #D3D3D3;
@@ -1230,7 +2068,7 @@ Caused by warning:
   text-align: left;
 }
 
-#kposcyxavu .gt_empty_group_heading {
+#zobggvhuag .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1238,54 +2076,54 @@ Caused by warning:
   font-weight: initial;
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
   vertical-align: middle;
 }
 
-#kposcyxavu .gt_from_md > :first-child {
+#zobggvhuag .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kposcyxavu .gt_from_md > :last-child {
+#zobggvhuag .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kposcyxavu .gt_row {
+#zobggvhuag .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   margin: 10px;
-  border-top-style: solid;
+  border-top-style: none;
   border-top-width: 1px;
-  border-top-color: #D3D3D3;
+  border-top-color: #D5D5D5;
   border-left-style: none;
   border-left-width: 1px;
-  border-left-color: #D3D3D3;
+  border-left-color: #D5D5D5;
   border-right-style: none;
   border-right-width: 1px;
-  border-right-color: #D3D3D3;
+  border-right-color: #D5D5D5;
   vertical-align: middle;
   overflow-x: hidden;
 }
 
-#kposcyxavu .gt_stub {
+#zobggvhuag .gt_stub {
   color: #333333;
-  background-color: #FFFFFF;
+  background-color: #89D3FE;
   font-size: 100%;
   font-weight: initial;
   text-transform: inherit;
   border-right-style: solid;
   border-right-width: 2px;
-  border-right-color: #D3D3D3;
+  border-right-color: #D5D5D5;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-#kposcyxavu .gt_stub_row_group {
+#zobggvhuag .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1299,15 +2137,15 @@ Caused by warning:
   vertical-align: top;
 }
 
-#kposcyxavu .gt_row_group_first td {
+#zobggvhuag .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kposcyxavu .gt_row_group_first th {
+#zobggvhuag .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#kposcyxavu .gt_summary_row {
+#zobggvhuag .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1317,28 +2155,28 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#kposcyxavu .gt_first_summary_row {
+#zobggvhuag .gt_first_summary_row {
   border-top-style: solid;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_first_summary_row.thick {
+#zobggvhuag .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kposcyxavu .gt_last_summary_row {
+#zobggvhuag .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_grand_summary_row {
+#zobggvhuag .gt_grand_summary_row {
   color: #333333;
-  background-color: #FFFFFF;
+  background-color: #D5D5D5;
   text-transform: inherit;
   padding-top: 8px;
   padding-bottom: 8px;
@@ -1346,40 +2184,40 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#kposcyxavu .gt_first_grand_summary_row {
+#zobggvhuag .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-style: double;
   border-top-width: 6px;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_last_grand_summary_row_top {
+#zobggvhuag .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
   border-bottom-style: double;
   border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
+#zobggvhuag .gt_striped {
+  background-color: #EDF7FC;
 }
 
-#kposcyxavu .gt_table_body {
+#zobggvhuag .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
-  border-top-color: #D3D3D3;
+  border-top-color: #5F5F5F;
   border-bottom-style: solid;
   border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
+  border-bottom-color: #5F5F5F;
 }
 
-#kposcyxavu .gt_footnotes {
+#zobggvhuag .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1393,7 +2231,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#kposcyxavu .gt_footnote {
+#zobggvhuag .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1402,7 +2240,7 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#kposcyxavu .gt_sourcenotes {
+#zobggvhuag .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1416,7 +2254,7 @@ Caused by warning:
   border-right-color: #D3D3D3;
 }
 
-#kposcyxavu .gt_sourcenote {
+#zobggvhuag .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1424,101 +2262,104 @@ Caused by warning:
   padding-right: 5px;
 }
 
-#kposcyxavu .gt_left {
+#zobggvhuag .gt_left {
   text-align: left;
 }
 
-#kposcyxavu .gt_center {
+#zobggvhuag .gt_center {
   text-align: center;
 }
 
-#kposcyxavu .gt_right {
+#zobggvhuag .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kposcyxavu .gt_font_normal {
+#zobggvhuag .gt_font_normal {
   font-weight: normal;
 }
 
-#kposcyxavu .gt_font_bold {
+#zobggvhuag .gt_font_bold {
   font-weight: bold;
 }
 
-#kposcyxavu .gt_font_italic {
+#zobggvhuag .gt_font_italic {
   font-style: italic;
 }
 
-#kposcyxavu .gt_super {
+#zobggvhuag .gt_super {
   font-size: 65%;
 }
 
-#kposcyxavu .gt_footnote_marks {
+#zobggvhuag .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#kposcyxavu .gt_asterisk {
+#zobggvhuag .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kposcyxavu .gt_indent_1 {
+#zobggvhuag .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kposcyxavu .gt_indent_2 {
+#zobggvhuag .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kposcyxavu .gt_indent_3 {
+#zobggvhuag .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kposcyxavu .gt_indent_4 {
+#zobggvhuag .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kposcyxavu .gt_indent_5 {
+#zobggvhuag .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
   <thead>
+    <tr class="gt_heading">
+      <td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Progess of Endangered/Threatened species</td>
+    </tr>
     
     <tr class="gt_col_headings">
-      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="condensed">condensed</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Status">Status</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="% of species">% of species</th>
     </tr>
   </thead>
   <tbody class="gt_table_body">
     <tr><td headers="condensed" class="gt_row gt_center">extinct</td>
 <td headers="n" class="gt_row gt_right">1.8</td></tr>
-    <tr><td headers="condensed" class="gt_row gt_center">delisted</td>
-<td headers="n" class="gt_row gt_right">4.2</td></tr>
+    <tr><td headers="condensed" class="gt_row gt_center gt_striped">delisted</td>
+<td headers="n" class="gt_row gt_right gt_striped">4.2</td></tr>
     <tr><td headers="condensed" class="gt_row gt_center">endangered</td>
 <td headers="n" class="gt_row gt_right">93.9</td></tr>
-    <tr><td headers="condensed" class="gt_row gt_center">Revision of listed entity</td>
-<td headers="n" class="gt_row gt_right">0.1</td></tr>
+    <tr><td headers="condensed" class="gt_row gt_center gt_striped">Revision of listed entity</td>
+<td headers="n" class="gt_row gt_right gt_striped">0.1</td></tr>
   </tbody>
   
   
 </table>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Values below 1 won't show in a waffle graph anyway, so remove them.</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress_percent <span class="sc">%&gt;%</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Values below 1 won't show in a waffle graph anyway, so remove them.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>progress_percent <span class="ot">&lt;-</span> progress_percent <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The waffle package won’t work with dataframes for me, so make it a vector.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>progress_vec <span class="ot">=</span> <span class="fu">deframe</span>(progress_percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>progress_vec <span class="ot">=</span> <span class="fu">deframe</span>(progress_percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>waffle<span class="sc">::</span><span class="fu">waffle</span>(progress_vec, <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>),</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">title =</span> <span class="st">"How has the US done with our Endangered species?"</span>,</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab =</span> <span class="st">"1 square = 1%"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>waffle<span class="sc">::</span><span class="fu">waffle</span>(progress_vec, <span class="at">colors =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>),</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">title =</span> <span class="st">"How has the US done with our Endangered species?"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">xlab =</span> <span class="st">"1 square = 1%"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="day4_files/figure-html/waffle_chart-1.png" class="img-fluid" width="672"></p>
 </div>

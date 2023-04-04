@@ -7,7 +7,7 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
 date: 04-03-2023
-categories: [R, R-code, Code-Along, 30DayChartChallenge] # self-defined categories
+categories: [R, R-code, Code-Along, 30DayChartChallenge, waffle] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4
 image: "thumbnail.png"
@@ -25,27 +25,12 @@ The key to the different listing types is found [here](https://ecos.fws.gov/ecp0
 #| warning: false
 library(tidyverse)
 library(gt)
-#library(rjson)
-library(jsonlite)
 library(skimr)
 library(waffle)
 
 ```
 
-Today, I'm was going to load the data directly from the website. I've been downloading it and reading it in from a local folder, but I thought it would be nice to download directly. However, the data uses a "blob:" url, which is [not donwloadable directly](https://stackoverflow.com/questions/66609070/is-there-a-way-to-download-file-in-r-from-a-blob-url). There is a [way around this](https://stackoverflow.com/questions/72922306/how-to-download-csv-from-url-starting-with-blobhttps) which might work for some datasets.
-
-```{r}
-#| label: read-data-json
-
-#endangered <- fromJSON(file = #"https://ecos.fws.gov/ecp/report/speciesFiveYearReview?format=json&_=1680620711873")
-
-```
-
-```{r}
-#json_flat <- flatten(endangered)
-```
-
-Let's build our viz with the csv.
+Today, I'm was going to load the data directly from the website. I've been downloading it and reading it in from a local folder, but I thought it would be nice to download directly. However, the data uses a "blob:" url, which is [not donwloadable directly](https://stackoverflow.com/questions/66609070/is-there-a-way-to-download-file-in-r-from-a-blob-url). There is a [way around this](https://stackoverflow.com/questions/72922306/how-to-download-csv-from-url-starting-with-blobhttps) but then you have to process some JSON data. I"ll come back to this later, but for now, I'm just going to use a csv.
 
 ```{r}
 #| label: load-csv
@@ -73,12 +58,12 @@ endangered_df_sub <- endangered_df_sub %>%
 
 ```
 
-Skim this bad boy
+Skim this bad boy.
 
 ```{r}
 #| label: skimming
 
-skim(endangered_df_sub)
+skim(endangered_df_sub) %>% gt()
 ```
 
 rec
@@ -93,9 +78,6 @@ We have 7 levels in recommendations. We need to consolidate them. I'm going to c
 
 ```{r}
 #| label: combine-factors-delisted
-
-#all delist into one
-
 endangered_df_sub <- endangered_df_sub %>%
   mutate(condensed = fct_collapse(rec, delisted = c("Delist: The listed entity does not meet the statutory definition of a species",
     "Delist: The species does not meet the definition of an endangered species or a threatened species")
@@ -154,9 +136,7 @@ endangered_df %>%
 
 I'm not seeing any explanation. There is not an entry in the code key either.
 
-Okay, now for a visualization. This actually seems perfect for a waffle. There were 1533 endangered or threatened species.
-
-Try waffling again. I did try a different package (ggwaffle) that also doesn't work. It does let you use a dataframe, but it also doesn't handle large numbers well. It soes let you downsample the data if the numbers are too large, but I'd rather just process the data myself to make it waffle.
+Okay, now for a visualization. This actually seems perfect for a waffle. I've had [bad luck with the waffle package](https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html), but know how to make it output something now. So, I will try waffling again. I did try a different package (ggwaffle) that also doesn't work. It does let you use a dataframe, but it also doesn't handle large numbers well. It soes let you downsample the data if the numbers are too large, but I'd rather just process the data myself to make it waffle.
 
 So, first I need to summarize the data to get the counts per class.
 
@@ -165,7 +145,11 @@ So, first I need to summarize the data to get the counts per class.
 progress <- endangered_df_sub %>%
   count(condensed)
 
-gt(progress)
+progress %>% 
+  gt() %>%
+  cols_label(condensed = "Status", n = "Number of species") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Progess of Endangered/Threatened species")
 ```
 
 Now let's change to percentages for optimal waffling
@@ -180,7 +164,10 @@ progress_percent <- progress %>%
 progress_percent <- progress_percent %>%
   mutate(n = round(n,1))
 
-gt(progress_percent)
+gt(progress_percent) %>%
+cols_label(condensed = "Status", n = "% of species") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Progess of Endangered/Threatened species") 
 
 #Values below 1 won't show in a waffle graph anyway, so remove them.
 progress_percent <- progress_percent %>%
