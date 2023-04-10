@@ -2,58 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/blogroll.html</loc>
-    <lastmod>2023-04-04T18:12:43.376Z</lastmod>
+    <lastmod>2023-04-10T16:32:46.771Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/index.html</loc>
-    <lastmod>2023-04-04T18:12:44.010Z</lastmod>
+    <lastmod>2023-04-10T16:32:47.465Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</loc>
-    <lastmod>2023-04-04T18:12:44.940Z</lastmod>
+    <lastmod>2023-04-10T16:32:48.414Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</loc>
-    <lastmod>2023-04-04T18:12:47.484Z</lastmod>
+    <lastmod>2023-04-10T16:32:51.258Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-04-04T18:12:49.378Z</lastmod>
+    <lastmod>2023-04-10T16:32:53.258Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-25-twitter-cards/twitter-cards.html</loc>
-    <lastmod>2023-04-04T18:12:50.174Z</lastmod>
+    <lastmod>2023-04-10T16:32:54.073Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</loc>
-    <lastmod>2023-04-04T18:12:52.125Z</lastmod>
+    <lastmod>2023-04-10T16:32:55.983Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html</loc>
-    <lastmod>2023-04-04T18:12:53.695Z</lastmod>
+    <lastmod>2023-04-10T16:32:57.686Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html</loc>
-    <lastmod>2023-04-04T18:12:55.580Z</lastmod>
+    <lastmod>2023-04-10T16:32:59.733Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html</loc>
-    <lastmod>2023-04-04T18:12:57.339Z</lastmod>
+    <lastmod>2023-04-10T16:33:01.396Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html</loc>
-    <lastmod>2023-04-04T18:12:58.914Z</lastmod>
+    <lastmod>2023-04-10T16:33:02.949Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3.html</loc>
-    <lastmod>2023-04-04T18:13:00.768Z</lastmod>
+    <lastmod>2023-04-10T16:33:04.944Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4.html</loc>
-    <lastmod>2023-04-04T18:13:22.979Z</lastmod>
+    <lastmod>2023-04-10T16:33:09.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html</loc>
+    <lastmod>2023-04-10T16:33:36.628Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-04-04T18:13:17.010Z</lastmod>
+    <lastmod>2023-04-10T16:33:27.708Z</lastmod>
   </url>
 </urlset>
