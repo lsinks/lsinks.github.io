@@ -437,12 +437,11 @@ address_list <- fraud %>%
 #  geo(address_list$address,
 #      method = "osm",
 #      full_results = FALSE)
-#write.csv("home_coords_april10.csv", home_coords)
+#write.csv("home_coords.csv", home_coords)
 #home_coords <- home_coords %>%
 #  rename(lat_home = lat, long_home = long)
 
- # I downloaded it using the gui interface provided by datacamp when you view the object.
-
+# I downloaded it using the gui interface provided by datacamp when you view the object. This adds an extra set of "" compared to write.csv.
 
 # Reimport the data and load it
 home_coords <-
@@ -638,7 +637,7 @@ ggplot(fraud, aes(trans_date_trans_time)) +
 Next, I will break the transaction date-time into day of the week, hour, and the date only. I'm doing this here with [lubridate functions](https://lubridate.tidyverse.org/), but I could also do this in the model building section, when I create recipes by using [step_date()](https://recipes.tidymodels.org/reference/step_date.html). I will also graph transactions by day of the week.
 
 ```{r}
-# |label: day-transactions
+#| label: day-transactions
 # Code Block 20: 
 
 fraud <- fraud %>%
@@ -1041,7 +1040,7 @@ tune_results <-
     wf_set_tune,
     "tune_grid",
     resamples = fraud_folds,
-    grid = 3,
+    grid = 6,
     metrics = fraud_metrics,
     verbose = TRUE
     )
