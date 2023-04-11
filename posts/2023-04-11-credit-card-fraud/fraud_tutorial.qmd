@@ -1,0 +1,1164 @@
+---
+title: "Credit Card Fraud: A Tidymodels Tutorial"
+description: "An Imbalanced Class Problem"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 04-11-2023
+categories: [R, R-code, tidymodels, Machine Learning, classifiers] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+# 1. Classification using tidymodels
+
+I will walk through a classification problem from importing the data, cleaning, exploring, fitting, choosing a model, and finalizing the model.
+
+I wanted to create a project that could serve as a template for other two-class classification problems. I also wanted to fully use the tidymodels framework, particularly more advanced functionalities like workflowsets. There are some great tutorials on tidymodels, in particular [Olivier Gimenez's tutorial on Kaggle's Titanic competition](https://oliviergimenez.github.io/learning-machine-learning/). This tutorial steps through each model individually, while I wanted to use the more streamlined approach offered by workflowsets. I also found myself confused as I started doing more advanced procedures in tidymodels, despite having read the book [Tidy Modeling with R](https://www.tmwr.org/) multiple times and working through several tutorials on [Julia Silge's excellent blog](https://juliasilge.com/). I ended up writing my own [tutorial on tidymodels objects](https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial) that goes through the differences in the various ways to perform fitting and the various objects produced.
+
+In addition to providing a template for the machine learning portion, I wanted to create nice figures and tables that could also be re-used.
+
+I will also have a different version of this code on Datacamp. I've numbered the code chunks manually to aid in comparison between the two versions. I start numbering at 2, because Code Block 1 will be installing libraries at the Datacamp workspace. There are some important differences between the RStudio environment and online notebooks/workspaces.
+
+Please feel free to copy and use any of my code in your work. I'd appreciate an acknowledgment or link back if you find this tutorial useful.
+
+# 2. The problem: predicting credit card fraud
+
+The goal of the project is to correctly predict fraudulent credit card transactions.
+
+The specific problem is one provided by Datacamp as a challenge in the certification community. The dataset (Credit Card Fraud) can also be found at the Datacamp workspace. To access the dataset and the data dictionary, you can create a new notebook on datacamp using the Credit Card Fraud dataset. That will produce a notebook like [this](https://app.datacamp.com/workspace/w/f3a94059-683b-4bc6-b354-9b98cf3d5242/edit) with the dataset and the data dictionary.
+
+The original source of the data (prior to preparation by DataCamp) can be found [here](https://www.kaggle.com/kartik2112/fraud-detection?select=fraudTrain.csv).
+
+# 3. Set-up steps
+
+Loading the necessary libraries.
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+# Code Block 2: Loading Libraries
+
+# loading tidyverse/ tidymodels packages
+library(tidyverse) #core tidyverse
+library(tidymodels) # tidymodels framework
+library(lubridate) # date/time handling
+
+# visualization
+library(viridis) #color scheme that is colorblind friendly
+library(ggthemes) # themes for ggplot
+library(gt) # to make nice tables
+library(cowplot) # to make multi-panel figures
+library(corrplot) # nice correlation plot
+
+#Data Cleaning
+library(skimr) #provides overview of data and missingness
+
+#Geospatial Data
+library(tidygeocoder) #converts city/state to lat/long
+
+#Modeling
+library(ranger) # random forest
+library(glmnet) # elastic net logistic regression
+library(themis) # provides up/down-sampling methods for the data
+library(lightgbm) # fast gradient-boosted machine algo
+library(bonsai) #provides parnsip objects for tree-based models
+```
+
+I'm setting a global theme for my figures. I'm using [cowplot](https://wilkelab.org/cowplot/index.html) to create some composite figures, and apparently you must choose a cowplot theme if you set a global theme. You can use a ggtheme on a graph by graph basis, but not globally.
+
+```{r}
+#| label: fig-options
+# Code Block 3: setting global figure options
+
+theme_set(theme_cowplot(12))
+```
+
+Loading the data. This is a local copy that is part of the workspace download from Datacamp.
+
+```{r}
+#| label: import-data
+# Code Block 4: Reading in the data
+fraud <- read_csv('datacamp_workspace/credit_card_fraud.csv', show_col_types = FALSE) 
+fraud
+```
+
+# 4. Validation of data types
+
+I examine the dataset via `skim` and make sure all data elements are as expected. `skim` is a function in the [skimr package](https://cran.r-project.org/web/packages/skimr/index.html) that provides a high-level summary of the data. The output is a dataframe, [so it can be manipulated and formatted more nicely](https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/#skimr-to-understand-your-data) than the output of `summary()`.
+
+```{r}
+#| label: skim-data
+# Code Block 5: Validation of Data Types Against Data Dictionary
+# custom skim function to remore some of the quartile data
+my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL))
+
+my_skim(fraud)
+```
+
+Everything looks okay, and I am lucky because there is no missing data. I will not need to do cleaning or imputation.
+
+I see that `is_fraud` is coded as 0 or 1, and the mean of this variable is 0.00525. The number of fraudulent transactions is very low, and we should use treatments for imbalanced classes when we get to the fitting/ modeling stage.
+
+# 5. Do all variables have sensible types?
+
+I will look at each variable and decide whether to keep, transform, or drop it. This is a mixture of Exploratory Data Analysis and Feature Engineering, but I find it helpful to do some simple feature engineering as I start exploring the data. In this project, we have all data to begin with, so any transformations will be performed on the entire dataset. If we had a separate test dataset, we'd need to do the transformation on that in parallel or, more ideally, do the transformations as a `recipe_step()` in the tidymodels framework. Then the transformations would be applied to any data the recipe was used on as part of the modeling workflow. There is less chance of data leakage or missing a step when you perform the feature engineering in the recipe.
+
+Questions to consider:
+
+-   Should strings be converted to factors?
+-   Is date-time data properly encoded?
+-   Is financial data encoded numerically?
+-   Is geographic data consistently rendered? (city/ state strings vs. lat/long numeric pairs)
+
+First, I grouped all my variables by type and examined each variable class by class. The dataset has the following types of variables:
+
+1.  Strings
+2.  Geospatial Data
+3.  Dates
+4.  Date/Times
+5.  Numerical
+
+As I go through the different classes of variables, I will provide information from the data dictionary about them.
+
+## 5.1. Looking at the strings
+
+Strings are usually not a useful format for classification problems. The strings should be converted to factors, dropped, or otherwise transformed.
+
+***5.1.1. Strings to Factors*** (Code Block 6 - 8)
+
+-   `category`, Category of Merchant
+-   `job`, Job of Credit Card Holder
+
+***5.1.2. Strings as Strings*** (Code Block 9)
+
+-   `merchant`, Merchant Name
+-   `trans_num`, Transaction Number
+
+I'm not going to retain these, as they are either unlikely to have predictive power (`trans_num`) or are highly correlated with other predictors (`merchant` with `merch_lat`/`merch_long`.)
+
+***5.2. Strings to Geospatial Data*** (Code Block 13)
+
+We have plenty of geospatial data as lat/long pairs, so I want to convert city/state to lat/long so I can compare to the other geospatial variables. This will also make it easier to compute new variables like the distance the transaction is from the home location. I will transform and explore this when I handle the other geospatial data.
+
+-   `city`, City of Credit Card Holder
+-   `state`, State of Credit Card Holder
+
+**Things to consider as we walk through the data:**
+
+-   Do we have typos that lead to duplicate entries : VA/ Va. / Virginia?
+-   Do we have excessive \# of categories? Do we want to combine some?
+-   Should they be ordered?
+
+### 5.1.1. Exploring the factors: how is the compactness of categories?
+
+The predictors `category` and `job` are transformed into factors.
+
+```{r}
+#| label: convert-strings-to-factors
+# Code Block 6: Converting Strings to Factors
+fraud$category <- factor(fraud$category)
+fraud$job <- factor(fraud$job)
+```
+
+From the skim output, I see that `category` has 14 unique values, and `job` has 163 unique values. The dataset is quite large, with 339,607 records, so these variables don't have an excessive number of levels at first glance. However, it is worth seeing if I can compact the levels to a smaller number.
+
+#### Why do we care about the number of categories and whether they are "excessive"?
+
+Consider the extreme case where a dataset had categories that only contained one record each. There is simply insufficient data to make correct predictions using category as a predictor on new data with that category label. Additionally, if your modeling uses dummy variables, having an extremely large number of categories will lead to the production of a huge number of predictors, which can slow down the fitting. This is fine if all the predictors are useful, but if they aren't useful (as in the case of having only one record for a category), trimming them will improve the speed and quality of the data fitting.
+
+If I had subject matter expertise, I could manually combine categories. For example, in this dataset, the three largest categories in `job` are surveying-related and perhaps could be combined. If you don't have subject matter expertise, or if performing this task would be too labor intensive, then you can use cutoffs based on the amount of data in a category. If the majority of the data exists in only a few categories, then it might be reasonable to keep those categories and lump everything else in an "other" category or perhaps even drop the data points in smaller categories. As a side note, the [forcats package](https://forcats.tidyverse.org/) has a variety of tools to handle consolidating and dropping levels based on different cutoffs if this is the approach you decide to take.
+
+One way to evaluate the compactness of a factor is to group the data by category and look at a table of counts. I like the [gt package](https://gt.rstudio.com/) for making attractive tables in R. (Uncomment the line in Code Block 7 `#gt:::as.tags.gt_tbl(table_3a)` to see the table.) The tabular data also shows that there aren't typos leading to duplicate categories.
+
+Another way to evaluate the compactness is to [make a cumulative plot](https://stackoverflow.com/questions/15844919/cumulative-plot-%20using-ggplot2). This looks at the proportion of data that is described as you add categories. I'm using the [cowplot package](https://wilkelab.org/cowplot/index.html) to make multipanel figures. I want to look at both factors at once; this is fine for exploratory data analysis, but I wouldn't recommend it for a report or presentation, since there is no connection between the two variables.
+
+```{r}
+#| label: compactness
+# Code Block 7: Exploring the Compactness of the Categories
+
+# Exploring the jobs factor
+# bin and count the data and return sorted
+table_3a_data <- fraud %>% count(job, sort = TRUE) 
+
+# creating a table to go with this, but not displaying it
+table_3a <- table_3a_data %>%
+  gt() %>%
+  tab_header(title = "Jobs of Card Holders") %>%
+  cols_label(job = "Jobs", n = "Count") %>%
+  opt_stylize(style = 1,
+              color = "green",
+              add_row_striping = TRUE)
+#gt:::as.tags.gt_tbl(table_3a)  #displays the table 
+
+fig_1a <- ggplot(table_3a_data, aes(
+  x = 1:nlevels(fraud$job),
+  y = (cumsum(n) * 100 / nrow(fraud))
+)) +
+  geom_point(color = "darkcyan") +
+  geom_hline(yintercept = 80) +  #marker for 80% of the data
+  xlab("jobs index") +
+  ylab("% of Total") +
+  ylim(0, 100) # +
+  #ggtitle("Jobs of Card Holder")  #use if standalone graph
+			           
+
+# same as above, but just for the category variable
+table_3b_data <- fraud %>% count(category, sort = TRUE)
+table_3b <- table_3b_data %>%
+  gt() %>%
+  tab_header(title = "Transaction Category in Credit Card Fraud") %>%
+  cols_label(category = "Category", n = "Count") %>%
+  opt_stylize(style = 1,
+              color = "blue",
+              add_row_striping = TRUE) #%>%
+#gt:::as.tags.gt_tbl(table_3b)
+
+fig_1b <- ggplot(table_3b_data, aes(
+  x = 1:nlevels(fraud$category),
+  y = (cumsum(n) * 100 / nrow(fraud))
+)) +
+  geom_point(color = "darkcyan") +
+  geom_hline(yintercept = 80) +
+  xlab("category index") +
+  ylab("% of Total") +
+  ylim(0, 100) #+
+#ggtitle("Jobs of Card Holder") #use if standalone graph
+
+
+#this makes the panel grid and labels it
+plot_fig_1 <-
+  plot_grid(fig_1a,
+            fig_1b,
+            labels = c('A', 'B'),
+            label_size = 14)
+
+#This creates the figure title
+title_1 <- ggdraw() +
+  draw_label(
+    "Figure 1: Exploring Categorical Variables",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0,
+    size = 14
+  ) +
+  theme(# add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 7))
+
+#this combines the panel grid, title, and displays both
+plot_grid(title_1,
+          plot_fig_1,
+          ncol = 1,
+          # rel_heights values control vertical title margins
+          rel_heights = c(0.1, 1))
+```
+
+If you look at Figure 1A, roughly 75-80 categories have to be included to capture 80% of the data. For Figure 1B, roughly ten categories have to be included. Ideally, you'd like a very steep curve initially (where a "small number" of categories cover the "majority" of the data) and then a long, shallow tail approaching 100% that corresponds to the data to be binned in "other" or dropped. There aren't hard and fast rules on making these decisions. I decided to use 80% as my threshold. Both of these curves look relatively shallow to me, so I decided not to do any binning, grouping, or dropping of levels.
+
+I decided to look at all the categories of transactions just to see which ones were the most common.
+
+```{r}
+#| label: category-levels
+# Code Block 8: Exploring the Category factor
+ggplot(fraud, aes(fct_infreq(category))) +
+  geom_bar(color = "darkcyan", fill = "darkcyan") +
+  ggtitle("Figure 2: Types of Transactions") +
+  coord_flip() +
+  ylab("Count") +
+  xlab("Merchant Type")
+```
+
+Gas/transport was the most common category, and grocery was the second most common, both of which make sense. The least common category was travel. Nothing seemed unusual in the ranking.
+
+### 5.1.2. Looking at our character strings
+
+Merchant name (`merchant`) and transaction number(`trans_num`) are both strings. Transaction number should not influence fraud rate as it is a number assigned to the transaction when processed. I will drop it from our dataset. Merchant name could be correlated with fraud, for example, if a company's employee was involved. However, this data is also represented by the location and category. If a location/category is found to have higher levels of fraud, then a more detailed examination of those transactions can be performed, including the merchant name. Here, I also remove it from the dataset.
+
+```{r}
+#| label: removing-merchant-transnum
+# Code Block 9: Removing Character/ String Variables
+fraud <- fraud %>%
+  select(-merchant,-trans_num)
+```
+
+## 5.2. Looking at the geographic data
+
+This data is coded as numeric (latitude and longitude) or character (city/state), but we can recognize it as geographic data and treat it appropriately.
+
+First, there are two sets of geographic data related to the merchant. The location of the merchant and where the transaction occurred. I create scatter plots of latitude and longitude separately, because I want to check the correlation between the two sources of data (merchant and transaction). I create a shared legend following the article [here](https://wilkelab.org/cowplot/articles/shared_legends.html).
+
+```{r}
+#| label: transaction-merchant-coords
+# Code Block 10: Comparing Merchant and Transaction Locations
+
+# calculate correlations
+cor_lat <- round(cor(fraud$lat, fraud$merch_lat), 3)
+cor_long <- round(cor(fraud$long, fraud$merch_long), 3)
+
+# make figure
+fig_3a <-
+  ggplot(fraud, aes(lat, merch_lat, fill = factor(is_fraud))) +
+  geom_point(
+    alpha = 1,
+    shape = 21,
+    colour = "black",
+    size = 5
+  ) +
+  ggtitle("Latitude") +
+  ylab("Merchant Latitude") +
+  xlab("Transaction Latitude") +
+  scale_fill_viridis(
+    discrete = TRUE,
+    labels = c('Not Fraud', 'Fraud'),
+    name = ""
+  ) +
+  geom_abline(slope = 1, intercept = 0) 
+
+fig_3b <-
+  ggplot(fraud, aes(long, merch_long, fill = factor(is_fraud))) +
+  geom_point(
+    alpha = 1,
+    shape = 21,
+    colour = "black",
+    size = 5
+  ) +
+  ggtitle("Longitude") +
+  ylab("Merchant Longitude") +
+  xlab("Transaction Longitude") +
+  scale_fill_viridis(
+    discrete = TRUE,
+    labels = c('Not Fraud', 'Fraud'),
+    name = ""
+  ) +
+  geom_abline(slope = 1, intercept = 0) 
+
+# create the plot with the two figs on a grid, no legend
+prow_fig_3 <- plot_grid(
+  fig_3a + theme(legend.position = "none"),
+  fig_3b + theme(legend.position = "none"),
+  align = 'vh',
+  labels = c("A", "B"),
+  label_size = 12,
+  hjust = -1,
+  nrow = 1
+)
+
+# extract the legend from one of the figures
+legend <- get_legend(
+  fig_3a + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom")
+)
+
+# add the legend to the row of figures, prow_fig_3
+plot_fig_3 <- plot_grid(prow_fig_3, legend, ncol = 1, rel_heights = c(1, .1))
+
+# title
+title_3 <- ggdraw() +
+  draw_label(
+    "Figure 3. Are Merchant and Transaction Coordinates Correlated?",
+    fontface = 'bold',
+    size = 14,
+    x = 0,
+    hjust = 0
+  ) +
+  theme(plot.margin = margin(0, 0, 0, 7))
+
+# graph everything
+plot_grid(title_3,
+          plot_fig_3,
+          ncol = 1,
+          rel_heights = c(0.1, 1))
+```
+
+These two sets of data are highly correlated (for latitude = `r cor_lat` and for longitude = `r cor_long`) and thus are redundant. So I remove `merch_lat` and `merch_long` from the dataset.
+
+```{r}
+#| label: removing-merchant-coords
+# Code Block 11: Removing merch_lat and merch_long
+fraud <- fraud %>%
+  select(-merch_lat,-merch_long) %>%
+  rename(lat_trans = lat, long_trans = long)
+```
+
+Next, I will look and see if some locations are more prone to fraud.
+
+```{r}
+#| label: fraud-by-location
+# Code Block 12: Looking at Fraud by Location
+ggplot(fraud, aes(long_trans, lat_trans, fill = factor(is_fraud))) +
+  geom_point(
+    alpha = 1,
+    shape = 21,
+    colour = "black",
+    size = 5,
+    position = "jitter"
+  ) +
+  scale_fill_viridis(
+    discrete = TRUE,
+    labels = c('Not Fraud', 'Fraud'),
+    name = ""
+  ) +
+  ggtitle("Figure 4: Where does fraud occur? ") +
+  ylab("Latitude") +
+  xlab("Longitude") 
+  
+```
+
+It looks like there are some locations which only have fraudulent transactions.
+
+Next, I'm going to convert city/state into latitude and longitude using the [tidygeocoder package](https://jessecambon.github.io/tidygeocoder/reference/geo.html). Also included code to save this output and then re-import it. You likely do not want to be pulling the data from the internet every time you run the code, so this gives you the option to work from a local copy. For many services, it is against terms of service to repeatedly make the same calls rather than working from a local version. I did find that I could originally pull all data from 'osm', but while double checking this code, I found that the service is now imposing some rate limit and denies some requests, leading to some NA entries. So do check your results.
+
+```{r}
+#| label: city-state-to-coords
+# Code Block 13: Converting city/state data lat/long
+
+# need to pass an address to geo to convert to lat/long
+fraud <- fraud %>%
+  mutate(address = str_c(city, state, sep = " , "))
+
+# generate a list of distinct addresses to look up
+# the dataset is large, so it is better to only look up unique address rather that the address
+# for every record
+address_list <- fraud %>%
+  distinct(address)
+
+# this has one more than number in the cities, so there must be a city with the same name in more than one state.
+
+#I don't want to run this api call everytime I open the notebook, so I downloaded the data and will reimport it and load it
+# Below is the code to run the call.  Uncomment it.
+# gets coordinates for city,states
+#home_coords <-
+#  geo(address_list$address,
+#      method = "osm",
+#      full_results = FALSE)
+#write.csv("home_coords_april10.csv", home_coords)
+#home_coords <- home_coords %>%
+#  rename(lat_home = lat, long_home = long)
+
+ # I downloaded it using the gui interface provided by datacamp when you view the object.
+
+
+# Reimport the data and load it
+home_coords <-
+  read_csv('datacamp_workspace/downloaded_coords.csv', show_col_types = FALSE)
+
+
+# imported home coords has an extra set of quotation marks
+home_coords <- home_coords %>%
+  mutate(address = str_replace_all(address, "\"", "")) %>%
+  rename(lat_home = lat, long_home = long)
+
+# use a left join on fraud and home_coords to assign the coord to every address in fraud
+fraud <- fraud %>%
+  left_join(home_coords, by = "address")
+```
+
+Now I'm going to calculate the distance between the card holder's home and the location of the transaction. I think distance might be a feature that is related to fraud. I followed the tutorial [here](https://www.geeksforgeeks.org/program-distance-two-points-earth/amp/) for calculating distance
+
+```{r}
+# Code Block 14: Distance Between Home and Transaction
+
+# I believe this assuming a spherical Earth
+
+# convert to radians
+fraud <- fraud %>%
+  mutate(
+    lat1_radians = lat_home / 57.29577951,
+    lat2_radians = lat_trans / 57.29577951,
+    long1_radians = long_home / 57.29577951,
+    long2_radians = long_trans / 57.29577951
+  )
+
+# calculating distance
+fraud <-
+  fraud %>% mutate(distance_miles = 3963.0 * acos((sin(lat1_radians) * sin(lat2_radians)) + cos(lat1_radians) * cos(lat2_radians) * cos(long2_radians - long1_radians)
+  ))
+
+# calculating the correlation
+fraud_distance <- round(cor(fraud$distance_miles, fraud$is_fraud), 3) 
+```
+
+Despite my assumption that distance would be correlated with fraud, the correlation value is quite low, `r fraud_distance`.
+
+I'm going to visualize it anyway.
+
+```{r}
+#| label: distance-and-fraud
+# Code Block 15: Distance from Home and Fraud
+ggplot(fraud, aes(distance_miles, is_fraud , fill = factor(is_fraud))) +
+  geom_point(
+    alpha = 1,
+    shape = 21,
+    colour = "black",
+    size = 5,
+    position = "jitter"
+  ) +
+  scale_fill_viridis(
+    discrete = TRUE,
+    labels = c('Not Fraud', 'Fraud'),
+    name = ""
+  ) +
+  ggtitle("Figure 5: How far from home does fraud occur?") +
+  xlab("Distance from Home (miles)") +
+  ylab("Is Fraud?") 
+```
+
+Some distances only have fraudulent transactions. This might be related to the locations that are only fraud, Figure 4.
+
+This new feature `distances_miles` is retained, and the original variables (`city`, `state`) and the intermediate variables (address, variables used to calculate distance) are removed in Code Block 16.
+
+```{r}
+#| label: distance-and-fraud-viz
+# Code Block 16: Remove Extraneous/Temp Variables
+
+# created to calculate distance
+fraud <- fraud %>%
+  select(-lat1_radians,-lat2_radians,-long1_radians,-long2_radians)
+
+#remove city and state and address, replaced by lat/long
+fraud <- fraud %>%
+  select(-city, -state, -address)
+```
+
+## 5.3. Looking at the dates
+
+**Date**
+
+`dob`, Date of Birth of Credit Card Holder
+
+Questions:
+
+-   What is the date range, and does it make sense?
+
+-   Do we have improbably old or young people?
+
+-   Do we have historic or futuristic transaction dates?
+
+I calculate the `age` from the `dob` and visualize them both.
+
+```{r}
+#| label: dob-viz
+# Code Block 17: Looking at dob
+
+#summary(fraud$dob) #if you wanted a printed summary stats
+
+fig_6a <- ggplot(fraud, aes(dob)) +
+  geom_histogram(color = "darkcyan",
+                 fill = "darkcyan" ,
+                 bins = 10) +
+  #ggtitle("How old are card Holders?") +
+  ylab("Count") +
+  xlab("Date of Birth") 
+
+fraud <- fraud %>%
+  #mutate (age = trunc((dob %--% today()) / years(1))) #if you wanted to calculate age relative to today
+  mutate(age = trunc((
+    dob %--% min(fraud$trans_date_trans_time)
+  ) / years(1)))
+#summary(fraud$age) #if you wanted a printed summary stats
+
+
+fig_6b <- ggplot(fraud, aes(age)) +
+  geom_histogram(color = "darkcyan",
+                 fill = "darkcyan",
+                 bins = 10) +
+  #ggtitle("How old are card holders?") +
+  ylab("Count") +
+  xlab("Age") 
+plot_fig_6 <- plot_grid(fig_6a, fig_6b, labels = c('A', 'B'))
+
+title_6 <- ggdraw() +
+  draw_label(
+    "Figure 6. How old are the card holders?",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +
+  theme(# add margin on the left of the drawing canvas,
+    # so title is aligned with left edge of first plot
+    plot.margin = margin(0, 0, 0, 7))
+plot_grid(title_6,
+          plot_fig_6,
+          ncol = 1,
+          # rel_heights values control vertical title margins
+          rel_heights = c(0.1, 1))
+
+table_4_data <- fraud %>% count(age)
+
+table_4 <- table_4_data %>%
+  gt() %>%
+  tab_header(title = "Ages of Card Holders") %>%
+  cols_label(age = "Ages", n = "Count") %>%
+  opt_stylize(style = 1,
+              color = "green",
+              add_row_striping = TRUE)
+gt:::as.tags.gt_tbl(table_4)
+```
+
+The ages seem reasonable (calculated relative to the earliest date of transactions). There are a few thousand 17-year-olds, which is too young to have their own credit card, but it is plausible that they would be an authorized user on their parents' card. `age` seems a more reasonable variable than `dob`, so `dob` is also dropped from the dataset. For example, scammers might be more likely to target 90-year-olds. The age is the feature that leads to them being targeted, not the birth year. The birth year is related to age through the current date- in 10 years, a new cohort of birth years would be targeted if age is the important feature. So the `age` feature is more robust to passing time than `dob`.
+
+```{r}
+# Code Block 18: Removing dob
+
+fraud <- fraud %>%
+  select(-dob)
+```
+
+## 5.4. Looking at the date-times
+
+**date-time**
+
+`trans_date_trans_time`, Transaction DateTime
+
+**Questions**
+
+Would processing the date-times yield more useful predictors?
+
+First, I want to look at variation in the number of transactions with date-time. I chose to use a histogram with bins corresponding to one month widths.
+
+```{r}
+#| label: date-times-viz
+# Code Block 19: Looking at Transaction Date/ Times
+
+ggplot(fraud, aes(trans_date_trans_time)) +
+  geom_histogram(color = "darkcyan",
+                 fill = "darkcyan",
+                 bins = 24) + #24 months in dataset
+  ggtitle("Figure 7: When do Transactions occur") +
+  ylab("Count") +
+  xlab("Date/ Time")
+```
+
+Next, I will break the transaction date-time into day of the week, hour, and the date only. I'm doing this here with [lubridate functions](https://lubridate.tidyverse.org/), but I could also do this in the model building section, when I create recipes by using [step_date()](https://recipes.tidymodels.org/reference/step_date.html). I will also graph transactions by day of the week.
+
+```{r}
+# |label: day-transactions
+# Code Block 20: 
+
+fraud <- fraud %>%
+  mutate(
+    date_only = date(trans_date_trans_time),
+    hour = hour(trans_date_trans_time),
+    weekday = wday(trans_date_trans_time)
+  )
+
+ggplot(fraud, aes(weekday)) +
+  geom_histogram(
+    color = "darkcyan",
+    fill = "darkcyan",
+    binwidth = 1,
+    center = 0.5
+  ) +
+  ggtitle("Figure 7: On what days do transactions occur?") +
+  ylab("Count") +
+  xlab("Weekday")
+```
+
+Monday has the highest number of transactions; this could be due to businesses processing orders that came in over the weekend. By default, lubridate codes the day of the week as a number where 1 means Monday, 7 means Sunday.
+
+Now, I look at what time of day do most transactions occur?
+
+```{r}
+#| label: hour-transactions-graph
+# Code Block 21: What time do transactions occur
+fig_8a <- ggplot(fraud, aes(hour)) +
+  geom_boxplot(color = "darkcyan") +
+  #ggtitle("What hour do transactions occur") +
+  ylab("Count") +
+  xlab("Hour")
+
+
+fig_8b <- ggplot(fraud, aes(hour)) +
+  geom_bar(fill = "darkcyan") +
+  #ggtitle("What hour do transactions occur") +
+  ylab("Count") +
+  xlab("Hour") 
+
+plot_fig_8 <- plot_grid(fig_8a, fig_8b, labels = c('A', 'B'))
+
+title_8 <- ggdraw() +
+  draw_label(
+    "Figure 8. When do transactions occur?",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +
+  theme(
+    plot.margin = margin(0, 0, 0, 7))
+plot_grid(title_8,
+          plot_fig_8,
+          ncol = 1,
+          # rel_heights values control vertical title margins
+          rel_heights = c(0.1, 1))
+```
+
+This data honestly looks funny to me. I might expect that most transactions would occur during normal business hours (\~9-5) or more occur during lunch or after work, but what we see is a lower number of transactions from midnight to \~ 2 pm and then a higher number of transactions from 2 pm until midnight. The odd pattern could be a sign that something is wrong with the data (perhaps timezones aren't being encoded properly?), or it could be simply a lack of subject matter knowledge (for example, transactions are pre-authorized at the time of sale and processed later, and the transaction time is the processing time, not the sale time.) Of course, this is also a synthetic dataset, so this pattern may be simply the result of user input choices when the set was generated. If this were a real dataset, I'd chase this down.
+
+And I made a table too, just to look at this data in another way.
+
+```{r}
+#| label: hour-transactions-table
+# Code Block 22:
+table_5_data <- fraud %>% count(hour)
+
+table_5 <- table_5_data %>%
+  gt() %>%
+  tab_header(title = "Transactions by Time of Day") %>%
+  cols_label(hour = "Hour", n = "Count") %>%
+  opt_stylize(style = 1,
+              color = "green",
+              add_row_striping = TRUE)
+gt:::as.tags.gt_tbl(table_5)
+```
+
+Still weird.
+
+I discard the original variable and keep the new variables.
+
+```{r}
+#| label: remove-transdatetranstime
+# Code Block 23:
+#removing the original variable and keeping the component variables.
+fraud <- fraud %>%
+  select(-trans_date_trans_time)
+```
+
+## 5.5. Looking at the numerical variables
+
+**Numerical**
+
+`amt`, transaction amount
+
+**Questions**
+
+Would transforming this data produce a more normal distribution?
+
+Generally, more normal or at least more symmetric data tends to be fitted better, especially when using model-fitting algorithms that arise from statistics rather than pure machine learning.
+
+I compare the original data with the log-transformed data.
+
+```{r}
+#| label: amt-log-amt-graph
+# Code Block 24:
+fig_9a <- ggplot(fraud, aes(amt)) +
+  geom_histogram(color = "darkcyan", fill = "darkcyan", bins = 50) +
+  #ggtitle("Amount of Transaction") +
+  ylab("Count") +
+  xlab("purchase amount ($)")
+
+fig_9b <- ggplot(fraud, aes(log(amt))) +
+  geom_histogram(color = "darkcyan", fill = "darkcyan", bins = 50) +
+  #ggtitle("log(Amount) of Transaction") +
+  ylab("Count") +
+  xlab("log(purchase amount) ($)")
+
+plot_fig_9 <-
+  plot_grid(fig_9a, fig_9b, labels = c('A', 'B'), label_size = 12)
+title_9 <- ggdraw() +
+  draw_label(
+    "Figure 9. Distribution of amount and log(amount)",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0
+  ) +
+  theme(
+    plot.margin = margin(0, 0, 0, 7))
+plot_grid(title_9,
+          plot_fig_9,
+          ncol = 1,
+          rel_heights = c(0.1, 1))
+```
+
+The transformed data is more symmetric so that the transformed variable will be retained.
+
+```{r}
+#| label: log-amt-feature
+# Code Block 25:
+fraud <- fraud %>%
+  mutate(amt_log = log(amt))
+```
+
+I do a final clean-up of variables next. I remove some variables that I don't think will impact fraud- the population of the home city and the location of the home. I don't think the home should have an impact on fraud; it is where the card is used, not where it is billed, that should matter. I suppose you could have a neighborhood where all the mail was being stolen, and cards were compromised that way, but I think most cards get compromised at the point of sale.
+
+I also removed the date. The date itself is unlikely to be related to fraud. It is possible that special dates are correlated with fraud, like a holiday or a big sports match. Engineering a holiday feature could be a future improvement.
+
+There is a possibility that job type could have an impact on fraud; for example, a trucker might be more likely to have his/her card stolen just because they are always on the road and visiting a wide variety of places where they would use the card. Or this could come in as an interaction term with distance; distance from home and the occupation trucker might have no correlation, but the distance from home and the occupation teacher might have because it would be a more unusual event for that `job`. However, some model fitting fails to converge when `job` is included, and it takes a long time for the models that it does work for. So I remove it too.
+
+```{r}
+#| label: final-feature-removal
+# Code Block 26:
+# removed in related clusters, so easy to comment out if you want to add back a group
+
+# remove amt and keep log transformed version
+fraud <- fraud %>%
+  select(-amt)
+
+# home location and home city pop shouldn't impact fraud
+fraud <- fraud %>%
+  select(-city_pop,-lat_home,-long_home)
+
+# remove date
+fraud <- fraud %>% select(-date_only)
+
+# remove jobs
+fraud <- fraud %>%
+  select(-job)  
+```
+
+# 6. Final preparation for modeling
+
+Next, I plot the correlation plot for the dataset. Highly correlated variables can cause problems for some fitting algorithms, again, especially for those coming from statistics. It also gives you a bit of a feel for what might come out of the model fitting. This is also a chance to do one last fact-check. For example, `category` and `amt` are reasonably correlated. The sign isn't particularly important in this case since `category` is arbitrarily ordered.
+
+I like the corrplot package for making correlation plots. I think this package produces very nice visualizations. I did find that the title sometimes gets cut off and I found the solution was to add some margin as explained [here](https://stefaneng.github.io/corrplot-title-cut-off/).
+
+```{r}
+#| label: correlation-graph
+#Code Block 27: examining correlation between variables 
+
+fraud %>%
+  mutate_if(is.factor, as.numeric) %>%
+  dplyr::select(is_fraud, everything()) %>%
+  cor %>%
+  {
+    .[order(abs(.[, 1]), decreasing = TRUE),
+      order(abs(.[, 1]), decreasing = TRUE)]
+  } %>%
+  corrplot(
+    type = 'lower',
+    tl.col = 'black',
+    addCoef.col = 'black',
+    cl.ratio = 0.2,
+    tl.srt = 45,
+    col = COL2('PuOr', 10),
+    diag = FALSE ,
+    mar = c(0, 0, 2, 0),
+    title = "Figure 10: Correlations between fraud and the predictors"
+  )
+```
+
+Tidymodels requires that the outcome be a factor and the [positive class be the first level](https://community.rstudio.com/t/tidymodels-which-factor-level-is-the-default-positive-class/100428). So I create the factor and relevel it.
+
+```{r}
+#| label: fraud-to-factor-relevel
+# Code Block 28: 
+
+# in tidymodels, outcome should be a factor
+fraud$is_fraud <- factor(fraud$is_fraud)
+levels(fraud$is_fraud)
+
+
+# first level is the event in tidymodels, so we need to reorder
+fraud$is_fraud <- relevel(fraud$is_fraud, ref = "1")
+levels(fraud$is_fraud)
+```
+
+And take one last look at the data and make sure I have the variables I expect. I also export this processed data for use in [my tidymodels tutorial](https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html).
+
+```{r}
+#| label: final-check-of-data
+# Code Block 29: Viewing Final Fraud Dataset
+glimpse(fraud)
+
+# save file to use in other tutorial
+#saveRDS(fraud, file = "fraud_processed.RDS")
+```
+
+# 7. Finding a high performing model
+
+I'm planning to study the following models and methods of handling imbalanced class problems.
+
+Explore different classification models
+
+1.  logistic regression
+
+2.  elastic net logistic regression
+
+3.  lightgbm
+
+4.  random forest
+
+Explore different method of handling imbalanced class problems
+
+1.  do nothing
+
+2.  SMOTE
+
+3.  ROSE
+
+4.  downsample
+
+This ends up being 4 x 4 different fits, and keeping track of all the combinations can become difficult. Luckily, tidymodels has a function workflow_set that will create all the combinations and workflow_map to run all the fitting procedures.
+
+## 7.1. Splitting the data
+
+First, preparation work. Here, I split the data into a testing and training set. I also create folds for cross-validation from the training set.
+
+```{r}
+#| label: splits-and-folds
+# Code Block 30 : Train/Test Splits & CV Folds 
+
+# Split the data into a test and training set
+set.seed(222)
+data_split <-
+  initial_split(fraud, prop = 0.75, strata = is_fraud)
+
+# Create data frames for the two sets:
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+start_time <- Sys.time()
+
+set.seed(123)
+fraud_folds <- vfold_cv(train_data, v = 3, strata = is_fraud)
+```
+
+## 7.2. Creating recipes
+
+Next, I create recipes that do preprocessing of the data- making dummy variables, normalizing, and removing variables that only contain one value (`step_zv(all_predictors())`). The processing will be applied to both the training and testing data as you move through the workflow.
+
+I used the chart found in [Appendix A](https://www.tmwr.org/pre-proc-table.html) of the Tidy Modeling with R by Max Kuhn and Julia Silge to choose the preprocessing of data. Some models require specific types of preprocessing, others don't require it, but it can produce better or faster fitting, and in other cases, the preprocessing isn't required and probably doesn't help. The chart breaks this down for each category of preprocessing model by model. The same preprocessing steps were required or recommended for the models I chose, so I used them across the board. You can create recipes for different models and build a workflow manually to match the models to the proper recipe. This process is covered extensively in [Chapter 15](https://www.tmwr.org/workflow-sets.html) of Tidy Modeling with R.
+
+I use the selector functions (`all_nominal_predictors()`, `all_numerical_predictors()`, etc.) available in the tidymodels framework. A listing of all selector functions usable in tidymodels can be found [here](https://recipes.tidymodels.org/reference/selections.htm). Using selector functions when handling groups of features reduces the chance of mistakes and typos.
+
+I then modify this recipe to handle the imbalanced class problem. I use SMOTE and ROSE hybrid methods to balance the classes. These methods create synthetic data for the minority class and downsample the majority class to balance the classes. I also use downsample, which throws away majority class records to balance the two classes. A good overview is [here](https://www.r-bloggers.com/2019/04/methods-for-dealing-with-imbalanced-data/), and it also provides a tutorial for handling this type of problem with caret, rather than tidymodels. These recipe steps require the [themis package](https://cran.r-project.org/web/packages/themis/index.html).
+
+```{r}
+#| label: creating-recipes
+# Code Block 31: creating recipes
+
+recipe_plain <-
+  recipe(is_fraud ~ ., data = train_data) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_numeric_predictors()) %>%
+  step_zv(all_predictors())
+
+recipe_rose <-
+  recipe_plain %>%
+  step_rose(is_fraud)
+
+recipe_smote <-
+  recipe_plain %>%
+  step_smote(is_fraud)
+
+recipe_down <-
+  recipe_plain %>%
+  step_downsample(is_fraud)
+```
+
+## 7.3. Setting the model engines
+
+Next, I set the engines for the models. I tune the hyperparameters of the elastic net logistic regression and the lightgbm. Random Forest also has tuning parameters, but the random forest model is pretty slow to fit, and adding tuning parameters makes it even slower. If none of the other models worked well, then tuning RF would be a good idea.
+
+```{r}
+#| label: setting-engines
+# Code Block 32: Setting engines
+
+#this is the standard logistic regression
+logreg_spec <-
+  logistic_reg() %>%
+  set_engine("glm")
+
+#elastic net regularization of logistic regression
+#this has 2 hyperparameters that we will tune
+glmnet_spec <-
+  logistic_reg(penalty = tune(),
+               mixture = tune()) %>%
+  set_engine("glmnet")
+
+#random forest also has tunable hyperparameters, but we won't
+rf_spec <-
+  rand_forest(trees = 100) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+
+#This is a boosted gradient method with 6 tuning parameters
+lightgbm_spec <-
+  boost_tree(
+    mtry = tune(),
+    trees = tune(),
+    tree_depth = tune(),
+    learn_rate = tune(),
+    min_n = tune(),
+    loss_reduction = tune()
+  ) %>%
+  set_engine(engine = "lightgbm") %>%
+  set_mode(mode = "classification")
+```
+
+## 7.4. Creating a metrics set
+
+Lastly, I create a metrics set in Code Block 33. Accuracy is generally a terrible metric for highly imbalanced problems; the model can achieve high accuracy by assigning everything to the majority class. Alternate metrics like [sensitivity](https://en.wikipedia.org/wiki/Sensitivity_and_specificity) or [j-index](https://en.wikipedia.org/wiki/Youden%27s_J_statistic) are better choices for the imbalanced class situation.
+
+```{r}
+#| label: metrics-set
+# Code Block 33: Setting Metrics
+
+fraud_metrics <-
+  metric_set(roc_auc, accuracy, sensitivity, specificity, j_index)
+```
+
+## 7.5. Creating the workflow_set
+
+Next, I create the workflow_set. This is where tidymodels shines. I feed it the 4 recipes and the 4 engines, and it makes all the permutations to fit. (As I mentioned earlier, you can manually create a workflow_set where you assign specific recipes to specific models, but here all recipes work with all models.)
+
+```{r}
+#| label: workflowset
+# Code block 34:
+wf_set_tune <-
+  workflow_set(
+    list(plain = recipe_plain,
+         # rose = recipe_rose,
+         # smote = recipe_smote,
+         down = recipe_down),
+    list(glmnet = glmnet_spec,
+      lightgmb = lightgbm_spec,
+      #rf = rf_spec,
+      logreg = logreg_spec
+     )
+  )
+```
+
+## 7.6. Fitting all the models
+
+I now run these 16 models. I pass `workflow_map()` the workflow_set from Code Block 34. The next parameter is what type of fitting you want to do. Here, I used `tune_grid` and had it generate 6 grid points. For the models that don't require hyperparameter tuning, the function defaults to `fit_resamples` instead. The acceptable types of fitting functions are found [here](https://workflowsets.tidymodels.org/reference/workflow_map.html). It is important to note that you can only use fitting methods that operate on folds; you cannot pass `workflow_map()` the entire train or test set and have it work.
+
+I'm using the verbose option when fitting. This shows how long each model takes. When I first started, I had no idea how long various models would take. I'm running this on an older, low-end laptop (Intel(R) Core(TM) i5-7200U CPU \@ 2.50GHz 2.71 GHz, 32 GB RAM).
+
+I would recommend 10 folds rather than 3 if you have the time. Similarly, 6 grids points is a very low number.
+
+```{r}
+#| label: fitting-workflowset
+# Code block 35: 
+set.seed(345)
+tune_results <-
+  workflow_map(
+    wf_set_tune,
+    "tune_grid",
+    resamples = fraud_folds,
+    grid = 3,
+    metrics = fraud_metrics,
+    verbose = TRUE
+    )
+  
+```
+
+## 7.7. Evaluating the models
+
+I viewed the results of the fitting as both a table and graphically using `autoplot()`. The default autoplot legend is unclear, so you'll want to do both, as I did. The legend doesn't label by recipe (only that a recipe was used for preprocessing) and folds related categories into one. Here you see that elastic net logistic regression and logistic regression are both labeled log_reg.
+
+The object we have now, `tune_results`, is incredibly large and complicated. Using View() on it has crashed RStudio for me. This object should be interacted with through helper functions. For more information about this, please see my [other tutorial on tidymodels](https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html).
+
+```{r}
+#|label: rank-results-table
+# Code Block 35
+rank_results(tune_results, rank_metric = "j_index")
+```
+
+```{r}
+#| label: rank-results-table
+# Code Block 36
+autoplot(tune_results, rank_metric = "j_index", select_best = TRUE) +
+  ggtitle("Figure 11: Performance of various models")
+```
+
+The best performing model / recipe pair by j-index is the downsampled lightgmb (`down_lightgmb`).
+
+To see how this model/recipe performs across tuning parameters, we can use `extract_workflow_set_result` and `autoplot`. If you wanted to refine the hyperparameters more, you could use these results to narrow the search parameters to areas with the best performance.
+
+```{r}
+#| label: gmb-hyperparameters
+# Code block 37: 
+
+results_down_gmb <- tune_results %>%
+  extract_workflow_set_result("down_lightgmb")
+autoplot(results_down_gmb) +
+  theme_pander(8) +
+  ggtitle("Figure 12: Perfomance of different hyperparameters")
+```
+
+In this case, I'm just going to extract the best set of hyperparameters and move on. This is done using the `extract_workflow_set_result` and `select_best(metric = "j_index")`. There are other ways to select the best hyperparameters. The list of selectors is found [here](https://tune.tidymodels.org/reference/show_best.html).
+
+```{r}
+#| label: extract-best-hyperparameter
+# Code block 38: 
+best_hyperparameters <- tune_results %>%
+  extract_workflow_set_result("down_lightgmb") %>%
+  select_best(metric = "j_index")
+```
+
+And here I look at the selected hyperparameters.
+
+```{r}
+#| label: view-best-hyperparameters
+# Code block 39: 
+print(best_hyperparameters)
+```
+
+Now, I am going to use the convenience functions finalize_workflow() and last_fit() to add [the best hyperparameters to the workflow](https://tune.tidymodels.org/reference/finalize_model.html), [train the model/recipe on the entire training set, and then predict on the entire test set](https://tune.tidymodels.org/reference/last_fit.html). There is a lot of stuff going on here at once (Code Block 40)!
+
+```{r}
+#| label: update-workflow-hyperparameters-and-fit
+# Code Block 40: Validating the model with the test data
+validation_results <- tune_results %>%
+  extract_workflow("down_lightgmb") %>%
+  finalize_workflow(best_hyperparameters) %>%
+  last_fit(split =  data_split, metrics = fraud_metrics)
+```
+
+Lastly, I look at the metrics and ROC curve for the test data.
+
+```{r}
+#| label: model-performance
+#| warning: false 
+
+# Code Block 41: Looking at the validation metrics from the test data.
+collect_metrics(validation_results)
+
+validation_results %>%
+  collect_predictions() %>%
+  roc_curve(is_fraud, .pred_1) %>%
+  autoplot() +
+  ggtitle("Figure 13: ROC Curve")
+```
+
+Just for fun, let's see how much money this model would have save our credit card company. I'm going to assume the cost of fraud is the cost of the transaction. I calculate the total cost of all the fraudulent transactions in the test dataset. I then calculate the cost based on the model predictions. Any truly fraudulent transactions that were not caught, cost the value of the transaction. Legitimate transactions that were marked as fraud were assigned \$0 cost. This likely isn't true. There is the cost of having to deal with customers calling because the transaction was declined or the cost sending out texts for suspicious transactions, but this cost is very small relative to the cost of a fraudulent transaction. I got the idea from this paper: Zhang, D. , Bhandari, B. and Black, D. (2020) Credit Card Fraud Detection Using Weighted Support Vector Machine. *Applied Mathematics*, **11**, 1275-1291. doi: [10.4236/am.2020.1112087](https://doi.org/10.4236/am.2020.1112087).
+
+I'm using the list method to access predictions, but you could also use `collect_predictions()`.
+
+```{r}
+#| label: savings-for-cc-company
+#code block 42: Calculating how much fraud cost the company
+
+val <- validation_results[[5]][[1]]
+
+val %>% conf_mat(truth = is_fraud, estimate = .pred_class)
+val <-
+  #I'm going to bind this to the test data and I want unique names
+  val %>% rename(is_fraud2  = is_fraud) 
+
+cost <- test_data %>%
+  cbind(val)
+
+cost <- cost %>%
+  select(is_fraud, amt_log, pred = .pred_class, is_fraud2) 
+
+cost <- cost %>%
+  #cost for missing fraud in prediction
+  mutate(cost_act = ifelse((is_fraud == 1 &
+                              pred == 0), amt_log, 0)) %>%
+  #cost of all fraud
+  mutate(cost_potential = ifelse((is_fraud == 1), amt_log, 0))
+
+missed_fraud_cost <- round(sum(exp(cost$cost_act)), 2)
+all_fraud_cost <- round(sum(exp(cost$cost_potential)), 2)
+
+savings <- 100 * round((sum(exp(cost$cost_act)) / sum(exp(cost$cost_potential))), 2)
+```
+
+My model had dramatic costs savings for the imaginary credit card company! The losses from the model were `r savings` % of the potential losses.
