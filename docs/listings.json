@@ -1,0 +1,20 @@
+[
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html",
+      "/posts/2023-04-10-tidymodels/tidymodels_tutorial.html",
+      "/posts/2023-04-04-chart-challenge-4/day4.html",
+      "/posts/2023-04-03-chart-challenge-3/day3.html",
+      "/posts/2023-04-02-chart-challenge-2/parks.html",
+      "/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html",
+      "/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html",
+      "/posts/2023-03-30-One-Class-SVM/one-class-svm.html",
+      "/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html",
+      "/posts/2023-03-24-tidytuesday-figure-polishing/index.html",
+      "/posts/2023-03-25-twitter-cards/twitter-cards.html",
+      "/posts/2023-03-21-tidytuesday-programming-languages/index.html",
+      "/posts/2023-03-14-tester-post/index.html"
+    ]
+  }
+]
