@@ -1012,12 +1012,12 @@ Next, I create the workflow_set. This is where tidymodels shines. I feed it the 
 wf_set_tune <-
   workflow_set(
     list(plain = recipe_plain,
-         # rose = recipe_rose,
-         # smote = recipe_smote,
+         rose = recipe_rose,
+         smote = recipe_smote,
          down = recipe_down),
     list(glmnet = glmnet_spec,
       lightgmb = lightgbm_spec,
-      #rf = rf_spec,
+      rf = rf_spec,
       logreg = logreg_spec
      )
   )
