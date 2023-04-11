@@ -2674,7 +2674,7 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
   <media:content url="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/thumbnail.png" medium="image" type="image/png" height="103" width="144"/>
 </item>
 <item>
-  <title>A Tidymodels Tutorial</title>
+  <title>A Tidymodels Tutorial: A Structural Approach</title>
   <dc:creator>Louise E. Sinks</dc:creator>
   <link>https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html</link>
   <description><![CDATA[ 
@@ -2682,6 +2682,7 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
 
 
 <p>As I’ve started working on more complicated machine learning projects, I’ve leaned into the tidymodels approach. Tidymodels is a highly modular approach, and I felt it reduced the number of errors, especially when evaluating many machine models and different preprocessing steps. (This is, in fact, a stated goal of the tidymodels ecosystem.)</p>
+<p>This tutorial is more about understanding the process of modeling in tidymodels and learning about the various objects created at different steps rather than optimizing a machine learning model.</p>
 <p>Throughout this tutorial, I will use the word “procedure” to describe a set of steps to go from data to final predictions. I’m doing this because tidymodels uses the word workflow for specific types of objects and functions. It would be too confusing to use workflow to also describe the process/procedure.</p>
 <p>But the tidymodels ecosystem can also be very confusing. There are several component packages in tidymodels. While it is easy to explain what a recipe object (from the recipe package) does, it became increasingly difficult for me to name and describe the objects I was creating as I started building more sophisticated machine-learning procedures. And I found it even more confusing that simple and complex procedures, while going through the same basic steps (preprocess, train, evaluate, predict), created objects with different structures and data within them. I found it confusing that <code>fit</code>, <code>last_fit</code>, <code>fit_resamples</code>, etc., did not all produce objects that contained the same information and could be acted on by the same functions. In my first attempt at using <code>last_fit()</code>, I ended up scrapping the entire ML section and redoing it with <code>fit()</code>/<code>predict()</code> because I couldn’t figure out how to get the predictions out of the object created by <code>last_fit()</code>.</p>
 <p>Adding to my woes was the fact that attempting to view/print/ examine these objects, especially in notebook environments, often caused the entire project to time out. RStudio generally handles these objects more gracefully, but I’ve also crashed it hard. It also isn’t consistent whether an object will lock-up RStudio or not. Once RStudio has locked up, restarting the program leads to an increasing number of freezes/locking up, until the computer is restarted.</p>
@@ -2699,7 +2700,7 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
 <span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(glmnet) <span class="co" style="color: #5E5E5E;"># elastic net logistic regression</span></span>
 <span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(themis) <span class="co" style="color: #5E5E5E;"># provides up/down-sampling methods for the data</span></span></code></pre></div>
 </div>
-<p>Details about how the data was processed can be found at my Credit Card fraud tutorial.</p>
+<p>Details about how the data was processed can be found at <a href="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial">my Credit Card fraud tutorial.</a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Code Block 2- loading the processed data</span></span>
 <span id="cb2-2">fraud <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_rds</span>(<span class="st" style="color: #20794D;">"fraud_processed.rds"</span>)</span>
@@ -2762,11 +2763,11 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
 <span id="cb9-2"></span>
 <span id="cb9-3"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Making folds: "</span>, end_time <span class="sc" style="color: #5E5E5E;">-</span> start_time))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Making folds:  0.325064182281494"</code></pre>
+<pre><code>[1] "Making folds:  0.32884407043457"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing fraud_folds: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing fraud_folds:  0.0566380023956299"</code></pre>
+<pre><code>[1] "Printing fraud_folds:  0.0849518775939941"</code></pre>
 </div>
 </div>
 </section>
@@ -2832,7 +2833,7 @@ predictor: 8</code></pre>
 <div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb26-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing recipe_down: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing recipe_down:  0.300902128219604"</code></pre>
+<pre><code>[1] "Printing recipe_down:  0.32622504234314"</code></pre>
 </div>
 </div>
 </section>
@@ -2874,7 +2875,7 @@ Computational engine: glmnet </code></pre>
 <div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb30-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing glmnet_spec: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing glmnet_spec:  0.00784516334533691"</code></pre>
+<pre><code>[1] "Printing glmnet_spec:  0.0121080875396729"</code></pre>
 </div>
 </div>
 </section>
@@ -2903,7 +2904,7 @@ Computational engine: glmnet </code></pre>
 <div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb34-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing fraud_metrics: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing fraud_metrics:  0.0229921340942383"</code></pre>
+<pre><code>[1] "Printing fraud_metrics:  0.0971019268035889"</code></pre>
 </div>
 </div>
 </section>
@@ -2963,7 +2964,7 @@ Computational engine: glm </code></pre>
 <div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb40-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing wf_set_tune: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing wf_set_tune:  0.0644128322601318"</code></pre>
+<pre><code>[1] "Printing wf_set_tune:  0.146723031997681"</code></pre>
 </div>
 </div>
 </section>
@@ -3106,7 +3107,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb56-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"last_fit_results: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "last_fit_results:  0.0769269466400146"</code></pre>
+<pre><code>[1] "last_fit_results:  0.0753130912780762"</code></pre>
 </div>
 </div>
 <p>So how to get the predictions out? According to the <a href="https://tune.tidymodels.org/reference/last_fit.html">manual page for <code>last_fit()</code></a>, the output is “A single row tibble that emulates the structure of <a href="https://tune.tidymodels.org/reference/fit_resamples.html">fit_resamples()</a>. However, a list column called .workflow is also attached with the fitted model (and recipe, if any) that used the training set.” I also see that <code>last_fit()</code> is actually from the tune package and not from parsnip as I expected. Nothing I’m doing here involves tuning hyperparameters at all. I expected that is was a parsnip object both thematically and because you interact with <code>last_fit()</code> using <code>extract_fit_parsnip()</code>, see Code Block 23.</p>
@@ -3248,7 +3249,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 1 of 4 tuning:     plain_glmnet</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 1 of 4 tuning:     plain_glmnet (2m 29.8s)</code></pre>
+<pre><code>✔ 1 of 4 tuning:     plain_glmnet (2m 41.2s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
@@ -3257,13 +3258,13 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 2 of 4 resampling: plain_logreg</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 2 of 4 resampling: plain_logreg (10.3s)</code></pre>
+<pre><code>✔ 2 of 4 resampling: plain_logreg (10.9s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i 3 of 4 tuning:     down_glmnet</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 3 of 4 tuning:     down_glmnet (11s)</code></pre>
+<pre><code>✔ 3 of 4 tuning:     down_glmnet (11.5s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
@@ -3272,7 +3273,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 4 of 4 resampling: down_logreg</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 4 of 4 resampling: down_logreg (2.7s)</code></pre>
+<pre><code>✔ 4 of 4 resampling: down_logreg (2.9s)</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb84" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1">end_time <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb84-2">      <span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"Total Time for this Set: "</span>)</span></code></pre></div>
@@ -3281,7 +3282,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb86" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1">end_time <span class="sc" style="color: #5E5E5E;">-</span> start_time</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 2.914408 mins</code></pre>
+<pre><code>Time difference of 3.124082 mins</code></pre>
 </div>
 </div>
 <p>Now we have another complex object. Displaying this object may or may not work. It has never worked for me and I lost a lot of time figuring that out. I followed a <a href="https://juliasilge.com/blog/project-feederwatch/">tutorial from Julia Silge</a> did call that object, and it took me a long time to figure out my code was not timing out/locking up from the fitting, but rather from displaying that object.</p>
@@ -3408,14 +3409,14 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
   author = {Louise E. Sinks},
-  title = {A {Tidymodels} {Tutorial}},
+  title = {A {Tidymodels} {Tutorial:} {A} {Structural} {Approach}},
   date = {2023-04-10},
   url = {https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial},
   langid = {en}
 }
 </code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
-Louise E. Sinks. 2023. <span>“A Tidymodels Tutorial.”</span> April 10,
-2023. <a href="https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial">https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial</a>.
+Louise E. Sinks. 2023. <span>“A Tidymodels Tutorial: A Structural
+Approach.”</span> April 10, 2023. <a href="https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial">https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial</a>.
 </div></div></section></div> ]]></description>
   <category>R</category>
   <category>R-code</category>

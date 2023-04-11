@@ -1,5 +1,5 @@
 ---
-title: "A Tidymodels Tutorial"
+title: "A Tidymodels Tutorial: A Structural Approach"
 description: "Exploring the different steps for modeling"
 twitter-card:
   image: "thumbnail.png"
@@ -15,6 +15,8 @@ draft: false # setting this to `true` will prevent your post from appearing on y
 ---
 
 As I've started working on more complicated machine learning projects, I've leaned into the tidymodels approach. Tidymodels is a highly modular approach, and I felt it reduced the number of errors, especially when evaluating many machine models and different preprocessing steps. (This is, in fact, a stated goal of the tidymodels ecosystem.)
+
+This tutorial is more about understanding the process of modeling in tidymodels and learning about the various objects created at different steps rather than optimizing a machine learning model.
 
 Throughout this tutorial, I will use the word "procedure" to describe a set of steps to go from data to final predictions. I'm doing this because tidymodels uses the word workflow for specific types of objects and functions. It would be too confusing to use workflow to also describe the process/procedure.
 
@@ -41,7 +43,7 @@ library(glmnet) # elastic net logistic regression
 library(themis) # provides up/down-sampling methods for the data
 ```
 
-Details about how the data was processed can be found at my Credit Card fraud tutorial.
+Details about how the data was processed can be found at [my Credit Card fraud tutorial.](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial)
 
 ```{r}
 #| label: load-data
