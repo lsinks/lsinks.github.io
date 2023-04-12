@@ -43,7 +43,12 @@ library(glmnet) # elastic net logistic regression
 library(themis) # provides up/down-sampling methods for the data
 ```
 
-Details about how the data was processed can be found at [my Credit Card fraud tutorial.](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial)
+Details about how the data was processed and a link to the original dataset from Datacamp can be found at [my Credit Card fraud tutorial](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial).
+
+You can find the processed data on the github repo for this website.\
+<https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-10-tidymodels>
+
+You can also download the qmd file, which is a quarto document for this page. It is like R markdown, if you know that better. It is a mix of text and executable code blocks. (You can always delete all the text and save it as an R file if you prefer.)
 
 ```{r}
 #| label: load-data

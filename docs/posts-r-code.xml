@@ -2700,7 +2700,10 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
 <span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(glmnet) <span class="co" style="color: #5E5E5E;"># elastic net logistic regression</span></span>
 <span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(themis) <span class="co" style="color: #5E5E5E;"># provides up/down-sampling methods for the data</span></span></code></pre></div>
 </div>
-<p>Details about how the data was processed can be found at <a href="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial">my Credit Card fraud tutorial.</a></p>
+<p>Details about how the data was processed and a link to the original dataset from Datacamp can be found at <a href="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial">my Credit Card fraud tutorial</a>.</p>
+<p>You can find the processed data on the github repo for this website.<br>
+<a href="https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-10-tidymodels" class="uri">https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-10-tidymodels</a></p>
+<p>You can also download the qmd file, which is a quarto document for this page. It is like R markdown, if you know that better. It is a mix of text and executable code blocks. (You can always delete all the text and save it as an R file if you prefer.)</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="co" style="color: #5E5E5E;"># Code Block 2- loading the processed data</span></span>
 <span id="cb2-2">fraud <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_rds</span>(<span class="st" style="color: #20794D;">"fraud_processed.rds"</span>)</span>
@@ -2763,11 +2766,11 @@ Tutorial.”</span> April 11, 2023. <a href="https://lsinks.github.io/posts/2023
 <span id="cb9-2"></span>
 <span id="cb9-3"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Making folds: "</span>, end_time <span class="sc" style="color: #5E5E5E;">-</span> start_time))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Making folds:  0.32884407043457"</code></pre>
+<pre><code>[1] "Making folds:  0.413451910018921"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing fraud_folds: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing fraud_folds:  0.0849518775939941"</code></pre>
+<pre><code>[1] "Printing fraud_folds:  0.0741839408874512"</code></pre>
 </div>
 </div>
 </section>
@@ -2833,7 +2836,7 @@ predictor: 8</code></pre>
 <div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb26-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing recipe_down: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing recipe_down:  0.32622504234314"</code></pre>
+<pre><code>[1] "Printing recipe_down:  0.364406824111938"</code></pre>
 </div>
 </div>
 </section>
@@ -2875,7 +2878,7 @@ Computational engine: glmnet </code></pre>
 <div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb30-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing glmnet_spec: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing glmnet_spec:  0.0121080875396729"</code></pre>
+<pre><code>[1] "Printing glmnet_spec:  0.00687599182128906"</code></pre>
 </div>
 </div>
 </section>
@@ -2904,7 +2907,7 @@ Computational engine: glmnet </code></pre>
 <div class="sourceCode cell-code" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb34-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing fraud_metrics: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing fraud_metrics:  0.0971019268035889"</code></pre>
+<pre><code>[1] "Printing fraud_metrics:  0.0380551815032959"</code></pre>
 </div>
 </div>
 </section>
@@ -2964,7 +2967,7 @@ Computational engine: glm </code></pre>
 <div class="sourceCode cell-code" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb40-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"Printing wf_set_tune: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Printing wf_set_tune:  0.146723031997681"</code></pre>
+<pre><code>[1] "Printing wf_set_tune:  0.0957250595092773"</code></pre>
 </div>
 </div>
 </section>
@@ -3107,7 +3110,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <div class="sourceCode cell-code" id="cb56" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1">end_time_display <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb56-2"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste</span>(<span class="st" style="color: #20794D;">"last_fit_results: "</span>, end_time_display <span class="sc" style="color: #5E5E5E;">-</span> start_time_display))</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "last_fit_results:  0.0753130912780762"</code></pre>
+<pre><code>[1] "last_fit_results:  0.0788729190826416"</code></pre>
 </div>
 </div>
 <p>So how to get the predictions out? According to the <a href="https://tune.tidymodels.org/reference/last_fit.html">manual page for <code>last_fit()</code></a>, the output is “A single row tibble that emulates the structure of <a href="https://tune.tidymodels.org/reference/fit_resamples.html">fit_resamples()</a>. However, a list column called .workflow is also attached with the fitted model (and recipe, if any) that used the training set.” I also see that <code>last_fit()</code> is actually from the tune package and not from parsnip as I expected. Nothing I’m doing here involves tuning hyperparameters at all. I expected that is was a parsnip object both thematically and because you interact with <code>last_fit()</code> using <code>extract_fit_parsnip()</code>, see Code Block 23.</p>
@@ -3249,7 +3252,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 1 of 4 tuning:     plain_glmnet</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 1 of 4 tuning:     plain_glmnet (2m 41.2s)</code></pre>
+<pre><code>✔ 1 of 4 tuning:     plain_glmnet (3m 38.7s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
@@ -3258,13 +3261,13 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 2 of 4 resampling: plain_logreg</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 2 of 4 resampling: plain_logreg (10.9s)</code></pre>
+<pre><code>✔ 2 of 4 resampling: plain_logreg (15.9s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i 3 of 4 tuning:     down_glmnet</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 3 of 4 tuning:     down_glmnet (11.5s)</code></pre>
+<pre><code>✔ 3 of 4 tuning:     down_glmnet (16.9s)</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
@@ -3273,7 +3276,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 <pre><code>i 4 of 4 resampling: down_logreg</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>✔ 4 of 4 resampling: down_logreg (2.9s)</code></pre>
+<pre><code>✔ 4 of 4 resampling: down_logreg (4.6s)</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb84" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1">end_time <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">Sys.time</span>()</span>
 <span id="cb84-2">      <span class="fu" style="color: #4758AB;">print</span>(<span class="st" style="color: #20794D;">"Total Time for this Set: "</span>)</span></code></pre></div>
@@ -3282,7 +3285,7 @@ Residual Deviance: 11910    AIC: 11950</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb86" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1">end_time <span class="sc" style="color: #5E5E5E;">-</span> start_time</span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Time difference of 3.124082 mins</code></pre>
+<pre><code>Time difference of 4.292892 mins</code></pre>
 </div>
 </div>
 <p>Now we have another complex object. Displaying this object may or may not work. It has never worked for me and I lost a lot of time figuring that out. I followed a <a href="https://juliasilge.com/blog/project-feederwatch/">tutorial from Julia Silge</a> did call that object, and it took me a long time to figure out my code was not timing out/locking up from the fitting, but rather from displaying that object.</p>
