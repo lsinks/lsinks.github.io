@@ -9,8 +9,584 @@
 <link>https://lsinks.github.io/posts.html</link>
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
-<generator>quarto-1.2.335</generator>
-<lastBuildDate>Tue, 11 Apr 2023 04:00:00 GMT</lastBuildDate>
+<generator>quarto-1.2.475</generator>
+<lastBuildDate>Tue, 18 Apr 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>TidyTuesday Week 16: Neolithic Founder Crops</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Today’s TidyTuesday relates to the use of plants in the Neolithic era and is based on <a href="https://link.springer.com/article/10.1007/s00334-023-00917-1">a paper by Arranz-Otaegul and Roe</a>.</p>
+<p>The authors have made <a href="https://github.com/joeroe/SWAsiaNeolithicFounderCrops">their data and analysis available on GitHub</a>. The methods for generating all the figures and tables are in an RMarkdown document with some explanatory text. Having just recently looked at the code and data for one of my older papers, I now appreciate this markdown approach. Everything needed is linked together through the markdown document and the GitHub repo. My code is only as understandable with the paper notebook that resides in my former lab. Even though the code was commented, it is less clear many years later. I find markdown/ quarto a little difficult to code in. I’m not sure why- maybe the interspersed text and code is distracting. I usually code in R files for more complicated projects and then copy them into markdown/quarto. But I definitely appreciate markdown after working on today’s project.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(gt)</span></code></pre></div>
+</div>
+<p>The data can be downloaded through the tidytuesday package using <code>tuesdata &lt;- tidytuesdayR::tt_load(2023, week = 16)</code>. Or the data and the code can be downloaded from the <a href="https://github.com/joeroe/SWAsiaNeolithicFounderCrops">project’s Github repo</a>. I actually don’t use the data from tidytuesday, but instead work off their analysis.</p>
+<p>To briefly summarize the work of Arranz-Otaegul and Roe, in the 1980s the concept of “founder crops” was proposed. These founder crops were a set of crops that were generally all cultivated together and were wide spread as the first main agricultural crops. Arranz-Otaegul and Roe propose that with the increased data generated since the 80s, a more refined approach to the beginnings of argriculture can be taken. They break down agriculture into several different processes (selection of plants, domesitcation, plant management, etc.) which occurs over longer periods of time rather than the development agriculture occuring as a single, rapid event. Arranz-Otaegul and Roe examine the plant remains reported from 135 sites over a wide range of periods in the neolithic era. They find that founder crops don’t necessarily come as a “package”, that a variety of other plants were fairly important, and that the increased cultivation of wheat was the dominate change in the types plants used during the neolithic period. I should note, I’m a chemist, not an archeology/ archeobotanist, so this is not the most nuanced summary of their work.</p>
+<p>I was particularly intrigued by their conclusion about wheat, which is graphically represented in <a href="https://github.com/joeroe/SWAsiaNeolithicFounderCrops/blob/main/analysis/figures/fig4.png">Figure 4 of their paper</a>. I found the figure a bit unclear; stacked area plots are not common in chemistry and I’m not expert at reading them. Wheat certainly does increase with time, but it was hard for me to tell what the other crops were doing. So, for tidytuesday, I wanted to explore this specific question- how does the use of wheat change over time.</p>
+<p>The file you get from the tidytuesday package is the same as the “swasia_neolithic_flora.tsv” from the paper’s repo with some minor clean-up. I don’t want to replicate all there analysis here to get to the point of being able to make the figure I want, so I saved the object flora_ts after it was generated in line 256 of their SI1.RMD file. This has the data partitioned by century and has been reshaped.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">flora_ts <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">read_rds</span>(<span class="st" style="color: #20794D;">"flora_ts.rds"</span>)</span></code></pre></div>
+</div>
+<p>There are 8 founder crops. The original analysis binned together wheat varieties and I am also binning all the legumes together, just to make the resulting graph less busy. I’m also dropping flax. This code chunk is modified from their code chunk <code>ts-founder-crops</code>, which starts at line 573 and ends with saving figure 4. This chunk calculates the proportion of archaeological sites at which the crop was found at in each century. (This is called an assemblage in the paper.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">founder_crops_binned <span class="ot" style="color: #003B4F;">&lt;-</span> flora_ts <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-2">  <span class="co" style="color: #5E5E5E;"># aggregate the legumes and the wheat</span></span>
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">founder_crop =</span> <span class="fu" style="color: #4758AB;">recode</span>(founder_crop,</span>
+<span id="cb3-4">                               <span class="st" style="color: #20794D;">"einkorn wheat"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"wheat"</span>,</span>
+<span id="cb3-5">                               <span class="st" style="color: #20794D;">"emmer wheat"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"wheat"</span>,</span>
+<span id="cb3-6">                               <span class="st" style="color: #20794D;">"chickpea"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"legumes"</span>,</span>
+<span id="cb3-7">                               <span class="st" style="color: #20794D;">"bitter vetch"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"legumes"</span>,</span>
+<span id="cb3-8">                               <span class="st" style="color: #20794D;">"lentil"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"legumes"</span>,</span>
+<span id="cb3-9">                               <span class="st" style="color: #20794D;">"pea"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"legumes"</span>,</span>
+<span id="cb3-10">                               <span class="st" style="color: #20794D;">"flax"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"flax"</span>,</span>
+<span id="cb3-11">                               <span class="at" style="color: #657422;">.default =</span> founder_crop)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-12">  <span class="fu" style="color: #4758AB;">filter</span>(founder_crop <span class="sc" style="color: #5E5E5E;">!=</span> <span class="st" style="color: #20794D;">"flax"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-13">  <span class="co" style="color: #5E5E5E;"># Aggregate by founder crops</span></span>
+<span id="cb3-14">  <span class="fu" style="color: #4758AB;">group_by</span>(century, site_name, phase_code, founder_crop) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-15">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">prop =</span> <span class="fu" style="color: #4758AB;">sum</span>(prop, <span class="at" style="color: #657422;">na.rm =</span> <span class="cn" style="color: #8f5902;">TRUE</span>), <span class="at" style="color: #657422;">.groups =</span> <span class="st" style="color: #20794D;">"drop"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-16">  <span class="co" style="color: #5E5E5E;"># Add number of assemblages per century</span></span>
+<span id="cb3-17">  <span class="fu" style="color: #4758AB;">group_by</span>(century) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-18">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">n_assemb =</span> <span class="fu" style="color: #4758AB;">length</span>(<span class="fu" style="color: #4758AB;">unique</span>(phase_code))) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-19">  <span class="co" style="color: #5E5E5E;"># Calculate average proportion</span></span>
+<span id="cb3-20">  <span class="fu" style="color: #4758AB;">group_by</span>(century, founder_crop) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb3-21">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">avg_prop =</span> <span class="fu" style="color: #4758AB;">sum</span>(prop) <span class="sc" style="color: #5E5E5E;">/</span> <span class="fu" style="color: #4758AB;">first</span>(n_assemb))</span></code></pre></div>
+</div>
+<p>Drop the NAs. This corresponds to all the plants which are not founder crops.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">founder_crops_only <span class="ot" style="color: #003B4F;">&lt;-</span> founder_crops_binned <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-2">  <span class="fu" style="color: #4758AB;">drop_na</span>(founder_crop)</span></code></pre></div>
+</div>
+<p>First, I wanted to see roughly how common each crop was over all time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">founder_crops_only <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-2">  <span class="fu" style="color: #4758AB;">group_by</span>(founder_crop) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-3">  <span class="fu" style="color: #4758AB;">summarize</span>(<span class="at" style="color: #657422;">pct =</span> <span class="fu" style="color: #4758AB;">round</span>(<span class="fu" style="color: #4758AB;">mean</span>(avg_prop), <span class="dv" style="color: #AD0000;">2</span>) <span class="sc" style="color: #5E5E5E;">*</span> <span class="dv" style="color: #AD0000;">100</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;">gt</span>() <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-5">  <span class="fu" style="color: #4758AB;">cols_label</span>(<span class="at" style="color: #657422;">founder_crop =</span> <span class="st" style="color: #20794D;">"Founder Crop"</span>, <span class="at" style="color: #657422;">pct =</span> <span class="st" style="color: #20794D;">"% of Sites"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-6">  <span class="fu" style="color: #4758AB;">opt_stylize</span>(<span class="at" style="color: #657422;">style =</span> <span class="dv" style="color: #AD0000;">6</span>, <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"blue"</span>, <span class="at" style="color: #657422;">add_row_striping =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;">tab_header</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Mean Frequency of Crops over Time"</span>) </span></code></pre></div>
+<div class="cell-output-display">
+
+<div id="kznrymfkuh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#kznrymfkuh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#kznrymfkuh thead, #kznrymfkuh tbody, #kznrymfkuh tfoot, #kznrymfkuh tr, #kznrymfkuh td, #kznrymfkuh th {
+  border-style: none;
+}
+
+#kznrymfkuh p {
+  margin: 0;
+  padding: 0;
+}
+
+#kznrymfkuh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#kznrymfkuh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#kznrymfkuh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#kznrymfkuh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#kznrymfkuh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kznrymfkuh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kznrymfkuh .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#kznrymfkuh .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#kznrymfkuh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#kznrymfkuh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#kznrymfkuh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#kznrymfkuh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#kznrymfkuh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#kznrymfkuh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#kznrymfkuh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#kznrymfkuh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#kznrymfkuh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#kznrymfkuh .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kznrymfkuh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#kznrymfkuh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#kznrymfkuh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#kznrymfkuh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kznrymfkuh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#kznrymfkuh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kznrymfkuh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#kznrymfkuh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#kznrymfkuh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kznrymfkuh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kznrymfkuh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kznrymfkuh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kznrymfkuh .gt_left {
+  text-align: left;
+}
+
+#kznrymfkuh .gt_center {
+  text-align: center;
+}
+
+#kznrymfkuh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#kznrymfkuh .gt_font_normal {
+  font-weight: normal;
+}
+
+#kznrymfkuh .gt_font_bold {
+  font-weight: bold;
+}
+
+#kznrymfkuh .gt_font_italic {
+  font-style: italic;
+}
+
+#kznrymfkuh .gt_super {
+  font-size: 65%;
+}
+
+#kznrymfkuh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#kznrymfkuh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#kznrymfkuh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#kznrymfkuh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#kznrymfkuh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#kznrymfkuh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#kznrymfkuh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Mean Frequency of Crops over Time</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Founder Crop">Founder Crop</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="% of Sites">% of Sites</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="founder_crop" class="gt_row gt_left">barley</td>
+<td headers="pct" class="gt_row gt_right">9</td></tr>
+    <tr><td headers="founder_crop" class="gt_row gt_left gt_striped">legumes</td>
+<td headers="pct" class="gt_row gt_right gt_striped">6</td></tr>
+    <tr><td headers="founder_crop" class="gt_row gt_left">wheat</td>
+<td headers="pct" class="gt_row gt_right">15</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Now, I’m going to create a scatter plot with a trendline as a guide for the eyes. I’m using facet wrap, so each crop is on its own plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">founder_crops_only  <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(century <span class="sc" style="color: #5E5E5E;">/</span> <span class="dv" style="color: #AD0000;">1000</span>, avg_prop, <span class="at" style="color: #657422;">color =</span> founder_crop)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-2">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;">geom_smooth</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;">~</span> founder_crop, <span class="at" style="color: #657422;">nrow =</span> <span class="dv" style="color: #AD0000;">3</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-5">  <span class="fu" style="color: #4758AB;">scale_x_reverse</span>(</span>
+<span id="cb6-6">    <span class="at" style="color: #657422;">breaks =</span> scales<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">breaks_width</span>(<span class="sc" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">1</span>),</span>
+<span id="cb6-7">    <span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="fl" style="color: #AD0000;">11.7</span>, <span class="fl" style="color: #AD0000;">6.5</span>),</span>
+<span id="cb6-8">    <span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">expansion</span>(<span class="dv" style="color: #AD0000;">0</span>)</span>
+<span id="cb6-9">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;">scale_y_continuous</span>(</span>
+<span id="cb6-11">    <span class="at" style="color: #657422;">limits =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.3</span>),</span>
+<span id="cb6-12">    <span class="at" style="color: #657422;">breaks =</span> scales<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">breaks_width</span>(<span class="fl" style="color: #AD0000;">0.1</span>),</span>
+<span id="cb6-13">    <span class="at" style="color: #657422;">labels =</span> scales<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">label_percent</span>(<span class="at" style="color: #657422;">accuracy =</span> <span class="dv" style="color: #AD0000;">1</span>),</span>
+<span id="cb6-14">    <span class="at" style="color: #657422;">expand =</span> <span class="fu" style="color: #4758AB;">expansion</span>(<span class="at" style="color: #657422;">mult =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">0</span>, <span class="fl" style="color: #AD0000;">0.05</span>))</span>
+<span id="cb6-15">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-16">  <span class="fu" style="color: #4758AB;">theme_pander</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-17">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb6-18">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">x =</span> <span class="st" style="color: #20794D;">"ka cal BP"</span>, <span class="at" style="color: #657422;">y =</span> <span class="st" style="color: #20794D;">"Mean proportion of assemblages"</span>, <span class="at" style="color: #657422;">fill =</span> <span class="cn" style="color: #8f5902;">NULL</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb6-19">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Frequency of Crops in SW Asia during the Neolithic Period"</span>, <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"data from https://github.com/joeroe/SWAsiaNeolithicFounderCrops"</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So, it looks like barley and legumes are fairly constant with time, but wheat does increase consistently. A note about the x-axis- the times are listed as before present (BP), so a larger number is longer ago. <a href="https://en.wikipedia.org/wiki/Before_Present">Present is defined as January 1, 1950</a>.</p>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {TidyTuesday {Week} 16: {Neolithic} {Founder} {Crops}},
+  date = {2023-04-18},
+  url = {https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“TidyTuesday Week 16: Neolithic Founder
+Crops.”</span> April 18, 2023. <a href="https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops">https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Data-Viz</category>
+  <guid>https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html</guid>
+  <pubDate>Tue, 18 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>Credit Card Fraud: A Tidymodels Tutorial</title>
   <dc:creator>Louise E. Sinks</dc:creator>
