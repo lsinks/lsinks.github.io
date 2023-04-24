@@ -1,0 +1,233 @@
+---
+title: "TidyTuesday Week 17: London Marathon"
+description: "TidyTuesday: Exploring the London Marathon"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 04-25-2023
+categories: [R, TidyTuesday, R-code, Data-Viz] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon 
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Today's [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-04-25/readme.md) is based on a dataset about the London Marathon. The data is via a [package by Nicola Rennie](https://github.com/nrennie/LondonMarathon) and there is an accompanying [tutorial about how to scrape data from the web](https://nrennie.rbind.io/blog/web-scraping-rvest-london-marathon/).
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+library(skimr)
+library(tidyverse)
+library(ggthemes)
+library(gt)
+library(skimr)
+```
+
+Load the data with the TidyTuesday package in the usual way.
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load(2023, week = 17)
+
+winners <- tuesdata$winners
+london_marathon <- tuesdata$london_marathon
+```
+
+There are two dataframes today: a winner's dataframe and info about the marathon in general. Looking at the winner's first.
+
+```{r}
+winners %>% skim()
+```
+
+All the data is complete.
+
+`Category` and `Nationality` should probably be factors rather than characters.
+
+```{r}
+winners <- winners %>%
+  mutate(Category = as.factor(Category), Nationality = as.factor(Nationality))
+
+glimpse(winners)
+```
+
+When I check to make sure everything is correct after making the factors, I see that some athletes have (Tie) after their name. If I do something with the runner's names later (or if I care about ties) then I need to handle this.
+
+There are four categories of races in our dataset- `Men`, `Wheelchair Men`, `Wheelchair Women`, `Women`.
+
+I'm going to do some simple comparisons first. I'm looking for something interesting to focus on.
+
+```{r}
+winners %>%
+  filter(Category == "Men" | Category == "Women") %>%
+  ggplot(aes(Category, Time)) +
+  geom_boxplot()
+```
+
+```{r}
+winners %>%
+  filter(Category == "Wheelchair Men" | Category == "Wheelchair Women") %>%
+  ggplot(aes(Category, Time)) +
+  geom_boxplot()
+```
+
+Men are faster than women, in both classes of races.
+
+```{r}
+winners %>%
+  ggplot(aes(Category, Time)) +
+  geom_boxplot()
+```
+
+Wheelchair races are faster than the running races. The Men/Women's races are much closer than the Wheelchair races, and don't have outliers.
+
+I'm interested in ties. How many ties have there been? I'm going to make a column called "Tied" and remove (Tied) from the names. There are a few different ways to do this, but I'm going to use `tidyr::separate()`. I'm going to take the space too, when I separate out the name and (tie), so my name column is cleanly formatted. This is going to generate a bunch of NAs in the Tied column, but I'll handle that in the next code chunk. I'm using `" ("` as my separator, so the Name column will not have the trailing space. The Tied column will have "Tie)" and a bunch of NAs, but I'll clean this up in the next step. I've left warnings on for this code chunk, so you can see that the NAs are flagged for your notice.
+
+Remember that special characters like `(` need to be escaped out, so the appropriate regular expression for the separator is `" \\("`.
+
+As a side note, as of winter 2022, [separate has been superseded by a family of functions separate_wider\_\*](https://tidyr.tidyverse.org/reference/separate.html).
+
+```{r}
+winners_tied <- winners %>%
+  separate(Athlete, into = c("Name", "Tied"), " \\(")
+```
+
+Now I'm going to clean up the Tied column.
+
+```{r}
+winners_tied <- winners_tied %>%
+  mutate(Tied = ifelse(is.na(Tied) == TRUE, FALSE, TRUE))
+```
+
+So how many ties are there?
+
+```{r}
+winners_tied %>% filter(Tied == TRUE)
+```
+
+Just those first two, from the very first race. According to wikipedia, [they crossed the finish line holding hands](https://en.wikipedia.org/wiki/London_Marathon)!
+
+Anyone win more than once?
+
+```{r}
+winners_tied %>%
+  group_by(Name) %>%
+  count(Name, sort = TRUE) %>%
+  filter(n > 1)
+```
+
+More than I expected! [David Weir](https://en.wikipedia.org/wiki/David_Weir_(athlete)) has won the most London Marathons, with 8 wins in the Men's Wheelchair race category. How has his race time changed over the years?
+
+```{r}
+winners_tied %>%
+  filter(Name == "David Weir") %>%
+  ggplot(aes(Year, Time)) +
+  geom_point()
+```
+
+It looks like his first race was much slower than the other times he has won. It turns out he has competed in the London Marathon 23 times, and [placed 5th in the 2023 Marathon](https://www.the-sun.com/sport/7942457/london-marathon-2023-results-time-winner-men-women-wheelchair/) which happened this weekend. His time on Saturday was 01:32:45. This is interesting, because it is quite similar to his more recent races.
+
+Has the field for this race gotten faster?
+
+```{r}
+winners %>%
+  filter(Category == "Wheelchair Men") %>%
+  ggplot(aes(Year, Time)) +
+  geom_point()
+
+```
+
+Yes, and quite clearly too! How many years would he have won with this year's time?
+
+```{r}
+time_2023 <- as.difftime("01:32:45", format = "%H:%M:%S", units = "auto")
+slow_wins <- winners %>%
+  filter(Category == "Wheelchair Men" & Time >= time_2023) 
+fast_wins <- winners %>%
+  filter(Category == "Wheelchair Men" & Time < time_2023) 
+
+```
+
+So 12 years the wins were faster than his time this year, but 27 years were slower. And just to note, 6 of those 12 faster wins are held by David Weir...
+
+Let's throw together a visual for this and make it out TidyTuesday viz. Should be simple, right?
+
+```{r}
+
+winners %>%
+  filter(Category == "Wheelchair Men") %>%
+  ggplot(aes(Year, Time)) +
+  geom_point() +
+  geom_hline(yintercept = time_2023)
+```
+
+Hmm. ggplot is not playing well with our difftimes.
+
+```{r}
+str(time_2023)
+
+str(winners$Time[1])
+```
+
+Apparently, our race time from winners is actually hms and not difftime. Skim reported it was a difftime. Our difftime has units of hours, while Time has units of seconds. This is probably due to be setting units to "auto" when I did the conversion. Interesting that dplyr filtering handles this smoothly, but ggplot doesn't.
+
+```{r}
+time_2023 <- as.difftime("01:32:45", format = "%H:%M:%S", units = "sec")
+str(time_2023)
+```
+
+I'm going to create a TRUE/FALSE column for if David Weir won that I will color code the win by.
+
+```{r}
+winners %>%
+  filter(Category == "Wheelchair Men") %>%
+  mutate(Weir = ifelse(Athlete == "David Weir", TRUE, FALSE)) %>%
+  ggplot(aes(Year, Time, color = Weir)) +
+  geom_point() +
+  geom_hline(yintercept = time_2023)
+```
+
+Okay, now lets clean up the formatting. I need to:
+
+1.  Apply a theme. I like `theme_classic()` or `theme_pander()` as a clean base for my graphs.
+
+2.  Remove the legend. This needs to go after the theme_classic/pander() call or the legend will reappear.
+
+3.  Add title, subtitle and data source
+
+4.  Fix the y-axis units
+
+5.  Change the colors for the David Weir points.
+
+6.  Label my horizontal line.
+
+#4 is apparently quite challenging. Apparently, the time axis should be displayed as hms, so it isn't clear to me why fractional seconds are shown. I tried a bunch of different suggestion from the web, but [the top answer to this question is what worked](https://stackoverflow.com/questions/50172591/use-scale-y-time-to-convert-ms-to-minutes-and-seconds-in-boxplot-ggplot).
+
+It actually doesn't matter if the aesthetic is difftime or hms. The key is that the label section of scale_y\_time needs a formatted string generated from strftime.
+
+```{r}
+winners %>%
+  filter(Category == "Wheelchair Men") %>%
+  mutate(Weir = ifelse(Athlete == "David Weir", TRUE, FALSE)) %>%
+
+  ggplot(aes(Year, Time, color = Weir)) +
+  geom_point() +
+  scale_color_manual(values = c("black", "cyan2")) +
+  geom_hline(yintercept = (time_2023),
+             color = "cyan4") +
+  annotate(
+    "text",
+    x = 1990,
+    y = time_2023 - 200,
+    label = "David Weir's 2023 time",
+    color = "cyan4"
+  ) +
+  scale_y_time(name = "Winning Time", labels = function(l) strftime(l, '%H:%M:%S')) +
+  labs(title = "Race times for the London Marathon: Men's Wheelchair Race",
+       subtitle = "compared to David Weir's wins",
+       caption = "data from https://github.com/nrennie/LondonMarathon") +
+  theme_classic(12) +
+  theme(legend.position = "none") 
+
+```
