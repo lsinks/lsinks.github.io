@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/2023-04-25-tidytuesday-marathon/marathon.html",
       "/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html",
       "/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html",
       "/posts/2023-04-10-tidymodels/tidymodels_tutorial.html",

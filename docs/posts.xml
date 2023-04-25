@@ -10,7 +10,469 @@
 <atom:link href="https://lsinks.github.io/posts.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.475</generator>
-<lastBuildDate>Tue, 18 Apr 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 25 Apr 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>TidyTuesday Week 17: London Marathon</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Today’s <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-04-25/readme.md">TidyTuesday</a> is based on a dataset about the London Marathon. The data is via a <a href="https://github.com/nrennie/LondonMarathon">package by Nicola Rennie</a> and there is an accompanying <a href="https://nrennie.rbind.io/blog/web-scraping-rvest-london-marathon/">tutorial about how to scrape data from the web</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(skimr)</span></code></pre></div>
+</div>
+<p>Load the data with the TidyTuesday package in the usual way.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">tuesdata <span class="ot" style="color: #003B4F;">&lt;-</span> tidytuesdayR<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">tt_load</span>(<span class="dv" style="color: #AD0000;">2023</span>, <span class="at" style="color: #657422;">week =</span> <span class="dv" style="color: #AD0000;">17</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Compiling #TidyTuesday Information for 2023-04-25 ----</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- There are 2 files available ---</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Starting Download ---</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Downloading file 1 of 2: `winners.csv`
+    Downloading file 2 of 2: `london_marathon.csv`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Download complete ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">winners <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>winners</span>
+<span id="cb8-2">london_marathon <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>london_marathon</span></code></pre></div>
+</div>
+<p>There are two dataframes today: a winner’s dataframe and info about the marathon in general. Looking at the winner’s first.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">skim</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">Piped data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">163</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">difftime</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Category</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Athlete</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">99</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nationality</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: difftime</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">min</th>
+<th style="text-align: left;">max</th>
+<th style="text-align: left;">median</th>
+<th style="text-align: right;">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Time</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">5187 secs</td>
+<td style="text-align: left;">16143 secs</td>
+<td style="text-align: left;">02:07:55</td>
+<td style="text-align: right;">158</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2001.61</td>
+<td style="text-align: right;">11.83</td>
+<td style="text-align: right;">1981</td>
+<td style="text-align: right;">1991.5</td>
+<td style="text-align: right;">2002</td>
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">2022</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>All the data is complete.</p>
+<p><code>Category</code> and <code>Nationality</code> should probably be factors rather than characters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">winners <span class="ot" style="color: #003B4F;">&lt;-</span> winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Category =</span> <span class="fu" style="color: #4758AB;">as.factor</span>(Category), <span class="at" style="color: #657422;">Nationality =</span> <span class="fu" style="color: #4758AB;">as.factor</span>(Nationality))</span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="fu" style="color: #4758AB;">glimpse</span>(winners)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 163
+Columns: 5
+$ Category    &lt;fct&gt; Men, Men, Men, Men, Men, Men, Men, Men, Men, Men, Men, Men…
+$ Year        &lt;dbl&gt; 1981, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989…
+$ Athlete     &lt;chr&gt; "Dick Beardsley (Tie)", "Inge Simonsen (Tie)", "Hugh Jones…
+$ Nationality &lt;fct&gt; United States, Norway, United Kingdom, United Kingdom, Uni…
+$ Time        &lt;time&gt; 02:11:48, 02:11:48, 02:09:24, 02:09:43, 02:09:57, 02:08:1…</code></pre>
+</div>
+</div>
+<p>When I check to make sure everything is correct after making the factors, I see that some athletes have (Tie) after their name. If I do something with the runner’s names later (or if I care about ties) then I need to handle this.</p>
+<p>There are four categories of races in our dataset- <code>Men</code>, <code>Wheelchair Men</code>, <code>Wheelchair Women</code>, <code>Women</code>.</p>
+<p>I’m going to do some simple comparisons first. I’m looking for something interesting to focus on.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb12-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Men"</span> <span class="sc" style="color: #5E5E5E;">|</span> Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Women"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb12-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Category, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb12-4">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span> <span class="sc" style="color: #5E5E5E;">|</span> Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Women"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb13-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Category, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb13-4">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Men are faster than women, in both classes of races.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb14-2">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Category, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb14-3">  <span class="fu" style="color: #4758AB;">geom_boxplot</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Wheelchair races are faster than the running races. The Men/Women’s races are much closer than the Wheelchair races, and don’t have outliers.</p>
+<p>I’m interested in ties. How many ties have there been? I’m going to make a column called “Tied” and remove (Tied) from the names. There are a few different ways to do this, but I’m going to use <code>tidyr::separate()</code>. I’m going to take the space too, when I separate out the name and (tie), so my name column is cleanly formatted. This is going to generate a bunch of NAs in the Tied column, but I’ll handle that in the next code chunk. I’m using <code>" ("</code> as my separator, so the Name column will not have the trailing space. The Tied column will have “Tie)” and a bunch of NAs, but I’ll clean this up in the next step. I’ve left warnings on for this code chunk, so you can see that the NAs are flagged for your notice.</p>
+<p>Remember that special characters like <code>(</code> need to be escaped out, so the appropriate regular expression for the separator is <code>" \\("</code>.</p>
+<p>As a side note, as of winter 2022, <a href="https://tidyr.tidyverse.org/reference/separate.html">separate has been superseded by a family of functions separate_wider_*</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">winners_tied <span class="ot" style="color: #003B4F;">&lt;-</span> winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">separate</span>(Athlete, <span class="at" style="color: #657422;">into =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"Name"</span>, <span class="st" style="color: #20794D;">"Tied"</span>), <span class="st" style="color: #20794D;">" </span><span class="sc" style="color: #5E5E5E;">\\</span><span class="st" style="color: #20794D;">("</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 161 rows [3, 4, 5, 6, 7,
+8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, ...].</code></pre>
+</div>
+</div>
+<p>Now I’m going to clean up the Tied column.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">winners_tied <span class="ot" style="color: #003B4F;">&lt;-</span> winners_tied <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb17-2">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Tied =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(<span class="fu" style="color: #4758AB;">is.na</span>(Tied) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="cn" style="color: #8f5902;">FALSE</span>, <span class="cn" style="color: #8f5902;">TRUE</span>))</span></code></pre></div>
+</div>
+<p>So how many ties are there?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">winners_tied <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">filter</span>(Tied <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  Category  Year Name           Tied  Nationality   Time    
+  &lt;fct&gt;    &lt;dbl&gt; &lt;chr&gt;          &lt;lgl&gt; &lt;fct&gt;         &lt;time&gt;  
+1 Men       1981 Dick Beardsley TRUE  United States 02:11:48
+2 Men       1981 Inge Simonsen  TRUE  Norway        02:11:48</code></pre>
+</div>
+</div>
+<p>Just those first two, from the very first race. According to wikipedia, <a href="https://en.wikipedia.org/wiki/London_Marathon">they crossed the finish line holding hands</a>!</p>
+<p>Anyone win more than once?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">winners_tied <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb20-2">  <span class="fu" style="color: #4758AB;">group_by</span>(Name) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb20-3">  <span class="fu" style="color: #4758AB;">count</span>(Name, <span class="at" style="color: #657422;">sort =</span> <span class="cn" style="color: #8f5902;">TRUE</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb20-4">  <span class="fu" style="color: #4758AB;">filter</span>(n <span class="sc" style="color: #5E5E5E;">&gt;</span> <span class="dv" style="color: #AD0000;">1</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 34 × 2
+# Groups:   Name [34]
+   Name                     n
+   &lt;chr&gt;                &lt;int&gt;
+ 1 David Weir               8
+ 2 Tanni Grey-Thompson      6
+ 3 David Holding            4
+ 4 Eliud Kipchoge           4
+ 5 Francesca Porcellato     4
+ 6 Ingrid Kristiansen       4
+ 7 Tatyana McFadden         4
+ 8 António Pinto            3
+ 9 Dionicio Cerón           3
+10 Heinz Frei               3
+# ℹ 24 more rows</code></pre>
+</div>
+</div>
+<p>More than I expected! <a href="https://en.wikipedia.org/wiki/David_Weir_(athlete)">David Weir</a> has won the most London Marathons, with 8 wins in the Men’s Wheelchair race category. How has his race time changed over the years?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1">winners_tied <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb22-2">  <span class="fu" style="color: #4758AB;">filter</span>(Name <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"David Weir"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb22-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Year, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb22-4">  <span class="fu" style="color: #4758AB;">geom_point</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>It looks like his first race was much slower than the other times he has won. It turns out he has competed in the London Marathon 23 times, and <a href="https://www.the-sun.com/sport/7942457/london-marathon-2023-results-time-winner-men-women-wheelchair/">placed 5th in the 2023 Marathon</a> which happened this weekend. His time on Saturday was 01:32:45. This is interesting, because it is quite similar to his more recent races.</p>
+<p>Has the field for this race gotten faster?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb23-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb23-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Year, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb23-4">  <span class="fu" style="color: #4758AB;">geom_point</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Yes, and quite clearly too! How many years would he have won with this year’s time?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">time_2023 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.difftime</span>(<span class="st" style="color: #20794D;">"01:32:45"</span>, <span class="at" style="color: #657422;">format =</span> <span class="st" style="color: #20794D;">"%H:%M:%S"</span>, <span class="at" style="color: #657422;">units =</span> <span class="st" style="color: #20794D;">"auto"</span>)</span>
+<span id="cb24-2">slow_wins <span class="ot" style="color: #003B4F;">&lt;-</span> winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-3">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> Time <span class="sc" style="color: #5E5E5E;">&gt;=</span> time_2023) </span>
+<span id="cb24-4">fast_wins <span class="ot" style="color: #003B4F;">&lt;-</span> winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-5">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span> <span class="sc" style="color: #5E5E5E;">&amp;</span> Time <span class="sc" style="color: #5E5E5E;">&lt;</span> time_2023) </span></code></pre></div>
+</div>
+<p>So 12 years the wins were faster than his time this year, but 27 years were slower. And just to note, 6 of those 12 faster wins are held by David Weir…</p>
+<p>Let’s throw together a visual for this and make it out TidyTuesday viz.&nbsp;Should be simple, right?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Year, Time)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb25-4">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb25-5">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="at" style="color: #657422;">yintercept =</span> time_2023)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Hmm. ggplot is not playing well with our difftimes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><span class="fu" style="color: #4758AB;">str</span>(time_2023)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 'difftime' num 1.54583333333333
+ - attr(*, "units")= chr "hours"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><span class="fu" style="color: #4758AB;">str</span>(winners<span class="sc" style="color: #5E5E5E;">$</span>Time[<span class="dv" style="color: #AD0000;">1</span>])</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 'hms' num 02:11:48
+ - attr(*, "units")= chr "secs"</code></pre>
+</div>
+</div>
+<p>Apparently, our race time from winners is actually hms and not difftime. Skim reported it was a difftime. Our difftime has units of hours, while Time has units of seconds. This is probably due to be setting units to “auto” when I did the conversion. Interesting that dplyr filtering handles this smoothly, but ggplot doesn’t.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1">time_2023 <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">as.difftime</span>(<span class="st" style="color: #20794D;">"01:32:45"</span>, <span class="at" style="color: #657422;">format =</span> <span class="st" style="color: #20794D;">"%H:%M:%S"</span>, <span class="at" style="color: #657422;">units =</span> <span class="st" style="color: #20794D;">"sec"</span>)</span>
+<span id="cb30-2"><span class="fu" style="color: #4758AB;">str</span>(time_2023)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 'difftime' num 5565
+ - attr(*, "units")= chr "secs"</code></pre>
+</div>
+</div>
+<p>I’m going to create a TRUE/FALSE column for if David Weir won that I will color code the win by.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb32-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb32-3">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Weir =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(Athlete <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"David Weir"</span>, <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="cn" style="color: #8f5902;">FALSE</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb32-4">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Year, Time, <span class="at" style="color: #657422;">color =</span> Weir)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb32-5">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb32-6">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="at" style="color: #657422;">yintercept =</span> time_2023)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Okay, now lets clean up the formatting. I need to:</p>
+<ol type="1">
+<li><p>Apply a theme. I like <code>theme_classic()</code> or <code>theme_pander()</code> as a clean base for my graphs.</p></li>
+<li><p>Remove the legend. This needs to go after the theme_classic/pander() call or the legend will reappear.</p></li>
+<li><p>Add title, subtitle and data source</p></li>
+<li><p>Fix the y-axis units</p></li>
+<li><p>Change the colors for the David Weir points.</p></li>
+<li><p>Label my horizontal line.</p></li>
+</ol>
+<p>#4 is apparently quite challenging. Apparently, the time axis should be displayed as hms, so it isn’t clear to me why fractional seconds are shown. I tried a bunch of different suggestion from the web, but <a href="https://stackoverflow.com/questions/50172591/use-scale-y-time-to-convert-ms-to-minutes-and-seconds-in-boxplot-ggplot">the top answer to this question is what worked</a>.</p>
+<p>It actually doesn’t matter if the aesthetic is difftime or hms. The key is that the label section of scale_y_time needs a formatted string generated from strftime.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">winners <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb33-2">  <span class="fu" style="color: #4758AB;">filter</span>(Category <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"Wheelchair Men"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb33-3">  <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">Weir =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(Athlete <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"David Weir"</span>, <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="cn" style="color: #8f5902;">FALSE</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb33-4"></span>
+<span id="cb33-5">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(Year, Time, <span class="at" style="color: #657422;">color =</span> Weir)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-6">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-7">  <span class="fu" style="color: #4758AB;">scale_color_manual</span>(<span class="at" style="color: #657422;">values =</span> <span class="fu" style="color: #4758AB;">c</span>(<span class="st" style="color: #20794D;">"black"</span>, <span class="st" style="color: #20794D;">"cyan2"</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-8">  <span class="fu" style="color: #4758AB;">geom_hline</span>(<span class="at" style="color: #657422;">yintercept =</span> (time_2023),</span>
+<span id="cb33-9">             <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"cyan4"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-10">  <span class="fu" style="color: #4758AB;">annotate</span>(</span>
+<span id="cb33-11">    <span class="st" style="color: #20794D;">"text"</span>,</span>
+<span id="cb33-12">    <span class="at" style="color: #657422;">x =</span> <span class="dv" style="color: #AD0000;">1990</span>,</span>
+<span id="cb33-13">    <span class="at" style="color: #657422;">y =</span> time_2023 <span class="sc" style="color: #5E5E5E;">-</span> <span class="dv" style="color: #AD0000;">200</span>,</span>
+<span id="cb33-14">    <span class="at" style="color: #657422;">label =</span> <span class="st" style="color: #20794D;">"David Weir's 2023 time"</span>,</span>
+<span id="cb33-15">    <span class="at" style="color: #657422;">color =</span> <span class="st" style="color: #20794D;">"cyan4"</span></span>
+<span id="cb33-16">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-17">  <span class="fu" style="color: #4758AB;">scale_y_time</span>(<span class="at" style="color: #657422;">name =</span> <span class="st" style="color: #20794D;">"Winning Time"</span>, <span class="at" style="color: #657422;">labels =</span> <span class="cf" style="color: #003B4F;">function</span>(l) <span class="fu" style="color: #4758AB;">strftime</span>(l, <span class="st" style="color: #20794D;">'%H:%M:%S'</span>)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-18">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Race times for the London Marathon: Men's Wheelchair Race"</span>,</span>
+<span id="cb33-19">       <span class="at" style="color: #657422;">subtitle =</span> <span class="st" style="color: #20794D;">"compared to David Weir's wins"</span>,</span>
+<span id="cb33-20">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"data from https://github.com/nrennie/LondonMarathon"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-21">  <span class="fu" style="color: #4758AB;">theme_classic</span>(<span class="dv" style="color: #AD0000;">12</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb33-22">  <span class="fu" style="color: #4758AB;">theme</span>(<span class="at" style="color: #657422;">legend.position =</span> <span class="st" style="color: #20794D;">"none"</span>) </span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {TidyTuesday {Week} 17: {London} {Marathon}},
+  date = {2023-04-25},
+  url = {https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“TidyTuesday Week 17: London
+Marathon.”</span> April 25, 2023. <a href="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon">https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Data-Viz</category>
+  <guid>https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon.html</guid>
+  <pubDate>Tue, 25 Apr 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>TidyTuesday Week 16: Neolithic Founder Crops</title>
   <dc:creator>Louise E. Sinks</dc:creator>
