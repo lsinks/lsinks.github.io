@@ -10,7 +10,259 @@
 <atom:link href="https://lsinks.github.io/posts-r-code.xml" rel="self" type="application/rss+xml"/>
 <description>Data Science Blog and Portfolio of Louise Sinks</description>
 <generator>quarto-1.2.475</generator>
-<lastBuildDate>Tue, 25 Apr 2023 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 02 May 2023 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>TidyTuesday Week 18: Portal Project</title>
+  <dc:creator>Louise E. Sinks</dc:creator>
+  <link>https://lsinks.github.io/posts/2023-05-02-portal-project/portal.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>Today’s <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a> is about the <a href="https://portal.weecology.org/">Portal Project</a>, which is a long terms study on the ecology of Arizona. The study explores how ants, rodents, plants respond to climate in the desert near Portal, Az. A subset of the data is provided for this week’s TidyTuesday.</p>
+<p>Loading libraries. Not really using anything fancy today!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(ggthemes)</span></code></pre></div>
+</div>
+<p>Loading the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">tuesdata <span class="ot" style="color: #003B4F;">&lt;-</span> tidytuesdayR<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">tt_load</span>(<span class="dv" style="color: #AD0000;">2023</span>, <span class="at" style="color: #657422;">week =</span> <span class="dv" style="color: #AD0000;">18</span>)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Compiling #TidyTuesday Information for 2023-05-02 ----</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- There are 3 files available ---</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Starting Download ---</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Downloading file 1 of 3: `plots.csv`
+    Downloading file 2 of 3: `species.csv`
+    Downloading file 3 of 3: `surveys.csv`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Download complete ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1">plots <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>plots</span>
+<span id="cb8-2">species <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>species</span>
+<span id="cb8-3">surveys <span class="ot" style="color: #003B4F;">&lt;-</span> tuesdata<span class="sc" style="color: #5E5E5E;">$</span>surveys</span></code></pre></div>
+</div>
+<p>This dataset focuses on rodents. The portal project also studies plants and ants, but they are ommitted from these datasets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="fu" style="color: #4758AB;">glimpse</span>(plots)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 8
+Columns: 2
+$ plot      &lt;dbl&gt; 3, 4, 11, 14, 15, 17, 19, 21
+$ treatment &lt;chr&gt; "exclosure", "control", "control", "control", "exclosure", "…</code></pre>
+</div>
+</div>
+<p>We have information about 8 plots in the plots dataframe, and they are coded as exclosure or control. It isn’t clear what exclosure or control means. The portal website says this about <a href="https://github.com/weecology/PortalData/blob/main/SiteandMethods/Methods.md#rodent-treatments">treatments of the plots</a>:</p>
+<p>“Rodents are manipulated using gates in the fencing of each plot. Rodent removals contain no gates and any rodents captured on those plots are removed. All other plots contain 16 gates (4 per plot side); gates consist of holes cut through the hardware cloth of the fencing. Gate size is used to exclude subsets of the rodent community (larger gates allow all rodents access, smaller gates exclude kangaroo rats). Dimensions for gates on kangaroo rat removal plots are 1.9 cm x 1.9 cm,&nbsp;<em>D. spectabilis</em>&nbsp;removals were 2.6 cm x 3.0 cm, and control plots are 3.7 cm x 5.7 cm. In 2005,&nbsp;<em>Dipodomys spectabilis</em>&nbsp;removals were converted to controls – a state these plots had effectively been in with the local extinction of&nbsp;<em>Dipodomys spectabilis</em>&nbsp;in the late 1990s. Species caught on plots from which they are supposed to be excluded are removed from the site and the access point to the plot is located and eliminated. Plots affected by these treatments are listed in&nbsp;<a href="https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv">Portal_plot_treatments</a>.”</p>
+<p>Presumably, the exclosures are those plots designed with gates of specific sizes, designed to exclude specific size rodents. It is less clear what a control is. The text says “<em>Dipodomys spectabilis</em>&nbsp;removals were converted to controls”, which is also unclear because it also says removals contain no rodents, so the species part is confusing. <a href="https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv">This page</a> suggests controls are “unmanipulated controls” so maybe there is no fence at all?</p>
+<p>Looking at the <a href="https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv">history of the plots</a>, we see that the exclosure plots all have had kangaroo rats removed from them at certain times.</p>
+<p>So, do we find fewer Kangaroo rates on those plots? The survey data includes the rodent type by code; the key is found in the species data. Let’s pull out the kangaroo rat code(s).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">rats <span class="ot" style="color: #003B4F;">&lt;-</span> species[(<span class="fu" style="color: #4758AB;">str_detect</span>(species<span class="sc" style="color: #5E5E5E;">$</span>commonname, <span class="st" style="color: #20794D;">"kangaroo"</span>)), ]</span>
+<span id="cb11-2">rats</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 15
+  species scientificname       taxa  commonname censustarget unidentified rodent
+  &lt;chr&gt;   &lt;chr&gt;                &lt;chr&gt; &lt;chr&gt;             &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+1 DM      Dipodomys merriami   Rode… Merriam's…            1            0      1
+2 DO      Dipodomys ordii      Rode… Ord's kan…            1            0      1
+3 DS      Dipodomys spectabil… Rode… Banner-ta…            1            0      1
+# ℹ 8 more variables: granivore &lt;dbl&gt;, minhfl &lt;dbl&gt;, meanhfl &lt;dbl&gt;,
+#   maxhfl &lt;dbl&gt;, minwgt &lt;dbl&gt;, meanwgt &lt;dbl&gt;, maxwgt &lt;dbl&gt;, juvwgt &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>We have three types of Kangaroo rate, coded DM, DO, and DS.</p>
+<p>Let’s make sure the survey data only includes the plots we know about from the plots dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1">surveys <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">group_by</span>(plot) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">count</span>(plot) </span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 2
+# Groups:   plot [11]
+    plot     n
+   &lt;dbl&gt; &lt;int&gt;
+ 1     3  3580
+ 2     4  3928
+ 3    10   469
+ 4    11  3640
+ 5    14  3625
+ 6    15  2106
+ 7    16  1079
+ 8    17  4023
+ 9    19  2256
+10    21  2681
+11    23   977</code></pre>
+</div>
+</div>
+<p>We definitely have plots not in our plot dataframe. This is a small enough dataset that you can just look at the two lists and see we have 10, 16, and 23 as extra plots. If we go back to the history of the plots page, we can see that these three plots all had <em>all rodents</em> removed at several times over the course of the project. I’ll come back to that, but first I want to demonstrate how we can find these extra plots using a join. For larger datasets, it might not be possible to determine the extra plots by inspection.</p>
+<p>To do this, I’m going to use an antijoin from dplyr. The syntax is <code>anti_join(x , y)</code> and returns rows of x that do not have a match in y. So here, we want x to be the plots from the survey data, and y to be the plots from out plots. I’ll just build off the summary pipe from the previous code block.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1">surveys <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">group_by</span>(plot) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">count</span>(plot) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb15-2">  <span class="fu" style="color: #4758AB;">anti_join</span>(plots)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(plot)`</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+# Groups:   plot [3]
+   plot     n
+  &lt;dbl&gt; &lt;int&gt;
+1    10   469
+2    16  1079
+3    23   977</code></pre>
+</div>
+</div>
+<p>Doing this type of basic check is really important when you start working with a new dataset. It looked like we had two treatments, but there are actually 3. If you had missed this, you could have lumped the third treatment in with one of the other two while analyzing, and obtained incorrect results.</p>
+<p>I’m going to store these other plots numbers, both as an array with counts and as a 1D object of just the plot numbers. Depending on what I decide to do, I might annotate the plots dataframe to include this data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1">extra_plots_array <span class="ot" style="color: #003B4F;">&lt;-</span> surveys <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">group_by</span>(plot) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">count</span>(plot) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb18-2">  <span class="fu" style="color: #4758AB;">anti_join</span>(plots)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining with `by = join_by(plot)`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1">extra_plots_array</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+# Groups:   plot [3]
+   plot     n
+  &lt;dbl&gt; &lt;int&gt;
+1    10   469
+2    16  1079
+3    23   977</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1">extra_plots <span class="ot" style="color: #003B4F;">&lt;-</span> extra_plots_array<span class="sc" style="color: #5E5E5E;">$</span>plot</span></code></pre></div>
+</div>
+<p>There are a couple of different things that could be explored. The treatments were not applied over every time block. We can look at how persistent a given treatment is. Plot 3 had the kangaroo rats removed in three of the five time blocks (1977-1985, 1988-2004, 2010-2015). Does the survey data reflect this?</p>
+<p>I’m going to pull out the plot 3 survey data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1">plot3_survey <span class="ot" style="color: #003B4F;">&lt;-</span> surveys <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb23-2">  <span class="fu" style="color: #4758AB;">filter</span>(plot <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">3</span>)</span></code></pre></div>
+</div>
+<p>There are a few different ways I could go. I’m going to create two groups of rodents: kangaroo rats and others. “<code>NA</code>s” are going in other. These are rodents that were caught and not identified. Perhaps using the size data, it might be possible to impute the species of rodent, but that requires more subject matter knowledge than I have.</p>
+<p>NAs are annoying, so I’ll handle them first. Then I’ll recode everything else to be kangaroo or other. I’m just hard coding from the species name, but I could use the species labels I saved earlier (<code>rats$species</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1">plot3_survey_recode <span class="ot" style="color: #003B4F;">&lt;-</span> plot3_survey <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-2">    <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">species =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(<span class="fu" style="color: #4758AB;">is.na</span>(species) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="st" style="color: #20794D;">"OTHER"</span>, species)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb24-3">    <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">species =</span> <span class="fu" style="color: #4758AB;">recode</span>(species,</span>
+<span id="cb24-4">                               <span class="st" style="color: #20794D;">"DM"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb24-5">                               <span class="st" style="color: #20794D;">"DO"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb24-6">                               <span class="st" style="color: #20794D;">"DS"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb24-7">                               <span class="at" style="color: #657422;">.default =</span> <span class="st" style="color: #20794D;">"OTHER"</span>)) </span></code></pre></div>
+</div>
+<p>So, first, did the treatment work?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1">  plot3_survey_recode <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-2">    <span class="fu" style="color: #4758AB;">group_by</span>(species) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb25-3">    <span class="fu" style="color: #4758AB;">count</span>(species)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+# Groups:   species [2]
+  species     n
+  &lt;chr&gt;   &lt;int&gt;
+1 KAN       207
+2 OTHER    3373</code></pre>
+</div>
+</div>
+<p>Looks like it did. But we should really compare to a control plot. Plot 4 is a control plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1">plot4_survey <span class="ot" style="color: #003B4F;">&lt;-</span> surveys <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-2">  <span class="fu" style="color: #4758AB;">filter</span>(plot <span class="sc" style="color: #5E5E5E;">==</span> <span class="dv" style="color: #AD0000;">4</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-3">    <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">species =</span> <span class="fu" style="color: #4758AB;">ifelse</span>(<span class="fu" style="color: #4758AB;">is.na</span>(species) <span class="sc" style="color: #5E5E5E;">==</span> <span class="cn" style="color: #8f5902;">TRUE</span>, <span class="st" style="color: #20794D;">"OTHER"</span>, species)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-4">    <span class="fu" style="color: #4758AB;">mutate</span>(<span class="at" style="color: #657422;">species =</span> <span class="fu" style="color: #4758AB;">recode</span>(species,</span>
+<span id="cb27-5">                               <span class="st" style="color: #20794D;">"DM"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb27-6">                               <span class="st" style="color: #20794D;">"DO"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb27-7">                               <span class="st" style="color: #20794D;">"DS"</span> <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"KAN"</span>,</span>
+<span id="cb27-8">                               <span class="at" style="color: #657422;">.default =</span> <span class="st" style="color: #20794D;">"OTHER"</span>)) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-9">    <span class="fu" style="color: #4758AB;">group_by</span>(species) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb27-10">    <span class="fu" style="color: #4758AB;">count</span>(species)</span>
+<span id="cb27-11"></span>
+<span id="cb27-12">plot4_survey</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+# Groups:   species [2]
+  species     n
+  &lt;chr&gt;   &lt;int&gt;
+1 KAN      2162
+2 OTHER    1766</code></pre>
+</div>
+</div>
+<p>In this plot, 55% of the captured rodents are kangaroo rats, compared to about 6% in plot 3. Again, to be completely rigorous, we should probably compare data aggregated over all plots with the same treatment types, rather than a single plot from treatment and single plot from control. These weren’t even randomly picked; I chose the first one of each type on the list.</p>
+<p>Did the kangaroo rat populations increase in years without treatment?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1">plot3_survey_recode <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb29-2">  <span class="fu" style="color: #4758AB;">filter</span> (species <span class="sc" style="color: #5E5E5E;">==</span> <span class="st" style="color: #20794D;">"KAN"</span>) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">group_by</span>(year) <span class="sc" style="color: #5E5E5E;">%&gt;%</span> <span class="fu" style="color: #4758AB;">count</span>(species) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb29-3">  <span class="fu" style="color: #4758AB;">ggplot</span>(<span class="fu" style="color: #4758AB;">aes</span>(year, n)) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-4">  <span class="fu" style="color: #4758AB;">geom_point</span>() <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-5">  <span class="fu" style="color: #4758AB;">annotate</span>(</span>
+<span id="cb29-6">    <span class="st" style="color: #20794D;">"rect"</span>,</span>
+<span id="cb29-7">    <span class="at" style="color: #657422;">xmin =</span> <span class="dv" style="color: #AD0000;">1977</span>,</span>
+<span id="cb29-8">    <span class="at" style="color: #657422;">xmax =</span> <span class="dv" style="color: #AD0000;">1985</span>,</span>
+<span id="cb29-9">    <span class="at" style="color: #657422;">ymin =</span> <span class="dv" style="color: #AD0000;">0</span>,</span>
+<span id="cb29-10">    <span class="at" style="color: #657422;">ymax =</span> <span class="dv" style="color: #AD0000;">40</span>,</span>
+<span id="cb29-11">    <span class="at" style="color: #657422;">alpha =</span> .<span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb29-12">    <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"red"</span></span>
+<span id="cb29-13">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-14">  <span class="fu" style="color: #4758AB;">annotate</span>(</span>
+<span id="cb29-15">    <span class="st" style="color: #20794D;">"rect"</span>,</span>
+<span id="cb29-16">    <span class="at" style="color: #657422;">xmin =</span> <span class="dv" style="color: #AD0000;">1988</span>,</span>
+<span id="cb29-17">    <span class="at" style="color: #657422;">xmax =</span> <span class="dv" style="color: #AD0000;">2004</span>,</span>
+<span id="cb29-18">    <span class="at" style="color: #657422;">ymin =</span> <span class="dv" style="color: #AD0000;">0</span>,</span>
+<span id="cb29-19">    <span class="at" style="color: #657422;">ymax =</span> <span class="dv" style="color: #AD0000;">40</span>,</span>
+<span id="cb29-20">    <span class="at" style="color: #657422;">alpha =</span> .<span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb29-21">    <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"red"</span></span>
+<span id="cb29-22">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-23">  <span class="fu" style="color: #4758AB;">annotate</span>(</span>
+<span id="cb29-24">    <span class="st" style="color: #20794D;">"rect"</span>,</span>
+<span id="cb29-25">    <span class="at" style="color: #657422;">xmin =</span> <span class="dv" style="color: #AD0000;">2010</span>,</span>
+<span id="cb29-26">    <span class="at" style="color: #657422;">xmax =</span> <span class="dv" style="color: #AD0000;">2015</span>,</span>
+<span id="cb29-27">    <span class="at" style="color: #657422;">ymin =</span> <span class="dv" style="color: #AD0000;">0</span>,</span>
+<span id="cb29-28">    <span class="at" style="color: #657422;">ymax =</span> <span class="dv" style="color: #AD0000;">40</span>,</span>
+<span id="cb29-29">    <span class="at" style="color: #657422;">alpha =</span> .<span class="dv" style="color: #AD0000;">1</span>,</span>
+<span id="cb29-30">    <span class="at" style="color: #657422;">fill =</span> <span class="st" style="color: #20794D;">"red"</span></span>
+<span id="cb29-31">  ) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-32">  <span class="fu" style="color: #4758AB;">ylab</span>(<span class="st" style="color: #20794D;">"# of Kangaroo rats"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-33">  <span class="fu" style="color: #4758AB;">xlab</span>(<span class="st" style="color: #20794D;">"Year"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-34">  <span class="fu" style="color: #4758AB;">labs</span>(<span class="at" style="color: #657422;">title =</span> <span class="st" style="color: #20794D;">"Persistance of treatment on Plot 3"</span>,</span>
+<span id="cb29-35">       <span class="at" style="color: #657422;">subtitle =</span> <span class="st" style="color: #20794D;">"Kangaroo Rats removed in red periods"</span>,</span>
+<span id="cb29-36">       <span class="at" style="color: #657422;">caption =</span> <span class="st" style="color: #20794D;">"Data from https://portal.weecology.org/"</span>) <span class="sc" style="color: #5E5E5E;">+</span></span>
+<span id="cb29-37">  <span class="fu" style="color: #4758AB;">theme_pander</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://lsinks.github.io/posts/2023-05-02-portal-project/portal_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So that’s pretty interesting. The treatment did seem to be persistent. The years with the highest numbers of kangaroo rats were in times when they were actively being removed. (Perhaps the researchers were more diligent about identifying the rat species in removal period. This might be reflected in have fewer or proportionally fewer “NAs” during removal times.)</p>
+
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e.sinks2023,
+  author = {Louise E. Sinks},
+  title = {TidyTuesday {Week} 18: {Portal} {Project}},
+  date = {2023-05-02},
+  url = {https://lsinks.github.io/posts/2023-05-02-tidytuesday-portal-project/portal},
+  langid = {en}
+}
+</code></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e.sinks2023" class="csl-entry quarto-appendix-citeas">
+Louise E. Sinks. 2023. <span>“TidyTuesday Week 18: Portal
+Project.”</span> May 2, 2023. <a href="https://lsinks.github.io/posts/2023-05-02-tidytuesday-portal-project/portal">https://lsinks.github.io/posts/2023-05-02-tidytuesday-portal-project/portal</a>.
+</div></div></section></div> ]]></description>
+  <category>R</category>
+  <category>TidyTuesday</category>
+  <category>R-code</category>
+  <category>Code-Along</category>
+  <category>Data-Viz</category>
+  <category>data validation</category>
+  <category>exploratory data analysis</category>
+  <guid>https://lsinks.github.io/posts/2023-05-02-portal-project/portal.html</guid>
+  <pubDate>Tue, 02 May 2023 04:00:00 GMT</pubDate>
+  <media:content url="https://lsinks.github.io/posts/2023-05-02-portal-project/thumbnail.png" medium="image" type="image/png" height="89" width="144"/>
+</item>
 <item>
   <title>TidyTuesday Week 17: London Marathon</title>
   <dc:creator>Louise E. Sinks</dc:creator>

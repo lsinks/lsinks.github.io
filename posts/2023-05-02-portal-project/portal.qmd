@@ -1,0 +1,188 @@
+---
+title: "TidyTuesday Week 18: Portal Project"
+description: "TidyTuesday: Rodents of Portal Arizona"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 05-02-2023
+categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz, data validation, exploratory data analysis] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-05-02-tidytuesday-portal-project/portal 
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Today's [TidyTuesday](https://github.com/rfordatascience/tidytuesday) is about the [Portal Project](https://portal.weecology.org/), which is a long terms study on the ecology of Arizona. The study explores how ants, rodents, plants respond to climate in the desert near Portal, Az. A subset of the data is provided for this week's TidyTuesday.
+
+Loading libraries. Not really using anything fancy today!
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+library(tidyverse)
+library(ggthemes)
+
+```
+
+Loading the data.
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load(2023, week = 18)
+
+plots <- tuesdata$plots
+species <- tuesdata$species
+surveys <- tuesdata$surveys
+```
+
+This dataset focuses on rodents. The portal project also studies plants and ants, but they are ommitted from these datasets.
+
+```{r}
+glimpse(plots)
+```
+
+We have information about 8 plots in the plots dataframe, and they are coded as exclosure or control. It isn't clear what exclosure or control means. The portal website says this about [treatments of the plots](https://github.com/weecology/PortalData/blob/main/SiteandMethods/Methods.md#rodent-treatments):
+
+"Rodents are manipulated using gates in the fencing of each plot. Rodent removals contain no gates and any rodents captured on those plots are removed. All other plots contain 16 gates (4 per plot side); gates consist of holes cut through the hardware cloth of the fencing. Gate size is used to exclude subsets of the rodent community (larger gates allow all rodents access, smaller gates exclude kangaroo rats). Dimensions for gates on kangaroo rat removal plots are 1.9 cm x 1.9 cm, *D. spectabilis* removals were 2.6 cm x 3.0 cm, and control plots are 3.7 cm x 5.7 cm. In 2005, *Dipodomys spectabilis* removals were converted to controls -- a state these plots had effectively been in with the local extinction of *Dipodomys spectabilis* in the late 1990s. Species caught on plots from which they are supposed to be excluded are removed from the site and the access point to the plot is located and eliminated. Plots affected by these treatments are listed in [Portal_plot_treatments](https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv)."
+
+Presumably, the exclosures are those plots designed with gates of specific sizes, designed to exclude specific size rodents. It is less clear what a control is. The text says "*Dipodomys spectabilis* removals were converted to controls", which is also unclear because it also says removals contain no rodents, so the species part is confusing. [This page](https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv) suggests controls are "unmanipulated controls" so maybe there is no fence at all?
+
+Looking at the [history of the plots](https://github.com/weecology/PortalData/blob/main/SiteandMethods/Portal_plot_treatments.csv), we see that the exclosure plots all have had kangaroo rats removed from them at certain times.
+
+So, do we find fewer Kangaroo rates on those plots? The survey data includes the rodent type by code; the key is found in the species data. Let's pull out the kangaroo rat code(s).
+
+```{r}
+
+rats <- species[(str_detect(species$commonname, "kangaroo")), ]
+rats
+```
+
+We have three types of Kangaroo rate, coded DM, DO, and DS.
+
+Let's make sure the survey data only includes the plots we know about from the plots dataframe.
+
+```{r}
+surveys %>% group_by(plot) %>% count(plot) 
+
+```
+
+We definitely have plots not in our plot dataframe. This is a small enough dataset that you can just look at the two lists and see we have 10, 16, and 23 as extra plots. If we go back to the history of the plots page, we can see that these three plots all had *all rodents* removed at several times over the course of the project. I'll come back to that, but first I want to demonstrate how we can find these extra plots using a join. For larger datasets, it might not be possible to determine the extra plots by inspection.
+
+To do this, I'm going to use an antijoin from dplyr. The syntax is `anti_join(x , y)` and returns rows of x that do not have a match in y. So here, we want x to be the plots from the survey data, and y to be the plots from out plots. I'll just build off the summary pipe from the previous code block.
+
+```{r}
+surveys %>% group_by(plot) %>% count(plot) %>%
+  anti_join(plots)
+```
+
+Doing this type of basic check is really important when you start working with a new dataset. It looked like we had two treatments, but there are actually 3. If you had missed this, you could have lumped the third treatment in with one of the other two while analyzing, and obtained incorrect results.
+
+I'm going to store these other plots numbers, both as an array with counts and as a 1D object of just the plot numbers. Depending on what I decide to do, I might annotate the plots dataframe to include this data.
+
+```{r}
+extra_plots_array <- surveys %>% group_by(plot) %>% count(plot) %>%
+  anti_join(plots)
+
+extra_plots_array
+
+extra_plots <- extra_plots_array$plot
+
+```
+
+There are a couple of different things that could be explored. The treatments were not applied over every time block. We can look at how persistent a given treatment is. Plot 3 had the kangaroo rats removed in three of the five time blocks (1977-1985, 1988-2004, 2010-2015). Does the survey data reflect this?
+
+I'm going to pull out the plot 3 survey data.
+
+```{r}
+plot3_survey <- surveys %>%
+  filter(plot == 3)
+```
+
+There are a few different ways I could go. I'm going to create two groups of rodents: kangaroo rats and others. "`NA`s" are going in other. These are rodents that were caught and not identified. Perhaps using the size data, it might be possible to impute the species of rodent, but that requires more subject matter knowledge than I have.
+
+NAs are annoying, so I'll handle them first. Then I'll recode everything else to be kangaroo or other. I'm just hard coding from the species name, but I could use the species labels I saved earlier (`rats$species`).
+
+```{r}
+plot3_survey_recode <- plot3_survey %>%
+    mutate(species = ifelse(is.na(species) == TRUE, "OTHER", species)) %>%
+    mutate(species = recode(species,
+                               "DM" = "KAN",
+                               "DO" = "KAN",
+                               "DS" = "KAN",
+                               .default = "OTHER")) 
+
+```
+
+So, first, did the treatment work?
+
+```{r}
+  plot3_survey_recode %>%
+    group_by(species) %>%
+    count(species)
+    
+```
+
+Looks like it did. But we should really compare to a control plot. Plot 4 is a control plot.
+
+```{r}
+plot4_survey <- surveys %>%
+  filter(plot == 4) %>%
+    mutate(species = ifelse(is.na(species) == TRUE, "OTHER", species)) %>%
+    mutate(species = recode(species,
+                               "DM" = "KAN",
+                               "DO" = "KAN",
+                               "DS" = "KAN",
+                               .default = "OTHER")) %>%
+    group_by(species) %>%
+    count(species)
+
+plot4_survey
+```
+
+In this plot, 55% of the captured rodents are kangaroo rats, compared to about 6% in plot 3. Again, to be completely rigorous, we should probably compare data aggregated over all plots with the same treatment types, rather than a single plot from treatment and single plot from control. These weren't even randomly picked; I chose the first one of each type on the list.
+
+Did the kangaroo rat populations increase in years without treatment?
+
+```{r}
+plot3_survey_recode %>%
+  filter (species == "KAN") %>% group_by(year) %>% count(species) %>%
+  ggplot(aes(year, n)) +
+  geom_point() +
+  annotate(
+    "rect",
+    xmin = 1977,
+    xmax = 1985,
+    ymin = 0,
+    ymax = 40,
+    alpha = .1,
+    fill = "red"
+  ) +
+  annotate(
+    "rect",
+    xmin = 1988,
+    xmax = 2004,
+    ymin = 0,
+    ymax = 40,
+    alpha = .1,
+    fill = "red"
+  ) +
+  annotate(
+    "rect",
+    xmin = 2010,
+    xmax = 2015,
+    ymin = 0,
+    ymax = 40,
+    alpha = .1,
+    fill = "red"
+  ) +
+  ylab("# of Kangaroo rats") +
+  xlab("Year") +
+  labs(title = "Persistance of treatment on Plot 3",
+       subtitle = "Kangaroo Rats removed in red periods",
+       caption = "Data from https://portal.weecology.org/") +
+  theme_pander()
+
+```
+
+So that's pretty interesting. The treatment did seem to be persistent. The years with the highest numbers of kangaroo rats were in times when they were actively being removed. (Perhaps the researchers were more diligent about identifying the rat species in removal period. This might be reflected in have fewer or proportionally fewer "NAs" during removal times.)
