@@ -1,0 +1,287 @@
+---
+title: "Tidy Tuesday: US Populated Places" 
+description: "TidyTuesday: Historic Neighborhoods of Arlington Virginia" 
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 06-27-2023
+categories: [R, TidyTuesday, R-code, Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Today's [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-06-27/readme.md) is about place names as recorded by the [US Board on Geographic Names](https://www.usgs.gov/us-board-on-geographic-names/download-gnis-data). The dataset has been cleaned to include only populated places.
+
+This week will involve more libraries than normal, since I am going to play with mapping.
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # who doesn't want to be tidy?
+library(ggthemes) # more themes for ggplot
+library(gt) # For nice tables
+library(ggrepel) # to help position labels in ggplot graphs
+library(openxlsx) # importing excel files from a URL
+library(fuzzyjoin) # for joining on inexact matches
+library(sf) # for handling geo data
+library(mapview) # quick interactive mapping
+library(leaflet) # more mapping
+
+```
+
+Load dataset in the usual way.
+
+```{r}
+#| label: loading-dataset
+#| warning: false
+#| output: false
+tuesdata <- tidytuesdayR::tt_load(2023, week = 26) 
+us_place_names <- tuesdata$`us_place_names` 
+us_place_history <- tuesdata$`us_place_history`
+```
+
+I'd like to look at the places local to me. The dataset contains two dataframes- one with geographic details about the location and the other with some commentary like description and history.
+
+```{r}
+#| label: selecting-arlington-data
+va <- us_place_names %>% filter(state_name == "Virginia")
+va <- va %>% filter(county_name == "Arlington")
+va_joined <- va %>% left_join(us_place_history, by = join_by(feature_id))
+
+```
+
+I don't need city, state, and county number since I am dealing with a single city/county. So I am removing them from the dataset and then viewing what I have.
+
+```{r}
+#| label: table-arlington
+
+va_joined %>% select(-state_name,-county_name,-county_numeric) %>%
+  gt()
+
+```
+
+There is no historical or descriptive data for any of the features in Arlington. Many of these are historical sites or are otherwise of interest. I'd like to augment this data with some context. [Arlington has 23 neighborhoods](https://www.arlingtonva.us/Government/Projects/Plans-Studies/Historic-Preservation/National-Historic-Places) that are on the [National Register of Historic Places](https://www.nps.gov/subjects/nationalregister/index.htm). The National Register does have scanned applications available for post 2012 applications, but most of the historic neighborhoods were designated prior to that. The National Register does also have a spreadsheet with links to the National archives, which contains the pre-2012 applications.
+
+I normally like to use tidyverse packages, but [read_excel](https://readxl.tidyverse.org/reference/read_excel.html) won't work with URLs. There are [workarounds](https://github.com/tidyverse/readxl/issues/278), but it is easier just to use the [openxlsx package](https://cran.r-project.org/web/packages/openxlsx/index.html). The `read.xlsx` function works as you'd expect but you do need to specify the sheet to read in.
+
+```{r}
+#| label: national_historic
+national_historic <-
+  read.xlsx(
+    'https://www.nps.gov/subjects/nationalregister/upload/national-register-listed-20230119.xlsx' ,
+    sheet = 1
+  )
+
+```
+
+Taking only my local historic sites. This dataset is annoying because some entries are in all CAPS (like state), but others are in titlecase (like City/County). Some, like building category are in both. To use the entire dataset some string cleaning and formating might be necessary, but for this case, I don't need to do this.
+
+```{r}
+#| label: arlington_historic
+arlington_historic <- national_historic %>%
+  filter(State == "VIRGINIA" & County == "Arlington")
+
+```
+
+Looking at the data, it neighborhoods seem to be encoded as districts.
+
+```{r}
+#| label: arlington-historic-neighborhoods
+arlington_historic_districts <- arlington_historic %>%
+  filter(Category.of.Property == "DISTRICT")
+```
+
+Arlington County has a [website listing historic neighborhoods](https://www.arlingtonva.us/Government/Projects/Plans-Studies/Historic-Preservation/National-Historic-Places), and I know there should be 23. The National Register has 29 local entries. I should also note that only 17 of the Arlington neighborhoods appeared in our place names dataset.
+
+On to figure out what the extra 3 historic places are. Apparently forts are also districts. There are also applications for boundary increases. To do this I am going to use the [stringr](https://stringr.tidyverse.org/) function `str_detect` to find "Boundary Increase" and "Fort" and use the `negate = TRUE` flag to return everything that doesn't match.
+
+```{r}
+#| label: arlington-historic-neighborhoods-cleaned
+arlington_historic_districts2 <- arlington_historic_districts %>%
+  filter(str_detect(Property.Name, "Boundary Increase", negate = TRUE)) %>%
+  filter(str_detect(Property.Name, "Fort", negate = TRUE))  
+
+
+arlington_historic_districts2 %>% gt()
+```
+
+I still have too many entries. It turns out that Arlington National Cemetary is also encoded as a DISTRICT. There is also an entry for Walter Reed Gardens Historic District. Arlington County has this listed as a building on their site (and the other entries like Calvert Manor are noted as buildings in the National Register.)
+
+I could remove these two items manually, but they will be removed when I join it to the place names dataset, since neither one appears in the populated place names.
+
+Joining the two datasets will require some sort of string manipulation since the place names are not the same. The place names dataset contains just the place names ("Addison Heights"), while the historic sites data contains the phrase "Historic District" appended to the end. In addition, some place names don't exactly match the historic district names ("Overlee Knolls" and "Highland Park/ Overlee Knolls Historic district").
+
+So I want to do some fuzzy matching and luckily (of course!) there is an [R package for that](https://cran.r-project.org/web/packages/fuzzyjoin/readme/README.html).
+
+However, the populated place names data contains "Arlington" which will match to a ton of different neighborhoods (Arlington Forest, Arlington Heights, etc.) I'm going to change Arlington to Arlington County.
+
+```{r}
+#| label: arlington-renamed
+va_joined2 <- va_joined %>%
+  mutate(feature_name = ifelse(feature_name == "Arlington", "Arlington County", feature_name))
+  
+```
+
+I also know that North and South Fairlington, while separate places in the populated place names, are a single historic district called Fairlington. I'm going to make both North and South Fairlington entry in the historical sites dataframe. I'm not removing the original Fairlington entry because I know I'm going to filter it out with my joins later. But this is the kind of thing that could lead to errors/ extraneous entries later on, so if you do something like this, just make sure you do clean it up later.
+
+```{r}
+#| label: fairlington-split
+south_fairlington <- arlington_historic_districts2 %>% 
+  filter(Property.Name == "Fairlington Historic District") %>%
+  mutate(Property.Name = "South Fairlington")
+
+north_fairlington <- arlington_historic_districts2 %>%
+  filter(Property.Name == "Fairlington Historic District") %>%
+  mutate(Property.Name = "North Fairlington")
+
+arlington_historic_districts3 <- arlington_historic_districts2 %>%
+  rbind(south_fairlington) %>%
+  rbind(north_fairlington)
+```
+
+Okay, on to fuzzyjoining. The name from the populated places names dataset should be a subset of the name from the historic district dataset. I'm going to illustrate this in a very simply way using `str_detect()`. "Overlee Knolls" is the first entry in the populated places dataset. I'm going to use this as the pattern to search for in the Historic places dataset. The expected returned neighborhood is "Highland Park/ Overlee Knolls Historic district".
+
+```{r}
+#| label: using-featurename-as-pattern
+va_joined2$feature_name[1]
+
+arlington_historic_districts %>%
+  filter(str_detect(Property.Name, va_joined2$feature_name[1])) %>%
+  gt()
+```
+
+I've decided I only want to look at the historic areas in the populated place names. I'm choosing an inner join so I will only get entries that exist in BOTH the populated places and the historic register. This is 17 items (from manually comparing the populated places to the Arlington County website). I'm going to map these places on top of current Arlington County neighborhood groups/civic associates. I'm interested in how current neighborhood compare to the historic districts. (Note that I could have done this without the populated places dataset at all, but this is the Tidytuesday dataset and it is what lead me to my question.)
+
+There are a few different ways to use fuzzyjoins. I found [this discussion on stackoverflow](https://stackoverflow.com/questions/32914357/dplyr-inner-join-with-a-partial-string-match) to be a good starting point. I chose to use the match_fun version, since I had already prototyped with `str_detect`. The only thing that wasn't clear to me is which dataframe would be sent to `str_detect` as the pattern and which was the string. That is, for
+
+`fuzzy_inner_join(x, y, by = c(x$name1 = y$name2), match_fun = str_detect)` would I get
+
+`str_detect(string = x$name1,  pattern = y$name2)`
+
+or
+
+`str_detect(string = y$name2,  pattern = x$name1)`
+
+?
+
+Maybe it is clear to others from the stackoverflow example or the fuzzyjoin manual, but it wasn't clear to me, so I ended up trying it both ways. It turns out that the dataframes are passed to `str_detect` in the order they are listed, which makes sense (and is probably the convention, but I had never seen it explicitly stated). \[To be absolutely clear, what happens is the first case (`str_detect(string = x$name1,  pattern = y$name2)`)\]
+
+```{r}
+#| label: join-historic-pop-places
+
+historic_pop_places <-
+  arlington_historic_districts3 %>% fuzzy_inner_join(va_joined2,
+                                                     by = c("Property.Name" = "feature_name"),
+                                                     match_fun = str_detect)
+```
+
+For what I plan to do, I need the place name and the location. I want the reason the place is important and a link to the historic registry application. I started this project wanting to know why these places were important! I'm leaving in both sets of place names, just so I can visually check that my dataset is correct.
+
+```{r}
+#| label: smaller-historic-pop-places
+historic_pop_places <- historic_pop_places %>%
+  select(
+    Property.Name,
+    feature_name,
+    Area.of.Significance,
+    prim_lat_dec,
+    prim_long_dec,
+    External.Link
+  )
+gt(historic_pop_places)
+```
+
+Aurora Highlands and Highlands are the same place- the description of [Aurora Highlands from Wikipedia](https://en.wikipedia.org/wiki/Aurora_Highlands_Historic_District) matches the description in the application to be entered on the National Historic Register.
+
+Now, I found a [map of all the Civic associations](https://gisdata-arlgis.opendata.arcgis.com/datasets/ArlGIS::civic-association-polygons-1/explore?location=38.882027%2C-77.096129%2C13.00) in Arlington on the county's open data page. Data can be downloaded in a variety of formats, including shape files or geoJSON. I chose to download the shapefile and extracted the zip to my project directory (not shown).
+
+The [R Graph Gallery](https://r-graph-gallery.com/index.html) (which is a great resource and source of inspiration) has a [great section on mapping](https://r-graph-gallery.com/169-170-basic-manipulation-of-shapefiles), but unfortunately one of the needed packages is being retired. The code below still works but you will get a very long message telling you to migrate away from rgal.
+
+```{r}
+#| label: retired-package
+# library(sp)
+# library(rgdal)
+# my_spdf <- readOGR( 
+#  dsn = "Civic_poly.shp" , 
+#  verbose=FALSE
+#)
+```
+
+So, here is another way to read in the shape file using the sf package. This contains the polygons that define the boundaries of modern neighborhoods in Arlington. There are a lot of neighborhoods!
+
+```{r}
+#| label: reading-shape-file
+#| warning: false
+#| output: false
+arlington_polygons <- st_read(dsn = "Civic_poly.shp")
+```
+
+Mapping points (which is what we have in our TidyTuesday dataset- we have the lat/long of the "official feature location") and polygons from the Arlington County dataset involved a few steps. Shape files can be encoded using different coordinate reference systems (CRS) and care needs to be taken that all the map layers are using the same CRS. I found the [mapview package](https://cran.r-project.org/web/packages/mapview/index.html) invaluable during this process, as it is simple to create an interactive map. This made trouble shooting incredibly easy.
+
+Generally, the first step for handling shape files in R is to convert them to simple features objects. Here, I'm using the sf_package. With a shape file, you generally don't need to pass the coordinates or CRS, since that data is encoded in the shape file in a way that is easily detectable by the function.
+
+```{r}
+#| label: shape-to-sf
+
+arlington_polygons_sf <- st_as_sf(arlington_polygons)
+mapview(arlington_polygons_sf)
+```
+
+The generated map looks perfect. Arlington is in the right place in the world mapview(arlington_polygons_sf)and the civic association map looks as it should.
+
+For the point data, the conversion does require additional parameters (description of parameters [here](https://r-spatial.github.io/sf/reference/st_as_sf.html)). Specifically, the coordinates for point data need to be specified. The order for this is longitude, latitude, which I did not do properly the first name, since in spoken English, you usually say latitude/longitude. The mapview map made that very easy to troubleshoot when I saw my points were all in Antarctica. The pop up made it clear that latitude and longitude were flipped. I also need the CRS for this dataset if I'm going to map it with the polygon data. (You also need a CRS for mapview to place your points on a map- without a CRS you get the pattern, but not the geolocation.)
+
+The CRS is not specified in the data dictionary for TidyTuesday. There are two likely choices, [4326 and 4269](https://www.nceas.ucsb.edu/sites/default/files/2020-04/OverviewCoordinateReferenceSystems.pdf). In this application, there isn't actually a significant difference. With the mapview data you can select and deselect the layers and see both sets of points are in the same place on this map.
+
+```{r}
+#| label: point-data-to-sf
+
+historic_4269 <- st_as_sf(historic_pop_places, coords = c(5:4), crs = 4269)
+historic_4326 <- st_as_sf(historic_pop_places, coords = c(5:4), crs = 4326)
+
+mapview(historic_4269) + mapview(historic_4326) + mapview(arlington_polygons_sf)
+```
+
+Going back to the [original data source](https://prd-tnm.s3.amazonaws.com/StagedProducts/GeographicNames/GNIS_file_format.pdf), it notes that "Datum is NAD83". This means that the CRS = 4269 as found at the [EPGS registry](https://epsg.org/crs_4269/NAD83.html).
+
+The Arlington polygons dataset is also NAD83/ 4269, so you can go directly to plotting. If they were different CRSs then you would need to transform them to the same projection, such as with:
+
+`points_transformed <- sf::st_transform(points_wrong, crs = sf::st_crs(arlington_polygons_sf))`
+
+```{r}
+#| label: final-mapview 
+mapview(arlington_polygons_sf ,
+  col.regions = "purple") + mapview(historic_4269, col.regions = "blue")
+```
+
+So many of these historic neighborhoods don't appear to correspond strongly to modern day neighborhoods. Several of them appear the borders of multiple neighborhood groups. And for example, the location of the Westover feature from the populated places names is actually in the Tara-Leeway Heights neighborhood according to the county's description of civic association boundaries.
+
+Now I'm going to make a static ggplot map. Mapview is great for exploratory data analysis, but it isn't as highly customizable as other graphing packages. I'm displaying the populated place names/ historic district using `geom_sf_text()`. This needs to be passed both the data and the label, and despite being passed the data it still needs the full variable name (`historic_4269$feature_name` not `feature_name`). The units for nudging the text are depend on what crs is used? I just played around until I got the label to move and 800 was not the kind of number I was expecting. (I was thinking 0 to 1 like for `hjust`.)
+
+```{r}
+#| label: nice-graph-historic-neighborhoods
+
+ggplot() +
+  geom_sf(data = arlington_polygons_sf) +
+  geom_sf(data = historic_4269, alpha = 0.5) +
+  theme_void() +
+  geom_sf_text(
+    data = historic_4269,
+    label = historic_4269$feature_name,
+    size = 2.0,
+    nudge_y = 850
+  ) +
+  labs(title = "Historic Districs in Arlington compared to modern neighborhoods") +
+  labs(caption = "Data from: US Board of Geographic Names,  \nArlington County, VA - Official GIS Open Data Portal,  \nand the National Register of Historic Places") +
+  theme(plot.title = element_text(size = 10),
+        plot.caption = element_text(size = 6, hjust = 0))
+```
+
+As a further project, I'd like to make an interactive map with a pop-up giving a clickable link to the National Archives page on the historic district application. The mapview version does have the pop-up, but the link isn't live.
+
+I found tutorial [here](https://community.rstudio.com/t/clickable-url-link-in-mapview-visualization/51327) to make the pop-up URL using leaflet, but I can't figure out how to add my polygons. I add the points just fine. It also fails causes the quarto document to fail during render, though it works just fine as regular code.
