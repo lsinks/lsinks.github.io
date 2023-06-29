@@ -1,0 +1,191 @@
+---
+title: "Tidy Tuesday Revisited: Interactive Map of Arlington Historic Neighborhoods" 
+description: "TidyTuesday: Interactive Map of Historic Neighborhoods of Arlington Virginia" 
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 06-29-2023
+categories: [R, TidyTuesday, R-code, Data-Viz, sf, leaflet] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-06-29-tidytuesday-US-populated-places-leaflet/arlington-neighborhoods-leaflet
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+This week's [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-06-27/readme.md) is about place names as recorded by the [US Board on Geographic Names](https://www.usgs.gov/us-board-on-geographic-names/download-gnis-data). The dataset has been cleaned to include only populated places. I ended up augmenting the dataset with information about Arlington Historic neighborhoods and current neighborhood boundaries. My post with code on this project is [here](https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html).
+
+I wanted to create an interactive map with leaflet, but I encountered two problems:
+
+1- I couldn't figure out how to add my civic association map.
+
+2- The map that I did make worked fine when I ran it from a code chunk, but failed when I rendered the quarto document.
+
+I've solved both problems and I really enjoyed working with leaflet.
+
+Here are the libraries:
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # who doesn't want to be tidy?
+library(sf) # for handling geo data
+library(leaflet) # interacting mapping
+
+```
+
+I saved the two datasets from my previous work: `historic_4269` and `arlington_polygons_sf`. I saved them using:
+
+`st_write(historic_4269, "points.shp")`
+
+`st_write(arlington_polygons_sf, "polygons.shp")`
+
+from the [sf package](https://cran.r-project.org/web/packages/sf/index.html).
+
+Here, I'm reading them in. The process does change some of the variable names. The dataset from the [National Register of Historic Places](https://www.nps.gov/subjects/nationalregister/index.htm) had non-standard names such as `Property.Name`, which gets converted to a shorter name, `Prprt_N`, with \_ instead of period.
+
+```{r}
+#| label: loading-datasets
+#| warning: false
+#| output: false
+historic_4269 <- st_read("points.shp")
+arlington_polygons_sf <- st_read("polygons.shp")
+```
+
+I mentioned that I found tutorials [here](https://community.rstudio.com/t/clickable-url-link-in-mapview-visualization/51327) and [here](https://www.jla-data.net/eng/leaflet-in-r-tips-and-tricks/) to make the pop-up URL using leaflet. So, following them I add the HTML anchor tag.
+
+```{r}
+#| label: adding-html-tags
+# turn the url to HTML anchor tag
+historic_4269 <- historic_4269 %>% 
+  mutate(tag = paste0("More Info: <a href=", Extrn_L,">", Extrn_L, "</a>"))
+```
+
+Leaflet uses background map tiles as the canvas for the map. As with all mapping, the coordinate reference system (CRS) of all your component layers needs to be the same. The two datasets I have used the CRS= 4269 projection, but this isn't the usual CRS. The background map I chose uses the 4326 CRS, so I need to transform my data to that projection. Leaflet will give you a warning if you add layers with unexpected CRSs, so make sure to read the messages carefully and correct them.
+
+```{r}
+#| label: transforming-crs
+historic_4326 <- sf::st_transform(historic_4269, crs = 4326)
+arlington_polygons_sf_4326 <- sf::st_transform(arlington_polygons_sf, crs = 4326) 
+```
+
+For the issue of adding the polygon data, I was just not really thinking about things. Leaflet uses tidyverse piping, so you either need to have the dataset at the start of the pipe chain or you need to explicitly pass it as `data = blah`. The error message wasn't super help to me either : `addPolygons must be called with both lng and lat, or with neither`. I thought that meant I needed to transform the polygons into some other type geometry format.
+
+So this doesn't work:
+
+`leaflet_map <- leaflet() %>%`
+
+`addPolygons(arlington_polygons_sf_4326)`
+
+`leaflet_map`
+
+But this does:
+
+```{r}
+#| label: leaflet-method-1
+leaflet_map <- leaflet(arlington_polygons_sf_4326) %>% 
+  addPolygons() 
+
+leaflet_map
+```
+
+Or this:
+
+```{r}
+#| label: leaflet-method-2
+leaflet_map <- arlington_polygons_sf_4326 %>% 
+  leaflet() %>%
+  addPolygons() 
+
+leaflet_map
+```
+
+Or this:
+
+```{r}
+#| label: leaflet-method-3
+leaflet_map <- leaflet() %>% 
+  addPolygons(data = arlington_polygons_sf_4326) 
+
+leaflet_map
+```
+
+I chose to use the last method, since I was adding data from different sources and I thought it would be more understandable to have the data source explicitly stated in each layer call.
+
+To make things a bit clearer, I set a color palette for the Arlington neighborhoods. There are 62 of them, so I used viridis, which is more suited for numerical data, but creates a pleasing effect here. There is information encoded in the colors, the purples correspond to neighborhoods starting with "A" and the yellows correspond to those at the end of the alphabet, but that isn't really important. The choice was purely an aesthetic one.
+
+```{r}
+#| label: setting-color-scale
+pal <- colorFactor(palette = "viridis", domain = arlington_polygons_sf_4326$CIVIC)
+
+```
+
+The final leaflet map has three layers:
+
+1.  the underlying map created using `addProviderTiles()`
+
+2.  the current Arlington neighborhoods created using `addPolygons()`
+
+3.  the point markers for the historic districts created using `addCircleMarkers()`
+
+The neighborhood names appear when you hover over the polygon, while the name of the historic district and the link to the application submitted to be added to the National Register of Historic Places appears as a pop-up when you click on it.
+
+Leaflet uses \~ notation to reference variables in the data, which you can see in code below.
+
+```{r}
+#| label: final-arlington-map
+leaflet_map <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    data = arlington_polygons_sf_4326,
+    weight = 1,
+    label = ~ CIVIC,
+    color = ~ pal(CIVIC)
+  ) %>%
+  addCircleMarkers(
+    data = historic_4326,
+    popup = ~ paste0("<b>", Prprt_N, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "black",
+    stroke = NA
+  )
+leaflet_map
+```
+
+Datacamp has a really [nice starter course on leaflet](https://app.datacamp.com/learn/courses/interactive-maps-with-leaflet-in-r) that I found very helpful for understanding leaflet conceptually as well as learning about the basic formatting options. There is also a nice set of documentation [here](https://rstudio.github.io/leaflet/).
+
+So why was my leaflet map causing the quarto document to fail to render? Apparently, there was a issue with [knitr and quarto that popped up after some updates in May 2023](https://github.com/quarto-dev/quarto-cli/issues/5702). It applies to packages other than leaflet as well. If you get an error message along the lines of :
+
+`` Error in `add_html_caption()`: ! unused argument (xfun::grep_sub("^[^<]*<[^>]+aria-labelledby[ ]*=[ ]*\"([^\"]+)\".*$", "\\1", x)) ``
+
+`Backtrace:`
+
+`1. global .main()`
+
+`2. execute(...)`
+
+`3. rmarkdown::render(...)`
+
+`4. knitr::knit(knit_input, knit_output, envir = envir, quiet = quiet)`
+
+`5. knitr:::process_file(text, output) ...`
+
+`14. sew(res, options)`
+
+`15. knitr:::sew.list(x, options, ...)`
+
+`16. base::lapply(x, sew, options, ...)`
+
+`17. FUN(X[[i]], ...)`
+
+`18. knitr:::sew.knit_asis(x, options, ...) Execution halted.`
+
+then you probably have this issue. Quarto has already fixed the issue with stable release 1.3.433. The version of Quarto bundled with RStudio RStudio 2023.06.0+421 "Mountain Hydrangea" for Windows was 1.3.353 and has the problem. If you use the bundled version with RStudio, close RStudio, install the latest Quarto as a standalone program. When you open RStudio, it should automatically detect the new version and switch to that.
+
+To check what version of Quarto you have, go to the terminal (not console) and type `quarto check`.
+
+Leaflet is pretty amazing. I've always found mapping in R to be unpleasant, but leaflet makes it easy and produces beautiful maps.
