@@ -1,9 +1,11 @@
 ---
 title: "Leaflet_tester"
-date: 06-28-2023
+date: 06-30-2023
 categories: [Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
+
+This is a draft of a project for my father. I want to make sure the photo files structure renders properly online.
 
 ```{r}
 library(tidyverse) # who doesn't want to be tidy?
@@ -15,12 +17,13 @@ library(fuzzyjoin) # for joining on inexact matches
 library(sf) # for handling geo data
 library(mapview) # quick interactive mapping
 library(leaflet) # more mapping
+library(here)
 
-
+blog_folder <- "posts/2023-06-30-leaflet2"
+photo_folder = "Photos"
 # read in excel sheet
 tombstones <-
-  read.xlsx(
-    'Tombstone_Data_small.xlsx' ,
+  read.xlsx(here(blog_folder, "Tombstone_Data_small.xlsx"),
     sheet = 1
   )
 
@@ -54,8 +57,7 @@ tombstones <- tombstones %>%
 blah
 
 ```{r}
-getwd()
-photo_names = list.files("./Photos")
+photo_names = list.files(here(blog_folder, photo_folder))
 df = as.data.frame(photo_names)
 
 
@@ -64,7 +66,6 @@ df = as.data.frame(photo_names)
 blah
 
 ```{r}
-
 tombstones_merged <- fuzzy_right_join(df, tombstones, 
                              by = c("photo_names" = "full_name"),
                              match_fun = str_detect)
@@ -75,10 +76,10 @@ blah
 
 ```{r}
 # turn photo tag
+# turn photo tag
 tombstones_merged <- tombstones_merged %>%
   drop_na(photo_names) %>%
-  mutate(tag = paste0("<img src=",
-                      paste0("./posts/2023-06-30-leaflet2/Photos/", photo_names),">"))
+  mutate(tag = paste0("<img src=", here(blog_folder, photo_folder, photo_names),">"))
 
 
 tombstones_merged <- tombstones_merged %>% drop_na(lat) %>% drop_na(long)
@@ -94,12 +95,23 @@ leaflet() %>%
   addCircleMarkers(
     data = tombstones_geo,
     label = ~ paste(First.Name, Surname, photo_names, sep = " "),
-    popup = leafpop::popupImage(paste0("Photos/", image_list)),
+   # popup = leafpop::popupImage(paste0(here(blog_folder, photo_folder),"/", image_list)),
     clusterOptions = markerClusterOptions(),
     opacity = 1,
     radius = 5,
     color = "black",
     stroke = NA,
     group = "group1"
-  )
+  )  %>%
+
+# popup = ~tag,
+
+
+   leafpop::addPopupImages(
+    image = paste0(here(blog_folder, photo_folder),"/", image_list),
+     src = local,
+     group = "group1",
+    width = 300, maxWidth = 300
+   )
+
 ```
