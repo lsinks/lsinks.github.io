@@ -11,6 +11,7 @@ library(here)
 
 blog_folder <- "posts/2023-06-30-leaflet2"
 photo_folder = "Photos"
+
 # read in excel sheet
 tombstones <-
   read.xlsx(here(blog_folder, "Tombstone_Data_small.xlsx"),

@@ -2,10 +2,10 @@
 title: "Leaflet_tester"
 date: 06-30-2023
 categories: [Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-This is a draft of a project for my father. I want to make sure the photo files structure renders properly online.
+This is a draft of a project for my father. I want to make sure the photo files structure renders properly online. This will be revised and reposted later as a tutorial. It will also be deleted once I get his input.
 
 ```{r}
 library(tidyverse) # who doesn't want to be tidy?
@@ -18,14 +18,56 @@ library(sf) # for handling geo data
 library(mapview) # quick interactive mapping
 library(leaflet) # more mapping
 library(here)
+library(magick)
 
+```
+
+Reading in his spreadsheet
+
+```{r}
 blog_folder <- "posts/2023-06-30-leaflet2"
-photo_folder = "Photos"
+photo_folder <- "Photos"
+archive_folder <- "Archive"
+problem_folder <- "Problem"
+data_file <- "Tombstone_Data_small.xlsx"
+#data_file <- "Tombstone Data.xlsx"
 # read in excel sheet
 tombstones <-
-  read.xlsx(here(blog_folder, "Tombstone_Data_small.xlsx"),
+  read.xlsx(here(blog_folder, data_file),
     sheet = 1
   )
+
+```
+
+Cleaning it up.
+
+1.  Change NAs in middle name variable to "".
+
+```{r}
+tombstones <- tombstones %>%
+mutate(Middle.Name = ifelse(is.na(Middle.Name), "", Middle.Name)) %>%
+  mutate(Cemetery = ifelse(is.na(Cemetery), "", Cemetery))
+
+```
+
+2.  Latitude and longitude data contains some stray degree and minute symbols. The degree symbol appears both as a straight and curved apostrophe and the degree symbols appear both as o and O. This cleaning needs to be done on both N and W columns.
+
+```{r}
+
+tombstones <- tombstones %>%
+mutate(N = str_replace_all(N, pattern = "’", " ")) %>%
+mutate(N = str_replace_all(N, pattern = "O", " "))  %>%
+mutate(N = str_replace_all(N, pattern = "o", " "))  %>%
+mutate(N = str_replace_all(N, pattern = "'", " "))  %>% 
+mutate(W = str_replace_all(W, pattern = "’", " ")) %>%
+mutate(W = str_replace_all(W, pattern = "O", " "))  %>% 
+mutate(W = str_replace_all(W, pattern = "o", " ")) %>%
+mutate(W = str_replace_all(W, pattern = "'", " "))  
+```
+
+Next, I'm converting the N and W data to decimal latitude and longitude. S/W should be "-" and N/E should be "+". I split the degree/minute/second data into parts and then do the conversion. I delete the intermediate components when done.
+
+```{r}
 
 #converting to decimal latitude
 tombstones <- tombstones %>%
@@ -48,53 +90,153 @@ tombstones <- tombstones %>%
 tombstones <- tombstones %>%
   select(-contains("part"))
 
-tombstones <- tombstones %>%
-  mutate(full_name = paste(Surname, First.Name, sep = " "))
-
 
 ```
 
-blah
+My father's photo naming convention is "last name first name middle initial". I'm going to construct a variable full_name from the spreadsheet data and use that to match. Initially, I'm leaving out middle name, because that column is problematic.
+
+```{r}
+tombstones <- tombstones %>%
+  mutate(full_name = paste(Surname, First.Name, sep = " "))
+```
+
+Now, I'm generating a list of all the photo names and converting it to a dataframe. I'm going to match against this list.
 
 ```{r}
 photo_names = list.files(here(blog_folder, photo_folder))
-df = as.data.frame(photo_names)
+photo_df = as.data.frame(photo_names)
 
 
 ```
 
-blah
+Doing a fuzzy join on the two dataframes.
 
 ```{r}
-tombstones_merged <- fuzzy_right_join(df, tombstones, 
+tombstones_merged <- fuzzy_right_join(photo_df, tombstones, 
                              by = c("photo_names" = "full_name"),
                              match_fun = str_detect)
 
 ```
 
-blah
+Seeing what photos weren't matched. I'm actually going to move them somewhere else.
 
 ```{r}
-# turn photo tag
+not_matched <- anti_join(photo_df, tombstones_merged)
+
+index <- 1
+for (index in seq(1:nrow(not_matched))) {
+  file.rename(from = here(blog_folder, photo_folder, not_matched$photo_names[index]),
+                         to = here(blog_folder, problem_folder, not_matched$photo_names[index] ))
+}
+
+
+```
+
+I'm dropping all the NAs in the photo_names column. I'm creating an image tag, because I'd ideally like to use that for the photos.
+
+```{r}
+
 # turn photo tag
 tombstones_merged <- tombstones_merged %>%
   drop_na(photo_names) %>%
   mutate(tag = paste0("<img src=", here(blog_folder, photo_folder, photo_names),">"))
 
+```
 
-tombstones_merged <- tombstones_merged %>% drop_na(lat) %>% drop_na(long)
+How many people have multiple photos?
+
+```{r}
+multiples <- tombstones_merged %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1)
+```
+
+Look at these multiples more closely
+
+```{r}
+
+df_temp <- tombstones_merged %>%
+  filter(full_name == multiples$full_name[1]) 
+df_temp
+
+```
+
+Write a function to handle making panel figures. Not a function yet
+
+https://stackoverflow.com/questions/61196196/image-append-on-dynamic-number-of-variables
+
+```{r}
+
+#testing
+if (nrow(multiples) > 0 ) {
+index <- 1
+
+for (index in seq(1:nrow(multiples))) {
+  df_temp <- tombstones_merged %>%
+    filter(full_name == multiples$full_name[index])
+  df_temp
+  these <-
+    as.list(here(blog_folder, photo_folder, df_temp$photo_names))
+  photo_panel <-
+    image_append(do.call("c", lapply(these, image_read)))
+  image_write(
+    photo_panel,
+    path =  here(
+      blog_folder,
+      photo_folder,
+      paste0(df_temp$full_name[1], "_panel.png")
+    ),
+    format = "png"
+  )
+  index2 <- 1
+  for (index2 in seq(1:nrow(df_temp))) {
+    file.rename(
+      from = here(blog_folder, photo_folder, df_temp$photo_names[index2]),
+      to = here(blog_folder, archive_folder, df_temp$photo_names[index2])
+    )
+  }
+}
+}
+```
+
+Now I need to redo everything so it will only match on the panel figures and not the ones I moved.
+
+```{r}
+photo_names2 = list.files(here(blog_folder, photo_folder))
+photo_df_final = as.data.frame(photo_names2)
+tombstones_final <- fuzzy_right_join(photo_df_final, tombstones, 
+                             by = c("photo_names2" = "full_name"),
+                             match_fun = str_detect)
+```
+
+Dropping any NAs in lat/long. Converting it to a SF geo object. I'm adding some jitter to the coordinates; tombstones that are very close to each other have the same coordinates and show up as overlapping on the map.
+
+```{r}
+tombstones_final <- tombstones_final %>% drop_na(lat) %>% drop_na(long)
 
 
 tombstones_geo <- st_as_sf(tombstones_merged, coords = c("long", "lat"), crs = 4326)
-tombstones_geo <- st_jitter(tombstones_geo, factor = 0.004)
+tombstones_geo <- st_jitter(tombstones_geo, factor = 0.001)
 
+
+```
+
+Final map.
+
+```{r}
+#| column: page
+#| 
 image_list <- tombstones_geo$photo_names
 
+labels <- sprintf(
+  "<strong>tombstones_geo$full_name</strong> <br/>,
+  tombstones_geo$Cemetery" ) %>% lapply(htmltools::HTML)
+
 leaflet() %>%
-  addProviderTiles(providers$CartoDB.Positron) %>%
+  addTiles() %>%
+  #addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(
     data = tombstones_geo,
-    label = ~ paste(First.Name, Surname, photo_names, sep = " "),
+    label = ~ (paste( First.Name, Surname, "-", Cemetery, "Cemetery", sep = " ")), 
+   # label = ~labels,
    # popup = leafpop::popupImage(paste0(here(blog_folder, photo_folder),"/", image_list)),
     clusterOptions = markerClusterOptions(),
     opacity = 1,
@@ -110,8 +252,8 @@ leaflet() %>%
    leafpop::addPopupImages(
     image = paste0(here(blog_folder, photo_folder),"/", image_list),
      src = local,
-     group = "group1",
-    width = 300, maxWidth = 300
+     group = "group1", width = 600,
+    maxHeight = 300, maxWidth = 600
    )
 
 ```
