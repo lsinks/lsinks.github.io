@@ -2,7 +2,7 @@
 title: "Leaflet_tester"
 date: 06-30-2023
 categories: [Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
-draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 This is a draft of a project for my father. I want to make sure the photo files structure renders properly online.
