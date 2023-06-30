@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-06-29T17:08:38.040Z</lastmod>
+    <lastmod>2023-06-29T23:22:57.263Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html</loc>
@@ -87,5 +87,9 @@
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html</loc>
     <lastmod>2023-06-29T17:08:16.433Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-06-30-leaflet2/tombstones.html</loc>
+    <lastmod>2023-06-29T23:23:10.407Z</lastmod>
   </url>
 </urlset>

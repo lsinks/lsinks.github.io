@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-06-28">
+
+<title>Louise E. Sinks - Leaflet_tester</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="../../site_libs/jquery-1.12.4/jquery.min.js"></script>
+<link href="../../site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="../../site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="../../site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="../../site_libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="../../site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="../../site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="../../site_libs/leaflet-binding-2.1.2/leaflet.js"></script>
+<script src="../../site_libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="../../site_libs/leaflet-providers-plugin-2.1.2/leaflet-providers-plugin.js"></script>
+<link href="../../site_libs/leaflet-markercluster-1.0.5/MarkerCluster.css" rel="stylesheet">
+<link href="../../site_libs/leaflet-markercluster-1.0.5/MarkerCluster.Default.css" rel="stylesheet">
+<script src="../../site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.js"></script>
+<script src="../../site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.freezable.js"></script>
+<script src="../../site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.layersupport.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - Leaflet_tester">
+<meta name="twitter:description" content="">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Leaflet_tester</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Data-Viz</div>
+    <div class="quarto-category">openxlsx</div>
+    <div class="quarto-category">stringr</div>
+    <div class="quarto-category">fuzzyjoin</div>
+    <div class="quarto-category">mapview</div>
+    <div class="quarto-category">sf</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 28, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># who doesn't want to be tidy?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.2     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+✔ purrr     1.0.1     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes) <span class="co"># more themes for ggplot</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># For nice tables</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel) <span class="co"># to help position labels in ggplot graphs</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openxlsx) <span class="co"># importing excel files from a URL</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fuzzyjoin) <span class="co"># for joining on inexact matches</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf) <span class="co"># for handling geo data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.9.3, GDAL 3.5.2, PROJ 8.2.1; sf_use_s2() is TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapview) <span class="co"># quick interactive mapping</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,
+which was just loaded, will retire in October 2023.
+Please refer to R-spatial evolution reports for details, especially
+https://r-spatial.org/r/2023/05/15/evolution4.html.
+It may be desirable to make the sf package available;
+package maintainers should consider adding sf to Suggests:.
+The sp package is now running under evolution status 2
+     (status 2 uses the sf package in place of rgdal)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet) <span class="co"># more mapping</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read in excel sheet</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>tombstones <span class="ot">&lt;-</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.xlsx</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Tombstone_Data_small.xlsx'</span> ,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sheet =</span> <span class="dv">1</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#converting to decimal latitude</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>tombstones <span class="ot">&lt;-</span> tombstones <span class="sc">%&gt;%</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">part1N =</span> <span class="fu">str_split_fixed</span>(N, <span class="at">pattern =</span> <span class="st">" "</span>, <span class="at">n =</span> <span class="dv">2</span>) ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">N_degree =</span> <span class="fu">as.numeric</span>(part1N[,<span class="dv">1</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">part2N =</span> <span class="fu">str_split_fixed</span>(part1N[,<span class="dv">2</span>], <span class="at">pattern =</span> <span class="st">'</span><span class="sc">\\</span><span class="st">.'</span>, <span class="at">n =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">N_minute =</span> <span class="fu">as.numeric</span>(part2N[,<span class="dv">1</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">N_second =</span> <span class="fu">as.numeric</span>(part2N[,<span class="dv">2</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lat =</span> N_degree <span class="sc">+</span> N_minute<span class="sc">/</span><span class="dv">60</span> <span class="sc">+</span> N_second<span class="sc">/</span><span class="dv">3600</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `N_degree = as.numeric(part1N[, 1])`.
+Caused by warning:
+! NAs introduced by coercion</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `N_second = as.numeric(part2N[, 2])`.
+Caused by warning:
+! NAs introduced by coercion</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#converting to decimal longitude  </span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tombstones <span class="ot">&lt;-</span> tombstones <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">part1W =</span> <span class="fu">str_split_fixed</span>(W, <span class="at">pattern =</span> <span class="st">" "</span>, <span class="at">n =</span> <span class="dv">2</span>) ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">W_degree =</span> <span class="fu">as.numeric</span>(part1W[,<span class="dv">1</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">part2W =</span> <span class="fu">str_split_fixed</span>(part1W[,<span class="dv">2</span>], <span class="at">pattern =</span> <span class="st">'</span><span class="sc">\\</span><span class="st">.'</span>, <span class="at">n =</span> <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">W_minute =</span> <span class="fu">as.numeric</span>(part2W[,<span class="dv">1</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">W_second =</span> <span class="fu">as.numeric</span>(part2W[,<span class="dv">2</span>])) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">long =</span> <span class="sc">-</span>(W_degree <span class="sc">+</span> W_minute<span class="sc">/</span><span class="dv">60</span> <span class="sc">+</span> W_second<span class="sc">/</span><span class="dv">3600</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `W_degree = as.numeric(part1W[, 1])`.
+Caused by warning:
+! NAs introduced by coercion</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There was 1 warning in `mutate()`.
+ℹ In argument: `W_second = as.numeric(part2W[, 2])`.
+Caused by warning:
+! NAs introduced by coercion</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tombstones <span class="ot">&lt;-</span> tombstones <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"part"</span>))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>tombstones <span class="ot">&lt;-</span> tombstones <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">full_name =</span> <span class="fu">paste</span>(Surname, First.Name, <span class="at">sep =</span> <span class="st">" "</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>blah</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "C:/Users/drsin/OneDrive/Documents/R Projects/lsinks.github.io/posts/2023-06-30-leaflet2"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>photo_names <span class="ot">=</span> <span class="fu">list.files</span>(<span class="st">"./Photos"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">=</span> <span class="fu">as.data.frame</span>(photo_names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>blah</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tombstones_merged <span class="ot">&lt;-</span> <span class="fu">fuzzy_right_join</span>(df, tombstones, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"photo_names"</span> <span class="ot">=</span> <span class="st">"full_name"</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">match_fun =</span> str_detect)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>blah</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># turn photo tag</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tombstones_merged <span class="ot">&lt;-</span> tombstones_merged <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(photo_names) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tag =</span> <span class="fu">paste0</span>(<span class="st">"&lt;img src="</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">paste0</span>(<span class="st">"./posts/2023-06-30-leaflet2/Photos/"</span>, photo_names),<span class="st">"&gt;"</span>))</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>tombstones_merged <span class="ot">&lt;-</span> tombstones_merged <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(lat) <span class="sc">%&gt;%</span> <span class="fu">drop_na</span>(long)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>tombstones_geo <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(tombstones_merged, <span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"long"</span>, <span class="st">"lat"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>tombstones_geo <span class="ot">&lt;-</span> <span class="fu">st_jitter</span>(tombstones_geo, <span class="at">factor =</span> <span class="fl">0.004</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>image_list <span class="ot">&lt;-</span> tombstones_geo<span class="sc">$</span>photo_names</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>CartoDB.Positron) <span class="sc">%&gt;%</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircleMarkers</span>(</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> tombstones_geo,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="sc">~</span> <span class="fu">paste</span>(First.Name, Surname, photo_names, <span class="at">sep =</span> <span class="st">" "</span>),</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">popup =</span> leafpop<span class="sc">::</span><span class="fu">popupImage</span>(<span class="fu">paste0</span>(<span class="st">"Photos/"</span>, image_list)),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">clusterOptions =</span> <span class="fu">markerClusterOptions</span>(),</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">opacity =</span> <span class="dv">1</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">5</span>,</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"black"</span>,</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="cn">NA</span>,</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="st">"group1"</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-51d375182ab279e6c60d" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-51d375182ab279e6c60d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[37.9931839265256,37.98460296916842,38.09847505447397,38.10985218067943,38.107825647515,38.10861953166422,38.10316263201658,36.6382337807412,36.62695613769402,38.54835609990301,38.5632204639248,36.62899081006617,36.6465471560328,36.83836881386167,36.8239655936945,36.81899701226291,36.81281882458984,36.81186027874165,37.99232141749805,37.98583737773181,37.97781793980598,37.98290389074549,38.10917438526056,38.10388529617543,37.88003108765407],[-88.77903006570607,-88.77961878964597,-88.68887352588462,-88.69588920231635,-88.69114501836368,-88.6929909179801,-88.68760161953787,-86.9908201695753,-86.98312665633553,-87.18429805858455,-87.18950995063358,-86.9786242927606,-86.99580957433923,-86.76575037539419,-86.7673887578092,-86.76044532910936,-86.7559813490732,-86.75918741643973,-88.86762801897552,-88.86596508734164,-88.87308825773223,-88.86230074256905,-88.68296892700951,-88.70707142003199,-89.05512003769286],5,null,"group1",{"interactive":true,"className":"","stroke":null,"color":"black","weight":5,"opacity":1,"fill":true,"fillColor":"black","fillOpacity":0.2},{"showCoverageOnHover":true,"zoomToBoundsOnClick":true,"spiderfyOnMaxZoom":true,"removeOutsideVisibleBounds":true,"spiderLegPolylineOptions":{"weight":1.5,"color":"#222","opacity":0.5},"freezeAtZoom":false},null,["<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson Zady distance.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 225px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 225px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson Zady.JPG' width=300 height=225>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson Albert A.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson Adesia.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson E Francis.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson William G.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Anderson Nancy A.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Appleton Richard chalk.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Appleton Richard.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Baldwin William chalk.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Baldwin William.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Baggett Mahalia us J Wilson.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Baggett Mahalia ux J Wilson.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Beasley EC Chalk.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Beasley EC No Chalk.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Beasley Fanning Chalk.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 225px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 225px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Beasley Fanning Distance.JPG' width=300 height=225>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 225px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 225px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Beasley Fanning No Chalk.JPG' width=300 height=225>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy Clem chalk.jpg' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy Clem.jpg' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy Nancy chalk.jpg' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy WM chalk.jpg' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 400px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 400px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 400px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy Thomas.JPG' width=300 height=400>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 225px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 225px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Bundy George and Lora L.JPG' width=300 height=225>  <\/table> <\/div> <\/body> <\/html>","<html> <head> <style> #popup { font-family: Arial, Helvetica, sans-serif; width: 100%; border-collapse: collapse; }   div.scrollableContainer {   max-height: 2000px;   max-width: 2000px; \twidth: 300px; \theight: 225px;   overflow-y: hidden;   overflow-x: hidden;   margin: 0px;   padding: 0 0 0 0;   background: transparent; }   div::-webkit-scrollbar {   width: 5px;   height: 5px; } div::-webkit-scrollbar-button {   width: 0px;   height: 0px; } div::-webkit-scrollbar-thumb {   background: #666666;   border: 0px none #ffffff;   border-radius: 0px; } div::-webkit-scrollbar-thumb:hover {   background: #333333; } div::-webkit-scrollbar-thumb:active {   background: #333333; } div::-webkit-scrollbar-track {   background: #e1e1e1;   border: 0px none #ffffff;   border-radius: 50px; } div::-webkit-scrollbar-track:hover {   background: #e1e1e1; } div::-webkit-scrollbar-track:active {   background: #e1e1e1; } div::-webkit-scrollbar-corner {   background: transparent; }  .leaflet-popup { \tposition: absolute; \ttext-align: center; }  .leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }  .leaflet-popup-content-wrapper { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4); \twidth: 300px; \theight: 225px; \tpadding: 0px; \ttext-align: left; \t-webkit-border-radius: 2px; \t        border-radius: 2px; }   .leaflet-popup-content-wrapper.leaflet-popup-content { \tmargin: 0px 0px 0px 0px; \twidth: 300px; \theight: 225px; }   .leaflet-popup-content p { \tmargin: 0px 0; }  .leaflet-popup-tip-container { \twidth: 40px; \theight: 20px; \tposition: absolute; \tleft: 50%; \tmargin-left: -20px; \toverflow: hidden; \tpointer-events: none; }  .leaflet-popup-tip { \twidth: 15px; \theight: 15px; \tpadding: 1px;  \tmargin: -10px auto 0;  \t-webkit-transform: rotate(45deg); \t   -moz-transform: rotate(45deg); \t    -ms-transform: rotate(45deg); \t     -o-transform: rotate(45deg); \t        transform: rotate(45deg); }   .leaflet-popup-tip { \tbackground: #ffffff; //#4c4c4c; \tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);  }  .leaflet-container a.leaflet-popup-close-button { \tposition: absolute; \ttop: 0; \tright: -20px; \tpadding: 3px 0px 0 0; \ttext-align: center; \twidth: 18px; \theight: 14px; \tfont: 16px/14px Tahoma, Verdana, sans-serif; \tcolor: #c3c3c3; \ttext-decoration: none; \tfont-weight: bold; \tbackground: transparent; \t}  .leaflet-container a.leaflet-popup-close-button:hover { \tcolor: #999; \t}  .leaflet-popup-scrolled { \tborder-bottom: 1px solid #ddd; \tborder-top: 1px solid #ddd; \t}   <\/style> <\/head> <body>  <div class=\"scrollableContainer\"> <table class=\"popup scrollable\" id=\"popup\">  <image src='../graphs/Burgess WJ.JPG' width=300 height=225>  <\/table> <\/div> <\/body> <\/html>"],null,["Zady Anderson Anderson Zady distance.JPG","Zady Anderson Anderson Zady.JPG","Albert Anderson Anderson Albert A.JPG","Adesia Anderson Anderson Adesia.JPG","E Anderson Anderson E Francis.JPG","William Anderson Anderson William G.JPG","Nancy Anderson Anderson Nancy A.JPG","Richard Appleton Appleton Richard chalk.JPG","Richard Appleton Appleton Richard.JPG","William Baldwin Baldwin William chalk.JPG","William Baldwin Baldwin William.JPG","Mahalia Baggett Baggett Mahalia us J Wilson.JPG","Mahalia Baggett Baggett Mahalia ux J Wilson.JPG","E Beasley Beasley EC Chalk.JPG","E Beasley Beasley EC No Chalk.JPG","Fanning Beasley Beasley Fanning Chalk.JPG","Fanning Beasley Beasley Fanning Distance.JPG","Fanning Beasley Beasley Fanning No Chalk.JPG","Clem Bundy Bundy Clem chalk.jpg","Clem Bundy Bundy Clem.jpg","Nancy Bundy Bundy Nancy chalk.jpg","W Bundy Bundy WM chalk.jpg","Thomas Bundy Bundy Thomas.JPG","George Bundy Bundy George and Lora L.JPG","W Burgess Burgess WJ.JPG"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[36.62695613769402,38.5632204639248],"lng":[-89.05512003769286,-86.7559813490732]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
