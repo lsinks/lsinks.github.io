@@ -2,7 +2,7 @@
 title: "Leaflet_tester"
 date: 06-30-2023
 categories: [Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
-draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 This is a draft of a project for my father. I want to make sure the photo files structure renders properly online. This will be revised and reposted later as a tutorial. It will also be deleted once I get his input.
@@ -29,8 +29,8 @@ blog_folder <- "posts/2023-06-30-leaflet2"
 photo_folder <- "Photos"
 archive_folder <- "Archive"
 problem_folder <- "Problem"
-data_file <- "Tombstone_Data_small.xlsx"
-#data_file <- "Tombstone Data.xlsx"
+#data_file <- "Tombstone_Data_small.xlsx"
+data_file <- "Tombstone Data.xlsx"
 # read in excel sheet
 tombstones <-
   read.xlsx(here(blog_folder, data_file),
@@ -240,8 +240,8 @@ leaflet() %>%
    # popup = leafpop::popupImage(paste0(here(blog_folder, photo_folder),"/", image_list)),
     clusterOptions = markerClusterOptions(),
     opacity = 1,
-    radius = 5,
-    color = "black",
+    radius = 10,
+    color = "blue",
     stroke = NA,
     group = "group1"
   )  %>%

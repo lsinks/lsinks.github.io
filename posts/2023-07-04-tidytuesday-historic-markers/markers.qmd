@@ -1,0 +1,387 @@
+---
+title: "TidyTuesday Week 27: Historical Markers"
+description: "TidyTuesday: Interactive Map of Arlington Historic Markers" 
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 07-04-2023
+categories: [R, TidyTuesday, R-code, Data-Viz, sf, leaflet] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-07-04-historic-markers/markers
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Today's [TidyTuesday](https://github.com/rfordatascience/tidytuesday) is about historical markers with the data coming from the [Historical Marker Database](https://www.hmdb.org/). I'm going to add to the [map that I made last week](https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html) with information about Historic Districts in Arlington, VA. I'm going to make an interactive leaflet map with the new information added to the [old map](https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html).
+
+Loading libraries.
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+library(tidyverse) # who doesn't want to be tidy
+library(leaflet) # interactive mapping
+library(mapview) # simple interactive mapping
+library(sf) # geocoding objects
+library(openxlsx) # importing excel files from a URL
+```
+
+I'm not going to loading the no markers data, because I know I'm not going to use it.
+
+```{r}
+#| label: loading-data
+tuesdata <- tidytuesdayR::tt_load(2023, week = 27)
+
+historical_markers <- tuesdata$`historical_markers`
+#no_markers <- tuesdata$`no_markers`
+```
+
+The data isn't very clean. The website might want to consider drop-down menus for some of the bigger groups. Here's an illustration look at some of many ways people rendered "Kentucky Historical Society and Kentucky Department of Highways".
+
+```{r}
+#| label: ugly-data
+historical_markers %>% filter(state_or_prov == "Kentucky") %>% 
+  group_by(erected_by) %>% count(sort = TRUE) %>% filter(n > 50)
+```
+
+Filtering for Virginia only. I could filter by `county == "Arlington County"` also, but I actually want to get some of the adjacent markers, because I know there are some right on the county line and I'm not sure which jurisdiction they will fall in.
+
+```{r}
+#| label: virginia-only
+
+virginia_markers <- historical_markers %>% filter(state_or_prov == "Virginia") 
+
+```
+
+I'm going to load in my data from the previous visualization. The blog post on how I created these objects is [here](https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html).
+
+```{r}
+#| label: loading-datasets
+#| warning: false
+#| output: false
+historic_4269 <- st_read("points.shp")
+arlington_polygons_sf <- st_read("polygons.shp")
+```
+
+Now I'm adding html tags and transforming the coordinate system. More about that [here](https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html).
+
+```{r}
+#| label: adding-html-tags
+
+# turn the url to HTML anchor tag
+historic_4269 <- historic_4269 %>% 
+  mutate(tag = paste0("More Info: <a href=", Extrn_L,">", Extrn_L, "</a>"))
+
+#transforming crs
+historic_4326 <- sf::st_transform(historic_4269, crs = 4326)
+arlington_polygons_sf_4326 <- sf::st_transform(arlington_polygons_sf, crs = 4326) 
+```
+
+Now I'm roughly sub-setting to Arlington based on latitude and longitude.
+
+```{r}
+#| label: arlington-rough
+va_markers_nova <-
+  virginia_markers %>% filter(longitude_minus_w < -76.5 &
+                                longitude_minus_w > -77.25) %>%
+  filter(latitude_minus_s > 38.8 &
+           latitude_minus_s < 39.4)
+```
+
+I know there is a lot of variation in the erected_by data (as seen for KY), so I'm going to check that out for this sub-set.
+
+```{r}
+#| label: arlington-rough-cleaning1
+va_markers_nova %>% group_by(erected_by) %>% count(sort = TRUE)
+```
+
+Change all the Arlington stuff to Arlington County. The Conservation & Development Comission and the Virginia Conservation Commission are the same entity- [the name changed over the years](https://ead.lib.virginia.edu/vivaxtf/view?docId=lva/vi00960.xml). I'm adding the years to those entries. I suspect they and the Virginia Landmarks Commission are all now replaced by the Virginia Department of Historic Resources, but I couldn't find a source for that.
+
+```{r}
+#| label: arlington-rough-cleaning2
+va_markers_nova <- va_markers_nova %>%
+  mutate(erected_by_clean = ifelse(
+    str_detect(erected_by, "Arlington County"),
+    "Arlington County",
+    erected_by
+  )) %>%
+  mutate(
+    erected_by_clean = ifelse(
+      str_detect(erected_by_clean, "Historic Resources"),
+      "Virginia Dept. of Historic Resources",
+      erected_by_clean
+    )
+  ) %>%
+  mutate(
+    erected_by_clean = ifelse(
+      str_detect(erected_by_clean, "Conservation &"),
+      "Virginia Conservation & Development Commission (1926- 1938)",
+      erected_by_clean
+    )) %>%
+  mutate(
+    erected_by_clean = ifelse(
+      str_detect(erected_by_clean, "Virginia Conservation Commission"),
+      "Virginia Conservation Commission (1938-1948)",
+      erected_by_clean
+    ))
+
+```
+
+Checking our cleaned list.
+
+```{r}
+#| label: arlington-rough-cleaning-check
+va_markers_nova %>% group_by(erected_by_clean) %>% count(sort = TRUE)
+```
+
+Converting this to a sf object. For more information about that, see [my last week's TidyTuesday](https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html). Just take a quick look to make sure I'm happy. The mapview package is great for quick and dirty maps; I'll use leaflet to make the fancy one.
+
+```{r}
+#| label: quick-map
+
+va_markers_nova_geo <- st_as_sf(va_markers_nova, coords = c(9, 8), crs = 4326)
+
+mapview(va_markers_nova_geo) + mapview(historic_4326) + mapview(arlington_polygons_sf_4326)
+```
+
+Making the HTML anchor tag for my pop-up with a live link. This is covered in [my leaflet revision to last week's TidyTuesday](https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html).
+
+```{r}
+#| label: making-tags-leaflet
+# turn the url to HTML anchor tag
+va_markers_nova_geo <- va_markers_nova_geo %>% 
+  mutate(tag = paste0("More Info: <a href=", link,">", link, "</a>"))
+```
+
+A first view of the map.
+
+```{r}
+#| label: leaflet-map-draft
+
+pal <- colorFactor(palette = "viridis", domain = arlington_polygons_sf_4326$CIVIC)
+
+leaflet_map <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    data = arlington_polygons_sf_4326,
+    weight = 1,
+    label = ~ CIVIC,
+    color = ~ pal(CIVIC), 
+    group = "Arlington Neighborhoods"
+  ) %>%
+  addCircleMarkers(
+    data = historic_4326,
+    popup = ~ paste0("<b>", Prprt_N, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "black",
+    stroke = NA,
+    group = "Historic Neighborhoods"
+  ) %>% 
+    addCircleMarkers(
+    data = va_markers_nova_geo,
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "red",
+    stroke = NA,
+    group = "Historic Markers")
+  
+leaflet_map
+  
+```
+
+Now I'm going to subset the point data into data that is within the Arlington polygons and that which is outside the boundaries. I found a [nice explanation on the GIS Stack Exchange on how to use st_intersects()](https://gis.stackexchange.com/questions/245136/how-to-subset-point-data-by-outside-of-polygon-data-in-r) for this.
+
+Basically, I find the interections between the two geometry datasets. If there isn't one, the length of the list will be 0. Using sapply, we can create a TRUE/FALSE vector when we test against the condition of `length == 0`.
+
+```{r}
+#| label: finding-points-in-Arlington
+intersection <-
+  st_intersects(va_markers_nova_geo, arlington_polygons_sf_4326)
+b <-
+  sapply(st_intersects(va_markers_nova_geo, arlington_polygons_sf_4326), function(x) {
+    length(x) == 0
+  })
+```
+
+So, now I subset the original marker data into Arlington and not Arlington.
+
+```{r}
+#| label: arlington-and-notArlington
+markers_arlington <- va_markers_nova_geo[!b, ]
+markers_not_arlington <- va_markers_nova_geo[b, ]
+```
+
+And then map this. I put in a layer control so you can remove layers.
+
+```{r}
+#| label: arlington-historic-map
+leaflet_map <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    data = arlington_polygons_sf_4326,
+    weight = 1,
+    label = ~ CIVIC,
+    color = ~ pal(CIVIC),
+    group = "Arlington Neighborhoods"
+  ) %>%
+  addCircleMarkers(
+    data = historic_4326,
+    label = ~ Prprt_N,
+    popup = ~ paste0("<b>", Prprt_N, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "black",
+    group = "Historic Neighborhoods",
+    stroke = NA
+  ) %>%
+  addCircleMarkers(
+    data = markers_arlington,
+    label = ~ title,
+    popup = ~ paste0("<b>", title, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "red",
+    stroke = NA,
+    group = "Historic Markers in Arlington"
+  ) %>%
+  addCircleMarkers(
+    data = markers_not_arlington,
+    label = ~ title,
+    popup = ~ paste0("<b>", title, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "blue",
+    stroke = NA,
+    group = "Historic Markers not in Arlington"
+  ) %>%
+  addLayersControl(
+    #baseGroups = c("CartoDB.Positron"),
+    overlayGroups = c(
+      "Arlington Neighborhoods",
+      "Historic Neighborhoods",
+      "Historic Markers",
+      "Historic Markers not in Arlington"
+    ),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+leaflet_map
+```
+
+Several markers are on the county boundary and some do fall outside the county, such as those at Washington Reagan Airport.
+
+None of Arlington's historic neighborhood districts show up. According to [the markers page](https://www.hmdb.org/about.asp), "A second exception in these guidelines are National Register of Historic Places and other officially sanctioned brass tablets that simply name the historic building or site. They can only anchor a marker page when there is no other qualifying marker nearby. When there is one, it should be used to further illustrate that other marker's page." So, as I understand it, there should be entries.
+
+Many of the Historic Marker's are related to the [defense of Washington, DC during the American Civil War](https://en.wikipedia.org/wiki/Civil_War_Defenses_of_Washington). I made a list manually from Wikipedia, and added a column labeling these "civil war defense".
+
+```{r}
+#| label: reading-forts
+fort <- read.xlsx(here::here("posts/2023-07-04-tidytuesday-historic-markers", "forts2.xlsx"), sheet = 1)
+```
+
+I'm going to use a join to determine if a marker is a civil war defense fort. If it matches, there will be an entry in the column `Defense_Label` that says "Civil War Defense". If there isn't a match, there will be an `NA`. Using a left join with `markers_arlington` keeps all of the entries.
+
+```{r}
+#| label: joining-forts
+markers_arlington <-
+  markers_arlington %>% left_join(fort, by = c("title" = "Fort_Name"))
+```
+
+Now making a TRUE/FALSE column to subset on. If the `Defense_Label` is `NA`, then we know it does not match with a fort, so I set the label to FALSE. Otherwise, TRUE.
+
+```{r}
+#| label: fort_index
+Civil_war <- markers_arlington %>%
+  mutate(Defense_Label = ifelse(is.na(Defense_Label), FALSE, TRUE))
+```
+
+Now create the two groups by using this TRUE/FALSE column to index on.
+
+```{r}
+#| label: forts-others
+
+markers_arlington_cw <- Civil_war[Civil_war$Defense_Label , ]
+markers_arlington_other <- Civil_war[!Civil_war$Defense_Label , ]
+
+```
+
+Now add these new groups to the map and remove the old historic markers group.
+
+```{r}
+#| label: final-map
+leaflet_map <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addPolygons(
+    data = arlington_polygons_sf_4326,
+    weight = 1,
+    label = ~ CIVIC,
+    color = ~ pal(CIVIC),
+    group = "Arlington Neighborhoods"
+  ) %>%
+  addCircleMarkers(
+    data = historic_4326,
+    label = ~ Prprt_N,
+    popup = ~ paste0("<b>", Prprt_N, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "black",
+    group = "Arlington Historic Neighborhoods",
+    stroke = NA
+  ) %>%
+  addCircleMarkers(
+    data = markers_arlington_cw,
+    label = ~ title,
+    popup = ~ paste0("<b>", title, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "red",
+    stroke = NA,
+    group = "Civil War Federal Defense Historic Markers"
+  ) %>%
+  
+  addCircleMarkers(
+    data = markers_arlington_other,
+    label = ~ title,
+    popup = ~ paste0("<b>", title, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "green",
+    stroke = NA,
+    group = "Arlington Historic Markers"
+  ) %>%
+  addCircleMarkers(
+    data = markers_not_arlington,
+    label = ~ title,
+    popup = ~ paste0("<b>", title, "</b>", "<br>", tag),
+    # note the tilde notation!
+    opacity = 1,
+    radius = 7,
+    color = "blue",
+    stroke = NA,
+    group = "Historic Markers not in Arlington"
+  ) %>%
+  addLayersControl(
+    #baseGroups = c("CartoDB.Positron"),
+    overlayGroups = c(
+      "Arlington Neighborhoods",
+      "Arlington Historic Neighborhoods",
+      "Arlington Historic Markers",
+      "Civil War Federal Defense Historic Markers" ,
+      "Historic Markers not in Arlington"
+    ),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+leaflet_map
+```
+
+And there we have it. A lovely map with different types of local historic features.

@@ -62,25 +62,32 @@ tombstones_geo <- st_jitter(tombstones_geo, factor = 0.004)
 
 image_list <- tombstones_geo$photo_names
 
-leaflet() %>%
+m<- leaflet() %>%
   addProviderTiles(providers$CartoDB.Positron) %>%
   addCircleMarkers(
     data = tombstones_geo,
     label = ~ paste(First.Name, Surname, photo_names, sep = " "),
-    popup = leafpop::popupImage(paste0("posts/2023-06-30-leaflet2/Photos/", image_list)),
+   # popup = leafpop::popupImage(paste0("posts/2023-06-30-leaflet2/Photos/", image_list)),
     clusterOptions = markerClusterOptions(),
     opacity = 1,
     radius = 5,
     color = "black",
     stroke = NA,
     group = "group1"
+  ) %>%
+  leafpop::addPopupImages(
+    image = paste0("posts/2023-06-30-leaflet2/Photos/", image_list),
+    src = local,
+    group = "group1", width = 600,
+    maxHeight = 300, maxWidth = 600
   )
+
+
+library(htmlwidgets)
+
+# Save the map as an HTML widget
+saveWidget(m, file = "tomstones_map2.html")
+
 
 # popup = ~tag,
 
-# %>%
-#   leafpop::addPopupImages(
-#     image = paste0("posts/2023-06-30-leaflet2/Photos/", image_list),
-#     src = local,
-#     group = "group1"
-#   )
