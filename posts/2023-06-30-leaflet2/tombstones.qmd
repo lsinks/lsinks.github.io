@@ -19,6 +19,7 @@ library(mapview) # quick interactive mapping
 library(leaflet) # more mapping
 library(here)
 library(magick)
+library(skimr)
 
 ```
 
@@ -41,7 +42,7 @@ tombstones <-
 
 Cleaning it up.
 
-1.  Change NAs in middle name variable to "".
+1.  Change NAs in middle name variable to "" as well as cemeteries.
 
 ```{r}
 tombstones <- tombstones %>%
@@ -93,20 +94,38 @@ tombstones <- tombstones %>%
 
 ```
 
-My father's photo naming convention is "last name first name middle initial". I'm going to construct a variable full_name from the spreadsheet data and use that to match. Initially, I'm leaving out middle name, because that column is problematic.
+My father's photo naming convention is "last name first name middle initial". I'm going to construct a variable full_name from the spreadsheet data and use that to match. Initially, I'm leaving out middle name, because that column is problematic. Sometimes it is the middle name. Sometimes it is a noted like "shared family tombstone". Sometimes it is the middle initial from the gravestone, but with the full name filled in with brackets like A\[lvis\].
 
 ```{r}
 tombstones <- tombstones %>%
   mutate(full_name = paste(Surname, First.Name, sep = " "))
 ```
 
-Now, I'm generating a list of all the photo names and converting it to a dataframe. I'm going to match against this list.
+Now, I'm generating a list of all the photo names and converting it to a dataframe. I'm going to match against this list. The folder he gave me contains non-photos too, but I think they will be filtered out by the join.
+
+#this correctly reads in all 499 files
 
 ```{r}
 photo_names = list.files(here(blog_folder, photo_folder))
 photo_df = as.data.frame(photo_names)
+```
 
+Let's look at the cemetery data.
 
+```{r}
+cems <- tombstones %>% group_by(Cemetery) %>% count(sort = TRUE)
+```
+
+Let's look at how many unique cemetery names there are. This will help with typos.
+
+```{r}
+cems_unique <- tombstones %>% distinct(Cemetery)
+```
+
+Actually just look at the sorted tombstone list. This would be easier to do in excel, but there are weird formatting things that make it difficult to sort.
+
+```{r}
+temp <- tombstones %>% arrange(Cemetery)
 ```
 
 Doing a fuzzy join on the two dataframes.
@@ -120,6 +139,8 @@ tombstones_merged <- fuzzy_right_join(photo_df, tombstones,
 
 Seeing what photos weren't matched. I'm actually going to move them somewhere else.
 
+#At a quick glance, this looks to be correct.
+
 ```{r}
 not_matched <- anti_join(photo_df, tombstones_merged)
 
@@ -132,14 +153,13 @@ for (index in seq(1:nrow(not_matched))) {
 
 ```
 
-I'm dropping all the NAs in the photo_names column. I'm creating an image tag, because I'd ideally like to use that for the photos.
+I'm dropping all the NAs in the photo_names column. I
 
 ```{r}
 
-# turn photo tag
+#deleting NAs
 tombstones_merged <- tombstones_merged %>%
-  drop_na(photo_names) %>%
-  mutate(tag = paste0("<img src=", here(blog_folder, photo_folder, photo_names),">"))
+  drop_na(photo_names)
 
 ```
 
@@ -149,7 +169,7 @@ How many people have multiple photos?
 multiples <- tombstones_merged %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1)
 ```
 
-Look at these multiples more closely
+Look at these high multiples more closely.
 
 ```{r}
 
@@ -158,6 +178,34 @@ df_temp <- tombstones_merged %>%
 df_temp
 
 ```
+
+So this is a middle/ Maiden name problem.
+
+```{r}
+df_temp2 <- tombstones_merged %>%
+  filter(full_name == multiples$full_name[2]) 
+df_temp2
+```
+
+How many people have the same full name?
+
+```{r}
+#| column: page
+name_problems <- tombstones %>% drop_na(full_name) %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1) %>% filter( full_name != "NA NA")
+
+name_problems %>% gt() %>%
+  cols_label(full_name = "Full Name", n = "# with this name") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "People with the Same Full Name") 
+```
+
+Do an innerjoin with tombstones to get all the details on these folks
+
+```{r}
+needs_correction <- tombstones %>% inner_join(name_problems) 
+```
+
+Figuring this out requires subject matter expertise and probably hand correcting.
 
 Write a function to handle making panel figures. Not a function yet
 
