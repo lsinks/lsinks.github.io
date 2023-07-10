@@ -40,18 +40,11 @@ tombstones <-
 
 ```
 
-Cleaning it up.
+Overview
 
-1.  Change NAs in middle name variable to "" as well as cemeteries.
+# Fixing GPS
 
-```{r}
-tombstones <- tombstones %>%
-mutate(Middle.Name = ifelse(is.na(Middle.Name), "", Middle.Name)) %>%
-  mutate(Cemetery = ifelse(is.na(Cemetery), "", Cemetery))
-
-```
-
-2.  Latitude and longitude data contains some stray degree and minute symbols. The degree symbol appears both as a straight and curved apostrophe and the degree symbols appear both as o and O. This cleaning needs to be done on both N and W columns.
+Latitude and longitude data contains some stray degree and minute symbols. The degree symbol appears both as a straight and curved apostrophe and the degree symbols appear both as o and O. This cleaning needs to be done on both N and W columns.
 
 ```{r}
 
@@ -63,13 +56,15 @@ mutate(N = str_replace_all(N, pattern = "'", " "))  %>%
 mutate(W = str_replace_all(W, pattern = "’", " ")) %>%
 mutate(W = str_replace_all(W, pattern = "O", " "))  %>% 
 mutate(W = str_replace_all(W, pattern = "o", " ")) %>%
-mutate(W = str_replace_all(W, pattern = "'", " "))  
+mutate(W = str_replace_all(W, pattern = "'", " ")) 
+
+
+
 ```
 
 Next, I'm converting the N and W data to decimal latitude and longitude. S/W should be "-" and N/E should be "+". I split the degree/minute/second data into parts and then do the conversion. I delete the intermediate components when done.
 
 ```{r}
-
 #converting to decimal latitude
 tombstones <- tombstones %>%
   mutate(part1N = str_split_fixed(N, pattern = " ", n = 2) ) %>%
@@ -94,23 +89,17 @@ tombstones <- tombstones %>%
 
 ```
 
-My father's photo naming convention is "last name first name middle initial". I'm going to construct a variable full_name from the spreadsheet data and use that to match. Initially, I'm leaving out middle name, because that column is problematic. Sometimes it is the middle name. Sometimes it is a noted like "shared family tombstone". Sometimes it is the middle initial from the gravestone, but with the full name filled in with brackets like A\[lvis\].
+# Cleaning Up Cemetery data
+
+Let's look at the cemetery data. spaces
 
 ```{r}
 tombstones <- tombstones %>%
-  mutate(full_name = paste(Surname, First.Name, sep = " "))
+#mutate(Middle.Name = ifelse(is.na(Middle.Name), "", Middle.Name)) %>%
+  mutate(Cemetery = ifelse(is.na(Cemetery), "", Cemetery))
+
+
 ```
-
-Now, I'm generating a list of all the photo names and converting it to a dataframe. I'm going to match against this list. The folder he gave me contains non-photos too, but I think they will be filtered out by the join.
-
-#this correctly reads in all 499 files
-
-```{r}
-photo_names = list.files(here(blog_folder, photo_folder))
-photo_df = as.data.frame(photo_names)
-```
-
-Let's look at the cemetery data.
 
 ```{r}
 cems <- tombstones %>% group_by(Cemetery) %>% count(sort = TRUE)
@@ -128,47 +117,109 @@ Actually just look at the sorted tombstone list. This would be easier to do in e
 temp <- tombstones %>% arrange(Cemetery)
 ```
 
-Doing a fuzzy join on the two dataframes.
+# Cleaning Up Names
+
+My father's photo naming convention is "last name first name middle initial". I'm going to construct a variable full_name from the spreadsheet data and use that to match.
+
+The middle name column is problematic. Sometimes it is the middle name. Sometimes it is a notes like "shared family tombstone". Sometimes it is the middle initial from the gravestone, but with the full name filled in with brackets like A\[lvis\]. Sometimes it is a maiden name or the name of the spouse.
+
+Easy stuff first- stripping out extra spaces and periods and the abreviation ux (latin for wife) and us (a typo for ux). REMEMBER TO ESCAPE PERIODS and brackets
+
+```{r}
+tombstones2 <- tombstones %>%
+  mutate(Middle.Name = str_replace(Middle.Name, "ux ", "")) %>%
+  mutate(Middle.Name = str_replace(Middle.Name, "us ", "")) %>%
+  mutate(Extra_Middle_Name = str_extract(Middle.Name, "\\[.+\\]")) %>%
+  mutate(Middle.Name = str_replace(Middle.Name, "\\[.+\\]", "")) %>%
+  mutate(Middle.Name = str_replace(Middle.Name, "\\.", "")) %>%
+  mutate(Middle.Name = str_trim(Middle.Name, side = c("both"))) %>%
+  mutate(Middle.Name = na_if(Middle.Name, ""))
+  
+```
+
+This fixes most of the issues, but not all. I'm going to see how the rest of this going and then come back and fix problem cases. It is possible that the entire middle name should be thrown out if ux is there, but I did see that some photos seem to have spouse names.
+
+```{r}
+tombstones2 <- tombstones2 %>%
+  mutate(full_name_MI = ifelse(
+    is.na(Middle.Name) == TRUE,
+    Middle.Name,
+    paste(Surname, First.Name, Middle.Name, sep = " ")
+  )) %>%
+  mutate(full_name = paste(Surname, First.Name, sep = " "))
+```
+
+Now, I'm going to split this into two dataframe.
+
+PEOPLE WHO HAD MIDDLE NAMES removed are not nas!!!!! FIXED ABOVE
+
+```{r}
+
+tombstones_middle <- tombstones2 %>%
+  filter(is.na(Middle.Name) == FALSE)
+tombstones_n_omiddle <- tombstones2 %>%
+  filter(is.na(Middle.Name) == TRUE)
+
+```
+
+# Matching to Photos
+
+Now, I'm generating a list of all the photo names and converting it to a dataframe. I'm going to match against this list. The folder he gave me contains non-photos too, but I think they will be filtered out by the join.
+
+```{r}
+photo_names = list.files(here(blog_folder, photo_folder))
+photo_df = as.data.frame(photo_names)
+```
 
 I'm going to remove all duplicate names for now.
 
 ```{r}
-multiples <- tombstones %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1)
+multiples <- tombstones_middle %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1)
 ```
 
 Use an antijoin to filter out everything that doesn't match.
 
 ```{r}
-tombstones_unique_names <- tombstones %>%
+tombstones_unique_names <- tombstones_middle %>%
   anti_join(multiples)
 ```
 
-Now merge.
+Okay, this seems to be fully unique names.
+
+The photo name format contains the fullname, but then might include additional description, such as:
+
+```{r}
+photo_df$photo_names[12]
+```
+
+So I'm going to have to a fuzzy/ partial match. So using "Appleton Richard" will correctly match with that photo. The problem is that the fuzzy match might also incorrect match people with similar names.
+
+So, I need to match to the most complete name first, and then the least complete name.
 
 ```{r}
 tombstones_merged <- fuzzy_right_join(photo_df, tombstones_unique_names, 
-                             by = c("photo_names" = "full_name"),
+                             by = c("photo_names" = "full_name_MI"),
                              match_fun = str_detect)
 
 ```
 
-Seeing what photos weren't matched. I'm actually going to move them somewhere else.
+Seeing what photos weren't matched. I'm actually going to move them somewhere else for the second round of matching
 
 #At a quick glance, this looks to be correct.
 
 ```{r}
-not_matched <- anti_join(photo_df, tombstones_merged)
+not_matched_first_round <- anti_join(photo_df, tombstones_merged)
 
 index <- 1
-for (index in seq(1:nrow(not_matched))) {
-  file.rename(from = here(blog_folder, photo_folder, not_matched$photo_names[index]),
-                         to = here(blog_folder, problem_folder, not_matched$photo_names[index] ))
+for (index in seq(1:nrow(not_matched_first_round))) {
+  file.rename(from = here(blog_folder, photo_folder, not_matched_first_round$photo_names[index]),
+                         to = here(blog_folder, problem_folder, not_matched_first_round$photo_names[index] ))
 }
 
 
 ```
 
-I'm dropping all the NAs in the photo_names column. I
+I'm dropping all the NAs in the photo_names column.
 
 ```{r}
 
@@ -193,36 +244,6 @@ df_temp <- tombstones_merged %>%
 df_temp
 
 ```
-
-So this is a middle/ Maiden name problem.
-
-```{r}
-df_temp2 <- tombstones_merged %>%
-  filter(full_name == multiples$full_name[2]) 
-df_temp2
-```
-
-How many people have the same full name?
-
-```{r}
-#| column: page
-name_problems <- tombstones %>% drop_na(full_name) %>% group_by(full_name) %>% count(sort = TRUE) %>% filter(n > 1) %>% filter( full_name != "NA NA")
-
-name_problems %>% gt() %>%
-  cols_label(full_name = "Full Name", n = "# with this name") %>%
-  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
-  tab_header(title = "People with the Same Full Name") 
-```
-
-Do an innerjoin with tombstones to get all the details on these folks
-
-```{r}
-needs_correction <- tombstones %>% inner_join(name_problems) 
-```
-
-Figuring this out requires subject matter expertise and probably hand correcting.
-
-Write a function to handle making panel figures. Not a function yet
 
 https://stackoverflow.com/questions/61196196/image-append-on-dynamic-number-of-variables
 
@@ -264,9 +285,9 @@ Now I need to redo everything so it will only match on the panel figures and not
 
 ```{r}
 photo_names2 = list.files(here(blog_folder, photo_folder))
-photo_df_final = as.data.frame(photo_names2)
-tombstones_final <- fuzzy_right_join(photo_df_final, tombstones, 
-                             by = c("photo_names2" = "full_name"),
+photo_df_MI_final = as.data.frame(photo_names2)
+tombstones_middle <- fuzzy_right_join(photo_df_MI_final, tombstones_middle, 
+                             by = c("photo_names2" = "full_name_MI"),
                              match_fun = str_detect)
 ```
 
