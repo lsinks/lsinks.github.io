@@ -1,0 +1,340 @@
+---
+title: "web-scraping"
+description: "" 
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 06-29-2023
+categories: [R, TidyTuesday, R-code, Data-Viz, sf, leaflet] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-06-29-tidytuesday-US-populated-places-leaflet/arlington-neighborhoods-leaflet
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+I really enjoyed making leaflet maps for TidyTuesday and wanted to play around with them some more. My father is interested in family history and has been documenting the gravesites of our ancestors. He takes nice photos with a camera and records the gps with a garmin device. I thought it would be nice to combine the data into a leaflet map for him. I wanted to add some other information as well. He is a member of the Sons of the American Revolution, a society of men who can trace their lineage back to someone who served in the American Revolutionary War. Some of the application material is available on their website. So, I wanted to add those links as well.
+
+This blog post deals with scraping the data from the website, wrangling it into a format where it could be matched against my father's spreadsheet and then looking for matches. I'll show you a bunch of things that didn't work as well, including some code from Google Bard. This project deals with a fairly small set of data, about 400 photos, 500 entries in the spreadsheet, and 74 entries from the website. It is likely easier to clean things up by hand, but that isn't scalable. So, whenever possible, I am doing things programatically. (Not that this project needs to scale, but it is good practice for larger datasets.
+
+# Loading Libraries and Data
+
+```{r}
+#| label: loading-libraries
+library(tidyverse) 
+library(here)
+library(rvest)
+```
+
+This is my father's spreadsheet after some clean-up.
+
+```{r}
+#| label: loading-spreadsheet
+
+```
+
+# Webscraping
+
+I decided to use the rvest package for webscraping. I was introduced to it through TidyTuesday. For politenesses sake, I am working on a downloaded copy of the webpage.
+
+There is an overview of [webscraping using rvest](https://rvest.tidyverse.org/articles/rvest.html) on the package website. Basically, you want to right click on the webpage in your browser and chose "inspect" to find out what elements you want to use. In my case, the information was formatted as a table, so I pull out the children of the table element. There is an html_table() function, but it only extracts the text elements from the table, not the links. If you are only interested in the text, then this is a great option. To get the links that I wanted, I found an [example on Stack Overflow](https://stackoverflow.com/questions/63093926/retrieve-link-from-html-table-with-rvest).
+
+```{r}
+#| label: loading-webpage
+sar <- read_html(here("posts/2023-06-30-leaflet2", "Display Member - 121743 - John Douglas Sinks Ph.D..html"))
+
+link_nodes <- sar %>% html_nodes(xpath = "//table//a")  
+link_text  <- link_nodes %>% html_text()
+text_df = as.data.frame(link_text)
+
+index <- 1
+for (index in seq(1:nrow(text_df))) {
+  text_df$url[index] <- link_nodes[index] %>%  html_attr("href")
+}
+```
+
+There are actually three sets of links- one with the name, one with the application, and one to purchase the detailed application. I only want the one that goes to the application. So I take every third link, starting with the first.
+
+```{r}
+raw_data <- text_df[seq(1, nrow(text_df), 3),]
+head(raw_data)
+
+```
+
+# Cleaning Text Data
+
+Now to wrangle the text data into a usable form. The link_text contains the name and an ID number, like John PHELPS (P-335209). This can be split into two components using `(` as a separator. Remember that special characters like `(` need to be escaped (more on that later). So the actual separator is `" \\("` I took the space also. Then I removed the other parenthesis with `str_replace()`. I used transmute do the final mutation and select the columns I wanted moving forward.
+
+```{r}
+
+# first clean up the names
+rev_war <- raw_data %>%
+  separate(link_text, sep = " \\(", into = c("name_unclean", "id_unclean") ) 
+
+
+#clean up the id number
+rev_war <- rev_war %>%
+  transmute(name_unclean, url, SAR_ID = str_replace(id_unclean, "\\)", ""))
+
+```
+
+R keeps the indexing of the raw_data, so the row numbers are by 3s. However, indexing is as normal, by position. So rev_war\$name_unclean\[3\] returns the name associated with the row number 7. This is annoying and makes it difficult to pull out test cases. So, this should be fixed. This issue will pop up when you use data frames, but not when you use tibbles. The tidyverse doesn't approve of row names or numbers, so they aren't used. If you look at the data in RStudio viewer, you will get row numbers and the tibble will have them correctly numbered. Tibbles and data frames are usually completely interchangeable, but sometimes you do run into the differences.
+
+So, two ways to fix this:
+
+1.  Convert to a tibble.
+
+```{r}
+rev_war_tibble <- as.tibble(rev_war)
+
+head(rev_war_tibble)
+```
+
+2.  Reassign the indexing of the data frame.
+
+```{r}
+head(rev_war)
+
+rownames(rev_war) = seq(length = nrow(rev_war))
+
+head(rev_war)
+```
+
+I'm going to continue with the data frame.
+
+Now the names are a mess. Women have "Mrs" prepended. The last names are in all caps and sometimes have multiple variations separated by a /. There are also Jr and Sr at the end of some. There are different numbers of leading and trailing spaces on the names.
+
+The whitespace, Jr/Sr, and Mrs issue are easy to deal with using tools from the stringr package. The "Mrs" is not useful at all, so I'm just going to replace it with "" via `str_replace()`. I'm going to remove the whitespace using `str_trim()`. I generally like to keep the original data so I can check the transformations, so these operations are in a new column name. I also make a suffix column for Jr/Sr and remove that info from the name column. I'm not changing the names to title case now, because I'm going to use the fact that the last names are in upper case as part of my pattern matching.
+
+```{r}
+rev_war <- rev_war %>%
+  mutate(name =
+    str_replace(name_unclean, "Mrs", "")
+  ) %>%
+
+# there appear to be leading and tailing strings on the name
+  mutate(name =
+           str_trim(name, side = c("both"))
+  ) %>%
+
+
+# deal with Jr/Sr first
+  mutate(suffix =
+           case_when(
+             str_detect(name, "Jr") == TRUE ~ "Jr",
+             str_detect(name, "Sr") == TRUE ~ "Sr",
+             TRUE ~ ""
+           )
+  ) %>%
+
+# now remove the Jr and sr from the name
+  mutate(name =
+           str_replace(name, "Jr", "")
+  ) %>%
+  mutate(name =
+           str_replace(name, "Sr", "")
+  ) %>%
+
+#double check the white space issue
+  mutate(name =
+           str_trim(name, side = c("both"))
+  )
+
+```
+
+That is all pretty straightforward. Now how do we break this up?
+
+```{r}
+rev_war$name[3]
+```
+
+The obvious choice would be to use the space(s) between the name to separate the string into two parts. This fails because of names like this:
+
+```{r}
+rev_war$name[27]
+```
+
+I admit, I spent a fair bit of trial and error to figure this out. First note- using `str_split()` from stringr is not the way to go. I got a bit hyperfocused on stringr functions since I was using the package so heavily. It creates a matrix of results in your data frame, and not new columns of data. Use `separate()` from tidyr instead.
+
+I decided to do this stepwise. So the `remove = FALSE` flag needs to be set in `separate()`. First, I got the first names by splitting on the pattern of space and then two or more capital letters. The two or more is necessary because of names like Friderick William. This gives the complete first name(s) and an incomplete last name, because the separator is discarded. So you end up with AGEL/NAGLE, which I dumped in a column named trash. Here, I immediately deleted it, but it was very useful for troubleshooting. There is also a first name with two variations separated with a /, which I'm deferring handling for now.
+
+```{r}
+#so now I separate out the last name per. My pattern is a space followed by a 
+#capital letter. But this isn't a separator- I'll lose the first letter if it is.
+#that will actually get me the first name.
+
+#bard gave me a hint to get the regex!
+rev_war <- rev_war %>%
+  separate(name, into = c("first_name", "trash"), remove = FALSE, sep = "\\s+[A-Z]{2,}") 
+
+head(rev_war)  
+
+#delete the trash columns
+rev_war <- rev_war %>%
+  select(-trash)
+
+```
+
+Getting the last name was trickier, because any separator I could think of would also catch the multiple first name people. Back to stringr to use str_extract(). Basically any chunk of text with two or more capital letters in a row followed by any number of any other type of character is extracted.
+
+```{r}
+
+rev_war <- rev_war %>%
+  mutate(Last_name = str_extract(name, "[A-Z]{2,}.+"))
+
+head(rev_war)
+```
+
+Now to split on /. In this dataset, we can have 1-3 possible last names. `Separate_wider_delim()` requires that you know how many parts you are splitting into and that you have named columns for them. It will kick up an error if you don't have the right number of parts and fail to execute. However, you can run it in debug mode, and it will perform the splits and then tell you on a row by row basis if there were the right number of parts. I exploited this and then threw away the debugging info, removed the NAs, and changed the last names to title case. (Note that the first name column should be handled the same way to split apart Johannes/John)
+
+```{r}
+
+#Now we need to split the names with /
+rev_war_test <- rev_war %>%
+  separate_wider_delim(
+    Last_name,
+    names = c(
+      "V1",
+      "V2",
+      "V3"), delim = "/",too_few = c("debug"), too_many = c("debug"), cols_remove = FALSE )
+
+rev_war_test <- rev_war_test %>%
+  select(name_unclean, first_name, V1, V2, V3, suffix, url, SAR_ID)
+
+rev_war_test <- rev_war_test %>%
+  mutate(V2 = ifelse(is.na(V2), "", V2),
+         V3 = ifelse(is.na(V3), "", V3),
+         V1 = str_to_title(V1),
+         V2 = str_to_title(V2),
+         V3 = str_to_title(V3)
+         )
+
+rev_war_test
+
+```
+
+My plan was match on the first variation, then for those that failed to match, match on the second variation, and so on. I was mildly hopeful that the first variation was the variation that my father used in his excel table. So I did a quick check using an inner join. My father had mentioned that there wouldn't be many matches- maybe 5 or 6, because he hadn't found most of the graves yet.
+
+```{r}
+
+#first round matching
+rev_war_test <- rev_war_test %>%
+  mutate(match_1 = paste0(V1, " ", first_name))
+
+matched_records <- rev_war_test %>% inner_join(tombstones, by = c("match_1" = "full_name"))
+
+matched_records %>% select(name_unclean, Surname, First.Name, Middle.Name, DOB, DOD )
+```
+
+What we see is that many names are reused in the family and so the name from the SAR records match people who were born well after the end of the Revolutionary war. I could try to clean up by date of birth or death, though that information isn't available for all matches. The SAR records don't have the middle names in the title probably easier just to ask. Jr/Sr is not consistently encoded in my father's spreadsheet (which is why I didn't use that when generating match_1). At this point, subject matter expertise is needed to solve the problem.
+
+# Coding with AI
+
+Large Language Models (LLM) like ChatGPT and Google Bard are extremely popular right now. I've seen a lot of people say that these AI models can be used to increase productivelty across a variety of domains. All sorts of tools and services now have AI bonus features. Datacamp has AI in their workspaces and also for some of the course coding exercises. I haven't been too impressed. Generally, syntax errors are caught and corrected and explained, but deeper problems aren't. I also found that the results often hyperfocus on syntax that is technically correct, but not necessarily best or common practice. For example, in a dpylr join you don't need to specify the columns to join on if they have the same name in both dataframes. But the AI would insist that not specifying the columns in the code was the problem.
+
+I've played around with Google Bard as well for writing and summarizing writing and the results ranged from generic to ridiculous. Google Bard also will save the output to your google docs, which was useful. Though it wouldn't do so yesterday.
+
+Anyway, as I was staring at by stringr cheatsheet trying to figure out the regex for the pattern space and then a capital letter, I thought that this might be the perfect use case for Bard.
+
+So:
+
+> hi I need the regular expression for one or more spaces followed by a capital letter
+
+> Sure, here is the regular expression for one or more spaces followed by a capital letter:
+>
+> Code snippet
+>
+> \\s+\[A-Z\]
+>
+> Use code with caution. Learn more
+>
+> The \\s metacharacter matches a single space character, and the + quantifier means that the space character can be matched one or more times. The \[A-Z\] character class matches any capital letter.
+>
+> So, this regular expression will match any string that contains one or more spaces followed by a capital letter. For example, it would match the strings "  A", "   B", and "C".
+>
+> Here is an example of how to use this regular expression in Python:
+>
+> Python
+>
+> import re
+>
+> string = "  A"
+>
+> match = re.search(r"\\s+\[A-Z\]", string)
+>
+> if match:
+>
+>     print(match.group())
+>
+> Use code with caution. Learn more
+>
+> This code will print the capital letter that is matched by the regular expression. In this case, the code will print the letter "A".
+>
+> I hope this helps! Let me know if you have any other questions.
+
+I "read" regex much better than I can write it, so `"\s+[A-Z]"` was enough for me. It isn't right, but it is almost right. The correct regex is `"\\s+[A-Z]"` .
+
+Just for fun, I asked Bard for the R code. I was using voice to text so my question is a bit garbled. Comma should be , of course.
+
+`can you give me an example of how to use it in r comma for example in the tidyr function separate`
+
+> can you give me an example of how to use it in r comma for example in the tidyr function separate
+>
+> Sure, here is an example of how to use the regular expression in R, using the separate function from the tidyr package:
+>
+> R
+>
+> library(tidyr)
+>
+> data \<- data.frame(
+>
+>   text = c("  A", "   B", "C"),
+>
+>   stringsAsFactors = FALSE
+>
+> )
+>
+> data %\>% separate(text, into = c("prefix", "letter"), sep = r"\\s+\[A-Z\]")
+>
+> #\> \# A tibble: 3 x 2
+>
+> #\>   prefix letter
+>
+> #\>   \<chr\>   \<chr\>
+>
+> #\> 1   \<NA\>     A
+>
+> #\> 2       B     B
+>
+> #\> 3   \<NA\>     C
+>
+> Use code with caution. Learn more
+>
+> This code will first load the tidyr package. Then, it will create a data frame called data with three rows, each containing a string with one or more spaces followed by a capital letter. The separate function will then be used to split the strings in the text column into two columns: prefix and letter. The sep argument is used to specify the regular expression that will be used to split the strings. In this case, the regular expression is \\s+\[A-Z\], which matches one or more spaces followed by a capital letter.
+>
+> The output of the code is a data frame with three rows and two columns. The prefix column contains the string that precedes the capital letter, and the letter column contains the capital letter.
+>
+> I hope this helps! Let me know if you have any other questions.
+
+Does this run? No, of course not! First, this is a terrible example anyway because none of the strings can be split into two parts based on that regex. ('A A A' or 'a B a' or something like that would be a much better choice.) You certainly won't get the output that Bard predicts. Remember, the separator gets discarded. For row one, the separator is "  A" and there is no part 1 and no part two. Same with row 2. C should be the prefix and the letter should be NA. There is no separator in this case. Lots of warnings are going to be generated by this...
+
+I'm not sure where the extra r in `sep = r"\s+[A-Z]"` came from. You can fix that and get it to run.
+
+```{r}
+data <- data.frame(
+
+text = c("  A", "   B", "C"),
+
+stringsAsFactors = FALSE
+
+)
+
+data %>% separate(text, into = c("prefix", "letter"), sep = "\\s+[A-Z]")
+```
+
+I was feeling amused, so I argued back and forth with Bard about the need for the escape character. It finally conceded my point and gave me the following code.
+
+`data %>% separate(text, into = c("prefix", "letter"), sep = r"\\\\\s+[A-Z]", fixed = FALSE)`
+
+Again, this also doesn't run, even with the r removed because `\\\\\s` is not `\\s`. Adding extra random slashes does not improve your code.
