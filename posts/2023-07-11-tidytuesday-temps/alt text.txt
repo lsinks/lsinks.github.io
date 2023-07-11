@@ -1,0 +1,1 @@
+A bar chart showing the global deviation in temperature across the months. The animation plays this chart over the years from 1890 to 2020. The more recent years have a much larger amplitude deviation and are positive, reaching a max of ~1.4 degrees celsius.
