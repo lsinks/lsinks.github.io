@@ -1,0 +1,3294 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Louise E. Sinks">
+<meta name="dcterms.date" content="2023-07-11">
+<meta name="description" content="Making an animated graph of global temperature change over time with gganimate.">
+
+<title>Louise E. Sinks - TidyTuesday Week 28: Global Surface Temperature</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - TidyTuesday Week 28: Global Surface Temperature">
+<meta name="twitter:description" content="Making an animated graph of global temperature change over time with gganimate.">
+<meta name="twitter:image" content="https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/thumbnail.gif">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#global-temperature-tidytuesday" id="toc-global-temperature-tidytuesday" class="nav-link active" data-scroll-target="#global-temperature-tidytuesday">Global Temperature #TidyTuesday</a></li>
+  <li><a href="#loading-the-libraries-and-data" id="toc-loading-the-libraries-and-data" class="nav-link" data-scroll-target="#loading-the-libraries-and-data">Loading the Libraries and Data</a></li>
+  <li><a href="#reformat-and-clean-the-data" id="toc-reformat-and-clean-the-data" class="nav-link" data-scroll-target="#reformat-and-clean-the-data">Reformat and Clean the Data</a>
+  <ul class="collapse">
+  <li><a href="#inspecting-the-data" id="toc-inspecting-the-data" class="nav-link" data-scroll-target="#inspecting-the-data">Inspecting the Data</a></li>
+  <li><a href="#tidying-the-data" id="toc-tidying-the-data" class="nav-link" data-scroll-target="#tidying-the-data">Tidying the Data</a>
+  <ul class="collapse">
+  <li><a href="#reshaping-data-with-pivot_longer" id="toc-reshaping-data-with-pivot_longer" class="nav-link" data-scroll-target="#reshaping-data-with-pivot_longer">Reshaping Data with <code>pivot_longer</code></a></li>
+  <li><a href="#setting-classes-and-factor-levels" id="toc-setting-classes-and-factor-levels" class="nav-link" data-scroll-target="#setting-classes-and-factor-levels">Setting Classes and Factor levels</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#animated-plot-of-temperature-change" id="toc-animated-plot-of-temperature-change" class="nav-link" data-scroll-target="#animated-plot-of-temperature-change">Animated Plot of Temperature Change</a>
+  <ul class="collapse">
+  <li><a href="#first-draft" id="toc-first-draft" class="nav-link" data-scroll-target="#first-draft">First Draft</a></li>
+  <li><a href="#polishing-the-graph" id="toc-polishing-the-graph" class="nav-link" data-scroll-target="#polishing-the-graph">Polishing the Graph</a></li>
+  <li><a href="#final-version" id="toc-final-version" class="nav-link" data-scroll-target="#final-version">Final Version</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">TidyTuesday Week 28: Global Surface Temperature</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">R-code</div>
+    <div class="quarto-category">Code-Along</div>
+    <div class="quarto-category">TidyTuesday</div>
+    <div class="quarto-category">tidy</div>
+    <div class="quarto-category">gganimate</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Making an animated graph of global temperature change over time with gganimate.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://lsinks.github.io/">Louise E. Sinks</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 11, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="global-temperature-tidytuesday" class="level1">
+<h1>Global Temperature #TidyTuesday</h1>
+<p>Today’s <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-11/readme.md">TidyTuesday is on global surface temperatures</a>. The source of the data is &nbsp;<a href="https://data.giss.nasa.gov/gistemp/">NASA GISS Surface Temperature Analysis (GISTEMP v4)</a> and more details about this data set can be found in this published paper: Lenssen, N., G. Schmidt, J. Hansen, M. Menne, A. Persin, R. Ruedy, and D. Zyss, 2019: Improvements in the GISTEMP uncertainty model. J. Geophys. Res. Atmos., 124, no. 12, 6307-6326, doi:10.1029/2018JD029522.</p>
+<p>I saw this lovely animated plot on Twitter and decided that I also wanted to make an aminated plot. I use a somewhat different approach though.</p>
+<blockquote class="twitter-tweet blockquote">
+<p lang="en" dir="ltr">
+</p><p>This week’s <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&amp;ref_src=twsrc%5Etfw">#TidyTuesday</a> data on global surface temperatures was the perfect excuse to recreate an animated spiral line graph showing how temperatures have changed since 1880 🔥 🔥 🔥 <a href="https://twitter.com/hashtag/RStats?src=hash&amp;ref_src=twsrc%5Etfw">#RStats</a> <a href="https://twitter.com/hashtag/R4DS?src=hash&amp;ref_src=twsrc%5Etfw">#R4DS</a> <a href="https://twitter.com/hashtag/DataViz?src=hash&amp;ref_src=twsrc%5Etfw">#DataViz</a> <a href="https://t.co/sDXWZaQHbz">pic.twitter.com/sDXWZaQHbz</a></p>
+<p></p>
+<p>— Nicola Rennie | <span class="citation" data-cites="nrennie">@nrennie</span>@fosstodon.org (<span class="citation" data-cites="nrennie35">@nrennie35</span>) <a href="https://twitter.com/nrennie35/status/1678678420849303552?ref_src=twsrc%5Etfw">July 11, 2023</a></p>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</section>
+<section id="loading-the-libraries-and-data" class="level1">
+<h1>Loading the Libraries and Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># who doesn't want to be tidy</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># nice tables</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr) <span class="co"># inspect missingness and range of data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gganimate) <span class="co"># animate ggplots</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes) <span class="co"># more themes for ggplots</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(viridis) <span class="co"># extra color scales</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Loading the TidyTuesday in the normal way.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2023</span>, <span class="at">week =</span> <span class="dv">28</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>global_temps <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>global_temps</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>nh_temps <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>nh_temps</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sh_temps <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>sh_temps</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>zonann_temps <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>zonann_temps</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reformat-and-clean-the-data" class="level1">
+<h1>Reformat and Clean the Data</h1>
+<section id="inspecting-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="inspecting-the-data">Inspecting the Data</h2>
+<p>First, I will check the completeness of the data. All the data is numeric, so I’m going to use a custom skim function that omits some of the quartile data. I go over how to create a custom skim function <a href="https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/">here</a>. The data comes as 4 separate tibbles.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>my_skim <span class="ot">&lt;-</span> <span class="fu">skim_with</span>(<span class="at">numeric =</span> <span class="fu">sfl</span>(<span class="at">p25 =</span> <span class="cn">NULL</span>, <span class="at">p50 =</span> <span class="cn">NULL</span>, <span class="at">p75 =</span> <span class="cn">NULL</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>global_temps <span class="sc">%&gt;%</span> <span class="fu">my_skim</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>skim_type)   <span class="sc">%&gt;%</span> <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">n_missing =</span> <span class="st">"# Missing"</span>, <span class="at">complete_rate =</span> <span class="st">"Completeness"</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.mean =</span> <span class="st">"Mean"</span>, <span class="at">numeric.sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.p0 =</span> <span class="st">"Min"</span>, <span class="at">numeric.p100 =</span> <span class="st">"Max"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.hist =</span> <span class="st">"Histogram"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Global Temperatures by Year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="zppmuegnaa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zppmuegnaa table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#zppmuegnaa thead, #zppmuegnaa tbody, #zppmuegnaa tfoot, #zppmuegnaa tr, #zppmuegnaa td, #zppmuegnaa th {
+  border-style: none;
+}
+
+#zppmuegnaa p {
+  margin: 0;
+  padding: 0;
+}
+
+#zppmuegnaa .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#zppmuegnaa .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#zppmuegnaa .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#zppmuegnaa .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#zppmuegnaa .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zppmuegnaa .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#zppmuegnaa .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#zppmuegnaa .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#zppmuegnaa .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#zppmuegnaa .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#zppmuegnaa .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#zppmuegnaa .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#zppmuegnaa .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#zppmuegnaa .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#zppmuegnaa .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#zppmuegnaa .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#zppmuegnaa .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#zppmuegnaa .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zppmuegnaa .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#zppmuegnaa .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#zppmuegnaa .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#zppmuegnaa .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zppmuegnaa .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#zppmuegnaa .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zppmuegnaa .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#zppmuegnaa .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#zppmuegnaa .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zppmuegnaa .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zppmuegnaa .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#zppmuegnaa .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#zppmuegnaa .gt_left {
+  text-align: left;
+}
+
+#zppmuegnaa .gt_center {
+  text-align: center;
+}
+
+#zppmuegnaa .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#zppmuegnaa .gt_font_normal {
+  font-weight: normal;
+}
+
+#zppmuegnaa .gt_font_bold {
+  font-weight: bold;
+}
+
+#zppmuegnaa .gt_font_italic {
+  font-style: italic;
+}
+
+#zppmuegnaa .gt_super {
+  font-size: 65%;
+}
+
+#zppmuegnaa .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#zppmuegnaa .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#zppmuegnaa .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#zppmuegnaa .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#zppmuegnaa .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#zppmuegnaa .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#zppmuegnaa .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Global Temperatures by Year</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">Year</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.951500e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">41.7133072</td>
+<td headers="numeric.p0" class="gt_row gt_right">1880.00</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023.00</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jan</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">6.333333e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4235976</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.81</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.18</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▆▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Feb</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">7.090278e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4285133</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.37</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Mar</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">8.888889e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4337898</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.36</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Apr</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.368056e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3966093</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.13</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▅▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">May</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">5.291667e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3778942</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.55</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.02</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▅▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Jun</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">3.314685e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3673629</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.52</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.93</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jul</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">5.587413e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3475312</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.51</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.94</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▂▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Aug</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">5.440559e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3633037</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.55</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.02</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Sep</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">5.818182e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3601988</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.99</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Oct</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">8.419580e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3692902</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.09</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Nov</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">7.776224e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3761975</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.55</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.11</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Dec</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">5.181818e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3931681</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.82</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.16</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▇▃▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">J-D</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">6.020979e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3698448</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.48</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.02</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">D-N</td>
+<td headers="n_missing" class="gt_row gt_right">2</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9861111</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.077465e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3707192</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.49</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.04</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">DJF</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">6.356643e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4049559</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.67</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.24</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">MAM</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.854167e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3983760</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.14</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▅▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">JJA</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">4.769231e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3555351</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.50</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.94</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">SON</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">7.286713e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3630672</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.52</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.00</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▃▂▂</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>There is also northern hemisphere data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nh_temps <span class="sc">%&gt;%</span> <span class="fu">my_skim</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>skim_type)   <span class="sc">%&gt;%</span> <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">n_missing =</span> <span class="st">"# Missing"</span>, <span class="at">complete_rate =</span> <span class="st">"Completeness"</span>, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.mean =</span> <span class="st">"Mean"</span>, <span class="at">numeric.sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.p0 =</span> <span class="st">"Min"</span>, <span class="at">numeric.p100 =</span> <span class="st">"Max"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.hist =</span> <span class="st">"Histogram"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Northern Hemisphere Temperatures by Year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="xbfkkckzjg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xbfkkckzjg table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#xbfkkckzjg thead, #xbfkkckzjg tbody, #xbfkkckzjg tfoot, #xbfkkckzjg tr, #xbfkkckzjg td, #xbfkkckzjg th {
+  border-style: none;
+}
+
+#xbfkkckzjg p {
+  margin: 0;
+  padding: 0;
+}
+
+#xbfkkckzjg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#xbfkkckzjg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#xbfkkckzjg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#xbfkkckzjg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#xbfkkckzjg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xbfkkckzjg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xbfkkckzjg .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#xbfkkckzjg .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#xbfkkckzjg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#xbfkkckzjg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#xbfkkckzjg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#xbfkkckzjg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#xbfkkckzjg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#xbfkkckzjg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#xbfkkckzjg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#xbfkkckzjg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#xbfkkckzjg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#xbfkkckzjg .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xbfkkckzjg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#xbfkkckzjg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#xbfkkckzjg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#xbfkkckzjg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xbfkkckzjg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#xbfkkckzjg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xbfkkckzjg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#xbfkkckzjg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#xbfkkckzjg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xbfkkckzjg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xbfkkckzjg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xbfkkckzjg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xbfkkckzjg .gt_left {
+  text-align: left;
+}
+
+#xbfkkckzjg .gt_center {
+  text-align: center;
+}
+
+#xbfkkckzjg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#xbfkkckzjg .gt_font_normal {
+  font-weight: normal;
+}
+
+#xbfkkckzjg .gt_font_bold {
+  font-weight: bold;
+}
+
+#xbfkkckzjg .gt_font_italic {
+  font-style: italic;
+}
+
+#xbfkkckzjg .gt_super {
+  font-size: 65%;
+}
+
+#xbfkkckzjg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#xbfkkckzjg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#xbfkkckzjg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#xbfkkckzjg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#xbfkkckzjg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#xbfkkckzjg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#xbfkkckzjg .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Northern Hemisphere Temperatures by Year</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">Year</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.951500e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">41.7133072</td>
+<td headers="numeric.p0" class="gt_row gt_right">1880.00</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023.00</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jan</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">8.576389e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.5778724</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-1.52</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.59</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▅▇▅▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Feb</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.009722e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.5789589</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.98</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.94</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▆▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Mar</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.282639e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.5701347</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.80</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.91</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Apr</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">9.756944e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4845865</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.65</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.48</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">May</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">9.055556e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4203525</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.73</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.28</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▅▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Jun</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">7.951049e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4080447</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.52</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.21</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jul</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">7.811189e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3845263</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.59</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.10</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Aug</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.384615e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4130920</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.77</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.17</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▇▆▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Sep</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">8.013986e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4194748</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.80</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.22</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▇▅▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Oct</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.309790e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4552020</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.84</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.32</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▇▆▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Nov</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">1.152448e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4939320</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.83</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.61</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▅▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Dec</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">5.692308e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.5146409</td>
+<td headers="numeric.p0" class="gt_row gt_right">-1.14</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.53</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▇▇▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">J-D</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">8.888112e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4444241</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.57</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.35</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">D-N</td>
+<td headers="n_missing" class="gt_row gt_right">2</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9861111</td>
+<td headers="numeric.mean" class="gt_row gt_right">9.042254e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4448506</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.37</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">DJF</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">8.377622e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.5291899</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-1.05</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.67</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▆▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">MAM</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.055556e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4791598</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.71</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.50</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▃▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">JJA</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">7.370629e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3969650</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.54</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.12</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▂▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">SON</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.086713e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4451210</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.72</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.34</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▅▂▁</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>And southern hemisphere data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sh_temps <span class="sc">%&gt;%</span> <span class="fu">my_skim</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>skim_type)   <span class="sc">%&gt;%</span> <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">n_missing =</span> <span class="st">"# Missing"</span>, <span class="at">complete_rate =</span> <span class="st">"Completeness"</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.mean =</span> <span class="st">"Mean"</span>, <span class="at">numeric.sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.p0 =</span> <span class="st">"Min"</span>, <span class="at">numeric.p100 =</span> <span class="st">"Max"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.hist =</span> <span class="st">"Histogram"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Southern Hemisphere Temperatures by Year"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="cryixwfnjn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#cryixwfnjn table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#cryixwfnjn thead, #cryixwfnjn tbody, #cryixwfnjn tfoot, #cryixwfnjn tr, #cryixwfnjn td, #cryixwfnjn th {
+  border-style: none;
+}
+
+#cryixwfnjn p {
+  margin: 0;
+  padding: 0;
+}
+
+#cryixwfnjn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#cryixwfnjn .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#cryixwfnjn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#cryixwfnjn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#cryixwfnjn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cryixwfnjn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#cryixwfnjn .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#cryixwfnjn .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#cryixwfnjn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#cryixwfnjn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#cryixwfnjn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#cryixwfnjn .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#cryixwfnjn .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#cryixwfnjn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#cryixwfnjn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#cryixwfnjn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#cryixwfnjn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#cryixwfnjn .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cryixwfnjn .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#cryixwfnjn .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#cryixwfnjn .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#cryixwfnjn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cryixwfnjn .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#cryixwfnjn .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cryixwfnjn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#cryixwfnjn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#cryixwfnjn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cryixwfnjn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cryixwfnjn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#cryixwfnjn .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#cryixwfnjn .gt_left {
+  text-align: left;
+}
+
+#cryixwfnjn .gt_center {
+  text-align: center;
+}
+
+#cryixwfnjn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#cryixwfnjn .gt_font_normal {
+  font-weight: normal;
+}
+
+#cryixwfnjn .gt_font_bold {
+  font-weight: bold;
+}
+
+#cryixwfnjn .gt_font_italic {
+  font-style: italic;
+}
+
+#cryixwfnjn .gt_super {
+  font-size: 65%;
+}
+
+#cryixwfnjn .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#cryixwfnjn .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#cryixwfnjn .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#cryixwfnjn .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#cryixwfnjn .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#cryixwfnjn .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#cryixwfnjn .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Southern Hemisphere Temperatures by Year</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">Year</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">1951.50000000</td>
+<td headers="numeric.sd" class="gt_row gt_right">41.7133072</td>
+<td headers="numeric.p0" class="gt_row gt_right">1880.00</td>
+<td headers="numeric.p100" class="gt_row gt_right">2023.00</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jan</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.03875000</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3165414</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.80</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▁▇▅▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Feb</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.03840278</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3154565</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.59</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.79</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▇▅▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Mar</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.04750000</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3274280</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.59</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.81</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Apr</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.02930556</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3421562</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.98</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▅▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">May</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.01631944</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3613025</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.60</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.91</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▅▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Jun</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">-0.01083916</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3535683</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.67</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.81</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▅▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Jul</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.03573427</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3354343</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.47</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.86</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Aug</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.04594406</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3448540</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.46</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.92</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▆▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Sep</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.03748252</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3357448</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.50</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.91</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▇▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Oct</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.03937063</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3242656</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.51</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.91</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▆▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Nov</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.04160839</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3082542</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.53</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.80</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">Dec</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.04713287</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3133837</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.55</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.80</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">J-D</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.03244755</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3138072</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.48</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.75</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▂▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">D-N</td>
+<td headers="n_missing" class="gt_row gt_right">2</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9861111</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.03218310</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3153409</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.50</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.75</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">DJF</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.04153846</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3125887</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.58</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.80</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▃▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">MAM</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1.0000000</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.03069444</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3380438</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.60</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.85</td>
+<td headers="numeric.hist" class="gt_row gt_left">▃▇▅▅▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">JJA</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">1</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">0.02440559</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3347516</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.53</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.77</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▃▅▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">SON</td>
+<td headers="n_missing" class="gt_row gt_right">1</td>
+<td headers="complete_rate" class="gt_row gt_right">0.9930556</td>
+<td headers="numeric.mean" class="gt_row gt_right">0.03965035</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3150909</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.47</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.74</td>
+<td headers="numeric.hist" class="gt_row gt_left">▅▇▃▃▂</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>And data broken down into finer zones from north to south.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>zonann_temps <span class="sc">%&gt;%</span> <span class="fu">my_skim</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>skim_type)   <span class="sc">%&gt;%</span> <span class="fu">gt</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(<span class="at">n_missing =</span> <span class="st">"# Missing"</span>, <span class="at">complete_rate =</span> <span class="st">"Completeness"</span>, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.mean =</span> <span class="st">"Mean"</span>, <span class="at">numeric.sd =</span> <span class="st">"Standard Deviation"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.p0 =</span> <span class="st">"Min"</span>, <span class="at">numeric.p100 =</span> <span class="st">"Max"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">numeric.hist =</span> <span class="st">"Histogram"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">style =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">add_row_striping =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Yearly Temperatures by Zone"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="nftvmenysg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nftvmenysg table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nftvmenysg thead, #nftvmenysg tbody, #nftvmenysg tfoot, #nftvmenysg tr, #nftvmenysg td, #nftvmenysg th {
+  border-style: none;
+}
+
+#nftvmenysg p {
+  margin: 0;
+  padding: 0;
+}
+
+#nftvmenysg .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nftvmenysg .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nftvmenysg .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nftvmenysg .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nftvmenysg .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nftvmenysg .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nftvmenysg .gt_col_heading {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nftvmenysg .gt_column_spanner_outer {
+  color: #FFFFFF;
+  background-color: #0076BA;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nftvmenysg .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nftvmenysg .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nftvmenysg .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nftvmenysg .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nftvmenysg .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nftvmenysg .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+  vertical-align: middle;
+}
+
+#nftvmenysg .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nftvmenysg .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nftvmenysg .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: none;
+  border-top-width: 1px;
+  border-top-color: #D5D5D5;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D5D5D5;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D5D5D5;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nftvmenysg .gt_stub {
+  color: #333333;
+  background-color: #89D3FE;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D5D5D5;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nftvmenysg .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nftvmenysg .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nftvmenysg .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nftvmenysg .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nftvmenysg .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nftvmenysg .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_grand_summary_row {
+  color: #333333;
+  background-color: #D5D5D5;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nftvmenysg .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_striped {
+  background-color: #EDF7FC;
+}
+
+#nftvmenysg .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #5F5F5F;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #5F5F5F;
+}
+
+#nftvmenysg .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nftvmenysg .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nftvmenysg .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nftvmenysg .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nftvmenysg .gt_left {
+  text-align: left;
+}
+
+#nftvmenysg .gt_center {
+  text-align: center;
+}
+
+#nftvmenysg .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nftvmenysg .gt_font_normal {
+  font-weight: normal;
+}
+
+#nftvmenysg .gt_font_bold {
+  font-weight: bold;
+}
+
+#nftvmenysg .gt_font_italic {
+  font-style: italic;
+}
+
+#nftvmenysg .gt_super {
+  font-size: 65%;
+}
+
+#nftvmenysg .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nftvmenysg .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nftvmenysg .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nftvmenysg .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nftvmenysg .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nftvmenysg .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nftvmenysg .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Yearly Temperatures by Zone</td>
+    </tr>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Mean">Mean</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Standard Deviation">Standard Deviation</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Min">Min</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Max">Max</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Histogram">Histogram</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="skim_variable" class="gt_row gt_left">Year</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.951000e+03</td>
+<td headers="numeric.sd" class="gt_row gt_right">41.4246304</td>
+<td headers="numeric.p0" class="gt_row gt_right">1880.00</td>
+<td headers="numeric.p100" class="gt_row gt_right">2022.00</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▇▇▇</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">Glob</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">6.020979e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3698448</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.48</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.02</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▃▂▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">NHem</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">8.888112e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.4444241</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.57</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.35</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">SHem</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">3.244755e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3138072</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.48</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.75</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▅▇▂▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">24N-90N</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.090210e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.5357058</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.67</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.67</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">24S-24N</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">7.041958e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3459949</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.01</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▅▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">90S-24S</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">-2.517483e-03</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3105594</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.48</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.71</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▃▅▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">64N-90N</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">2.502098e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">1.0028287</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-1.77</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">3.24</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▂▇▅▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">44N-64N</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">1.305594e-01</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.5884089</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.79</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.82</td>
+<td headers="numeric.hist" class="gt_row gt_left">▆▇▃▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">24N-44N</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">3.643357e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.4192891</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.63</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.27</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▂▂▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">EQU-24N</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">6.237762e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3467758</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.67</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.97</td>
+<td headers="numeric.hist" class="gt_row gt_left">▂▇▆▃▂</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">24S-EQU</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">7.818182e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.3520816</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.59</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">1.07</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▃▇▅▃▁</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">44S-24S</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">4.314685e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.3300329</td>
+<td headers="numeric.p0" class="gt_row gt_right">-0.44</td>
+<td headers="numeric.p100" class="gt_row gt_right">0.80</td>
+<td headers="numeric.hist" class="gt_row gt_left">▇▇▅▃▃</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left gt_striped">64S-44S</td>
+<td headers="n_missing" class="gt_row gt_right gt_striped">0</td>
+<td headers="complete_rate" class="gt_row gt_right gt_striped">1</td>
+<td headers="numeric.mean" class="gt_row gt_right gt_striped">-5.657343e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right gt_striped">0.2739233</td>
+<td headers="numeric.p0" class="gt_row gt_right gt_striped">-0.54</td>
+<td headers="numeric.p100" class="gt_row gt_right gt_striped">0.44</td>
+<td headers="numeric.hist" class="gt_row gt_left gt_striped">▆▇▆▆▆</td></tr>
+    <tr><td headers="skim_variable" class="gt_row gt_left">90S-64S</td>
+<td headers="n_missing" class="gt_row gt_right">0</td>
+<td headers="complete_rate" class="gt_row gt_right">1</td>
+<td headers="numeric.mean" class="gt_row gt_right">-8.265734e-02</td>
+<td headers="numeric.sd" class="gt_row gt_right">0.7609316</td>
+<td headers="numeric.p0" class="gt_row gt_right">-2.60</td>
+<td headers="numeric.p100" class="gt_row gt_right">1.22</td>
+<td headers="numeric.hist" class="gt_row gt_left">▁▂▃▇▅</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>The data sets are all over 0.99% complete. Handling missing values by dropping them is reasonable rather than imputing them.</p>
+</section>
+<section id="tidying-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="tidying-the-data">Tidying the Data</h2>
+<p>I’ll note that the data isn’t tidy. <a href="https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html">In the tidy paradigm, each row corresponds to an observation.</a> Here, multiple observations are included in each row and information is encoded in the column names. This dataset is in a wide format, rather than a long format, presumably to make it easy to compute the yearly and seasonal quarterly data. The tidyr package’s functions pivot_longer (and the converse, pivot_wider) are useful ways to reshape data.</p>
+<section id="reshaping-data-with-pivot_longer" class="level3">
+<h3 class="anchored" data-anchor-id="reshaping-data-with-pivot_longer">Reshaping Data with <code>pivot_longer</code></h3>
+<p>My plan is to look at the global temperature by month and then animate across years.</p>
+<p>This is is original wide data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(global_temps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 19
+   Year   Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1  1880 -0.19 -0.25 -0.09 -0.17 -0.1  -0.21 -0.18 -0.11 -0.15 -0.24 -0.22 -0.18
+2  1881 -0.2  -0.15  0.03  0.05  0.05 -0.19  0    -0.04 -0.16 -0.22 -0.19 -0.08
+3  1882  0.16  0.13  0.04 -0.16 -0.14 -0.22 -0.17 -0.08 -0.15 -0.24 -0.17 -0.36
+4  1883 -0.3  -0.37 -0.13 -0.19 -0.18 -0.08 -0.08 -0.14 -0.23 -0.12 -0.24 -0.11
+5  1884 -0.13 -0.09 -0.37 -0.4  -0.34 -0.35 -0.31 -0.28 -0.28 -0.25 -0.34 -0.31
+6  1885 -0.59 -0.34 -0.27 -0.42 -0.45 -0.44 -0.34 -0.32 -0.29 -0.24 -0.24 -0.11
+# ℹ 6 more variables: `J-D` &lt;dbl&gt;, `D-N` &lt;dbl&gt;, DJF &lt;dbl&gt;, MAM &lt;dbl&gt;,
+#   JJA &lt;dbl&gt;, SON &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>I’m dropping the seasonal data and only retaining the monthly data. I then reshape it into three columns: year, month, and change in temperature. I’m dropping the na values; the default is to retain them, so <code>values_drop_na = TRUE</code> should be set explicitly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped <span class="ot">&lt;-</span> global_temps <span class="sc">%&gt;%</span> <span class="fu">select</span>(Year<span class="sc">:</span>Dec) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(Jan<span class="sc">:</span>Dec, <span class="at">names_to =</span> <span class="st">"month"</span>, <span class="at">values_to =</span> <span class="st">"Delta_temp"</span>, <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(global_temps_reshaped)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+   Year month Delta_temp
+  &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;
+1  1880 Jan        -0.19
+2  1880 Feb        -0.25
+3  1880 Mar        -0.09
+4  1880 Apr        -0.17
+5  1880 May        -0.1 
+6  1880 Jun        -0.21</code></pre>
+</div>
+</div>
+<p>This reshaped data has 1721 rows compared to the 144 original rows- definitely longer!</p>
+<p>Just double check the completeness…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(global_temps_reshaped) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">global_temps_reshaped</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">1721</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">month</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1951.21</td>
+<td style="text-align: right;">41.41</td>
+<td style="text-align: right;">1880.00</td>
+<td style="text-align: right;">1915.00</td>
+<td style="text-align: right;">1951.00</td>
+<td style="text-align: right;">1987.00</td>
+<td style="text-align: right;">2023.00</td>
+<td style="text-align: left;">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Delta_temp</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.39</td>
+<td style="text-align: right;">-0.82</td>
+<td style="text-align: right;">-0.22</td>
+<td style="text-align: right;">-0.03</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: right;">1.37</td>
+<td style="text-align: left;">▁▇▃▂▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="setting-classes-and-factor-levels" class="level3">
+<h3 class="anchored" data-anchor-id="setting-classes-and-factor-levels">Setting Classes and Factor levels</h3>
+<p>Note that our new month column should be a factor. I need to provide the levels otherwise ggplot will plot the months in alphabetical order. It turns out that base R has a <a href="https://search.r-project.org/R/refmans/base/html/Constants.html">few built in constants</a> and abbreviated months is one of them. (English only, I’m sorry.) This saves some typing!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped<span class="sc">$</span>month <span class="ot">&lt;-</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">factor</span>(global_temps_reshaped<span class="sc">$</span>month, <span class="at">levels =</span> month.abb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Year should also be an integer. This isn’t super critical for regular ggplot graphs, but for the animation, weird interpolated year values are displayed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped<span class="sc">$</span>Year <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(global_temps_reshaped<span class="sc">$</span>Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="animated-plot-of-temperature-change" class="level1">
+<h1>Animated Plot of Temperature Change</h1>
+<p>The <a href="https://gganimate.com/">gganimate package page has clear examples</a> that get you to a basic plot very quickly. The first part of the code is regular ggplot and the gganimate code specifies what other variable to scan over.</p>
+<section id="first-draft" class="level2">
+<h2 class="anchored" data-anchor-id="first-draft">First Draft</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month, Delta_temp)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Year: {frame_time}"</span>, <span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"Delta Temp"</span>) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_time</span>(Year) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="temperatures_files/figure-html/first-draft-plot-1.gif" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="polishing-the-graph" class="level2">
+<h2 class="anchored" data-anchor-id="polishing-the-graph">Polishing the Graph</h2>
+<p>Now polish this up.</p>
+<p>I’m going to set the scale to be fixed. This will make year over year comparisons easier. I’m also making it symmetric to illustrate that the deviations are much larger in one direction. I will also add a continuous color scale to make the changes even more obvious. I always use the <a href="https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html">viridis package</a> whenever possible since it creates scales that easier to read for those with color blindness.</p>
+<p>I’m going to tweak on a static version for speeds sake. The unicode items (e.g.&nbsp;<code>\U0394</code>) are to add various symbols. You can look them up <a href="https://www.compart.com/en/unicode/U+0394">here</a>; you just need to remove the plus and add it with a <code>\</code> in your code.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped <span class="sc">%&gt;%</span>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">1890</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month, Delta_temp, <span class="at">fill =</span> Delta_temp)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"turbo"</span>, <span class="at">name =</span> <span class="st">"\U0394 T (\U00B0 C)"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"\U0394 Temperature (\U00B0 C)"</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Global Deviations in Temperature"</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"Year: 1890"</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span>  <span class="st">"Data from: NASA GISTEMP v4 via #TidyTuesday"</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_pander</span>(<span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="temperatures_files/figure-html/tweaking-the-plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="final-version" class="level2">
+<h2 class="anchored" data-anchor-id="final-version">Final Version</h2>
+<p>I went back and forth between the pander and the classic theme for the graph. Both have a white background, but pander has a grid and classic doesn’t. I decided on classic in the end. I ended up moving the caption to the left; when it was right aligned it looked like it was supposed to be aligned with the x axis label, but wasn’t.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>global_temps_reshaped <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(month, Delta_temp, <span class="at">fill =</span> Delta_temp)) <span class="sc">+</span> <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis</span>(<span class="at">option =</span> <span class="st">"turbo"</span>, <span class="at">name =</span> <span class="st">"\U0394 T (\U00B0 C)"</span>) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="sc">-</span><span class="fl">1.4</span>, <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Month"</span>, <span class="at">y =</span> <span class="st">"\U0394 Temperature (\U00B0 C)"</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">caption =</span>  <span class="st">"Data from: NASA GISTEMP v4 via #TidyTuesday"</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.caption =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Global Deviations in Temperature"</span>, <span class="at">subtitle =</span> <span class="st">"Year: {frame_time}"</span>) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_time</span>(Year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="temperatures_files/figure-html/final-plot-1.gif" class="img-fluid"></p>
+</div>
+</div>
+<p>And saving the figure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anim_save</span>(<span class="st">"thumbnail.gif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e. sinks2023,
+  author = {E. Sinks, Louise},
+  title = {TidyTuesday {Week} 28: {Global} {Surface} {Temperature}},
+  date = {2023-07-11},
+  url = {https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e. sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+E. Sinks, Louise. 2023. <span>“TidyTuesday Week 28: Global Surface
+Temperature.”</span> July 11, 2023. <a href="https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures">https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
