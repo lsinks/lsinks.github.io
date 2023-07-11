@@ -1,0 +1,246 @@
+---
+title: "TidyTuesday Week 28: Global Surface Temperature"
+description: "Making an animated graph of global temperature change over time with gganimate."
+twitter-card:
+  image: "thumbnail.gif"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 07-11-2023
+categories: [R, R-code, Code-Along, TidyTuesday, tidy, gganimate] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+# Global Temperature #TidyTuesday
+
+Today's [TidyTuesday is on global surface temperatures](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-07-11/readme.md). The source of the data is  [NASA GISS Surface Temperature Analysis (GISTEMP v4)](https://data.giss.nasa.gov/gistemp/) and more details about this data set can be found in this published paper: Lenssen, N., G. Schmidt, J. Hansen, M. Menne, A. Persin, R. Ruedy, and D. Zyss, 2019: Improvements in the GISTEMP uncertainty model. J. Geophys. Res. Atmos., 124, no. 12, 6307-6326, doi:10.1029/2018JD029522.
+
+I saw this lovely animated plot on Twitter and decided that I also wanted to make an aminated plot. I use a somewhat different approach though.
+
+<blockquote class="twitter-tweet">
+
+<p lang="en" dir="ltr">
+
+This week's <a href="https://twitter.com/hashtag/TidyTuesday?src=hash&ref_src=twsrc%5Etfw">#TidyTuesday</a> data on global surface temperatures was the perfect excuse to recreate an animated spiral line graph showing how temperatures have changed since 1880 🔥 🔥 🔥 <a href="https://twitter.com/hashtag/RStats?src=hash&ref_src=twsrc%5Etfw">#RStats</a> <a href="https://twitter.com/hashtag/R4DS?src=hash&ref_src=twsrc%5Etfw">#R4DS</a> <a href="https://twitter.com/hashtag/DataViz?src=hash&ref_src=twsrc%5Etfw">#DataViz</a> <a href="https://t.co/sDXWZaQHbz">pic.twitter.com/sDXWZaQHbz</a>
+
+</p>
+
+--- Nicola Rennie \| @nrennie\@fosstodon.org (@nrennie35) <a href="https://twitter.com/nrennie35/status/1678678420849303552?ref_src=twsrc%5Etfw">July 11, 2023</a>
+
+</blockquote>
+
+```{=html}
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+```
+# Loading the Libraries and Data
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+
+library(tidyverse) # who doesn't want to be tidy
+library(gt) # nice tables
+library(skimr) # inspect missingness and range of data
+library(gganimate) # animate ggplots
+library(ggthemes) # more themes for ggplots
+library(viridis) # extra color scales
+```
+
+Loading the TidyTuesday in the normal way.
+
+```{r}
+#| label: loading-data
+#| warning: false
+#| output: false
+tuesdata <- tidytuesdayR::tt_load(2023, week = 28)
+
+global_temps <- tuesdata$global_temps
+nh_temps <- tuesdata$nh_temps
+sh_temps <- tuesdata$sh_temps
+zonann_temps <- tuesdata$zonann_temps
+
+```
+
+# Reformat and Clean the Data
+
+## Inspecting the Data
+
+First, I will check the completeness of the data. All the data is numeric, so I'm going to use a custom skim function that omits some of the quartile data. I go over how to create a custom skim function [here](https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/). The data comes as 4 separate tibbles.
+
+```{r}
+#| label: skimming-global-temp
+
+my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL))
+
+global_temps %>% my_skim() %>% select(-skim_type)   %>% gt() %>%
+  cols_label(n_missing = "# Missing", complete_rate = "Completeness", 
+             numeric.mean = "Mean", numeric.sd = "Standard Deviation",
+             numeric.p0 = "Min", numeric.p100 = "Max",
+             numeric.hist = "Histogram") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Global Temperatures by Year") 
+```
+
+There is also northern hemisphere data.
+
+```{r}
+#| label: skimming-NH-temp
+
+nh_temps %>% my_skim() %>% select(-skim_type)   %>% gt() %>%
+  cols_label(n_missing = "# Missing", complete_rate = "Completeness", 
+             numeric.mean = "Mean", numeric.sd = "Standard Deviation",
+             numeric.p0 = "Min", numeric.p100 = "Max",
+             numeric.hist = "Histogram") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Northern Hemisphere Temperatures by Year") 
+```
+
+And southern hemisphere data.
+
+```{r}
+#| label: skimming-SH-temp
+
+sh_temps %>% my_skim() %>% select(-skim_type)   %>% gt() %>%
+  cols_label(n_missing = "# Missing", complete_rate = "Completeness", 
+             numeric.mean = "Mean", numeric.sd = "Standard Deviation",
+             numeric.p0 = "Min", numeric.p100 = "Max",
+             numeric.hist = "Histogram") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Southern Hemisphere Temperatures by Year") 
+```
+
+And data broken down into finer zones from north to south.
+
+```{r}
+#| label: skimming-zone-data
+
+zonann_temps %>% my_skim() %>% select(-skim_type)   %>% gt() %>%
+  cols_label(n_missing = "# Missing", complete_rate = "Completeness", 
+             numeric.mean = "Mean", numeric.sd = "Standard Deviation",
+             numeric.p0 = "Min", numeric.p100 = "Max",
+             numeric.hist = "Histogram") %>%
+  opt_stylize(style = 6, color = "blue", add_row_striping = TRUE) %>%
+  tab_header(title = "Yearly Temperatures by Zone") 
+```
+
+The data sets are all over 0.99% complete. Handling missing values by dropping them is reasonable rather than imputing them.
+
+## Tidying the Data
+
+I'll note that the data isn't tidy. [In the tidy paradigm, each row corresponds to an observation.](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html) Here, multiple observations are included in each row and information is encoded in the column names. This dataset is in a wide format, rather than a long format, presumably to make it easy to compute the yearly and seasonal quarterly data. The tidyr package's functions pivot_longer (and the converse, pivot_wider) are useful ways to reshape data.
+
+### Reshaping Data with `pivot_longer`
+
+My plan is to look at the global temperature by month and then animate across years.
+
+This is is original wide data.
+
+```{r}
+#| label: viewing-wide-data
+head(global_temps)
+```
+
+I'm dropping the seasonal data and only retaining the monthly data. I then reshape it into three columns: year, month, and change in temperature. I'm dropping the na values; the default is to retain them, so `values_drop_na = TRUE` should be set explicitly.
+
+```{r}
+#| label: reshaping-global-temps
+global_temps_reshaped <- global_temps %>% select(Year:Dec) %>%
+  pivot_longer(Jan:Dec, names_to = "month", values_to = "Delta_temp", values_drop_na = TRUE)
+head(global_temps_reshaped)
+```
+
+This reshaped data has 1721 rows compared to the 144 original rows- definitely longer!
+
+Just double check the completeness...
+
+```{r}
+#| label: checking-nas-global-temp-reshaped
+skim(global_temps_reshaped) 
+```
+
+### Setting Classes and Factor levels
+
+Note that our new month column should be a factor. I need to provide the levels otherwise ggplot will plot the months in alphabetical order. It turns out that base R has a [few built in constants](https://search.r-project.org/R/refmans/base/html/Constants.html) and abbreviated months is one of them. (English only, I'm sorry.) This saves some typing!
+
+```{r}
+#| label: setting-levels-month
+
+global_temps_reshaped$month <-
+  factor(global_temps_reshaped$month, levels = month.abb)
+
+```
+
+Year should also be an integer. This isn't super critical for regular ggplot graphs, but for the animation, weird interpolated year values are displayed.
+
+```{r}
+#| label: setting-year-as-int
+global_temps_reshaped$Year <- as.integer(global_temps_reshaped$Year)
+```
+
+# Animated Plot of Temperature Change
+
+The [gganimate package page has clear examples](https://gganimate.com/) that get you to a basic plot very quickly. The first part of the code is regular ggplot and the gganimate code specifies what other variable to scan over.
+
+## First Draft
+
+```{r}
+#| label: first-draft-plot
+global_temps_reshaped %>%
+  ggplot(aes(month, Delta_temp)) + geom_col() +
+  labs(title = "Year: {frame_time}", x = "Month", y = "Delta Temp") +
+  transition_time(Year) 
+```
+
+## Polishing the Graph
+
+Now polish this up.
+
+I'm going to set the scale to be fixed. This will make year over year comparisons easier. I'm also making it symmetric to illustrate that the deviations are much larger in one direction. I will also add a continuous color scale to make the changes even more obvious. I always use the [viridis package](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html) whenever possible since it creates scales that easier to read for those with color blindness.
+
+I'm going to tweak on a static version for speeds sake. The unicode items (e.g. `\U0394`) are to add various symbols. You can look them up [here](https://www.compart.com/en/unicode/U+0394); you just need to remove the plus and add it with a `\` in your code.
+
+```{r}
+#| label: tweaking-the-plot
+
+global_temps_reshaped %>%  filter(Year == 1890) %>%
+  ggplot(aes(month, Delta_temp, fill = Delta_temp)) + geom_col() +
+  scale_fill_viridis(option = "turbo", name = "\U0394 T (\U00B0 C)") +
+  ylim(-1.5, 1.5) +
+  labs(x = "Month", y = "\U0394 Temperature (\U00B0 C)") +
+  labs(title = "Global Deviations in Temperature") +
+  labs(subtitle = "Year: 1890") +
+  labs(caption =  "Data from: NASA GISTEMP v4 via #TidyTuesday") +
+  theme_pander(12)
+```
+
+## Final Version
+
+I went back and forth between the pander and the classic theme for the graph. Both have a white background, but pander has a grid and classic doesn't. I decided on classic in the end. I ended up moving the caption to the left; when it was right aligned it looked like it was supposed to be aligned with the x axis label, but wasn't.
+
+```{r}
+#| label: final-plot
+global_temps_reshaped %>%
+  ggplot(aes(month, Delta_temp, fill = Delta_temp)) + geom_col() +
+  scale_fill_viridis(option = "turbo", name = "\U0394 T (\U00B0 C)") +
+  ylim(-1.4, 1.4) +
+  labs(x = "Month", y = "\U0394 Temperature (\U00B0 C)") +
+  labs(caption =  "Data from: NASA GISTEMP v4 via #TidyTuesday") +
+  theme_classic(12) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.caption = element_text(hjust = 0)) +
+  labs(title = "Global Deviations in Temperature", subtitle = "Year: {frame_time}") +
+  transition_time(Year)
+
+
+```
+
+And saving the figure.
+
+```{r}
+#| label: saving-gif
+anim_save("thumbnail.gif")
+```
