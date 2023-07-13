@@ -1,7 +1,5 @@
 ---
 title: "About Me/ CV"
-format: html
-editor: visual
 ---
 
 I am a Physical Chemist with over ten years of experience working in multidisciplinary teams in various fields. I am a highly experienced writer and have published numerous peer-reviewed articles and papers on these topics. I previously ran the day-to-day operations of a small nanotechnology start-up.
