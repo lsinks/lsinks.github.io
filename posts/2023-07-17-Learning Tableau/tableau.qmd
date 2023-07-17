@@ -1,0 +1,45 @@
+---
+title: "Some Lessons from Learning Tableau"
+description: "Making an animated graph of global temperature change over time with gganimate."
+twitter-card:
+  image: "thumbnail.gif"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 07-17-2023
+categories: [R, R-code, Code-Along, TidyTuesday, tidy, gganimate] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Tableau is one of the most common business analytics programs out there. I first played with Tableau as part of the Google Data Analytics Certificate program. At the time, Tableau struck me as analagous to Excel, a more visual point and click way to make graphs compared to R or Python or other coding/scripting langauges. You can make very sophisitcated visualizations without much knowledge or experience. This is both a plus and a minus. I found it was pretty easy to make incredible looking visualizations that were flat out wrong.
+
+Tableau does a lot of stuff for you- it groups and filters data, sometimes in ways you don't expect. It suggests visualizations and makes them with a click of a button, but then you struggle to make a table without a blank column labeled abc.
+
+Some of my issues may be due to the way I think. As I've delved deeper into Tableau, I have a some suggestions to make the learning process easier.
+
+# Most Tutorials Just Aren't Enough
+
+More so than coding languages like R, I think Tableau is best learned by experimentation. The dynamic nature of Tableau doesn't lend itself well to a linear tutorial/ course format. Tableau is also incredibly expensive for the full version and the free version (Tableau Public) doesn't have many of the features that the full version does.
+
+Video tutorials suffer because so much of Tableau is point and click, with the menu options being different depending on where you click. Often, I'd have to rewatch a section of a video multiple times to discern exactly where the mouse cursor was when the narrator said to "click".
+
+Interactive courses, like those on Datacamp, suffer because there isn't any way to automatically check a visualization. Instead, there are questions about the data ("What was the average price of a house in zipcode 45610?") that you could answer even if you couldn't achieve the intended vizualation. I found it very frustrating because I often couldn't make the visualization and had no idea why.
+
+I also worked through the book "Learning Tableau 2019 - Third Edition" by Joshua N. Milligan. (Shout out to Arlington Library for having such an extensive collection of technical books available online.) Unforetunately, the book uses the full version of Tableau and the sample workbooks were not openable by Tableau Public. The raw data files were available, so it was possible to do the exercises. I found the book comprehensive, but I had already started working with my own dataset and had run into problems. If I hadn't been reading the book with an eye to understanding what was going on with my own data, I'm not sure it would have been as useful. Tableau does have some very specific lingo and quirks (dimensions/ measures, handling discrete and continous variables differently) that the book spelled out much more clearly than any other source I looked at.
+
+# Work with a dataset you know well
+
+Tableau "automagically" does things behind the scenes as you are making visualizations. Grouping (or aggregating as it is called in Tableau) and filtering are the two that often lead to unexpected results for me. And it isn't always flagged that these events are occuring. Using a dataset that you are very familar with allows you to catch when these events are occuring.
+
+I chose to use the credit card dataset that I have explored before. My plan was to recreate the exploratory data analysis that I had already done in R.
+
+# You (probably) can do anything in Tableau, but...
+
+Tableau is incredibly powerful and some of the thing you can do, like dynamically changing the filtering on a visualization aren't easily achieved in R. Maps are a dream in Tableau- they just work. (You can also get increible maps in R using leaflet, but you still need to know more about GIS and reference coordinates than you might want. But what is Tableau assuming about the data?!)
+
+However, somethings that should be straightforward aren't and you can find incredible complex workarounds. Things that are trivial in R, like adding jitter to a plot, require a few more steps in Tableau. Sometimes the solutions get amazingly complex. I wanted to change the color of the hyperlinks in my text. If you are willing to make dummy fields, worksheets and tooltips and float them over your dashboard, after 8 more steps, you too can have a hyperlink of any color. Many surprisingly trivial task require such complicate efforts.
+
+Other things, like having text labels appear at 45 degrees just aren't possible- horizontal or vertical labeling only.

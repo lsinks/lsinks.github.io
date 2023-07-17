@@ -1,0 +1,30 @@
+---
+
+title: "Some Lessons from Learning Tableau"
+description: "Making an animated graph of global temperature change over time with gganimate."
+twitter-card:
+  image: "thumbnail.gif"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 07-17-2023
+categories: [R, R-code, Code-Along, TidyTuesday, tidy, gganimate] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Loading libraries
+
+```{r}
+library(tidyverse)
+```
+
+Loading the data
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load(2023, week = 29)
+
+detectors <- tuesdata$detectors
+```
