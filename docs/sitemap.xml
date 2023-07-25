@@ -2,102 +2,106 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-07-13T18:48:38.756Z</lastmod>
+    <lastmod>2023-07-25T15:12:55.967Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-07-04-tidytuesday-historic-markers/markers.html</loc>
-    <lastmod>2023-07-13T18:48:26.657Z</lastmod>
+    <lastmod>2023-07-25T15:12:17.921Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html</loc>
-    <lastmod>2023-07-13T18:48:19.860Z</lastmod>
+    <lastmod>2023-07-25T15:12:10.729Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon.html</loc>
-    <lastmod>2023-07-13T18:48:06.824Z</lastmod>
+    <lastmod>2023-07-25T15:11:58.324Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html</loc>
-    <lastmod>2023-07-13T18:48:02.543Z</lastmod>
+    <lastmod>2023-07-25T15:11:54.068Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4.html</loc>
-    <lastmod>2023-07-13T18:47:51.584Z</lastmod>
+    <lastmod>2023-07-25T15:11:43.338Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3.html</loc>
-    <lastmod>2023-07-13T18:47:46.936Z</lastmod>
+    <lastmod>2023-07-25T15:11:38.681Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-2/current_wordle.html</loc>
-    <lastmod>2023-07-13T18:47:41.550Z</lastmod>
+    <lastmod>2023-07-25T15:11:33.508Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html</loc>
-    <lastmod>2023-07-13T18:47:36.087Z</lastmod>
+    <lastmod>2023-07-25T15:11:28.840Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-25-twitter-cards/twitter-cards.html</loc>
-    <lastmod>2023-07-13T18:47:31.331Z</lastmod>
+    <lastmod>2023-07-25T15:11:24.524Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</loc>
-    <lastmod>2023-07-13T18:47:26.141Z</lastmod>
+    <lastmod>2023-07-25T15:11:19.984Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/index.html</loc>
-    <lastmod>2023-07-13T18:47:11.893Z</lastmod>
+    <lastmod>2023-07-25T15:11:12.942Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/about.html</loc>
-    <lastmod>2023-07-13T18:49:15.102Z</lastmod>
+    <lastmod>2023-07-25T15:11:11.395Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/blogroll.html</loc>
-    <lastmod>2023-07-13T18:47:11.114Z</lastmod>
+    <lastmod>2023-07-25T15:11:12.217Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-14-tester-post/index.html</loc>
-    <lastmod>2023-07-13T18:47:13.818Z</lastmod>
+    <lastmod>2023-07-25T15:11:13.856Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-07-13T18:47:30.419Z</lastmod>
+    <lastmod>2023-07-25T15:11:23.580Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html</loc>
-    <lastmod>2023-07-13T18:47:33.687Z</lastmod>
+    <lastmod>2023-07-25T15:11:26.734Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-01-self-guided-learning-wordle-guesser-part-1/Wordle.html</loc>
-    <lastmod>2023-07-13T18:47:39.001Z</lastmod>
+    <lastmod>2023-07-25T15:11:31.435Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html</loc>
-    <lastmod>2023-07-13T18:47:43.849Z</lastmod>
+    <lastmod>2023-07-25T15:11:35.369Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html</loc>
-    <lastmod>2023-07-13T18:47:55.357Z</lastmod>
+    <lastmod>2023-07-25T15:11:47.086Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html</loc>
-    <lastmod>2023-07-13T18:48:04.309Z</lastmod>
+    <lastmod>2023-07-25T15:11:55.839Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-05-02-portal-project/portal.html</loc>
-    <lastmod>2023-07-13T18:48:08.901Z</lastmod>
+    <lastmod>2023-07-25T15:12:00.190Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-19-tidytuesday-UFOs/UFOs.html</loc>
-    <lastmod>2023-07-13T18:48:13.747Z</lastmod>
+    <lastmod>2023-07-25T15:12:04.682Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html</loc>
-    <lastmod>2023-07-13T18:48:22.174Z</lastmod>
+    <lastmod>2023-07-25T15:12:13.207Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures.html</loc>
-    <lastmod>2023-07-13T18:48:30.758Z</lastmod>
+    <lastmod>2023-07-25T15:12:21.691Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-07-25-tidytuesday-scurvy/scurvy.html</loc>
+    <lastmod>2023-07-25T15:13:11.924Z</lastmod>
   </url>
 </urlset>

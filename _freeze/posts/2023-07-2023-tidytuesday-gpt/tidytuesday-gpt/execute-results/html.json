@@ -1,0 +1,14 @@
+{
+  "hash": "66683f99b1e67f2e36de57b9123095c0",
+  "result": {
+    "markdown": "---\n\ntitle: \"Some Lessons from Learning Tableau\"\ndescription: \"Making an animated graph of global temperature change over time with gganimate.\"\ntwitter-card:\n  image: \"thumbnail.gif\"\nauthor:\n  - name: Louise E. Sinks\n    url: https://lsinks.github.io/\ndate: 07-17-2023\ncategories: [R, R-code, Code-Along, TidyTuesday, tidy, gganimate] # self-defined categories\ncitation:\n  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures\nimage: \"thumbnail.png\"\ndraft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!\n---\n\n\nLoading libraries\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.2     ✔ readr     2.1.4\n✔ forcats   1.0.0     ✔ stringr   1.5.0\n✔ ggplot2   3.4.2     ✔ tibble    3.2.1\n✔ lubridate 1.9.2     ✔ tidyr     1.3.0\n✔ purrr     1.0.1     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors\n```\n:::\n:::\n\n\nLoading the data\n\n\n::: {.cell}\n\n```{.r .cell-code}\ntuesdata <- tidytuesdayR::tt_load(2023, week = 29)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\n--- Compiling #TidyTuesday Information for 2023-07-18 ----\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\n--- There is 1 file available ---\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\n--- Starting Download ---\n```\n:::\n\n::: {.cell-output .cell-output-stdout}\n```\n\n\tDownloading file 1 of 1: `detectors.csv`\n```\n:::\n\n::: {.cell-output .cell-output-stderr}\n```\n--- Download complete ---\n```\n:::\n\n```{.r .cell-code}\ndetectors <- tuesdata$detectors\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
