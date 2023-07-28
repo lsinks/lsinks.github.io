@@ -1,0 +1,23 @@
+---
+title: "Current Projects"
+---
+
+I generally have a couple of big projects I'm working on that are "works in progress" and haven't made it to a blog post yet. Links to the drafts are included, but they are just drafts.
+
+What I'm working on now:
+
+[Tombstones (R)](https://github.com/lsinks/tombstone)- I'm working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I'm working on independently.
+
+-   Linking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though- the data cleanup and the actual matching were pretty involved. This is currently the leaflet tester subfolder. This portion is currently 5500+ words, according to RStudio's word counter, so it is long!
+
+-   A web scraping portion to add more information about some of the ancestors.
+
+-   My father also gave me several papers he's written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. I still need to start this part.
+
+I'm also exploring the credit card fraud project in other languages. I previously wrote two R Tidymodels tutorials using this data. They can be found [here](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) and [here](https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html).
+
+By using the same dataset, I can focus on learning the new language instead of thinking the higher level aspects. And I'm able to spot errors and mistakes much more easily.
+
+[Credit Card Fraud (Tableau)](https://public.tableau.com/views/ExploratoryDataAnalysisofCreditCardFraud/Overview?:language=en-US&:display_count=n&:origin=viz_share_link)- I've been working on replicating the credit card fraud EDA in Tableau. I have an adequate draft, but I need to go back and fix the tooltips. There were some interesting results concerning the geographic variables. I made some assumptions when I did the modeling in R that weren't correct. I will write up some lessons I learned while working in Tableau, but I also want to see how I could have caught that while working in R.
+
+[Credit Card Fraud (Python)](https://github.com/lsinks/Credit-Card-Fraud-Python)- I am rebuilding my credit card fraud project in Python to improve my skills. I'm also learning how to use Python within R Studio and the ins and outs of the reticulate package.

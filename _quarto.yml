@@ -13,6 +13,7 @@ website:
         text: Home
       - about.qmd
       - posts.qmd
+      - currentprojects.qmd
       - href: blogroll.qmd
         text: "Blog Roll"
       - icon: rss
