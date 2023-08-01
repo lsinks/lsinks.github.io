@@ -1,0 +1,106 @@
+---
+title: "States"
+description: "Using GWalkR to create an interactive exploratory data analysis window similar to Tableau."
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 08-01-2023
+categories: [R, R-code, Code-Along, TidyTuesday, tidy, GWalkr, Tableau Alternative, exploratory data analysis, interactive] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-08-01-tidytuesday-US-States/states
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Today's [TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-01/readme.md) takes some data about US states from Wikipedia.
+
+Last week I saw [this post](https://fosstodon.org/@brky/110815231759746109) on Mastodon and was really intrigued by the package mentioned, GWalkr. I thought this package looked very cool, so I put it on my to try list.
+
+# Embedding Social Media Posts in Quarto
+
+As a side note, I used the [Quarto social embeds extension](https://quarto-social-embeds.sellorm.com/) to show the Mastodon toot. I use RStudio to compose my quarto documents, so to install it for this project, I run the code given at the terminal (not console) window in RStudio. I did see that the toot overflowed the text below it, so you may need to adjust the spacing with some hard returns. The specific code to render the toot is found [here](https://quarto-social-embeds.sellorm.com/examples/mastodon.html).
+
+While it worked(ish) I discovered that it overflowed the following text, even with lots of space and hard returns entered after.
+
+I also found that the actual link to the toot kept disappearing and defaulting back to the server name only (e.g. https://fosstodon.org/) which then refused the connection.
+
+To uninstall a quarto extension, use `quarto remove extension` from the terminal and select the one you want from the list or use `quarto remove extension - NAME_OF_EXTENSION`.
+
+Something also broke the formatting of this post. Headers, spacing, and justification are all different. Removing the extension did not restore this, so I will dig more later into this. (I suppose it could be the vis config for GWalkR, but removing that also did not fix the problem.)
+
+# Installing GWalkR
+
+The GWalkR package isn't available on CRAN yet, so you'll need to install it via the devtools package using the following code: `devtools::install_url("https://kanaries-app.s3.ap-northeast-1.amazonaws.com/oss/gwalkr/GWalkR_latest.tar.gz")`
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse)
+library(GWalkR)
+```
+
+Loading the tidytuesday data.
+
+```{r}
+#| label: loading-data
+#| warning: false
+#| output: false
+tuesdata <- tidytuesdayR::tt_load(2023, week = 31)
+
+states <- tuesdata$states
+state_name_etymology <- tuesdata$state_name_etymology
+```
+
+GWalkR is a interactive EDA tool styled similarly to Tableau. It is a lighter weight version of [Graphics Walker](https://github.com/Kanaries/graphic-walker) and is designed to work in R. To use it, you just call it on the dataframe.
+
+I've created 3 simple visualizations that I will walk you through. You can interact with any of them and change the data as you wish. This is designed to be an exploratory interactive tool. It isn't the best option to create static, polished figures.
+
+Another side note, if you are doing this in quarto, you may wish to use the `#| column: page` option to give the gwalkr panel more room.
+
+```{r}
+#| label: EDA-on-states
+#| column: page
+gwalkr(states)
+```
+
+# Making your Viz "Stick"
+
+This part is only necessary if you are publishing or sharing your visualizations. When you run gwalkr you first get the empty explorer/builder window. Once you have created the visualizations, click on the export configuration button (like \<\>) and copy the text into a code block. This initializes GWalkr to the way you created it. Without this, you end up with an empty viewer every time you run the code. I'm including the entire configuration here, since this is a semi-tutorial format, but you'd probably want to hide this in your markdown/ quarto document. This code chunk also works find when I am rendering my Quarto document, but fails when I am executing code normally.
+
+```{r}
+#| label: config-for-viewer
+visConfig <- '[{"visId":"gw_Gtm3","name":"Bar Chart of State Pop.","encodings":{"dimensions":[{"dragId":"gw_jx5q","fid":"c3RhdGU=","name":"state","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_3nGt","fid":"cG9zdGFsX2FiYnJldmlhdGlvbg==","name":"postal_abbreviation","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_FNnC","fid":"Y2FwaXRhbF9jaXR5","name":"capital_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_-YgP","fid":"bGFyZ2VzdF9jaXR5","name":"largest_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_QC9G","fid":"YWRtaXNzaW9u","name":"admission","semanticType":"temporal","analyticType":"dimension"},{"dragId":"gw_hm9z","fid":"ZGVtb255bQ==","name":"demonym","semanticType":"nominal","analyticType":"dimension"}],"measures":[{"dragId":"gw_FnuC","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_hRWB","fid":"dG90YWxfYXJlYV9taTI=","name":"total_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_cUQK","fid":"dG90YWxfYXJlYV9rbTI=","name":"total_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_QH84","fid":"bGFuZF9hcmVhX21pMg==","name":"land_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_tzCn","fid":"bGFuZF9hcmVhX2ttMg==","name":"land_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_1ggm","fid":"d2F0ZXJfYXJlYV9taTI=","name":"water_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_0lnU","fid":"d2F0ZXJfYXJlYV9rbTI=","name":"water_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_eiwY","fid":"bl9yZXByZXNlbnRhdGl2ZXM=","name":"n_representatives","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_count_fid","fid":"gw_count_fid","name":"Row count","analyticType":"measure","semanticType":"quantitative","aggName":"sum","computed":true,"expression":{"op":"one","params":[],"as":"gw_count_fid"}}],"rows":[{"dragId":"gw_Tlb_","fid":"c3RhdGU=","name":"state","semanticType":"nominal","analyticType":"dimension"}],"columns":[{"dragId":"gw_tHvs","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"}],"color":[],"opacity":[],"size":[],"shape":[],"radius":[],"theta":[],"details":[],"filters":[],"text":[]},"config":{"defaultAggregated":true,"geoms":["auto"],"stack":"stack","showActions":false,"interactiveScale":false,"sorted":"none","zeroScale":true,"size":{"mode":"auto","width":320,"height":200},"format":{}}},{"visId":"gw_uHPW","name":"Area vs. Pop (Agg)","encodings":{"dimensions":[{"dragId":"gw_fHm7","fid":"c3RhdGU=","name":"state","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_GIbq","fid":"cG9zdGFsX2FiYnJldmlhdGlvbg==","name":"postal_abbreviation","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_j9gr","fid":"Y2FwaXRhbF9jaXR5","name":"capital_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_UlJ3","fid":"bGFyZ2VzdF9jaXR5","name":"largest_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_7t-q","fid":"YWRtaXNzaW9u","name":"admission","semanticType":"temporal","analyticType":"dimension"},{"dragId":"gw__0zS","fid":"ZGVtb255bQ==","name":"demonym","semanticType":"nominal","analyticType":"dimension"}],"measures":[{"dragId":"gw_5ToL","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_hIf6","fid":"dG90YWxfYXJlYV9taTI=","name":"total_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_MxWn","fid":"dG90YWxfYXJlYV9rbTI=","name":"total_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_YbvT","fid":"bGFuZF9hcmVhX21pMg==","name":"land_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_nnL-","fid":"bGFuZF9hcmVhX2ttMg==","name":"land_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_zJz3","fid":"d2F0ZXJfYXJlYV9taTI=","name":"water_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_67yP","fid":"d2F0ZXJfYXJlYV9rbTI=","name":"water_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_ta24","fid":"bl9yZXByZXNlbnRhdGl2ZXM=","name":"n_representatives","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_count_fid","fid":"gw_count_fid","name":"Row count","analyticType":"measure","semanticType":"quantitative","aggName":"sum","computed":true,"expression":{"op":"one","params":[],"as":"gw_count_fid"}}],"rows":[{"dragId":"gw_YKoG","fid":"dG90YWxfYXJlYV9taTI=","name":"total_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"}],"columns":[{"dragId":"gw_3HaQ","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"}],"color":[],"opacity":[],"size":[],"shape":[],"radius":[],"theta":[],"details":[],"filters":[],"text":[]},"config":{"defaultAggregated":true,"geoms":["auto"],"stack":"stack","showActions":false,"interactiveScale":false,"sorted":"none","zeroScale":true,"size":{"mode":"auto","width":320,"height":200},"format":{}}},{"visId":"gw_RuCs","name":"Area vs. Pop (dis-agg)","encodings":{"dimensions":[{"dragId":"gw_f-aN","fid":"c3RhdGU=","name":"state","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_T0HW","fid":"cG9zdGFsX2FiYnJldmlhdGlvbg==","name":"postal_abbreviation","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_Uga-","fid":"Y2FwaXRhbF9jaXR5","name":"capital_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_CZOt","fid":"bGFyZ2VzdF9jaXR5","name":"largest_city","semanticType":"nominal","analyticType":"dimension"},{"dragId":"gw_NhIi","fid":"YWRtaXNzaW9u","name":"admission","semanticType":"temporal","analyticType":"dimension"},{"dragId":"gw_kD6Y","fid":"ZGVtb255bQ==","name":"demonym","semanticType":"nominal","analyticType":"dimension"}],"measures":[{"dragId":"gw_80B1","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_oncj","fid":"dG90YWxfYXJlYV9taTI=","name":"total_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_p-Ch","fid":"dG90YWxfYXJlYV9rbTI=","name":"total_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_MtXt","fid":"bGFuZF9hcmVhX21pMg==","name":"land_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_fGM4","fid":"bGFuZF9hcmVhX2ttMg==","name":"land_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_s6UR","fid":"d2F0ZXJfYXJlYV9taTI=","name":"water_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_D1e8","fid":"d2F0ZXJfYXJlYV9rbTI=","name":"water_area_km2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_4hWE","fid":"bl9yZXByZXNlbnRhdGl2ZXM=","name":"n_representatives","analyticType":"measure","semanticType":"quantitative","aggName":"sum"},{"dragId":"gw_count_fid","fid":"gw_count_fid","name":"Row count","analyticType":"measure","semanticType":"quantitative","aggName":"sum","computed":true,"expression":{"op":"one","params":[],"as":"gw_count_fid"}}],"rows":[{"dragId":"gw_g_M-","fid":"dG90YWxfYXJlYV9taTI=","name":"total_area_mi2","analyticType":"measure","semanticType":"quantitative","aggName":"sum"}],"columns":[{"dragId":"gw_A9lF","fid":"cG9wdWxhdGlvbl8yMDIw","name":"population_2020","analyticType":"measure","semanticType":"quantitative","aggName":"sum"}],"color":[],"opacity":[],"size":[],"shape":[],"radius":[],"theta":[],"details":[{"dragId":"gw_Fv7k","fid":"c3RhdGU=","name":"state","semanticType":"nominal","analyticType":"dimension"}],"filters":[],"text":[]},"config":{"defaultAggregated":true,"geoms":["auto"],"stack":"stack","showActions":false,"interactiveScale":false,"sorted":"none","zeroScale":true,"size":{"mode":"auto","width":320,"height":200},"format":{}}}]'
+gwalkr(data=states, visConfig=visConfig)
+```
+
+# Bar Chart of State Population
+
+GWalkr produces a Tableau style interface. To graph something, just drag variables to X-axis and Y-axis. I did population (x) and state (y). The default setting is to autogenerate the best possible visualization, so you end up with the bar chart. You can transpose the axes using the circular arrows button at the top of the screen- probably not the best choice for this dataset though.
+
+It doesn't look like you can join data in GWalkR yet, so I'm going to do that now in R.
+
+```{r}
+#| label: joining-data
+states_joined <- states %>% left_join(state_name_etymology)
+```
+
+Now explore by starting gwalkr the same way.
+
+```{r}
+#| label: viewing-joined-data
+#| column: page
+gwalkr(states_joined)
+```
+
+Notice that it starts up with the visualizations I created before. This is because of the config code. It applies to all instances of GWalkr. It is a bit odd since this uses a different dataframe, but in this case it doesn't matter.
+
+# Aggregated and Dis-Aggregated Data
+
+The second and third visualization explore the idea of aggregated and dis-aggregated data. Visualize total_area vs. population- you get the very Tableau result of a single point. Tableau and similar BI platforms almost always summarize/ group/ aggregate the data automatically. You can see that in the GWalkR interface too- the X-axis and Y-Axis now have sum next to the variables. To get the scatter plot you might be expecting, drag states to "Details", which is found in the column between the variables and the visualization. Providing a unique identifier disaggregates the data. If you hove your mouse over a point, it tells you the state, the population and the area associated with the point.
+
+# Conclusions
+
+I think some people think in a way where this type of interactive exploratory data analysis really works with their workflow. It is certainly faster to drag and drop a bunch of different combos to see what visualizations are most informative, especially compared to creating 15 ggplots and then deleting most of them. I also think this type of tool will probably frustrate other folks.
