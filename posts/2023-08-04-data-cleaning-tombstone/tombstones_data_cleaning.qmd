@@ -1,7 +1,16 @@
 ---
-title: "Leaflet_tester"
-date: 06-30-2023
+title: "Data Cleaning for the Tombstone Project"
+description: "Using StringR to clean a human created excel sheet full of typos and formatting inconsistencies. Then matching excel data to photo names."
+twitter-card:
+  image: "thumbnail.jpg"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 08-04-2023
 categories: [Data-Viz, R, fuzzyjoin, quarto, leaflet, regex, stringr, data cleaning, problem solving, mapping, sf, Code-Along] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstone_data_cleaning
+image: "thumbnail.jpg"
 draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
@@ -16,6 +25,8 @@ I generally write my posts in a "code-along" style. I include almost everything 
 Some sections I do omit mistakes and go to the final product, just so this tutorial doesn't end up being 5 million pages long. Generally, the first time I do something, I will go into more detail than following times. For the data cleaning portion, the Cleaning Up Cemetery Names section shows the entire process, including mistakes. For the matching part, everything before Round 2 is in detail, including mistakes, and then the other rounds are much less detailed.
 
 I did also code a simplified version of this project all the way through using only one round of matching and 30 photos, just to make sure the basic elements were working. That isn't shown here.
+
+If for some reason you want to run this yourself, you can get a zipped copy of all the photos from [here](https://github.com/lsinks/tombstone/blob/main/Original%20Photos.zip). I don't upload the photos in this repo because the files size is too large.
 
 # Setting Up
 
@@ -48,7 +59,7 @@ Here set-up some variables that I use for the file/ folder structure and I read 
 #| output: false
 
 # folder names
-blog_folder <- "data_cleaning"
+blog_folder <- "posts/2023-08-04-data-cleaning-tombstone"
 photo_folder <- "Photos"
 archive_folder <- "Archived Photos"
 unmatched_folder <- "Unmatched Photos"
@@ -65,7 +76,6 @@ tombstones_raw <-
   read.xlsx(here(blog_folder, data_file),
     sheet = 1
   )
-
 
 ```
 
@@ -192,7 +202,7 @@ The weird coordinates like William Dorris had (524) were turned into NAs by this
 
 Next, I'm going to clean up the dates. They imported as also imported as strings. I don't think I'm going to use the dates in the map, but I might use them when I'm working with the web scraping data. Like I did with the GPS Data, I'm first going to cleanup the typos then convert to the format I want.
 
-#### Viewing the Dates
+### Viewing the Dates
 
 ```{r}
 #| label: viewing-dates
@@ -207,7 +217,7 @@ A few things to note on first glance. The majority of the dates use day month(ab
 
 The date type must have a day, month, and year, so the years only records will become NAs. I don't think this matters for my application, but if it did, I'd probably make an integer column for the year data. The dates would need to be split into numeric month, day, and year field or possibly date and numeric year fields.
 
-#### Cleaning Typos and Converting to Dates
+### Cleaning Typos and Converting to Dates
 
 I'm using base R [`as.Date()`](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/as.Date) for the conversion. This let's you specify the format. A detailed explanation of specifying dates and the code can be found at the [Epidemiologist R Handbook](https://epirhandbook.com/en/working-with-dates.html). Various functions from [tidyverse package lubridate](https://lubridate.tidyverse.org/) could also be used to parse the dates. If I were planning on doing more with the dates I'd probably use lubridate functions exclusively.
 
@@ -236,7 +246,7 @@ tombstones %>%
 
 The string/ character data is more difficult to clean, since the possibilities are endless. Almost anything could be correct. Correcting this data requires some subject matter expertise. I think I would like to group tombstones by cemetery in my map, so I do want to clean this up. However, I'm generally going to take a light touch with this.
 
-#### Figuring Out the Types of Typos
+### Figuring Out the Types of Typos
 
 Here, I expect that there is a limited set of cemeteries, so I can group the data to look for typos.
 
@@ -254,7 +264,7 @@ cems_unique %>%
 
 There are 79 unique names. I see some obvious issues. Sometimes the word cemetery is added to the end (or an abbreviation like Cem and Cem.). Sometimes it isn't. Church is rendered as Ch. in some cases.
 
-#### Cleaning the Easy Typos and Inconsistencies
+### Cleaning the Easy Typos and Inconsistencies
 
 Since all of these are cemeteries, I'm just going to remove that from the name. I will change all Ch. to Church and I will clean out all periods. Using `str_replace_all()` as usual.
 
@@ -340,7 +350,7 @@ cems_unique %>%
   tab_options(container.height = px(300), container.padding.y = px(24))
 ```
 
-#### Using Regex Anchors to Help Clean
+### Using Regex Anchors to Help Clean
 
 The abbreviation Ch at the end of the line doesn't have a space after it, so it isn't replaced. Here we can use [an anchor](https://www.regular-expressions.info/anchors.html) in our regex to specify that we want to match the pattern at the end of a string. "Ch\$" will match at the end and "\^Ch" will match at the start of a string.
 
@@ -363,7 +373,7 @@ cems_unique %>%
   tab_options(container.height = px(300), container.padding.y = px(24))
 ```
 
-#### Using the Geographic Data to Match Cemeteries
+### Using the Geographic Data to Match Cemeteries
 
 Now, I do have both geographic data and a subject matter expert (my father) to further refine this list. Let's start with geography. Bethlehem and Bethlehem Baptist Church could be the same place.
 
@@ -409,7 +419,7 @@ There aren't that many possible duplicates.
 | Webber Campground                      |
 | Weber-Campground                       |
 
-#### Talking to the Subject Matter Expert
+### Talking to the Subject Matter Expert
 
 Sometimes it is easier just to go talk to the subject matter expert than it is to come up with complicated programmatic solutions. Sometimes that isn't possible; maybe you don't even know who generated the data. Or perhaps their time is much more valuable than yours. That's why I also came up with a solution (using geographic data to match cemeteries) that could be done independently, even though I can ask the expert.
 
@@ -1078,7 +1088,7 @@ file.copy(
 )
 ```
 
-## Making Labels for The Map
+## Making Labels for the Map
 
 ### Making a Complete Name Field
 
@@ -1103,7 +1113,7 @@ tombstones_matched_final <- tombstones_matched_final %>%
   )
 ```
 
-Saving the file
+Saving the file for use in another part of this project.
 
 ```{r}
 #| label: saving-file-df
@@ -1126,19 +1136,19 @@ tombstones_geo <- st_as_sf(tombstones_matched_final, coords = c("long", "lat"), 
 
 tombstones_geo <- tombstones_geo %>% drop_na(photo_list)
 
-tombstones_geo <- st_jitter(tombstones_geo, factor = 0.0001)
+tombstones_geo_jittered <- st_jitter(tombstones_geo, factor = 0.0001)
 ```
 
 # Making the Leaflet Map
 
 This is just a draft. I'd like to link to some other material and color and group by cemetery. I'll post a detailed tutorial on that later. I do have a simple walk through of making an interactive leaflet map [here](https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html). I found [datacamp's course on leaflet](https://app.datacamp.com/learn/courses/interactive-maps-with-leaflet-in-r) very good also.
 
-The draft map is another opportunity to check for obvious errors or bugs.
+The draft map is another opportunity to check for obvious errors or bugs. I'm commenting out the section that generates the photo pop-up window. This creates a file larger than github prefers. I'll have a link to the final map with photos in the leaflet tutorial.
 
 ```{r}
 #| column: page
 #| label: making_map
-image_list <- tombstones_geo$photo_list
+image_list <- tombstones_geo_jittered$photo_list
 
 leaflet() %>%
   addTiles() %>%
@@ -1153,21 +1163,21 @@ leaflet() %>%
     color = "blue",
     stroke = NA,
     group = "group1"
-  )  %>%
+  ) #  %>%
 
-   leafpop::addPopupImages(
-    image = paste0(here(blog_folder, photo_folder, "Map" ),"/", image_list),
-      src = local,
-     group = "group1", width = 400,
-  maxHeight = 300, maxWidth = 400
-   )
+  #  leafpop::addPopupImages(
+  #   image = paste0(here(blog_folder, photo_folder, "Map" ),"/", image_list),
+  #     src = local,
+  #    group = "group1", width = 400,
+  # maxHeight = 300, maxWidth = 400
+  #  )
 ```
 
 Why is blockhouse cemetery in the ocean?
 
 ```{r}
 #| label: blockhouse-ocean-cem
-tombstones_geo %>% filter(Cemetery == "Blockhouse") %>%
+tombstones_geo_jittered %>% filter(Cemetery == "Blockhouse") %>%
   select(Cemetery, City, State, N, W, geometry)
 ```
 
@@ -1175,8 +1185,16 @@ A quick Google reveals that ["The latitude and longitude coordinates (GPS waypoi
 
 So, this is a simple transposition typo- instead of 73 he typed 37. I could have put some sort of error handling in the cleaning GPS data section. For example, I could have flagged lats or longs that were outside the US.
 
+I'm not entirely happy with the sf_jitter parameters, so I'm correcting this in two places- the jittered dataframe I use for the mapping here, and the unjittered version as well. I will be optimizing on the unjittered version when I create the final map. Making the same correction twice isn't great, but I wanted to produce a final map here independent of making the pretty leaflet map.
+
 ```{r}
 #| label: fixing- blockhouse-ocean-cem
+
+st_geometry(tombstones_geo_jittered[tombstones_geo$Cemetery == "Blockhouse", ]) <-  st_sfc(st_point(c(-73.48583,44.75056)))
+
+tombstones_geo_jittered %>% filter(Cemetery == "Blockhouse") %>%
+  select(Cemetery, N, W, geometry)
+
 
 st_geometry(tombstones_geo[tombstones_geo$Cemetery == "Blockhouse", ]) <-  st_sfc(st_point(c(-73.48583,44.75056)))
 
@@ -1189,7 +1207,7 @@ Now re-check the map.
 
 ```{r}
 #| label: new-map
-map <- leaflet() %>%
+leaflet() %>%
   addTiles() %>%
   addScaleBar() %>%
   addCircleMarkers(
@@ -1201,22 +1219,17 @@ map <- leaflet() %>%
     color = "blue",
     stroke = NA,
     group = "group1"
-  )  %>%
+  ) # %>%
 
-   leafpop::addPopupImages(
-    image = paste0(here(blog_folder, photo_folder, "Map" ),"/", image_list),
-      src = local,
-     group = "group1", width = 400,
-  maxHeight = 300, maxWidth = 600
-   )
+  #  leafpop::addPopupImages(
+  #   image = paste0(here(blog_folder, photo_folder, "Map" ),"/", image_list),
+  #     src = local,
+  #    group = "group1", width = 400,
+  # maxHeight = 300, maxWidth = 600
+  #  )
 ```
 
 Blockhouse is now correctly located in upstate New York.
-
-```{r}
-library(htmlwidgets)
-saveWidget(map, file ="map_to_upload.html")
-```
 
 I assume I can save this file as a RDS file for use in the leaflet mapper module, but if not, I'll let you know.
 
