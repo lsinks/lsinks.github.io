@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2023-08-04">
 
 <title>Louise E. Sinks - Current Projects</title>
 <style>
@@ -149,7 +150,14 @@ cookieconsent.run({
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#family-history-project" id="toc-family-history-project" class="nav-link active" data-scroll-target="#family-history-project">Family History Project</a></li>
+  <li><a href="#credit-card-fraud" id="toc-credit-card-fraud" class="nav-link" data-scroll-target="#credit-card-fraud">Credit Card Fraud</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -164,6 +172,12 @@ cookieconsent.run({
 <div class="quarto-title-meta">
 
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 4, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -173,18 +187,29 @@ cookieconsent.run({
 
 <p>I generally have a couple of big projects I’m working on that are “works in progress” and haven’t made it to a blog post yet. Links to the drafts are included, but they are just drafts.</p>
 <p>What I’m working on now:</p>
-<p><a href="https://github.com/lsinks/tombstone">Tombstones (R)</a>- I’m working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I’m working on independently.</p>
+<section id="family-history-project" class="level2">
+<h2 class="anchored" data-anchor-id="family-history-project">Family History Project</h2>
+<p><a href="https://github.com/lsinks/tombstone">Tombstones (in R)</a>- I’m working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I’m working on independently.</p>
 <ul>
-<li><p>Linking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though- the data cleanup and the actual matching were pretty involved. This is currently the leaflet tester subfolder. This portion is currently 5500+ words, according to RStudio’s word counter, so it is long!</p></li>
-<li><p>A web scraping portion to add more information about some of the ancestors.</p></li>
-<li><p>My father also gave me several papers he’s written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. I still need to start this part.</p></li>
+<li><p>Linking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though. Update (Aug 4):</p>
+<ul>
+<li><p>the data cleanup and the actual matching (<a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html">done and posted</a>)</p></li>
+<li><p>leaflet styling (<a href="https://github.com/lsinks/tombstone/tree/main/mapping_with_leaflet">in progress</a>)</p></li>
+<li><p>web scraping portion to add more information about some of the ancestors (<a href="https://github.com/lsinks/tombstone/tree/main/mapping_with_leaflet">in progress</a>)</p></li>
+<li><p>My father also gave me several papers he’s written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. (not started)</p></li>
+</ul></li>
 </ul>
+<p>I’ve spent a surprising large amount of time today learning how to handle “large” files. The photos are added to the tombstone repo using git’s lfs if anyone wanted to run my code. There are about 2 GB of photos, compressed to ~300 MB. The map with photos is about 500 MB, which is also too large for github pages. That’s okay, since I plan to host it on a different website devoted entirely to my father’s family history research.</p>
+</section>
+<section id="credit-card-fraud" class="level2">
+<h2 class="anchored" data-anchor-id="credit-card-fraud">Credit Card Fraud</h2>
 <p>I’m also exploring the credit card fraud project in other languages. I previously wrote two R Tidymodels tutorials using this data. They can be found <a href="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html">here</a> and <a href="https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html">here</a>.</p>
 <p>By using the same dataset, I can focus on learning the new language instead of thinking the higher level aspects. And I’m able to spot errors and mistakes much more easily.</p>
 <p><a href="https://public.tableau.com/views/ExploratoryDataAnalysisofCreditCardFraud/Overview?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link">Credit Card Fraud (Tableau)</a>- I’ve been working on replicating the credit card fraud EDA in Tableau. I have an adequate draft, but I need to go back and fix the tooltips. There were some interesting results concerning the geographic variables. I made some assumptions when I did the modeling in R that weren’t correct. I will write up some lessons I learned while working in Tableau, but I also want to see how I could have caught that while working in R.</p>
 <p><a href="https://github.com/lsinks/Credit-Card-Fraud-Python">Credit Card Fraud (Python)</a>- I am rebuilding my credit card fraud project in Python to improve my skills. I’m also learning how to use Python within R Studio and the ins and outs of the reticulate package.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

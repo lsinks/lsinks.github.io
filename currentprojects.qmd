@@ -1,18 +1,29 @@
 ---
 title: "Current Projects"
+date: 08-04-2023
 ---
 
 I generally have a couple of big projects I'm working on that are "works in progress" and haven't made it to a blog post yet. Links to the drafts are included, but they are just drafts.
 
 What I'm working on now:
 
-[Tombstones (R)](https://github.com/lsinks/tombstone)- I'm working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I'm working on independently.
+## Family History Project
 
--   Linking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though- the data cleanup and the actual matching were pretty involved. This is currently the leaflet tester subfolder. This portion is currently 5500+ words, according to RStudio's word counter, so it is long!
+[Tombstones (in R)](https://github.com/lsinks/tombstone)- I'm working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I'm working on independently.
 
--   A web scraping portion to add more information about some of the ancestors.
+-   Linking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though. Update (Aug 4):
 
--   My father also gave me several papers he's written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. I still need to start this part.
+    -    the data cleanup and the actual matching ([done and posted](https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html))
+
+    -   leaflet styling ([in progress](https://github.com/lsinks/tombstone/tree/main/mapping_with_leaflet))
+
+    -   web scraping portion to add more information about some of the ancestors ([in progress](https://github.com/lsinks/tombstone/tree/main/mapping_with_leaflet))
+
+    -   My father also gave me several papers he's written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. (not started)
+
+I've spent a surprising large amount of time today learning how to handle "large" files. The photos are added to the tombstone repo using git's lfs if anyone wanted to run my code. There are about 2 GB of photos, compressed to \~300 MB. The map with photos is about 500 MB, which is also too large for github pages. That's okay, since I plan to host it on a different website devoted entirely to my father's family history research.
+
+## Credit Card Fraud
 
 I'm also exploring the credit card fraud project in other languages. I previously wrote two R Tidymodels tutorials using this data. They can be found [here](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) and [here](https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html).
 
