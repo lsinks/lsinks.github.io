@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html",
       "/posts/2023-08-01-tidytuesday-US-states/states.html",
       "/posts/2023-07-25-tidytuesday-scurvy/scurvy.html",
       "/posts/2023-07-11-tidytuesday-temps/temperatures.html",
