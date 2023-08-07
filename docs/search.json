@@ -301,6 +301,20 @@
     "text": "I generally have a couple of big projects I’m working on that are “works in progress” and haven’t made it to a blog post yet. Links to the drafts are included, but they are just drafts.\nWhat I’m working on now:"
   },
   {
+    "objectID": "currentprojects.html#family-history-project",
+    "href": "currentprojects.html#family-history-project",
+    "title": "Current Projects",
+    "section": "Family History Project",
+    "text": "Family History Project\nTombstones (in R)- I’m working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I’m working on independently.\n\nLinking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though.\n\nthe data cleanup and the actual matching (done and posted)\nleaflet styling (in progress)\nweb scraping portion to add more information about some of the ancestors (in progress)\nMy father also gave me several papers he’s written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. (not started)\n\n\nI’ve spent a surprising large amount of time today learning how to handle “large” files. The photos are added to the tombstone repo using git’s lfs if anyone wanted to run my code. There are about 2 GB of photos, compressed to ~300 MB. The map with photos is about 500 MB, which is also too large for github pages. That’s okay, since I plan to host it on a different website devoted entirely to my father’s family history research."
+  },
+  {
+    "objectID": "currentprojects.html#credit-card-fraud",
+    "href": "currentprojects.html#credit-card-fraud",
+    "title": "Current Projects",
+    "section": "Credit Card Fraud",
+    "text": "Credit Card Fraud\nI’m also exploring the credit card fraud project in other languages. I previously wrote two R Tidymodels tutorials using this data. They can be found here and here.\nBy using the same dataset, I can focus on learning the new language instead of thinking the higher level aspects. And I’m able to spot errors and mistakes much more easily.\nCredit Card Fraud (Tableau)- I’ve been working on replicating the credit card fraud EDA in Tableau. I have an adequate draft, but I need to go back and fix the tooltips. There were some interesting results concerning the geographic variables. I made some assumptions when I did the modeling in R that weren’t correct. I will write up some lessons I learned while working in Tableau, but I also want to see how I could have caught that while working in R.\nCredit Card Fraud (Python)- I am rebuilding my credit card fraud project in Python to improve my skills. I’m also learning how to use Python within R Studio and the ins and outs of the reticulate package."
+  },
+  {
     "objectID": "posts/2023-03-14-tester-post/index.html",
     "href": "posts/2023-03-14-tester-post/index.html",
     "title": "Creating a Blog",
@@ -691,19 +705,5 @@
     "title": "Data Cleaning for the Tombstone Project",
     "section": "Making Labels for the Map",
     "text": "Making Labels for the Map\n\nMaking a Complete Name Field\nNow I need to make a column of the most complete name. This will be used as the label in the map. If the person has a middle name entry, I use the full name with middle name, and if not, I use the first and last. Note that I’m generating this by pasting together the individual name parts rather than using all the name variations I generated to match with. I want this label to be in conventional order and not the last name first format that I used for matching.\n\ntombstones_matched_final &lt;- tombstones_matched_final %&gt;%\n  mutate(complete_name = ifelse(\n    is.na(full_name_MI) == FALSE,\n    paste(First.Name, Middle.Name, Surname, sep = \" \"),\n    paste(First.Name, Surname, sep = \" \"))\n  )\n\n\n\nMaking a Cemetery Label\n\ntombstones_matched_final &lt;- tombstones_matched_final %&gt;%\n  mutate(cemetery_name = ifelse(Cemetery == \"\", \"\", paste(Cemetery, \"Cemetery\", sep = \" \"))\n  )\n\nSaving the file for use in another part of this project.\n\nsaveRDS(tombstones_matched_final, \"tombstones_matched_final.RDS\")"
-  },
-  {
-    "objectID": "currentprojects.html#family-history-project",
-    "href": "currentprojects.html#family-history-project",
-    "title": "Current Projects",
-    "section": "Family History Project",
-    "text": "Family History Project\nTombstones (in R)- I’m working on a project for my father that will culminate in a website for his genealogy research. There are a couple of different parts that I’m working on independently.\n\nLinking photos of family gravestones to an Excel sheet that records the GPS location of the tombstones. This combined dataset will be used to generate a leaflet map (and is currently called leaflet_tester). I will probably separate this into two or three portions, though. Update (Aug 4):\n\nthe data cleanup and the actual matching (done and posted)\nleaflet styling (in progress)\nweb scraping portion to add more information about some of the ancestors (in progress)\nMy father also gave me several papers he’s written about family members. I want to write code to determine which family members are mentioned in each document and match them to his Excel sheet. (not started)\n\n\nI’ve spent a surprising large amount of time today learning how to handle “large” files. The photos are added to the tombstone repo using git’s lfs if anyone wanted to run my code. There are about 2 GB of photos, compressed to ~300 MB. The map with photos is about 500 MB, which is also too large for github pages. That’s okay, since I plan to host it on a different website devoted entirely to my father’s family history research."
-  },
-  {
-    "objectID": "currentprojects.html#credit-card-fraud",
-    "href": "currentprojects.html#credit-card-fraud",
-    "title": "Current Projects",
-    "section": "Credit Card Fraud",
-    "text": "Credit Card Fraud\nI’m also exploring the credit card fraud project in other languages. I previously wrote two R Tidymodels tutorials using this data. They can be found here and here.\nBy using the same dataset, I can focus on learning the new language instead of thinking the higher level aspects. And I’m able to spot errors and mistakes much more easily.\nCredit Card Fraud (Tableau)- I’ve been working on replicating the credit card fraud EDA in Tableau. I have an adequate draft, but I need to go back and fix the tooltips. There were some interesting results concerning the geographic variables. I made some assumptions when I did the modeling in R that weren’t correct. I will write up some lessons I learned while working in Tableau, but I also want to see how I could have caught that while working in R.\nCredit Card Fraud (Python)- I am rebuilding my credit card fraud project in Python to improve my skills. I’m also learning how to use Python within R Studio and the ins and outs of the reticulate package."
   }
 ]
