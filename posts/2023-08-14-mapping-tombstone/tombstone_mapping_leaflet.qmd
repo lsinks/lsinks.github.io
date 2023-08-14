@@ -1,0 +1,409 @@
+---
+title: "Leaflet_tester"
+date: 08-14-2023
+categories: [Data-Viz, R, leaflet, quarto, problem solving, mapping, Code-Along, spatial join, WordPress, leafpop, st_jitter] # self-defined categories
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+# Project Overview
+
+I'm working on a project for my father that will culminate in a website for his genealogy research. [There are a couple of different parts](https://lsinks.github.io/currentprojects.html) that I'm working on independently. In a [previous part of the project](https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html), I matched an excel sheet with GPS coordinates and some biographic data with photos of various tombstones. This part involves making a leaflet map of various family grave sites.
+
+In this part, I'm going to show you how to create a nicely styled leaflet map. I will use the R packages [leaflet](https://CRAN.R-project.org/package=leaflet) and [leafpop](https://CRAN.R-project.org/package=leafpop). While the package [leaflet.extras](https://CRAN.R-project.org/package=leaflet.extras) has some nice features, the contributor stopped maintaining it in 2018 and [recommends against using it for security reasons](https://github.com/bhaskarvk/leaflet.extras#readme). There is a [leaflet.extras2](https://CRAN.R-project.org/package=leaflet.extras2) package, but it doesn't have functionality that I want.
+
+# Setting Up
+
+## Loading Libraries
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # who doesn't want to be tidy?
+library(gt) # for nice tables
+library(sf) # for handling geo data
+library(here) # reproducible file paths
+library(htmltools) # making html labels
+library(htmlwidgets) # saving final map
+library(leafpop) # pop-up with images
+library(leaflet) # mapping
+
+
+```
+
+## File Folder Names and Loading Data
+
+Here set-up some variables that I use for the file/ folder structure and I read in the spreadsheet.
+
+```{r}
+#| label: folders
+
+
+# folder names
+blog_folder <- "mapping_with_leaflet"
+photo_folder <- "Map"
+```
+
+Reading in the data. This is data created by the previous portion of the project. There are also a bunch of photos in the `Map` folder. The specific photo that is associated with a given entry is listed in the `photo_list` column.
+
+```{r}
+#| label: loading-data
+tombstones_geo <- readRDS(here(blog_folder, "tombstones_geo.RDS"))
+
+head(tombstones_geo) %>% gt()
+```
+
+# About Leaflet
+
+[Leaflet is a JavaScript library](https://leafletjs.com/index.html). The R package leaflet provides an interface to many of the core leaflet features. The options for leaflet maps are endless; the R package documentation is a high level overview and delving into the JavaScript documentation for details is a must if you want to do a lot of customization. You can also extend R leaflet by calling [JavaScript plugins within R leaflet](http://rstudio.github.io/leaflet/extending.html). This is beyond the scope of this tutorial. Since the number of plugins/libraries/extensions for leaflet in JavaScript is extensive, it is worth being aware of this option.
+
+Here, I'm going to stick with features available in the R leaflet packages, though I will pass some options that I found in the JavaScript documentation.
+
+# Handling Overlapping Points?
+
+Some tombstones are very close together and have the same GPS coordinates. I initially solved this by using [`sf_jitter()` to jitter the coordinates](https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html#converting-to-geo-data), but I didn't optimize it at all. Here I'm going to demonstrate a few different ways to handle this issue.
+
+First, how many overlapping points do I have?
+
+```{r}
+#| label: table-duplicate-geos
+test <-
+  tombstones_geo %>% 
+  group_by(geometry) %>% 
+  count(geometry, sort = TRUE) %>% 
+  filter(n > 1)
+
+test %>% gt() %>% 
+  tab_options(container.height = px(300), container.padding.y = px(24))
+```
+
+27 sets of identical coordinates corresponding to 55 individual graves. This is roughly 30% of the data set, so this isn't an issue that can just be glossed over
+
+Now let's make a set of entries that are only duplicates. To join spatial data, we need to use [`st_join()`](https://r-spatial.github.io/sf/reference/st_join.html). This function has two joining parameters. One is join, which defaults to `st_intersects()`. The other join parameter is set with the parameter left. If `left = TRUE` then the function returns a left join, otherwise, and inner join. That is, I expect left = TRUE to return 194 records and FALSE to return 55 records. This is what I get.
+
+There are other types of spatial joins you can perform with `st_join()` beyond intersects, including `st_touches()` and `st_within()`, so check the documentation for if you want to do other types of spatial filtering and joining.
+
+```{r}
+#| label: spatial-join
+test_for_jitter_left <- tombstones_geo %>% 
+  st_join(test, left = TRUE) 
+nrow(test_for_jitter_left)
+
+test_for_jitter_inner <- tombstones_geo %>% 
+  st_join(test, left = FALSE)
+nrow(test_for_jitter_inner)
+
+```
+
+# Building a Simple Map
+
+I'm going work on this problem using the one set of coordinate where there are 3 tombstones.
+
+```{r}
+#| label: site-with-three-graves
+test <- test_for_jitter_inner %>%
+  filter(n == 3)
+```
+
+Here is a simple leaflet map. The procedure is to initialize leaflet with `leaflet()`, add an underlying map (`add_Tiles()`) and then add my markers with the label (`addCircleMarkers()`) from my dataframe. I'm also adding a scale bar (`addScaleBar()`). Everything is piped together with the standard [tidyverse/ magrittr pipe,](https://magrittr.tidyverse.org/articles/magrittr.html) though of course you can use standard[ function calls instead](https://rstudio.github.io/leaflet/).
+
+The default underlying map used by `addTiles()` is OpenStreetMap. If you want to use different map, you can `addProviderTiles(name)` instead. A demo of the different providers is found [here](http://leaflet-extras.github.io/leaflet-providers/preview/index.html).
+
+The leaflet package uses the formula interface to access fields (see the section *The Formula Interface* at the bottom of the page [here](https://rstudio.github.io/leaflet/map_widget.html)). The dataframe is passed as `data = df`, and then the fields are accessed via `~field_name`. To access multiple fields, such as in my label, the tilde (\~) is used outside the list of fields.
+
+You can add as many layers as you want and they don't have to all be the same type. I demonstrate adding data points as well as polygons in this map of [Arlington County Historic Districts](https://lsinks.github.io/posts/2023-07-04-tidytuesday-historic-markers/markers.html).
+
+## Basic Map
+
+```{r}
+#| label: default-leaflet-map
+
+simple_map <- leaflet() %>%
+  addTiles() %>%
+  addScaleBar() %>%
+  addCircleMarkers(data = test,
+                   label = ~ (paste(complete_name, cemetery_name, sep = " ")))
+
+simple_map
+```
+
+As you can see, no matter how far you zoom, the points never separate. And for what it is worth, the last entry in the test dataframe is shown, indicating the points are added sequentially.
+
+## `markerCluster` Map
+
+Many maps you see on line use a technique called "spiderify" to separate overlapping points. Spiderifying disperses the points as you zoom in.
+
+There are two ways to spiderify a leaflet map. There is a javascript module for spiderifying in can be found [here](#0). There is another plug-in called `markerCluster`, which both clusters and spiderifies points, depending on the zoom level. There is access to this package through the R leaflet package. To access it, use [`clusterOptions = markerClusterOptions()`](https://cran.r-project.org/web/packages/leaflet/leaflet.pdf). For details about the options that can be passed to `markerClusterOptions()` see the [js plug-in documentation](https://github.com/Leaflet/Leaflet.markercluster#other-options).
+
+`markerCluster` clusters/ groups the data points into a single dot color coded by the number of points it contains (orange, yellow, green) and also displays the number of points in the dot. Single points (not clusters) are displayed in blue or whatever color you set them in the leaflet options. The grouping is set by the number of pixels at the current zoom level (set with `maxClusterRadius` and defaults to 80 pixels. As you click on a cluster, it zooms in and breaks it up into smaller clusters. (This functionality can be turned off with the parameter `zoomToBoundsOnClick`.) At the highest zoom, the points are spiderified. This too can be turned off with the parameter `spiderfyOnMaxZoom`. Both of these features are turned on by default.
+
+I'm going to go back to the 55 data points set just to illustrate this functionality more clearly. (Click on a cluster. It will zoom and split the point as you keep clicking until you end up with just the points with the same coordinates.)
+
+```{r}
+#| label: markercluster-map
+cluster_map <- leaflet() %>%
+  addTiles() %>%
+  addScaleBar() %>%
+  addCircleMarkers(
+    data = test,
+    label = ~ (paste(complete_name, cemetery_name, sep = " ")), 
+    clusterOptions = markerClusterOptions(),
+    )
+
+cluster_map
+```
+
+It does separate the points, but it is very hard to click on correct portion of the dot to get the label or pop-up. I think you need to hover on the part of the circle marker that does not overlap with either the cluster marker or the or the other circle markers. This can be solved by making the circle markers very large, so there is more non-overlapping area, but I find this to be ugly.
+
+Luckily, the option `spiderfyDistanceMultiplier` lets you tailor the distance. I set it to 2, which does put the points km apart (exact distance depends on the zoom). But since they are connected back to the original location with a line, I think it is clear where the points are actually located. When I had other people test the map, the larger displacement was much easier for them to operate the map.
+
+```{r}
+#| label: markercluster-map-more-spiderified
+
+cluster_map_separated <- leaflet() %>%
+  addTiles() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addScaleBar() %>%
+  addCircleMarkers(
+    data = test,
+    label = ~ (paste(complete_name, cemetery_name, sep = " ")), 
+    clusterOptions = markerClusterOptions(spiderfyDistanceMultiplier = 2)
+  ) 
+
+cluster_map_separated
+```
+
+## Using sf_jitter
+
+The other option for handling this problem (and my original approach) is to jitter the points using [`st_jitter()`](https://r-spatial.github.io/sf/reference/st_jitter.html). I think this approach wasn't as bad as I originally thought. I was guessing which points should have been originally the same location based on cemetery name, but I think probably many of them were in the same cemetery, but with different coordinates to start with.
+
+I found the documentation for this package unclear. Things didn't behave as I expected. I'm going to go through my work in detail, in case it helps someone else struggling with `sf_jitter()`.
+
+The function `st_jitter()` takes two parameters, `amount` and `factor`. Most examples I've seen just use factor, perhaps because everyone found amount as confusing as I did.
+
+Here are the definitions of the parameters.
+
+**amount**
+
+:   numeric; amount of jittering applied; if missing, the amount is set to factor \* the bounding box diagonal; units of coordinates.
+
+**factor**
+
+:   numeric; fractional amount of jittering to be applied
+
+First, it isn't that hard to find cases where the default value for `amount` doesn't work. This can be really disconcerting when recycling working code to other dataframes, and suddenly things are not as expected.
+
+My dataframe test with 3 points at the same location reports a bounding box, but `xmin` = `xmax` and `ymin` = `ymax`. (The bounding box can be extracted with `st_bbox()`.)
+
+Applying `st_jitter()` to this dataframe doesn't produce any sort of errors (and probably should, since then the diagonal of the bounding box is 0.) Instead, the original coordinates are returned with no error or message.
+
+```{r}
+#| label: bounding-box-test
+st_bbox(test)
+```
+
+And here's the jittered dataframe. You can see it didn't jitter it at all.
+
+```{r}
+#| label: no-bbox-diagonal
+test_jittered_no_amt <- test %>%
+  st_jitter(factor = 1)
+
+test_jittered_no_amt %>% select(geometry)
+```
+
+Perhaps it is always better to specify amount, so the code will be more robust. This seems reasonable, but I cannot figure out what units `amount` is in! I think it should be in degrees. The documentation says it is in `units of coordinates`. The units of the the sf object can be extracted using [st_crs()](https://r-spatial.github.io/sf/reference/st_crs.html).
+
+```{r}
+#| label: getting units
+st_crs(test_for_jitter_inner, parameters = TRUE)$ud_unit
+```
+
+Then, I'd expect `amount = 1` and `factor = 1` to produce coordinates jittered by about a degree. (The documentation says "For longlat data, a latitude correction is made such that jittering in East and North directions are identical in distance in the center of the bounding box of `x`.", so maybe not exactly 1 degree based on the correction.)
+
+```{r}
+#| label: spatial-jitter-small
+test_jittered <- test %>%
+  st_jitter(amount = 1,  factor = 1)
+
+test_jittered %>% select(geometry)
+```
+
+Maybe it is the diagonal that is supposed to be 1? This can be calculated with the Pythagorean theorem.
+
+```{r}
+#| label: diagonal-distance
+((-89.63298 - -89.32716)^2 + ( 37.39874 - 38.41781)^2)^0.5
+```
+
+So that it, and not at all what I understood from reading the description. The second point of confusion is that I thought that you could specify both factor and amount. (Clearly! As you can see from the example above.) But if you specify `amount`, then factor doesn't get used.
+
+In this case, I'd like the points to be jittered by a few meters or so. It is a bit of math to figure out what that is relative to the bounding box diagonal in degrees or some trial and error. On the plus side, the displacement of the dots is independent of the zoom of the map or any other map parameter since it is generated outside the mapping.
+
+So here is the jittered map.
+
+```{r}
+#| label: map-spatial-jitter-large
+
+test_jittered <- test %>%
+  st_jitter(amount = 0.0001)
+
+map_sf_jitter_all <- leaflet() %>%
+  addTiles() %>%
+  addScaleBar() %>%
+  addCircleMarkers(
+    data = test_jittered,
+    label = ~ (paste(complete_name, cemetery_name, sep = " "))
+  ) 
+
+map_sf_jitter_all
+```
+
+There isn't any indication that a dot represents multiple points at the more zoomed out scales. Additionally, the zooming experience is very unpleasant. With the clustered option, the map is zoomed and centered as you click through the clusters. There is also a very clear indication (the number in the cluster) that there are multiple data points in the dot. Here, more data points make a darker circle, but this isn't crystal clear.
+
+# Styling the Clustered Map
+
+All that said, I'm going to go with the markerCluster map. It is a more user friendly experience for the end user.
+
+## Make a nice label formatted with HTML
+
+I'd like a pop-up with biographical information along with the picture, but there is a lot of missing data, so I need to construct the info box carefully or it will be full of NAs.
+
+```{r}
+#| label: dob-dod-formatting
+
+tombstones_geo %>% select(DOB, DOD)
+
+tombstones_geo <- tombstones_geo %>%
+  mutate(dob_label = ifelse(is.na(DOB) == TRUE, "", paste0("Born: ", DOB)))
+
+tombstones_geo <- tombstones_geo %>%
+  mutate(dod_label = ifelse(is.na(DOD) == TRUE, "", paste0("Died: ", DOD)))
+```
+
+Playing with the map, I see that two entries have the state in both the city and the state column, so I'm going to fix that.
+
+```{r}
+#| label: fixing-duplicate-states-in-city
+tombstones_geo %>% filter(Surname == "Brown") %>% select(City, State)
+
+tombstones_geo <-
+  tombstones_geo %>%
+  mutate(City = ifelse(City == "Egypt, Lehigh Co., PA", "Egypt, Lehigh Co.", City)
+)
+```
+
+## Cleaning the City Field
+
+The formatting of the city column is pretty inconsistent. I'm going to clean it up also.
+
+```{r}
+#| label: clean-city
+tombstones_geo <-
+  tombstones_geo %>%
+  mutate(City = str_replace_all(City, "Co\\.", "County")) %>%
+  mutate(City = str_replace_all(City, "Co$", "County"))         
+```
+
+In leaflet, it seems that labels require that the html be generated with `htmltools::HTML`, while popups understand html tags already and can just be passed something like `paste("<strong>", complete_name, "</strong>")`. Since I was playing around with what info was displayed in label vs. popup, I just rendered everything with `htmltools::HTML` so I could switch things around without having to modify the text. There is a nice demonstration of the difference between labels and pop-ups on the [Dr.Data.King blog](https://www.drdataking.com/post/how-to-add-multiple-lines-label-on-a-leaflet-map/).
+
+```{r}
+#| label: html-formating-info-box
+tombstones_geo <- tombstones_geo %>%
+  mutate(
+    boxinfo = paste0(
+      "<strong>",
+      complete_name ,
+      "</strong>",
+      "<br/><hr>",
+      dob_label,
+      " ",
+      dod_label,
+      "<br/><hr>",
+      cemetery_name ,
+      " in ",
+      City,
+      " , ",
+      State,
+      "<br/>"
+    ) %>%
+      lapply(htmltools::HTML)
+  )
+
+```
+
+## Final Map
+
+I'm adding a specific provider tile rather than the default. The label for the point appears when you hover over it and has name and location. There is a pop-up generated in the `addCircleMarkers` with the biographical info. When `addPopupImages()` is called, it just appends the photos to that text. The marker pop-up and the pop-up with the picture need [to be linked by group](https://github.com/r-spatial/leafpop/issues/14).
+
+I couldn't find a way to directly add text to the `addPopupImages()` call.
+
+I don't like the outline around the markers, so I turned it off with `stroke = NA` and I made the `radius = 10`.
+
+Next, I call leafpop to add the popup with the images. Documentation for leafpop can be found at [CRAN](https://cran.r-project.org/web/packages/leafpop/leafpop.pdf) and on the [leafpop website](https://github.com/r-spatial/leafpop). You can add tables, charts, graphs, and images with leafpop. While leafpop can be called within `addCircleMarker` via `popup = popupImage()` it will not embed the image within the map. If you intend to save it, then you need to use the separate call to `addPopupImages()`. Unlike leaflet, the package leafpop does not use the formula notation and requires a "character vector of file path(s) or web-URL(s) to any sort of image file(s)." This is extracted from my dataframe using `image_list <- tombstones_geo$photo_list`. (Here I use the suffix \_list to mean list in the plain English sense of the word, not a list type object.)
+
+I found that specifying the width and max width of the popup was critical. If it were left to the defaults or "too large" then I just got the broken picture icon.
+
+There is also a really weird issue that I can't figure out that I want to highlight. Sometimes, when I run my quarto document in R, the leaflet map displays with broken pic icons. BUT, rendering the quarto doc does create working pop-ups with the right pics. Other times, both running and rendering produces a working map with pic popups. And even if the map is broken when I "run" instead of "render", it saves a perfectly working map. I can't reliably produce either state, and I don't have any warnings. I couldn't find anything about this when I googled, so if your map doesn't work when you are working in quarto (or probably R markdown) try rendering it or saving it.
+
+```{r}
+#| label: final-map
+
+image_list <- tombstones_geo$photo_list
+
+final_map <- leaflet() %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%
+  addScaleBar() %>%
+  addCircleMarkers(
+    data = tombstones_geo,
+    label = ~ lapply(
+      paste("<strong>", complete_name, "</strong>"),
+      htmltools::HTML
+    ),
+    popup = ~ boxinfo,
+    clusterOptions = markerClusterOptions(
+      spiderfyDistanceMultiplier = 2,
+      maxClusterRadius = 50
+    ),
+    radius = 10,
+    stroke = NA,
+    group = "group1"
+  ) %>%
+  leafpop::addPopupImages(
+    image = paste0(here(blog_folder, photo_folder), "/", image_list),
+    src = local,
+    group = "group1",
+    width = 400,
+    maxHeight = 300,
+    maxWidth = 400
+  )
+```
+
+```{r}
+#| label: viewing-final-map
+final_map
+```
+
+The map can be saved with `saveWidget()` from [htmlwidgets](https://cran.r-project.org/web/packages/htmlwidgets/htmlwidgets.pdf).
+
+```{r}
+#| label: saving-map
+
+saveWidget(final_map, file = "map_to_upload.html")
+```
+
+# Publishing this on WordPress
+
+Now, I actually created this for a website for my father. I created that in WordPress. I am a complete novice when it comes to WordPress.
+
+To embed this html object in a WordPress site, you need to put it in an iframe. I found the tutorials [here](https://wpastra.com/guides-and-tutorials/embed-iframe-in-wordpress/) and [here](https://www.thinkingondata.com/embedding-a-leaflet-map-on-wordpress/) helpful.
+
+The map with embedded photos ended up being larger than the default upload limit on the WordPress site, so I had to upload it with the ftp client and then register it into the media gallery. I used the [Add From Server widget](https://wordpress.com/plugins/add-from-server) to do so. There are other options outlined in [this article](https://jetpack.com/blog/how-to-bulk-upload-files-to-wordpress-via-ftp/).
+
+# Conclusions
+
+The final map is published [here](http://sinksfamilyhistory.com/tombstones/). The blog portion of the website is a work in progress, and it is very messy at the time of publishing this blog post.
+
+The map is sometimes slow to load. I might be able to speed it up by reducing the size of the photos. I think hosting the photos separately and just using a hyperlink to access them would also be fast, but so many of the maps I looked at that used this technique had broken pic icons due to bad hyperlinks. It seemed a more robust strategy to embed the pics within the map.
+
+I had originally wanted to have the map be searchable by name, which I thought I could do with the `leaflet.extras` package. Given the status of the package as archived/ abandoned, I decided not to include searching at this time.
