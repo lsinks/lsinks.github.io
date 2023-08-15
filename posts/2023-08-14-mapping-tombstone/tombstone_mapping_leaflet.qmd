@@ -7,7 +7,7 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
 date: 08-15-2023
-categories: [Data-Viz, R, leaflet, quarto, problem solving, mapping, Code-Along, spatial join, WordPress, leafpop, st_jitter] # self-defined categories
+categories: [Data-Viz, R, R-code, leaflet, quarto, problem solving, mapping, Code-Along, spatial join, WordPress, leafpop, st_jitter] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-08-14-mapping-tombstone/tombstones-mapping-leaflet
 image: "thumbnail.jpg"
@@ -413,6 +413,6 @@ The map with embedded photos ended up being larger than the default upload limit
 
 The final map is published [here](http://sinksfamilyhistory.com/tombstones/). The blog portion of the website is a work in progress, and it is very messy at the time of publishing this blog post.
 
-The map is sometimes slow to load. I might be able to speed it up by reducing the size of the photos. I think hosting the photos separately and just using a hyperlink to access them would also be fast, but so many of the maps I looked at that used this technique had broken pic icons due to bad hyperlinks. It seemed a more robust strategy to embed the pics within the map.
+The map is sometimes slow to load at the WordPress site, though it seems okay here on this blog. I might be able to speed it up by reducing the size of the photos. I think hosting the photos separately and just using a hyperlink to access them would also be fast, but so many of the maps I looked at that used this technique had broken pic icons due to bad hyperlinks. It seemed a more robust strategy to embed the pics within the map.
 
 I had originally wanted to have the map be searchable by name, which I thought I could do with the `leaflet.extras` package. Given the status of the package as archived/ abandoned, I decided not to include searching at this time.

@@ -7,7 +7,7 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
 date: 08-04-2023
-categories: [Data-Viz, R, fuzzyjoin, quarto, leaflet, regex, stringr, data cleaning, problem solving, mapping, sf, Code-Along] # self-defined categories
+categories: [Data-Viz, R, R-code, fuzzyjoin, quarto, leaflet, regex, stringr, data cleaning, problem solving, mapping, sf, Code-Along] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstone_data_cleaning
 image: "thumbnail.jpg"
