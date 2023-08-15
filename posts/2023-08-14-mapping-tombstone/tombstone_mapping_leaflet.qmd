@@ -2,16 +2,16 @@
 title: "Mapping for the Tombstone Project"
 description: "Methods for dealing with overlapping points and then styling a leaflet map with various labels and pop-ups."
 twitter-card:
-  image: "thumbnail.gif"
+  image: "thumbnail.jpg"
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
-date: 08-14-2023
+date: 08-15-2023
 categories: [Data-Viz, R, leaflet, quarto, problem solving, mapping, Code-Along, spatial join, WordPress, leafpop, st_jitter] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-08-14-mapping-tombstone/tombstones-mapping-leaflet
-image: "thumbnail.png"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+image: "thumbnail.jpg"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready
 ---
 
 # Project Overview
