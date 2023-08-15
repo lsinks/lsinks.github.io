@@ -1,0 +1,223 @@
+---
+title: "Tidy Tuesday Twofer (32 and 33)"
+description: "Looking at how heat levels increase on the show The Hot Ones. Then doing some EDA on a data set on spam emails."
+twitter-card:
+  image: "thumbnail.jpg"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 08-15-2023
+categories: [R, R-code, Code-Along, TidyTuesday, corrplot] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-08-15-TidyTuesday-Twofer
+image: "thumbnail.jpg"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+Last week I played around with the [TidyTuesday data on hot sauces](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-08/readme.md), but I didn't polish anything or write any text. This week's [TidyTuesday data concerns spam email](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-15/readme.md). I'm going to cover them both in this blog post.
+
+# Loading Libraries
+
+```{r}
+#| label: loading-libraries
+
+library(tidyverse) # who doesn't want to be tidy
+library(gt) # to make nice tables
+library(skimr) # to survey the data
+library(corrplot) # to make correlation plots
+```
+
+# TidyTuesday 32: Hot Sauces
+
+## Loading the data
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load(2023, week = 32)
+episodes <- tuesdata$episodes
+sauces <- tuesdata$sauces
+seasons <- tuesdata$seasons
+```
+
+The data is taken from some show where apparently people are interviewed while eating hot sauce. As the interview proceeds (as measured by the question number), the hot sauces get hotter.
+
+## How much hotter?
+
+I made a factor out of the `sauce_number`/ question number. You can see the x-axis label is nicer for the version with the factor `sauce_number2`.
+
+### Column Plot
+
+```{r}
+#making a factor
+sauces <- sauces %>%
+    mutate(sauce_number2 = factor(sauce_number))
+
+#numeric
+ggplot(sauces, aes(sauce_number, scoville, color = season)) +
+    geom_col(position = "dodge2") 
+
+#factor
+ggplot(sauces, aes(sauce_number2, scoville, color = season)) +
+    geom_col(position = "dodge2") 
+```
+
+And having that variable as a factor allows for a really nice box plot as well. ggplot generates a box plot for each level of the factor and displays them in a single plot. Using the numeric form of the variable gives a warning that it is expecting a group and puts everything into a single box plot. (You can add `group = sauce_number` to the `aes` to recreate the plot you get straight out of the box with the factor version.)
+
+### Histogram
+
+```{r}
+#numeric
+  ggplot(sauces, aes(sauce_number, scoville)) + 
+    scale_y_log10() + 
+    geom_boxplot()
+
+#factor
+  ggplot(sauces, aes(sauce_number2, scoville)) + 
+    scale_y_log10() + 
+    geom_boxplot()
+
+```
+
+The increase in heat level as the questions proceed looks like it has exponential behavior to me. Also looks like some questions \# have more variation in the heat level. Questions 8 and 10 seem to have settled in on a specific sauce after the first few seasons.
+
+### Question 10 Sauces
+
+```{r}
+
+sauces %>% filter(sauce_number == 10) %>% 
+  select(season, sauce_name, scoville) %>%
+  gt()
+```
+
+So it looks like once they found a 2 million scoville sauce they used variations of it or rebranded it as a show tie in for the remaining seasons.
+
+### Log Scale Column Plot
+
+For exponential data, you can plot on a log scale to see more details. (Season 8 and 10 really stand out with their flat tops.)
+
+```{r}
+ggplot(sauces, aes(sauce_number2, scoville, color = season)) +
+  geom_col(position = "dodge2") +
+  scale_y_log10()
+```
+
+It looks like there are a few different regimes. The first three or four questions, the heat level rises sharply with each question. Then for the middle questions, the increase is somewhat more gradual. For the last two or three questions, the heat level again rises steeply.
+
+### Average Heat per Question
+
+This might be more easily seen by plotting the average heat for each question across all seasons.
+
+```{r}
+average_sauce <- sauces %>% group_by(sauce_number) %>% summarize(hot = mean(scoville))
+
+ggplot(average_sauce, aes(x= sauce_number, y = hot)) +
+    geom_point() +
+   scale_y_log10()
+```
+
+That seems pretty clear that there are 3 regions.
+
+### Exponential Fit
+
+But, we get a decent-ish fit just assuming an exponential increase. I'm not doing anything fancy here. I'm just using geom_smooth and passing it an exponential formula. This isn't serious model fitting, this is more a guide to the eye.
+
+```{r}
+ggplot(sauces, aes(x = sauce_number, y =  scoville)) +
+    geom_point() +
+    geom_smooth(method = "lm", formula = (y ~ exp(x)))
+
+ggplot(average_sauce, aes(x = sauce_number, y = hot)) +
+    geom_point() +
+    geom_smooth(method = "lm", formula = (y ~ exp(x)))
+```
+
+## What does this mean?
+
+Honestly, probably nothing. :) It is possible that the producers were trying to have some sort of exponential increase in the heat level, so the experience got much worse with each question. But I doubt anyone sat down and simulated what Scoville levels they needed for each question.
+
+# TidyTuesday 33: Spam Emails
+
+## Load the data
+
+```{r}
+tuesdata <- tidytuesdayR::tt_load(2023, week = 33)
+
+spam <- tuesdata$spam
+```
+
+All the variables are complete. This is a subset of the data submitted to the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/94/spambase). Looking at [the data dictionary](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-15/readme.md#data-dictionary), we might expect all the variable to be positively correlated with spam.
+
+| variable | class     | description                                                              |
+|----------|-----------|--------------------------------------------------------------------------|
+| crl.tot  | double    | Total length of uninterrupted sequences of capitals                      |
+| dollar   | double    | Occurrences of the dollar sign, as percent of total number of characters |
+| bang     | double    | Occurrences of '!', as percent of total number of characters             |
+| money    | double    | Occurrences of 'money', as percent of total number of characters         |
+| n000     | double    | Occurrences of the string '000', as percent of total number of words     |
+| make     | double    | Occurrences of 'make', as a percent of total number of words             |
+| yesno    | character | Outcome variable, a factor with levels 'n' not spam, 'y' spam            |
+
+I'm using skim to examine the data. I've discussed it before [here](https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/#skimr-to-understand-your-data); it is a great tool that gives more information than summary.
+
+```{r}
+skim(spam)
+```
+
+## Is this an imbalanced data set?
+
+Often classification data sets have much more normal data than abnormal data. Are there reasonable numbers of spam entries in this collection?
+
+```{r}
+ggplot(spam, aes(yesno)) + geom_bar()
+```
+
+That's not too bad. I'm going to calculate the percentage of spam messages by converting this to a numerical variable and taking the mean. I need a number anyway for my correlation plot.
+
+```{r}
+spam <- spam %>%
+  mutate(yesno_num = ifelse(yesno== 'y', 1, 0))
+
+mean(spam$yesno_num)
+```
+
+## Correlation plot
+
+One of my all time favorite packages is [corrplot](https://CRAN.R-project.org/package=corrplot). Correlations can suggest what variables are likely to be important to the outcome and they can also flag potential issues that could arise from multicollinearity among the predictors. I'm normally default to a table over a viz, but corrplot presents the data so beautifully that I just can't resist using it.
+
+A correlation plot is pretty technical, so I probably would not use it in most circumstances. I use it in my own EDA but I wouldn't include it in a communication to a general audience. If I were sharing this, I'd clean up the variable names to be clearer.
+
+Correlations need to be calculated between numeric variables, so I am removing the categorical yesno and keeping my numerical one.
+
+Corrplot has [so many different customizations](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html). I've annotated my code to reflect what the different parameters do, but there are [dozens of others](https://cran.r-project.org/web/packages/corrplot/corrplot.pdf) that can be used for more customization. I like to include the actual numerical values (addCoef.col), omit the diagonal since it will be all ones (diag) and only show one half of the matrix ( type = 'lower' or 'upper'). I also like to have the magnitude (abs value ) reflected by the size of the circle and the value (including sign reflected by the color). The features in this data set are all positively correlated with each other and
+
+Sometimes labels get cropped. This might need to be fixed via the [margin parameter (mar)](https://stefaneng.github.io/corrplot-title-cut-off/) within the call to corrplot or via the [par statement](https://stackoverflow.com/questions/41679136/r-corrplot-crops-bottom-axis-label) before the call.
+
+```{r}
+
+par(xpd = TRUE) # allows corrplot labels into the margin. fixes clipping
+
+spam %>% select(-yesno) %>%
+  cor %>%
+  {.[order(abs(.[, 7]), decreasing = TRUE),
+      order(abs(.[, 7]), decreasing = TRUE)]} %>%
+  corrplot(
+    method = 'circle', #circle is default and I think it is the best anyway
+    type = 'lower', # upper, lower, or full
+    tl.col = 'black', #color of text label
+    addCoef.col = 'black',#color of the coefficients
+    cl.ratio = 0.2, #size of the color bar legend
+    tl.srt = 15, # this sets the angle of the text
+    col = COL2('PuOr', 10),   #this sets the color palette, COL2 is diverging
+    diag = FALSE, # don't show diag
+    mar = c(1, 1, 4, 1), 
+    title = "What features are correlated with Spam?",
+  )
+    title(sub= "Data from UCI Machine Learning Repository via Rdatasets")
+```
+
+All of them have some positive correlation. None of the predictors look strongly correlated with each other either.
+
+## What would I do next if I were going to model this data set?
+
+I've written about classification problems before and I'd probably start with the fitting methods I used [there](https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/#skimr-to-understand-your-data).
+
+All of the numerical variables had pretty skewed distributions based on the skim output. Lots of models require more normally distributed data. I'd transform the data and scale and normalize it as well. There is a [great table](https://www.tmwr.org/pre-proc-table.html) in the [Tidy Modeling with R](https://www.tmwr.org/) which goes over which preprocessing steps are required or beneficial for different types of fitting.
