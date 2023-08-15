@@ -1,8 +1,17 @@
 ---
-title: "Leaflet_tester"
+title: "Mapping for the Tombstone Project"
+description: "Methods for dealing with overlapping points and then styling a leaflet map with various labels and pop-ups."
+twitter-card:
+  image: "thumbnail.gif"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
 date: 08-14-2023
 categories: [Data-Viz, R, leaflet, quarto, problem solving, mapping, Code-Along, spatial join, WordPress, leafpop, st_jitter] # self-defined categories
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+citation:
+  url: https://lsinks.github.io/posts/2023-08-14-mapping-tombstone/tombstones-mapping-leaflet
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready
 ---
 
 # Project Overview
@@ -29,6 +38,7 @@ library(leafpop) # pop-up with images
 library(leaflet) # mapping
 
 
+
 ```
 
 ## File Folder Names and Loading Data
@@ -38,9 +48,8 @@ Here set-up some variables that I use for the file/ folder structure and I read 
 ```{r}
 #| label: folders
 
-
 # folder names
-blog_folder <- "mapping_with_leaflet"
+blog_folder <- "posts/2023-08-14-mapping-tombstone"
 photo_folder <- "Map"
 ```
 
@@ -105,7 +114,7 @@ test <- test_for_jitter_inner %>%
   filter(n == 3)
 ```
 
-Here is a simple leaflet map. The procedure is to initialize leaflet with `leaflet()`, add an underlying map (`add_Tiles()`) and then add my markers with the label (`addCircleMarkers()`) from my dataframe. I'm also adding a scale bar (`addScaleBar()`). Everything is piped together with the standard [tidyverse/ magrittr pipe,](https://magrittr.tidyverse.org/articles/magrittr.html) though of course you can use standard[ function calls instead](https://rstudio.github.io/leaflet/).
+Here is a simple leaflet map. The procedure is to initialize leaflet with `leaflet()`, add an underlying map (`add_Tiles()`) and then add my markers with the label (`addCircleMarkers()`) from my dataframe. I'm also adding a scale bar (`addScaleBar()`). Everything is piped together with the standard [tidyverse/ magrittr pipe,](https://magrittr.tidyverse.org/articles/magrittr.html) though of course you can use standard[function calls instead](https://rstudio.github.io/leaflet/).
 
 The default underlying map used by `addTiles()` is OpenStreetMap. If you want to use different map, you can `addProviderTiles(name)` instead. A demo of the different providers is found [here](http://leaflet-extras.github.io/leaflet-providers/preview/index.html).
 
@@ -388,7 +397,7 @@ The map can be saved with `saveWidget()` from [htmlwidgets](https://cran.r-proje
 
 ```{r}
 #| label: saving-map
-
+# fancy interactive map to upload
 saveWidget(final_map, file = "map_to_upload.html")
 ```
 

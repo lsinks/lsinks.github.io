@@ -8,6 +8,9 @@
 
 /.quarto/
 /posts/2023-08-04-data-cleaning-tombstone/Photos/
+/posts/2023-08-14-mapping-tombstone/Map/
+/_freeze/site_libs/
+
 posts/2023-08-14-mapping-tombstone/Map/Anderson Adesia.JPG
 posts/2023-08-14-mapping-tombstone/Map/Anderson Albert A.JPG
 posts/2023-08-14-mapping-tombstone/Map/Anderson E Francis.JPG
@@ -207,3 +210,7 @@ posts/2023-08-14-mapping-tombstone/Map/Woolard Robert.JPG
 posts/2023-08-14-mapping-tombstone/Map/Woolard Romey D.JPG
 posts/2023-08-14-mapping-tombstone/Map/Woolard Turner W.JPG
 posts/2023-08-14-mapping-tombstone/Map/Woolard William C.JPG
+posts/2023-08-14-mapping-tombstone/map_to_upload.html
+_freeze/site_libs/image-group1-0.0.1/Anderson Zady_panel.png
+_freeze/site_libs/image-group1-0.0.1/Appleton Richard_panel.png
+_freeze/site_libs/image-group1-0.0.1/Baggett Mahalia_panel.png
