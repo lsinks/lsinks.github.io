@@ -549,10 +549,13 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.4.3",
+      "Version": "0.4.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "ed588261931ee3be2c700d22e94a29ab"
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "707fae4bbf73697ec8d85f9d7076c061"
     },
     "crayon": {
       "Package": "crayon",
@@ -1144,6 +1147,26 @@
       ],
       "Hash": "92edfac53774706b4d6099f3ee6f6306"
     },
+    "ggsankey": {
+      "Package": "ggsankey",
+      "Version": "0.0.99999",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "ggsankey",
+      "RemoteUsername": "davidsjoberg",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "3e171a83a5364bb24df7cb2cd9203dd79b1dae29",
+      "Requirements": [
+        "dplyr",
+        "ggplot2",
+        "magrittr",
+        "purrr",
+        "stringr",
+        "tidyr"
+      ],
+      "Hash": "1ec4323cb756434f7c836f175c34ad52"
+    },
     "ggthemes": {
       "Package": "ggthemes",
       "Version": "4.2.4",
@@ -1346,7 +1369,7 @@
     },
     "gtable": {
       "Package": "gtable",
-      "Version": "0.3.3",
+      "Version": "0.3.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1357,7 +1380,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "b44addadb528a0d227794121c00572a0"
+      "Hash": "b29cf3031f49b04ab9c852c912547eef"
     },
     "hardhat": {
       "Package": "hardhat",
@@ -1521,6 +1544,28 @@
         "uuid"
       ],
       "Hash": "99df65cfef20e525ed38c3d2577f7190"
+    },
+    "igraph": {
+      "Package": "igraph",
+      "Version": "1.5.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Matrix",
+        "R",
+        "cli",
+        "cpp11",
+        "grDevices",
+        "graphics",
+        "lifecycle",
+        "magrittr",
+        "methods",
+        "pkgconfig",
+        "rlang",
+        "stats",
+        "utils"
+      ],
+      "Hash": "80401cb5ec513e8ddc56764d03f63669"
     },
     "infer": {
       "Package": "infer",
@@ -2029,6 +2074,19 @@
         "methods"
       ],
       "Hash": "6dfe8bf774944bd5595785e3229d8771"
+    },
+    "networkD3": {
+      "Package": "networkD3",
+      "Version": "0.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmlwidgets",
+        "igraph",
+        "magrittr"
+      ],
+      "Hash": "38310ec4ddb1398359abdd603c151067"
     },
     "nlme": {
       "Package": "nlme",
