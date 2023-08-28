@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-08-15T22:08:04.835Z</lastmod>
+    <lastmod>2023-08-28T17:18:02.352Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-14-mapping-tombstone/tombstone_mapping_leaflet.html</loc>
@@ -123,5 +123,9 @@
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-15-TidyTuesday-Twofer/tidytuesday-twofer.html</loc>
     <lastmod>2023-08-15T22:05:48.471Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-08-22-TidyTuesday-Refugees/TidyTuesday34.html</loc>
+    <lastmod>2023-08-28T17:18:41.048Z</lastmod>
   </url>
 </urlset>
