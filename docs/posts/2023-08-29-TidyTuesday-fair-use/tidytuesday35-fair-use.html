@@ -1,0 +1,3369 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Louise E. Sinks">
+<meta name="dcterms.date" content="2023-08-29">
+<meta name="description" content="Using stringr::str_detect() functions to explore why variables from different datasets don’t exactly match.">
+
+<title>Louise E. Sinks - TidyTuesday 35: Exploring Fair Use Cases</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - TidyTuesday 35: Exploring Fair Use Cases">
+<meta name="twitter:description" content="Using stringr::str_detect() functions to explore why variables from different datasets don’t exactly match.">
+<meta name="twitter:image" content="https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/thumbnail.jpg">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me/ CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../currentprojects.html" rel="" target="">
+ <span class="menu-text">Current Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introoverview" id="toc-introoverview" class="nav-link active" data-scroll-target="#introoverview">Intro/Overview</a></li>
+  <li><a href="#setting-up" id="toc-setting-up" class="nav-link" data-scroll-target="#setting-up">Setting Up</a>
+  <ul class="collapse">
+  <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link" data-scroll-target="#loading-libraries">Loading Libraries</a></li>
+  <li><a href="#loading-data" id="toc-loading-data" class="nav-link" data-scroll-target="#loading-data">Loading Data</a></li>
+  </ul></li>
+  <li><a href="#preliminary-exploratory-data-analysis" id="toc-preliminary-exploratory-data-analysis" class="nav-link" data-scroll-target="#preliminary-exploratory-data-analysis">Preliminary Exploratory Data Analysis</a></li>
+  <li><a href="#matching-the-case-titles" id="toc-matching-the-case-titles" class="nav-link" data-scroll-target="#matching-the-case-titles">Matching the Case Titles</a>
+  <ul class="collapse">
+  <li><a href="#what-case-names-dont-match" id="toc-what-case-names-dont-match" class="nav-link" data-scroll-target="#what-case-names-dont-match">What Case Names don’t Match?</a></li>
+  <li><a href="#are-mistakes-in-punctuation-the-main-problem" id="toc-are-mistakes-in-punctuation-the-main-problem" class="nav-link" data-scroll-target="#are-mistakes-in-punctuation-the-main-problem">Are Mistakes in Punctuation the Main Problem?</a></li>
+  <li><a href="#does-matching-on-the-first-10-characters-improve-the-match" id="toc-does-matching-on-the-first-10-characters-improve-the-match" class="nav-link" data-scroll-target="#does-matching-on-the-first-10-characters-improve-the-match">Does Matching on the First 10 Characters Improve the Match?</a></li>
+  </ul></li>
+  <li><a href="#are-longer-case-titles-more-likely-to-have-typos" id="toc-are-longer-case-titles-more-likely-to-have-typos" class="nav-link" data-scroll-target="#are-longer-case-titles-more-likely-to-have-typos">Are Longer Case Titles More Likely to Have Typos?</a>
+  <ul class="collapse">
+  <li><a href="#a-graph-of-title-length-and-mismatch-rate" id="toc-a-graph-of-title-length-and-mismatch-rate" class="nav-link" data-scroll-target="#a-graph-of-title-length-and-mismatch-rate">A Graph of Title Length And Mismatch Rate</a></li>
+  <li><a href="#a-graph-of-title-length-and-number-of-mismatches" id="toc-a-graph-of-title-length-and-number-of-mismatches" class="nav-link" data-scroll-target="#a-graph-of-title-length-and-number-of-mismatches">A Graph of Title Length And Number of Mismatches</a></li>
+  <li><a href="#making-a-composite-panel-figure-with-cowplot" id="toc-making-a-composite-panel-figure-with-cowplot" class="nav-link" data-scroll-target="#making-a-composite-panel-figure-with-cowplot">Making a Composite/ Panel Figure with cowplot</a></li>
+  </ul></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">TidyTuesday 35: Exploring Fair Use Cases</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Data-Viz</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">R-code</div>
+    <div class="quarto-category">Code-Along</div>
+    <div class="quarto-category">TidyTuesday</div>
+    <div class="quarto-category">stringr</div>
+    <div class="quarto-category">data cleaning</div>
+    <div class="quarto-category">dual axis plot</div>
+    <div class="quarto-category">ggplot2</div>
+    <div class="quarto-category">cowplot</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Using stringr::str_detect() functions to explore why variables from different datasets don’t exactly match.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://lsinks.github.io/">Louise E. Sinks</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 29, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introoverview" class="level2">
+<h2 class="anchored" data-anchor-id="introoverview">Intro/Overview</h2>
+<p>Today’s <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday concerns US copyright law</a>. Fair use is the right to use copyrighted materials in some instances. Fair use law isn’t always clear, and there is often litigation to decide whether something is fair use. This week’s TidyTuesday uses a data set created by web scraping to get information about federal court cases on fair use. This week’s data comes with the following warning:</p>
+<blockquote class="blockquote">
+<p>There are two datasets this week for which the rows align, but the values might not precisely line up for a clean join -- a case you often have to deal with in real-world data.</p>
+</blockquote>
+<p>I think I want to do a visualization around that comment- what percentage of the data doesn’t precisely align, and are there common types of mismatches?</p>
+</section>
+<section id="setting-up" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up">Setting Up</h2>
+<section id="loading-libraries" class="level3">
+<h3 class="anchored" data-anchor-id="loading-libraries">Loading Libraries</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Who doesn't want to be tidy?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># for nice tables</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cowplot) <span class="co"># for composite graphs</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggthemes) <span class="co"># themes for ggplot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="loading-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-data">Loading Data</h3>
+<p>Reading in the data using the tidytuesday package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="dv">2023</span>, <span class="at">week =</span> <span class="dv">35</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Compiling #TidyTuesday Information for 2023-08-29 ----</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- There are 2 files available ---</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Starting Download ---</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Downloading file 1 of 2: `fair_use_cases.csv`
+    Downloading file 2 of 2: `fair_use_findings.csv`</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>--- Download complete ---</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fair_use_cases <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>fair_use_cases</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fair_use_findings <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>fair_use_findings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="preliminary-exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="preliminary-exploratory-data-analysis">Preliminary Exploratory Data Analysis</h2>
+<p>Looking at the <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-29/readme.md#cleaning-script">cleaning script</a>, it appears that the <code>fair_use_cases</code> comes from the <a href="https://www.copyright.gov/fair-use/fair-index.html">table found at copyright.gov</a>. This table has some summary information about the case and a link to the court rulings (a pdf). The <code>fair_use_findings</code> dataframe contains additional information about the case extracted from the pdf of the court rulings. Indeed, there are 251 rows in each dataframe, and the way the dataframes are generated, they should match up.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fair_use_cases <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="vkzchwdwgs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vkzchwdwgs table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vkzchwdwgs thead, #vkzchwdwgs tbody, #vkzchwdwgs tfoot, #vkzchwdwgs tr, #vkzchwdwgs td, #vkzchwdwgs th {
+  border-style: none;
+}
+
+#vkzchwdwgs p {
+  margin: 0;
+  padding: 0;
+}
+
+#vkzchwdwgs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vkzchwdwgs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vkzchwdwgs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vkzchwdwgs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vkzchwdwgs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vkzchwdwgs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vkzchwdwgs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vkzchwdwgs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vkzchwdwgs .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vkzchwdwgs .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vkzchwdwgs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vkzchwdwgs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vkzchwdwgs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vkzchwdwgs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vkzchwdwgs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vkzchwdwgs .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vkzchwdwgs .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vkzchwdwgs .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vkzchwdwgs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vkzchwdwgs .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vkzchwdwgs .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vkzchwdwgs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vkzchwdwgs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vkzchwdwgs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vkzchwdwgs .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vkzchwdwgs .gt_left {
+  text-align: left;
+}
+
+#vkzchwdwgs .gt_center {
+  text-align: center;
+}
+
+#vkzchwdwgs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vkzchwdwgs .gt_font_normal {
+  font-weight: normal;
+}
+
+#vkzchwdwgs .gt_font_bold {
+  font-weight: bold;
+}
+
+#vkzchwdwgs .gt_font_italic {
+  font-style: italic;
+}
+
+#vkzchwdwgs .gt_super {
+  font-size: 65%;
+}
+
+#vkzchwdwgs .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vkzchwdwgs .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vkzchwdwgs .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vkzchwdwgs .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vkzchwdwgs .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vkzchwdwgs .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vkzchwdwgs .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="case">case</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="court">court</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="jurisdiction">jurisdiction</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="categories">categories</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="outcome">outcome</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="fair_use_found">fair_use_found</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="case" class="gt_row gt_left">De Fontbrune v. Wofsy, 39 F.4th 1214 (9th Cir. 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">9th Circuit</td>
+<td headers="jurisdiction" class="gt_row gt_left">9th Circuit</td>
+<td headers="categories" class="gt_row gt_left">Education/Scholarship/Research; Photograph</td>
+<td headers="outcome" class="gt_row gt_left">Fair use not found</td>
+<td headers="fair_use_found" class="gt_row gt_center">FALSE</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Sedlik v. Von Drachenberg, No. CV 21-1102 (C.D. Cal. May 31, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">C.D. Cal.</td>
+<td headers="jurisdiction" class="gt_row gt_left">9th Circuit</td>
+<td headers="categories" class="gt_row gt_left">Painting/Drawing/Graphic; Photograph</td>
+<td headers="outcome" class="gt_row gt_left">Preliminary finding; Fair use not found</td>
+<td headers="fair_use_found" class="gt_row gt_center">FALSE</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Sketchworks Indus. Strength Comedy, Inc. v. Jacobs, No. 19-CV-7470-LTS-VF (S.D.N.Y. May 12, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">S.D.N.Y.</td>
+<td headers="jurisdiction" class="gt_row gt_left">2nd Circuit</td>
+<td headers="categories" class="gt_row gt_left">Film/Audiovisual; Music; Parody/Satire; Review/Commentary</td>
+<td headers="outcome" class="gt_row gt_left">Fair use found</td>
+<td headers="fair_use_found" class="gt_row gt_center">TRUE</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Am. Soc'y for Testing &amp; Materials v. Public.Resource.Org, Inc., No. 13-cv-1215 (D.D.C. Mar. 31, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">D.D.C.</td>
+<td headers="jurisdiction" class="gt_row gt_left">District of Columbia Circuit</td>
+<td headers="categories" class="gt_row gt_left">Education/Scholarship/Research; Textual Work; Used in government proceeding</td>
+<td headers="outcome" class="gt_row gt_left">Mixed Result</td>
+<td headers="fair_use_found" class="gt_row gt_center">FALSE</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Yang v. Mic Network Inc., Nos. 20-4097-cv, 20-4201-cv (2d Cir. Mar. 29, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">2d Circuit</td>
+<td headers="jurisdiction" class="gt_row gt_left">2nd Circuit</td>
+<td headers="categories" class="gt_row gt_left">News reporting; Photography</td>
+<td headers="outcome" class="gt_row gt_left">Fair use found</td>
+<td headers="fair_use_found" class="gt_row gt_center">TRUE</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Viacom Int’l v. Pixi Universal, Civ. Action No H-21-2612 (S.D. Tex. Mar. 25, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">S.D. Tex.</td>
+<td headers="jurisdiction" class="gt_row gt_left">5th Circuit</td>
+<td headers="categories" class="gt_row gt_left">Painting/Drawing/Graphic; Parody/Satire</td>
+<td headers="outcome" class="gt_row gt_left">Fair use not found</td>
+<td headers="fair_use_found" class="gt_row gt_center">FALSE</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Now the other dataframe. This one has some huge blocks of text in some fields, so I’m going to add a <a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html#styling-tables-with-gt">container to the table to make it have a vertical scroll bar</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fair_use_findings <span class="sc">%&gt;%</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">container.height =</span> <span class="fu">px</span>(<span class="dv">300</span>), <span class="at">container.padding.y =</span> <span class="fu">px</span>(<span class="dv">24</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="owmwcudnan" style="padding-left:0px;padding-right:0px;padding-top:24px;padding-bottom:24px;overflow-x:auto;overflow-y:auto;width:auto;height:300px;">
+<style>#owmwcudnan table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#owmwcudnan thead, #owmwcudnan tbody, #owmwcudnan tfoot, #owmwcudnan tr, #owmwcudnan td, #owmwcudnan th {
+  border-style: none;
+}
+
+#owmwcudnan p {
+  margin: 0;
+  padding: 0;
+}
+
+#owmwcudnan .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#owmwcudnan .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#owmwcudnan .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#owmwcudnan .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#owmwcudnan .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#owmwcudnan .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#owmwcudnan .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#owmwcudnan .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#owmwcudnan .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#owmwcudnan .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#owmwcudnan .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#owmwcudnan .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#owmwcudnan .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#owmwcudnan .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#owmwcudnan .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owmwcudnan .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#owmwcudnan .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#owmwcudnan .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#owmwcudnan .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owmwcudnan .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#owmwcudnan .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owmwcudnan .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#owmwcudnan .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owmwcudnan .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#owmwcudnan .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#owmwcudnan .gt_left {
+  text-align: left;
+}
+
+#owmwcudnan .gt_center {
+  text-align: center;
+}
+
+#owmwcudnan .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#owmwcudnan .gt_font_normal {
+  font-weight: normal;
+}
+
+#owmwcudnan .gt_font_bold {
+  font-weight: bold;
+}
+
+#owmwcudnan .gt_font_italic {
+  font-style: italic;
+}
+
+#owmwcudnan .gt_super {
+  font-size: 65%;
+}
+
+#owmwcudnan .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#owmwcudnan .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#owmwcudnan .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#owmwcudnan .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#owmwcudnan .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#owmwcudnan .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#owmwcudnan .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="title">title</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="case_number">case_number</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="court">court</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="key_facts">key_facts</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="issue">issue</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="holding">holding</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="tags">tags</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="outcome">outcome</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="title" class="gt_row gt_left">De Fontbrune v. Wofsy</td>
+<td headers="case_number" class="gt_row gt_left">39 F.4th 1214 (9th Cir. 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States Court of Appeals for the Ninth Circuit</td>
+<td headers="key_facts" class="gt_row gt_left">Plaintiffs own the rights to a catalogue comprised of 16,000 photographs of Pablo Picasso’s work, which was originally compiled by Picasso’s friend in 1932 (the “Zervos Catalogue”). In 1995, after obtaining permission from Picasso’s estate to publish a work illustrating and describing works by Picasso, Defendants Alan Wofsy and his company Alan Wofsy &amp; Associates began publishing The Picasso Project—–a series of volumes reproducing images of Picasso’s work, including 1,492 photographs from the Zervos Catalogue. Plaintiffs sued for copyright infringement. A French court held the photographs were protected by copyright because they “added creative features through deliberate choices of lighting, the lens, filters, [and] framing or angle of view.” In 2001, Plaintiffs obtained a judgment in France that subjected Defendants to damages for any further acts of infringement. In 2012, after discovering copies of The Picasso Project in a French bookstore, Plaintiffs enforced their judgment in France and were awarded €2 million. Plaintiffs sought recognition of the judgment in the U.S. courts. The district court granted summary judgment for Defendants, determining that the French judgment was “repugnant to U.S. public policy protecting free expression” because it failed to provide a fair use defense. Plaintiffs appealed; and Defendants cross-appealed on other defenses.</td>
+<td headers="issue" class="gt_row gt_left">Whether reproduction of photographs documenting artwork in a reference book that was sold commercially is a fair use.</td>
+<td headers="holding" class="gt_row gt_left">The panel held that the first factor, the purpose and character of the use, weighed against fair use because Defendants conceded that The Picasso Project was a commercial venture and the use at issue—reproduction of the photographs in a book illustrating Picasso’s works—was not transformative. Specifically, the court noted that Defendants’ use “did not serve an ‘entirely different function’ than the originals,” but had overlapping purposes, and the insertion of informative captions did not “necessarily” transform the works. The second factor, the nature of the copyrighted work, did not favor fair use because, although the works were published and documentary in nature, the French court had concluded that the photographs exhibited creative elements. The court determined that the third factor, the amount and substantiality of the work used, weighed against fair use because Defendants failed to demonstrate that “copying the entirety of each photograph was necessary.” The fourth factor, the effect of the use upon the potential market for or value of the copyrighted work, also weighed against fair use because there is a presumption of market harm when the use is commercial and non-transformative. Although Defendants presented evidence that auction prices for the Zervos Catalogue increased while The Picasso Project was on the market, Defendants had not provided evidence that “widespread appropriation” of the works would not harm the market for the photographs. Weighing all the factors, the court had “serious doubts” that fair use would protect Defendants’ use, and, accordingly, granted summary judgment to Plaintiffs on the public policy defense.</td>
+<td headers="tags" class="gt_row gt_left">Education/Scholarship/Research; Photograph</td>
+<td headers="outcome" class="gt_row gt_left">Fair use not found</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Sedlik v. Von Drachenberg</td>
+<td headers="case_number" class="gt_row gt_left">No. CV 21-1102, 2022 WL 2784818 (C.D. Cal. May 31, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States District Court for the Southern District of New York</td>
+<td headers="key_facts" class="gt_row gt_left">Plaintiff Jeffrey Sedlik is a photographer who created an iconic portrait of musician Miles Davis, which he has licensed for various uses (the “Portrait”). Defendant Katherine Von Drachenberg, professionally known as Kat Von D, is a celebrity tattooist. In 2017, Kat Von D inked a tattoo on the arm of a friend, Blake Farmer, as a gift. Farmer chose the Portrait as the reference image for his tattoo. Kat Von D traced a printout of the Portrait to create a line drawing and stencil to transfer to Farmer’s arm, then completed the tattoo freehand. Kat Von D and the tattoo shop hosting her both posted a photograph of Kat Von D tattooing Farmer’s arm with the Portrait in the background, as well as a photograph of the finished tattoo. Kat Von D also posted a short video of herself inking the tattoo. Sedlik sued and moved for summary judgment on his claim of copyright infringement. Defendants moved for summary judgment, asserting fair use.</td>
+<td headers="issue" class="gt_row gt_left">Whether use of a photograph as the reference image for a realistic tattoo is fair use.</td>
+<td headers="holding" class="gt_row gt_left">Considering the first fair use factor, the purpose and character of the use, the court found triable issues as to the transformativeness and commercial nature of the work. The court rejected Kat Von D’s arguments that the tattoo was transformative because of Farmer’s personal connection to the image in the Portrait and by nature of it being permanently imprinted on Farmer’s body. The court concluded that a jury should determine whether the visual differences between the Portrait and the tattoo, such as additional shading and the elimination of the black background, are significant enough to render the tattoo transformative. The court also stated that a jury should decide whether Kat Von D’s use of the work was commercial, noting that she did not charge Farmer for the tattoo but could have derived an indirect economic benefit from promotion of the tattoo on social media. The court found that the second factor, the nature of the copyrighted work, favored fair use because although the Portrait is creative, it was published several decades ago and has been widely disseminated. The third factor, the amount and substantiality of the portion used, weighed against fair use because Kat Von D chose to copy certain expressive elements of the Portrait that were not necessary to achieve her stated purpose of expressing “a sentiment of melancholy.” On the fourth factor, the effect of the use upon the potential market for or value of the copyrighted work, while the court concluded the tattoo was not a substitute in the primary market for the Portrait, it found that Sedlik raised a triable issue as to whether a future market exists for licensing the Portrait for use in creating tattoos. Because the court found triable issues concerning the statutory factors, it declined to address a non-statutory factor raised by defendants—“fundamental rights of bodily integrity and personal expression”—and concluded that fair use in this case should be decided by a jury.</td>
+<td headers="tags" class="gt_row gt_left">Painting/Drawing/Graphic; Photograph</td>
+<td headers="outcome" class="gt_row gt_left">Preliminary finding; Fair use not found</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Sketchworks Indus. Strength Comedy, Inc. v. Jacobs</td>
+<td headers="case_number" class="gt_row gt_left">No. 19-CV-7470-LTS-VF, 2022 U.S. Dist. LEXIS 86331 (S.D.N.Y. May 12, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States District Court for the Southern District of New York</td>
+<td headers="key_facts" class="gt_row gt_left">Plaintiff Sketchworks Industrial Strength Comedy, Inc. (“Sketchworks”) is a sketch comedy company that created and owns a copyright in Vape, a stage musical that is an alleged parody of the theatrical work and film, Grease. Vape follows the same characters along roughly the same story-arc and in the same setting as Grease and incorporates portions of the film’s music. Defendants are the trustees for the individual trusts of the co-authors of Grease. Just before Vape was scheduled to be performed, Defendants sent Sketchworks and the theater where Vape was to be performed cease and desist letters, and the performances were cancelled. Sketchworks brought an action against Defendants seeking a declaratory judgment that Vape constitutes fair use of Grease, asserting that Vape is a parody that uses millennial slang, pop culture references, and exaggeration to comment on Grease and criticize its misogynistic and sexist elements. Defendants disputed that Vape is a parody and asserted that it infringes their copyright in Grease. The parties cross- moved for judgment on the pleadings.</td>
+<td headers="issue" class="gt_row gt_left">Whether the use of protected elements, including music, plot, characters, dialogue, and setting, from a theatrical work and film to create a parodic stage musical is fair use.</td>
+<td headers="holding" class="gt_row gt_left">The court found that the first factor, the purpose and character of the use, favored fair use because Vape is a parody of Grease and is therefore transformative. Critical to this determination, the court found that Vape juxtaposed “familiar elements from Grease, such as the main characters and the plot arc, with alterations to the script and song lyrics” to highlight the experiences of Grease’s female characters and “comment on how misogynistic tendencies have both evolved since Grease was developed and remain the same.” The second factor, the nature of the copyrighted work, disfavored fair use because Grease’s creative expression fell “within the core of the copyright’s protective purposes.” The court, however, declined to give this factor much weight, reasoning that parodies typically copy publicly known, expressive works. The third factor, the amount and substantiality of the use, weighed in favor of fair use. Although Vape took “substantial elements” from Grease, the court found that “the taking was not excessive” because use of those elements was necessary to achieve Vape’s parodic purpose and communicate its criticism of certain aspects of Grease. The fourth factor, the effect of the use on the potential market for or value of the copyrighted work, also weighed in favor of fair use because any potential harm to Grease’s market value for derivatives was likely “minimal.” While Vape updated some of the language and cultural references from Grease, the court found that Vape “cannot be reasonably viewed as a derivative ‘sequel to, . . . or updated remake, of Grease,’” because its updates were done “in a spirit of mockery.” Further, the court commented that any effect on the demand for derivatives attributable to Vape’s “critical nature” is not remediable under copyright law. Weighing the four factors together, the court concluded that Vape constitutes a fair use of Grease and granted Sketchworks’ motion for judgment on the pleadings.</td>
+<td headers="tags" class="gt_row gt_left">Film/Audiovisual; Music; Parody/Satire; Review/Commentary</td>
+<td headers="outcome" class="gt_row gt_left">Fair use found</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Am. Soc'y for Testing &amp; Materials v. Public.Resource.Org, Inc.</td>
+<td headers="case_number" class="gt_row gt_left">No. 13-cv-1215 (TSC), 2022 U.S. Dist. LEXIS 60922 (D.D.C. Mar. 31, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States District Court for the District of Columbia</td>
+<td headers="key_facts" class="gt_row gt_left">Defendant Public.Resource.Org, Inc., a non-profit organization, has a mission to make the “law and other government materials more widely available so that people, businesses, and organizations can easily read and discuss [the] laws and the operations of government.” Plaintiffs consist of three non-profit standards-developing organizations: (1) “ASTM,” which is focused on industry-related technical and safety standards; (2) “NFPA,” which is focused on safety standards; and (3) “ASHRAE,” which is focused on construction-related standards. Plaintiffs own copyrights in various “voluntary consensus standards,” which are developed by numerous subject matter experts under Plaintiffs’ guidance. Plaintiffs sell PDFs and hard copies of their standards and maintain reading rooms for viewing the standards. Defendant purchased hard copies of Plaintiffs’ standards and, without authorization, scanned and made digital, verbatim, copies freely available online to the public. This case concerns 191 ASTM standards, 23 NFPA standards, and 3 ASHRAE standards that Defendant claims have been incorporated by reference into federal law. Plaintiffs brought copyright, trademark, and unfair competition claims; Defendant countersued, seeking declaratory judgment. The parties filed motions for summary judgment. In 2017, the district court found that all factors weighed against fair use. On appeal, the court of appeals reversed in part and remanded the case back to the district court without a detailed discussion of the fair use factors for additional factual development. On remand, both parties again moved for summary judgment.</td>
+<td headers="issue" class="gt_row gt_left">Whether it is fair use to make available online for free a verbatim copy of privately developed standards, which have been incorporated by reference into law, without obtaining authorization from the copyright owner.</td>
+<td headers="holding" class="gt_row gt_left">As directed by the court of appeals, the district court conducted a four-step fair use analysis for each of the 217 allegations of infringement, concluding that Defendant’s reproduction of 184 standards was fair use, reproduction of 32 standards was not fair use, and that portions of the reproduction of 1 standard was fair use. For all 217 standards, the court found that the fourth factor, the effect of the use upon the potential market for or value of the work, favored fair use. Having found that Defendant’s use was noncommercial, the court determined that Plaintiffs did not provide sufficient evidence to show some meaningful likelihood of future harm exists. The court noted that it was “less deferential” to Plaintiffs’ “conclusory opinions” about market harm given that, during the elapsed time since the alleged infringement and the commencement of the litigation Plaintiffs could have provided “economic data and analysis” supporting their arguments. The court also found that Defendant’s reproductions did not have a “substantially adverse impact on the potential market for the originals.” Regarding the 184 standards that the court found Defendant reproduced fairly, the court determined that 153 were incorporated by reference into law and that the other 31 were identical in text to standards incorporated by reference. The court concluded that the first factor, the purpose and character of the use, generally favored fair use because Defendant did not “stand to profit” from the reproduction and that its purpose was “to inform the public about the law and facilitate public debate.” The court noted that Defendant’s use qualified as one that “furthere[d] the purposes” of fair use, and generally provided information “essential for a private entity to comprehend its legal duties,” which weighed “heavily in favor” of fair use. In assessing the second factor, the nature of the copyrighted work, the court considered that “the express text of the law falls plainly outside the realm of copyright protection” and determined that consequently the standards incorporated by reference “are, at best, at the outer edge of ‘copyright's protective purposes.’” Thus, this factor weighed “heavily in favor” of fair use. The court explained that the 184 standards were incorporated into law “without limitation” such that “the consequence of the incorporation by reference is virtually indistinguishable from a situation in which the standard had been expressly copied into law.” The third factor, the amount and substantiality of the portion used, also favored fair use as the court found that “a greater amount of the standard's text might be fairly reproduced” because the incorporating regulations did “not specify” whether certain provisions, or the entire text, of the standards were incorporated by reference into law and did not indicate which specific provisions were “relevant for regulatory guidance.” Balancing the factors, the court found fair use and denied Plaintiffs’ motion for summary judgment regarding these 184 standards. Regarding the 32 standards that the court found were not reproduced fairly, the court noted that these standards were not shown to be incorporated by reference into law and “differ[ed] in substantive ways from those incorporated by reference into law.” Discussing the first factor, the court found that this factor weighed slightly against fair use because Defendant’s purpose of “inform[ing] the public about the law” was not “significantly furthered” by publishing standards with substantive differences from the standards that were incorporated by reference. The second factor weighed against fair use because there was no evidence showing that the standards were incorporated into law. And, although the standards were more factual than creative, the court concluded that these works “fall more squarely within the realm of copyright protection” than standards incorporated into law. The third factor weighed against fair use, as Defendant’s purpose of informing the public about the law “could be achieved with a paraphrase or summary.” The court also noted that “[i]ncorporating one standard by reference does not justify posting provisions of a different version that has not been incorporated into law.” Balancing these factors, the court did not find fair use and denied Defendant’s motion for summary judgment regarding these 32 standards. Regarding the 1 standard where the court found that portions of the reproduced standard were used fairly, only the parts incorporated by reference into a regulation were found to be fair use. In its second factor analysis, distinguishing the portions not incorporated into law, the court found that Defendant’s “wholesale reproduction” of the standard was “harder to justify” because only parts of the standard were incorporated into law.</td>
+<td headers="tags" class="gt_row gt_left">Education/Scholarship/Research; Textual Work; Used in government proceeding</td>
+<td headers="outcome" class="gt_row gt_left">Mixed Result</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Yang v. Mic Network Inc.</td>
+<td headers="case_number" class="gt_row gt_left">Nos. 20-4097-cv(L), 20-4201-cv (XAP), 2022 U.S. App. LEXIS 8195 (2d Cir. Mar. 29, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States Court of Appeals for the Second Circuit</td>
+<td headers="key_facts" class="gt_row gt_left">Plaintiff Stephen Yang (“Yang”) licensed a photograph he took of Dan Rochkind (“Rochkind”) to the New York Post, which ran the photograph in an article about Rochkind entitled “Why I Won’t Date Hot Women Anymore.” Defendant Mic Network, Inc. (“Mic”) posted its own article entitled “Twitter Is Skewering the 'New York Post' for a Piece on Why a Man ‘Won't Date Hot Women’.” The Mic article included a screenshot of the Post article that captured the headline and a portion of Yang’s photograph. Mic did not obtain a license to use the photograph. In response, Yang sued Mic for copyright infringement, and Mic moved to dismiss, asserting fair use. The district court granted Mic’s motion, concluding that its use of Yang’s photograph was fair use. Yang appealed the order and judgment.</td>
+<td headers="issue" class="gt_row gt_left">Whether using a screenshot from an article, including part of a photograph, to report on and criticize the article constitutes fair use of the photograph.</td>
+<td headers="holding" class="gt_row gt_left">On appeal, the court decided that the first factor, the purpose and character of the use, weighed in favor of fair use. As an initial matter, the panel held that it was not error for the district to decide transformativeness on a motion to dismiss in this case because the only two pieces of evidence needed were the original and secondary works. The court held that, in addition to identifying the subject of Mic’s criticism, Mic, also transformed the photograph by critiquing and providing commentary on the Post article. Mic did not use the photograph “merely as an illustrative aid,” and thus its use was for different purpose than the original. The second factor, the nature of the copyrighted work, had limited weight in the court’s analysis after it held that the use was transformative and thus “d[id] not counsel against a finding of fair use.” Likewise, the third factor, the amount and substantiality of the work used, did not disfavor fair use as the court agreed with the district court’s conclusion that Mic’s use of the image was reasonable to satirize the Post article. The court determined that the fourth factor, the effect of the use on the potential market for or value of the work, also favored fair use. The court concluded that Mic’s screenshot was not a competing substitute for Yang’s work because Mic did not simply republish the photograph, but instead used a screenshot consisting of a “significantly” cropped version of the work along with the Post headline. Further, Yang failed to plausibly allege that a market exists for “photographs that happen to be featured in news articles criticizing the original article in which the photograph appeared.” Weighing the factors together, the court concluded that the district court properly dismissed Yang’s copyright infringement claim on fair use grounds.</td>
+<td headers="tags" class="gt_row gt_left">News Reporting; Photography</td>
+<td headers="outcome" class="gt_row gt_left">Fair use found</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Viacom Int’l v. Pixi Universal</td>
+<td headers="case_number" class="gt_row gt_left">Civ. Action No H-21-2612, 2022 U.S. Dist. LEXIS 57400 (S.D. Tex. Mar. 25, 2022)</td>
+<td headers="year" class="gt_row gt_right">2022</td>
+<td headers="court" class="gt_row gt_left">United States District Court for the Southern District of Texas</td>
+<td headers="key_facts" class="gt_row gt_left">Plaintiff Viacom International Inc. (“Viacom”) is the owner of the SpongeBob SquarePants (“SpongeBob”) entertainment franchise and holds over 400 copyright registrations for SpongeBob works, including the animated television series, feature films, two-dimensional drawings, and stylebooks featuring extensive artwork from the franchise (the “Works”). The SpongeBob television series features a fictional fast-food restaurant called the “Krusty Krab,” which Viacom once recreated as an immersive experience at a comics convention in 2019. Defendant Pixi Universal, LLC (“Pixi”) operates themed “pop-up” restaurants and bars. In 2021, Pixi recreated the Krusty Krab as a pop-up called “The Rusty Krab,” which featured recreations of the fictional restaurant and other elements of the SpongeBob series. Pixi charged a fee for admission and for food and drink. After demanding that Pixi cease using SpongeBob intellectual property, Viacom brought copyright and trademark infringement claims and sought injunctive relief. Pixi asserted fair use as its sole defense to the copyright claim.</td>
+<td headers="issue" class="gt_row gt_left">Whether using elements of copyrighted works to create a themed “pop-up” business based on those works is fair use.</td>
+<td headers="holding" class="gt_row gt_left">The court decided that the first factor, the purpose and character of the use, weighed against fair use. The court found that Pixi’s use was wholly commercial and that it did not transform the Works by merely changing the medium of expression. Instead, Pixi’s use shared the same purpose as the original, that is, “light-hearted entertainment.” Rejecting Pixi’s “post-hoc characterization” of its pop-up as a parody, the court found that Pixi embraced, replicated, and intended to profit from the Works. The second factor, the nature of the copyrighted work, also weighed against fair use because of the “fictional, imaginative nature” of the Works. The third factor, the amount and substantiality of the work used, likewise weighed against fair use. The court determined that, although Pixi did not copy all the details of the SpongeBob universe or even specific episode storylines, Pixi’s use of “central, principal characters and iconic locals and backgrounds from the series” was nonetheless “substantial” as it used the “heart” of the Works. Lastly, the court determined that the fourth factor, the effect of the use on the potential market for or value of the work, also weighed against fair use. The court found that the type of immersive experience that Pixi created, which was based exclusively on Viacom’s SpongeBob franchise, affected the potential market for Viacom to venture into creating or licensing derivative immersive works. Because the factors together weighed against a finding of fair use, the court concluded that Viacom was likely to succeed on its copyright infringement claim and granted its motion for preliminary injunctive relief.</td>
+<td headers="tags" class="gt_row gt_left">Painting/Drawing/Graphic; Parody/Satire</td>
+<td headers="outcome" class="gt_row gt_left">Fair use not found</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>The <code>case</code> field in <code>fair_use_cases</code> should contain the information found in the fields <code>title</code> and <code>case_number</code> in the <code>fair_use_findings</code> dataframe. The <code>court</code> and <code>jurisdiction</code> from <code>fair_use_cases</code> should also somehow relate to the <code>court</code> listed in <code>fair_use_findings</code>.</p>
+<p>I’m going to start with the <code>case</code>, <code>title</code>, and <code>case_number</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fair_use_cases <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(case) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="ikpalqamsq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ikpalqamsq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ikpalqamsq thead, #ikpalqamsq tbody, #ikpalqamsq tfoot, #ikpalqamsq tr, #ikpalqamsq td, #ikpalqamsq th {
+  border-style: none;
+}
+
+#ikpalqamsq p {
+  margin: 0;
+  padding: 0;
+}
+
+#ikpalqamsq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ikpalqamsq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ikpalqamsq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ikpalqamsq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ikpalqamsq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ikpalqamsq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ikpalqamsq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ikpalqamsq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ikpalqamsq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ikpalqamsq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ikpalqamsq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ikpalqamsq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ikpalqamsq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ikpalqamsq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ikpalqamsq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ikpalqamsq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ikpalqamsq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ikpalqamsq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ikpalqamsq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ikpalqamsq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ikpalqamsq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ikpalqamsq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ikpalqamsq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ikpalqamsq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ikpalqamsq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ikpalqamsq .gt_left {
+  text-align: left;
+}
+
+#ikpalqamsq .gt_center {
+  text-align: center;
+}
+
+#ikpalqamsq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ikpalqamsq .gt_font_normal {
+  font-weight: normal;
+}
+
+#ikpalqamsq .gt_font_bold {
+  font-weight: bold;
+}
+
+#ikpalqamsq .gt_font_italic {
+  font-style: italic;
+}
+
+#ikpalqamsq .gt_super {
+  font-size: 65%;
+}
+
+#ikpalqamsq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ikpalqamsq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ikpalqamsq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ikpalqamsq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ikpalqamsq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ikpalqamsq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ikpalqamsq .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="case">case</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="case" class="gt_row gt_left">De Fontbrune v. Wofsy, 39 F.4th 1214 (9th Cir. 2022)</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Sedlik v. Von Drachenberg, No. CV 21-1102 (C.D. Cal. May 31, 2022)</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Sketchworks Indus. Strength Comedy, Inc. v. Jacobs, No. 19-CV-7470-LTS-VF (S.D.N.Y. May 12, 2022)</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Am. Soc'y for Testing &amp; Materials v. Public.Resource.Org, Inc., No. 13-cv-1215 (D.D.C. Mar. 31, 2022)</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Yang v. Mic Network Inc., Nos. 20-4097-cv, 20-4201-cv (2d Cir. Mar. 29, 2022)</td></tr>
+    <tr><td headers="case" class="gt_row gt_left">Viacom Int’l v. Pixi Universal, Civ. Action No H-21-2612 (S.D. Tex. Mar. 25, 2022)</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>It looks like the case number is formatted differently across the entries. This may be due to different style guides in different circuits/ courts.</p>
+<p>Now look at the same information from the other dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fair_use_findings <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, case_number) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="frqkjfshni" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#frqkjfshni table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#frqkjfshni thead, #frqkjfshni tbody, #frqkjfshni tfoot, #frqkjfshni tr, #frqkjfshni td, #frqkjfshni th {
+  border-style: none;
+}
+
+#frqkjfshni p {
+  margin: 0;
+  padding: 0;
+}
+
+#frqkjfshni .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#frqkjfshni .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#frqkjfshni .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#frqkjfshni .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#frqkjfshni .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#frqkjfshni .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#frqkjfshni .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#frqkjfshni .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#frqkjfshni .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#frqkjfshni .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#frqkjfshni .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#frqkjfshni .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#frqkjfshni .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#frqkjfshni .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#frqkjfshni .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#frqkjfshni .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#frqkjfshni .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#frqkjfshni .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#frqkjfshni .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#frqkjfshni .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#frqkjfshni .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#frqkjfshni .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#frqkjfshni .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#frqkjfshni .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#frqkjfshni .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#frqkjfshni .gt_left {
+  text-align: left;
+}
+
+#frqkjfshni .gt_center {
+  text-align: center;
+}
+
+#frqkjfshni .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#frqkjfshni .gt_font_normal {
+  font-weight: normal;
+}
+
+#frqkjfshni .gt_font_bold {
+  font-weight: bold;
+}
+
+#frqkjfshni .gt_font_italic {
+  font-style: italic;
+}
+
+#frqkjfshni .gt_super {
+  font-size: 65%;
+}
+
+#frqkjfshni .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#frqkjfshni .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#frqkjfshni .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#frqkjfshni .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#frqkjfshni .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#frqkjfshni .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#frqkjfshni .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="title">title</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="case_number">case_number</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="title" class="gt_row gt_left">De Fontbrune v. Wofsy</td>
+<td headers="case_number" class="gt_row gt_left">39 F.4th 1214 (9th Cir. 2022)</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Sedlik v. Von Drachenberg</td>
+<td headers="case_number" class="gt_row gt_left">No. CV 21-1102, 2022 WL 2784818 (C.D. Cal. May 31, 2022)</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Sketchworks Indus. Strength Comedy, Inc. v. Jacobs</td>
+<td headers="case_number" class="gt_row gt_left">No. 19-CV-7470-LTS-VF, 2022 U.S. Dist. LEXIS 86331 (S.D.N.Y. May 12, 2022)</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Am. Soc'y for Testing &amp; Materials v. Public.Resource.Org, Inc.</td>
+<td headers="case_number" class="gt_row gt_left">No. 13-cv-1215 (TSC), 2022 U.S. Dist. LEXIS 60922 (D.D.C. Mar. 31, 2022)</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Yang v. Mic Network Inc.</td>
+<td headers="case_number" class="gt_row gt_left">Nos. 20-4097-cv(L), 20-4201-cv (XAP), 2022 U.S. App. LEXIS 8195 (2d Cir. Mar. 29, 2022)</td></tr>
+    <tr><td headers="title" class="gt_row gt_left">Viacom Int’l v. Pixi Universal</td>
+<td headers="case_number" class="gt_row gt_left">Civ. Action No H-21-2612, 2022 U.S. Dist. LEXIS 57400 (S.D. Tex. Mar. 25, 2022)</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="matching-the-case-titles" class="level2">
+<h2 class="anchored" data-anchor-id="matching-the-case-titles">Matching the Case Titles</h2>
+<p>It looks like the titles are styled in the same way. If the five entries here are representative of the dataset as a whole, then I don’t think joining these two files will be difficult.</p>
+<p>I’m going to use <code>str_detect()</code> to match the <code>title</code> from the <code>fair_use_findings</code> data frame (the pattern) with the <code>case</code> name from the <code>fair_use_cases</code> (the string). This will return <code>TRUE</code> if the pattern is contained within the string and a <code>FALSE</code> otherwise. Note that this needs to be an exact match. There can be extra characters before or after the pattern in the string, but the pattern portion must match exactly.</p>
+<p>I talked about this in more depth in a previous tidytuesday, where I joined data frames from <a href="https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html">Arlington County and the Historical Markers TidyTuesday dataset based on partial matches like these</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(<span class="at">string =</span> fair_use_cases<span class="sc">$</span>case,  <span class="at">pattern =</span> fair_use_findings<span class="sc">$</span>title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [13] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [25]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+ [37]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [49]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+ [61] FALSE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE
+ [73]  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+ [85]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [97]  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[109] FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE
+[121]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[133]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[145]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+[157]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE
+[169]  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+[181]  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[193]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+[205]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[217] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+[229]  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE
+[241]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE</code></pre>
+</div>
+</div>
+<p>Okay, so some of them don’t match. How many and why?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>matches_title <span class="ot">&lt;-</span> <span class="fu">str_detect</span>(<span class="at">string =</span> fair_use_cases<span class="sc">$</span>case,  <span class="at">pattern =</span> fair_use_findings<span class="sc">$</span>title) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How many? Remember, you can treat booleans as numbers, so <code>sum</code> will give you the total number of correct matches, and <code>mean</code> will give you the percentage of matches.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(fair_use_cases) <span class="sc">-</span> <span class="fu">sum</span>(matches_title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 33</code></pre>
+</div>
+</div>
+<section id="what-case-names-dont-match" class="level3">
+<h3 class="anchored" data-anchor-id="what-case-names-dont-match">What Case Names don’t Match?</h3>
+<p>Only 33 cases didn’t match. I’m going to look at the ones that don’t match.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fair_use_cases<span class="sc">$</span>case[<span class="sc">!</span>matches_title]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Nat'l Acad. of TV Arts &amp; Scis., Inc., v. Multimedia Sys. Design, Inc. No. 20-CV-7269 (VEC) (S.D.N.Y. July 30, 2021)"    
+ [2] "Tresóna Multimedia v. Burbank High School Vocal Music Ass’n, Nos. 17-56006, 17-56417, 17-56419 (9th Cir. Mar. 24, 2020)"
+ [3] "Cambridge Univ. Press v. Becker, No. No. 1:08-cv-1425-ODE (N.D. Ga. Mar. 2, 2020)"                                      
+ [4] "Barcroft Media, Ltd. v. Coed Media Group, LLC, No. 16-CV-7634 (JMF) (S.D.N.Y. Nov. 2, 2017)"                            
+ [5] "Penguin Random House v. Colting, No. 17-cv-386 (S.D.N.Y. Sept. 8, 2017)"                                                
+ [6] "Peteski Productions, Inc. v. Rothman, No. 5:17-CV-00122 (E.D. Tex. Aug. 30, 2017)"                                      
+ [7] "Hosseinzadeh v. Klein, No. 16-CV-3081 (S.D.N.Y. Aug. 23, 2017)"                                                         
+ [8] "Paramount Pictures, Corp. v. Axanar Prods., Inc., No. 2:15-cv-09938-RGK-E (C.D. Cal. Jan. 3, 2017)"                     
+ [9] "Cambridge University Press v. Becker, 1:08-cv-01425-ODE (N.D. Ga. March 31, 2016)"                                      
+[10] "Katz v. Google Inc., No. 14-14525 (11th Cir. Sept. 17, 2015)"                                                           
+[11] "Penguin Grp. (USA), Inc. v. Am. Buddha, No. 4:13-cv-02075-JGZ (D. Ariz. May 11, 2015)"                                  
+[12] "Bouchat v. Balt. Ravens Ltd. P'ship, 737 F.3d 932 (4th Cir. 2013)"                                                      
+[13] "Fox Broad. Co. v. Dish Network, L.L.C., 723 F.3d 1067 (9th Cir. 2013)"                                                  
+[14] "Faulkner Literary Rights, L.L.C. v. Sony Pictures Classics, Inc., 953 F. Supp. 2d 701 (N.D. Miss. 2013)"                
+[15] "Brownmark Films, L.L.C. v. Comedy Partners, 682 F.3d 687 (7th Cir. 2012)"                                               
+[16] "Northland Family Planning Clinic, Inc. v. Crt. for Bio-Ethical Reform, 868 F. Supp. 2d 962 (C.D. Cal. 2012)"            
+[17] "CCA and B, LLC v. F + W Media, Inc., 819 F. Supp. 2d 1310 (Ν.D. Ga. 2011)"                                              
+[18] "Bouchat v. Balt. Ravens Ltd. P'ship, 619 F.3d 301 (4th Cir. 2010)"                                                      
+[19] "Veeck v. S. Bldg. Code Cong. Int’l, 241 F.3d 398 (5th Cir. 2001)"                                                       
+[20] "Sony Computer Entm't. Inc. v. Connectix Corp., 203 F. 3d 596 (9th Cir. 2000)"                                           
+[21] "Castle Rock Entm’t, Inc. v. Carol Publ’g Grp., Inc., 150 F.3d 132 (2d Cir. 1998)"                                       
+[22] "Sundeman v. Seajay Soc’y, Inc., 142 F.3d 194 (4th Cir. 1998)"                                                           
+[23] "L.A. News Serv. v. Reuters Television Int'l, Ltd., 149 F.3d 987 (9th Cir. 1998)"                                        
+[24] "Dr. Seuss Enters., L.P. v. Penguin Books USA, Inc., 109 F.3d 1394 (9th Cir. 1997)"                                      
+[25] "Metro-Goldwyn-Mayer, Inc. v. Am. Honda Motor Co., 900 F. Supp. 1287 (C.D. Cal. 1995)"                                   
+[26] "Rotbart v. J.R. O’Dwyer Co., No. 94 Civ. 2091 (JSM) (S.D.N.Y. Feb. 7, 1995)"                                            
+[27] "Nat’l Rifle Ass’n of Am. v. Handgun Control Fed’n of Ohio, 15 F.3d 559 (6th Cir. 1994)"                                 
+[28] "Educ. Testing Servs. v. Katzman, 793 F.2d 533 (3d Cir. 1986)"                                                           
+[29] "Harper &amp; Row Publishers, Inc. v. Nation Enters., 471 U.S. 539 (1985)"                                                   
+[30] "Consumers Union, Inc. v. Gen. Signal Corp., 724 F.2d 1044 (2d Cir. 1983)"                                               
+[31] "Dow Jones &amp; Co. v. Brd. of Trade of Chi., 546 F. Supp. 113 (S.D.N.Y. 1982)"                                             
+[32] "DC Comics, Inc. v. Crazy Eddie, Inc., No. 79 Civ. 3786 (PNL) (S.D.N.Y. Aug. 3, 1979)"                                   
+[33] "Eisenschiml v. Fawcett Publ’ns, Inc., 246 F.2d 598 (7th Cir. 1957)"                                                     </code></pre>
+</div>
+</div>
+<p>Looking at these titles, there isn’t an obvious commonality. Some of them have accent marks or apostrophes in the names, but not all of them.</p>
+<p>We know how these files were generated, so we might suspect that the same indexing would work for the other dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fair_use_findings<span class="sc">$</span>title[<span class="sc">!</span>matches_title]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Nat'l Acad. of TV Arts &amp; Scis., Inc. v. Multimedia Sys. Design, Inc."                       
+ [2] "Tresóna Multimedia, LLC v. Burbank High School Vocal Music Ass’n"                           
+ [3] "Cambridge University Press v. Becker"                                                       
+ [4] "Barcroft Media, Ltd. V. Coed Media Group, LLC"                                              
+ [5] "Penguin Random House LLC, et al. v. Frederik Colting and Melissa Medina, d/b/a Moppet Books"
+ [6] "Peteski Productions, Inc. v. Leah Rothman"                                                  
+ [7] "Matt Hosseinzadeh v. Ethan Klein and Hila Klein"                                            
+ [8] "Paramount Pictures Corp. v. Axanar Prods., Inc."                                            
+ [9] "Cambridge University Press v. Mark P. Becker"                                               
+[10] "Katz v. Google, Inc."                                                                       
+[11] "Penguin Grp. (USA), Inc. v. Am. Buddha,"                                                    
+[12] "Bouchat v. Balt. Ravens Ltd. P’ship,"                                                       
+[13] "Fox Broad. Co. v. Dish Network, LLC,"                                                       
+[14] "Faulkner Literary Rights, LLC v. Sony Pictures Classics, Inc.,"                             
+[15] "Brownmark Films, LLC v. Comedy Partners,"                                                   
+[16] "Northland Family Planning Clinic, Inc. v. Ctr. for Bio-Ethical Reform,"                     
+[17] "CCA and B, LLC v. F + W Media, Inc.,"                                                       
+[18] "Bouchat v. Balt. Ravens Ltd. P’ship,"                                                       
+[19] "Veeck v. S. Bldg. Code Congress Int’l,"                                                     
+[20] "Sony Computer Entm’t, Inc. v. Connectix Corp.,"                                             
+[21] "Castle Rock Entm’t, Inc. v. Carol Publ. Group, Inc.,"                                       
+[22] "Sundeman v. The Seajay Soc’y, Inc.,"                                                        
+[23] "L.A. News Serv. v. Reuters Television Int’l, Ltd.,"                                         
+[24] "Dr. Seuss Enters., LP v. Penguin Books USA, Inc.,"                                          
+[25] "Metro-Goldwyn-Mayer, Inc. v. Am. Honda Motor Co., Inc.,"                                    
+[26] "Rotbart v. J.R. O’Dwyer Co., Inc.,"                                                         
+[27] "Nat'l Rifle Ass’n of Am. v. Handgun Control Fed’n of Ohio,"                                 
+[28] "Educ. Testing Serv. v. Katzman,"                                                            
+[29] "Harper &amp; Row Publishers, Inc. v. Nation Enterprises,"                                       
+[30] "Consumers Union of U.S., Inc. v. Gen. Signal Corp.,"                                        
+[31] "Dow Jones &amp; Co., Inc. v. Bd. of Trade of the City of Chi.,"                                 
+[32] "DC Comics Inc. v. Crazy Eddie, Inc.,"                                                       
+[33] "Eisenschiml v. Fawcett Publ’n, Inc.,"                                                       </code></pre>
+</div>
+</div>
+<p>So, the index does work. Entry 33 is pretty clear- one has “Publ’ns, Inc.” and one has “Publ’n, Inc.”. The first entry has an extra comma in one file and not the other.</p>
+</section>
+<section id="are-mistakes-in-punctuation-the-main-problem" class="level3">
+<h3 class="anchored" data-anchor-id="are-mistakes-in-punctuation-the-main-problem">Are Mistakes in Punctuation the Main Problem?</h3>
+<p>It actually looks like the comma thing might be a common reason they don’t match.</p>
+<p>If I remove all commas, does my matching improve?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cases_no_comma <span class="ot">&lt;-</span> fair_use_cases <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">case =</span> <span class="fu">str_replace_all</span>(case, <span class="st">","</span>, <span class="st">""</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>findings_no_comma <span class="ot">&lt;-</span> fair_use_findings <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title =</span> <span class="fu">str_replace_all</span>(title, <span class="st">","</span>, <span class="st">""</span>))</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>match_no_comma <span class="ot">&lt;-</span> <span class="fu">str_detect</span>(<span class="at">string =</span> cases_no_comma<span class="sc">$</span>case,  <span class="at">pattern =</span> findings_no_comma<span class="sc">$</span>title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How many?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dv">251</span><span class="sc">-</span> <span class="fu">sum</span>(match_no_comma)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 29</code></pre>
+</div>
+</div>
+<p>Okay, so that is four more matches.</p>
+<p>I could go through and remove punctuation one by one. That’s pretty tedious.</p>
+</section>
+<section id="does-matching-on-the-first-10-characters-improve-the-match" class="level3">
+<h3 class="anchored" data-anchor-id="does-matching-on-the-first-10-characters-improve-the-match">Does Matching on the First 10 Characters Improve the Match?</h3>
+<p>What if I match on the first ten letters? Most of the punctuation is towards the middle or the end of the title. Ten is a wild guess based on looking at the data. I can’t match on the first word because something like De would likely match on multiple names.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>findings_trunc_10 <span class="ot">&lt;-</span> fair_use_findings <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title_10 =</span> <span class="fu">str_sub</span>(title, <span class="dv">1</span>, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now match.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>match_trunc_10 <span class="ot">&lt;-</span> <span class="fu">str_detect</span>(<span class="at">string =</span> fair_use_cases<span class="sc">$</span>case,  <span class="at">pattern =</span> findings_trunc_10<span class="sc">$</span>title_10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How many?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dv">251</span> <span class="sc">-</span> <span class="fu">sum</span>(match_trunc_10)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>Okay, so that seems to catch most of the errors.</p>
+</section>
+</section>
+<section id="are-longer-case-titles-more-likely-to-have-typos" class="level2">
+<h2 class="anchored" data-anchor-id="are-longer-case-titles-more-likely-to-have-typos">Are Longer Case Titles More Likely to Have Typos?</h2>
+<p>So, as the title gets longer and more complicated, is it more likely to contain typos? I’m going to look at the length of the title vs.&nbsp;the chances it doesn’t match. I’m going to combine the two datasets, so I’m working with a single dataframe. Again, I know how the two datasets were created (generated from the same table), so I know I can just cbind them. If the data came from different places, I’d need a different strategy.</p>
+<p>First, I’m going to rename the columns that are shared between the two.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fair_use_cases <span class="ot">&lt;-</span> fair_use_cases <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">year_cases =</span> year) <span class="sc">%&gt;%</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">court_cases =</span> court)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>fair_use_findings <span class="ot">&lt;-</span> fair_use_findings <span class="sc">%&gt;%</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">year_findings =</span> year) <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">court_findings =</span> court)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, combining them.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> fair_use_cases <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(fair_use_findings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I’m going to remove a bunch of columns I don’t care about.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>( <span class="sc">-</span>categories, <span class="sc">-</span>outcome, <span class="sc">-</span>fair_use_found, <span class="sc">-</span>key_facts, <span class="sc">-</span>issue, <span class="sc">-</span>holding, <span class="sc">-</span>tags, <span class="sc">-</span>outcome )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, I calculate the length of the title.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title_length =</span> <span class="fu">nchar</span>(title))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What is the distribution of lengths?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>combined <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(title_length)) <span class="sc">+</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidytuesday35-fair-use_files/figure-html/bar-plot-length-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>I probably need to bin the lengths. I’m using floor, but you could use ceiling or round as well.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">title_length_floor =</span> <span class="fu">floor</span>(title_length<span class="sc">/</span><span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Plot the distribution again.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>combined <span class="sc">%&gt;%</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(title_length_floor <span class="sc">*</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidytuesday35-fair-use_files/figure-html/bar-plot-length-floor-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>That’s not a terrible distribution.</p>
+<p>Now, I’m creating a column to indicate if they match.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">match =</span> <span class="fu">str_detect</span>(case, title))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, group by the length. I’m calculating the number of records in each bin (n), the mismatch rate as a %, and the number of mismatches.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>combined2 <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(title_length_floor) <span class="sc">%&gt;%</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mismatch_rate =</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">mean</span>(match))<span class="sc">*</span><span class="dv">100</span>, <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mismatch_count =</span> (n <span class="sc">*</span> mismatch_rate<span class="sc">/</span><span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="a-graph-of-title-length-and-mismatch-rate" class="level3">
+<h3 class="anchored" data-anchor-id="a-graph-of-title-length-and-mismatch-rate">A Graph of Title Length And Mismatch Rate</h3>
+<p>Dual axes plots can be tricky to understand and easy to mislead with. Just like a correlation plot, this is another type of plot that I’d probably reserve for internal use only.</p>
+<p>The count and rate data share the same x aesthetic, so I define that in the ggplot call. The individual y aesthetics are defined in the geom calls for each layer.</p>
+<p>Here’s the mismatch rate. Coincidentally, the percentage range (0-100 %) and the count range (0-79) are roughly on the same scale, so I don’t need to do anything too weird with my dual axes. If I did, then the sec.axis can be scaled by a formula relative to the first. Here, it is just scaled by one. The left and right axes can be styled differently, so I am color-coding them to match the color of the data points.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> combined2 <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> title_length_floor <span class="sc">*</span> <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> mismatch_rate), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mismatch_rate), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> n),  <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"% Mismatch"</span>,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>                     <span class="co"># Add a second axis and specify its features</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="at">trans =</span> <span class="sc">~</span> . <span class="sc">*</span> <span class="dv">1</span>, <span class="at">name =</span> <span class="st">"# of Cases"</span>)) <span class="sc">+</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_pander</span>() <span class="sc">+</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y.left =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"blue"</span>),</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y.left =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>),</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.y.left =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>),</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y.left =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"blue"</span>),</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y.right =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y.right =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.y.right =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"gray28"</span>)</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Length of the Case Title"</span>) <span class="sc">+</span></span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Mismatch Rate Increases as Case Title Length Increases"</span>,</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">"Data from U.S. Copyright Office Fair Use Index"</span>)</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidytuesday35-fair-use_files/figure-html/dual-axis-plot-count-rate-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The two largest bins have very few records, so I wouldn’t expect that extremely high error rate to persist as more data is added. However, there does seem to be an increasing mismatch rate with length of the title.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>combined2 <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="opbsvjmpss" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#opbsvjmpss table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#opbsvjmpss thead, #opbsvjmpss tbody, #opbsvjmpss tfoot, #opbsvjmpss tr, #opbsvjmpss td, #opbsvjmpss th {
+  border-style: none;
+}
+
+#opbsvjmpss p {
+  margin: 0;
+  padding: 0;
+}
+
+#opbsvjmpss .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#opbsvjmpss .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#opbsvjmpss .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#opbsvjmpss .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#opbsvjmpss .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#opbsvjmpss .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#opbsvjmpss .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#opbsvjmpss .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#opbsvjmpss .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#opbsvjmpss .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#opbsvjmpss .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#opbsvjmpss .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#opbsvjmpss .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#opbsvjmpss .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#opbsvjmpss .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#opbsvjmpss .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#opbsvjmpss .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#opbsvjmpss .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#opbsvjmpss .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#opbsvjmpss .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#opbsvjmpss .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#opbsvjmpss .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#opbsvjmpss .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#opbsvjmpss .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#opbsvjmpss .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#opbsvjmpss .gt_left {
+  text-align: left;
+}
+
+#opbsvjmpss .gt_center {
+  text-align: center;
+}
+
+#opbsvjmpss .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#opbsvjmpss .gt_font_normal {
+  font-weight: normal;
+}
+
+#opbsvjmpss .gt_font_bold {
+  font-weight: bold;
+}
+
+#opbsvjmpss .gt_font_italic {
+  font-style: italic;
+}
+
+#opbsvjmpss .gt_super {
+  font-size: 65%;
+}
+
+#opbsvjmpss .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#opbsvjmpss .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#opbsvjmpss .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#opbsvjmpss .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#opbsvjmpss .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#opbsvjmpss .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#opbsvjmpss .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="title_length_floor">title_length_floor</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mismatch_rate">mismatch_rate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="n">n</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="mismatch_count">mismatch_count</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="title_length_floor" class="gt_row gt_right">1</td>
+<td headers="mismatch_rate" class="gt_row gt_right">0.000000</td>
+<td headers="n" class="gt_row gt_right">27</td>
+<td headers="mismatch_count" class="gt_row gt_right">0</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">2</td>
+<td headers="mismatch_rate" class="gt_row gt_right">2.083333</td>
+<td headers="n" class="gt_row gt_right">48</td>
+<td headers="mismatch_count" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">3</td>
+<td headers="mismatch_rate" class="gt_row gt_right">15.189873</td>
+<td headers="n" class="gt_row gt_right">79</td>
+<td headers="mismatch_count" class="gt_row gt_right">12</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">4</td>
+<td headers="mismatch_rate" class="gt_row gt_right">15.686275</td>
+<td headers="n" class="gt_row gt_right">51</td>
+<td headers="mismatch_count" class="gt_row gt_right">8</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">5</td>
+<td headers="mismatch_rate" class="gt_row gt_right">24.137931</td>
+<td headers="n" class="gt_row gt_right">29</td>
+<td headers="mismatch_count" class="gt_row gt_right">7</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">6</td>
+<td headers="mismatch_rate" class="gt_row gt_right">21.428571</td>
+<td headers="n" class="gt_row gt_right">14</td>
+<td headers="mismatch_count" class="gt_row gt_right">3</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">7</td>
+<td headers="mismatch_rate" class="gt_row gt_right">50.000000</td>
+<td headers="n" class="gt_row gt_right">2</td>
+<td headers="mismatch_count" class="gt_row gt_right">1</td></tr>
+    <tr><td headers="title_length_floor" class="gt_row gt_right">9</td>
+<td headers="mismatch_rate" class="gt_row gt_right">100.000000</td>
+<td headers="n" class="gt_row gt_right">1</td>
+<td headers="mismatch_count" class="gt_row gt_right">1</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="a-graph-of-title-length-and-number-of-mismatches" class="level3">
+<h3 class="anchored" data-anchor-id="a-graph-of-title-length-and-number-of-mismatches">A Graph of Title Length And Number of Mismatches</h3>
+<p>Here’s looking at the same information, but just in terms of counts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> combined2 <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> title_length_floor)) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> mismatch_count), <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> n),  <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">name =</span> <span class="st">"# of Mismatches"</span>,</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                     <span class="co"># Add a second axis and specify its features</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">sec.axis =</span> <span class="fu">sec_axis</span>(<span class="at">trans =</span> <span class="sc">~</span> . <span class="sc">*</span> <span class="dv">1</span>, <span class="at">name =</span> <span class="st">"# of Cases"</span>)) <span class="sc">+</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_pander</span>() <span class="sc">+</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y.left =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"blue"</span>),</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y.left =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>),</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.y.left =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>),</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y.left =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"blue"</span>),</span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y.right =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line.y.right =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.y.right =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray28"</span>),</span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y.right =</span> <span class="fu">element_text</span>(<span class="at">colour =</span> <span class="st">"gray28"</span>)</span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Length of the Case Title"</span>) <span class="sc">+</span></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Number of Mismatches as Case Title Length Increases"</span>,</span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">"Data from U.S. Copyright Office Fair Use Index"</span>)</span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidytuesday35-fair-use_files/figure-html/dual-axis-plot-count-count-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="making-a-composite-panel-figure-with-cowplot" class="level3">
+<h3 class="anchored" data-anchor-id="making-a-composite-panel-figure-with-cowplot">Making a Composite/ Panel Figure with cowplot</h3>
+<p>Make a composite figure with cowplot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_grid</span>(p1, p2,  <span class="at">ncol =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidytuesday35-fair-use_files/figure-html/making-panel-plot-with-cowplot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e. sinks2023,
+  author = {E. Sinks, Louise},
+  title = {TidyTuesday 35: {Exploring} {Fair} {Use} {Cases}},
+  date = {2023-08-29},
+  url = {https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e. sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+E. Sinks, Louise. 2023. <span>“TidyTuesday 35: Exploring Fair Use
+Cases.”</span> August 29, 2023. <a href="https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use">https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

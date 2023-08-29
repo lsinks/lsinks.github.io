@@ -1,0 +1,377 @@
+---
+title: "TidyTuesday 35: Exploring Fair Use Cases"
+description: "Using stringr::str_detect() functions to explore why variables from different datasets don't exactly match. "
+twitter-card:
+  image: "thumbnail.jpg"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 08-29-2023
+categories: [Data-Viz, R, R-code,  Code-Along, TidyTuesday, stringr, data cleaning, dual axis plot, ggplot2, cowplot] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use
+image: "thumbnail.jpg"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+---
+
+## Intro/Overview
+
+Today's [TidyTuesday concerns US copyright law](https://github.com/rfordatascience/tidytuesday). Fair use is the right to use copyrighted materials in some instances. Fair use law isn't always clear, and there is often litigation to decide whether something is fair use. This week's TidyTuesday uses a data set created by web scraping to get information about federal court cases on fair use. This week's data comes with the following warning:
+
+> There are two datasets this week for which the rows align, but the values might not precisely line up for a clean join \-- a case you often have to deal with in real-world data.
+
+I think I want to do a visualization around that comment- what percentage of the data doesn't precisely align, and are there common types of mismatches?
+
+## Setting Up
+
+### Loading Libraries
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # Who doesn't want to be tidy?
+library(gt) # for nice tables
+library(cowplot) # for composite graphs
+library(ggthemes) # themes for ggplot
+```
+
+### Loading Data
+
+Reading in the data using the tidytuesday package.
+
+```{r}
+#| label: loading-data
+
+tuesdata <- tidytuesdayR::tt_load(2023, week = 35)
+fair_use_cases <- tuesdata$fair_use_cases
+fair_use_findings <- tuesdata$fair_use_findings
+```
+
+## Preliminary Exploratory Data Analysis
+
+Looking at the [cleaning script](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-29/readme.md#cleaning-script), it appears that the `fair_use_cases` comes from the [table found at copyright.gov](https://www.copyright.gov/fair-use/fair-index.html). This table has some summary information about the case and a link to the court rulings (a pdf). The `fair_use_findings` dataframe contains additional information about the case extracted from the pdf of the court rulings. Indeed, there are 251 rows in each dataframe, and the way the dataframes are generated, they should match up.
+
+```{r}
+#| label: looking-at-fair_use_cases
+
+fair_use_cases %>% 
+  head() %>%
+  gt() 
+```
+
+Now the other dataframe. This one has some huge blocks of text in some fields, so I'm going to add a [container to the table to make it have a vertical scroll bar](https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html#styling-tables-with-gt).
+
+```{r}
+#| label: looking-at-fair_use_findings
+
+fair_use_findings %>% 
+  head() %>% 
+  gt() %>% 
+  tab_options(container.height = px(300), container.padding.y = px(24))
+
+```
+
+The `case` field in `fair_use_cases` should contain the information found in the fields `title` and `case_number` in the `fair_use_findings` dataframe. The `court` and `jurisdiction` from `fair_use_cases` should also somehow relate to the `court` listed in `fair_use_findings`.
+
+I'm going to start with the `case`, `title`, and `case_number`.
+
+```{r}
+#| label: looking-at-fair_use_cases-case
+
+fair_use_cases %>% 
+  select(case) %>% 
+  head() %>%
+  gt()
+```
+
+It looks like the case number is formatted differently across the entries. This may be due to different style guides in different circuits/ courts.
+
+Now look at the same information from the other dataframe.
+
+```{r}
+#| label: looking-at-fair_use_findings-case-info
+
+fair_use_findings %>% 
+  select(title, case_number) %>% 
+  head() %>%
+  gt()
+```
+
+## Matching the Case Titles
+
+It looks like the titles are styled in the same way. If the five entries here are representative of the dataset as a whole, then I don't think joining these two files will be difficult.
+
+I'm going to use `str_detect()` to match the `title` from the `fair_use_findings` data frame (the pattern) with the `case` name from the `fair_use_cases` (the string). This will return `TRUE` if the pattern is contained within the string and a `FALSE` otherwise. Note that this needs to be an exact match. There can be extra characters before or after the pattern in the string, but the pattern portion must match exactly.
+
+I talked about this in more depth in a previous tidytuesday, where I joined data frames from [Arlington County and the Historical Markers TidyTuesday dataset based on partial matches like these](https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html).
+
+```{r}
+#| label: matching-the-dataframes
+
+str_detect(string = fair_use_cases$case,  pattern = fair_use_findings$title)
+
+```
+
+Okay, so some of them don't match. How many and why?
+
+```{r}
+#| label: mismatches-indices
+matches_title <- str_detect(string = fair_use_cases$case,  pattern = fair_use_findings$title) 
+```
+
+How many? Remember, you can treat booleans as numbers, so `sum` will give you the total number of correct matches, and `mean` will give you the percentage of matches.
+
+```{r}
+#| label: how-many-mismatches
+
+nrow(fair_use_cases) - sum(matches_title)
+
+```
+
+### What Case Names don't Match?
+
+Only 33 cases didn't match. I'm going to look at the ones that don't match.
+
+```{r}
+#| label: which-ones-mismatches
+fair_use_cases$case[!matches_title]
+```
+
+Looking at these titles, there isn't an obvious commonality. Some of them have accent marks or apostrophes in the names, but not all of them.
+
+We know how these files were generated, so we might suspect that the same indexing would work for the other dataframe.
+
+```{r}
+#| label: which-ones-mismatches-2
+fair_use_findings$title[!matches_title]
+```
+
+So, the index does work. Entry 33 is pretty clear- one has "Publ'ns, Inc." and one has "Publ'n, Inc.". The first entry has an extra comma in one file and not the other.
+
+### Are Mistakes in Punctuation the Main Problem?
+
+It actually looks like the comma thing might be a common reason they don't match.
+
+If I remove all commas, does my matching improve?
+
+```{r}
+#| label: comma-problem
+cases_no_comma <- fair_use_cases %>%
+  mutate(case = str_replace_all(case, ",", ""))
+
+findings_no_comma <- fair_use_findings %>%
+  mutate(title = str_replace_all(title, ",", ""))
+
+match_no_comma <- str_detect(string = cases_no_comma$case,  pattern = findings_no_comma$title)
+```
+
+How many?
+
+```{r}
+#| label: how-many-comma-problem
+251- sum(match_no_comma)
+```
+
+Okay, so that is four more matches.
+
+I could go through and remove punctuation one by one. That's pretty tedious.
+
+### Does Matching on the First 10 Characters Improve the Match?
+
+What if I match on the first ten letters? Most of the punctuation is towards the middle or the end of the title. Ten is a wild guess based on looking at the data. I can't match on the first word because something like De would likely match on multiple names.
+
+```{r}
+#| label: trunc-title
+findings_trunc_10 <- fair_use_findings %>%
+  mutate(title_10 = str_sub(title, 1, 10))
+```
+
+Now match.
+
+```{r}
+#| label: trunc-title-matching
+match_trunc_10 <- str_detect(string = fair_use_cases$case,  pattern = findings_trunc_10$title_10)
+```
+
+How many?
+
+```{r}
+#| label: trunc-title-mismatch
+251 - sum(match_trunc_10)
+```
+
+Okay, so that seems to catch most of the errors.
+
+## Are Longer Case Titles More Likely to Have Typos?
+
+So, as the title gets longer and more complicated, is it more likely to contain typos? I'm going to look at the length of the title vs. the chances it doesn't match. I'm going to combine the two datasets, so I'm working with a single dataframe. Again, I know how the two datasets were created (generated from the same table), so I know I can just cbind them. If the data came from different places, I'd need a different strategy.
+
+First, I'm going to rename the columns that are shared between the two.
+
+```{r}
+#| label: making-unique-names
+fair_use_cases <- fair_use_cases %>%
+  rename(year_cases = year) %>%
+  rename(court_cases = court)
+
+fair_use_findings <- fair_use_findings %>%
+  rename(year_findings = year) %>%
+  rename(court_findings = court)
+
+```
+
+Now, combining them.
+
+```{r}
+#| label: combining-dfs
+combined <- fair_use_cases %>%
+  cbind(fair_use_findings)
+```
+
+I'm going to remove a bunch of columns I don't care about.
+
+```{r}
+#| label: removing-col
+combined <- combined %>%
+  select( -categories, -outcome, -fair_use_found, -key_facts, -issue, -holding, -tags, -outcome )
+```
+
+Now, I calculate the length of the title.
+
+```{r}
+#| label: length-of-title
+combined <- combined %>%
+  mutate(title_length = nchar(title))
+```
+
+What is the distribution of lengths?
+
+```{r}
+#| label: bar-plot-length
+combined %>%
+  ggplot(aes(title_length)) +
+  geom_bar()
+```
+
+I probably need to bin the lengths. I'm using floor, but you could use ceiling or round as well.
+
+```{r}
+#| label: bin-length-with-floor
+combined <- combined %>%
+  mutate(title_length_floor = floor(title_length/10))
+```
+
+Plot the distribution again.
+
+```{r}
+#| label: bar-plot-length-floor
+combined %>%
+  ggplot(aes(title_length_floor * 10)) +
+  geom_bar()
+```
+
+That's not a terrible distribution.
+
+Now, I'm creating a column to indicate if they match.
+
+```{r}
+#| label: making-match-column
+combined <- combined %>%
+  mutate(match = str_detect(case, title))
+```
+
+Now, group by the length. I'm calculating the number of records in each bin (n), the mismatch rate as a %, and the number of mismatches.
+
+```{r}
+#| label: calculating-metric-by-group-length
+combined2 <- combined %>%
+  group_by(title_length_floor) %>%
+  summarise(mismatch_rate = (1 - mean(match))*100, n = n()) %>%
+  mutate(mismatch_count = (n * mismatch_rate/100))
+```
+
+### A Graph of Title Length And Mismatch Rate
+
+Dual axes plots can be tricky to understand and easy to mislead with. Just like a correlation plot, this is another type of plot that I'd probably reserve for internal use only.
+
+The count and rate data share the same x aesthetic, so I define that in the ggplot call. The individual y aesthetics are defined in the geom calls for each layer.
+
+Here's the mismatch rate. Coincidentally, the percentage range (0-100 %) and the count range (0-79) are roughly on the same scale, so I don't need to do anything too weird with my dual axes. If I did, then the sec.axis can be scaled by a formula relative to the first. Here, it is just scaled by one. The left and right axes can be styled differently, so I am color-coding them to match the color of the data points.
+
+```{r}
+#| label: dual-axis-plot-count-rate
+p1 <- combined2 %>%
+  ggplot(aes(x = title_length_floor * 10)) +
+  geom_point(aes(y = mismatch_rate), color = "blue") +
+  geom_line(aes(y = mismatch_rate), color = "blue") +
+  geom_col(aes(y = n),  alpha = 0.5) +
+  scale_y_continuous(name = "% Mismatch",
+                     # Add a second axis and specify its features
+                     sec.axis = sec_axis(trans = ~ . * 1, name = "# of Cases")) +
+  theme_pander() +
+  theme(
+    axis.title.y.left = element_text(colour = "blue"),
+    axis.line.y.left = element_line(color = "blue"),
+    axis.ticks.y.left = element_line(color = "blue"),
+    axis.text.y.left = element_text(colour = "blue"),
+    axis.title.y.right = element_text(colour = "gray28"),
+    axis.line.y.right = element_line(color = "gray28"),
+    axis.ticks.y.right = element_line(color = "gray28"),
+    axis.text.y.right = element_text(colour = "gray28")
+  ) +
+  xlab("Length of the Case Title") +
+  ggtitle("Mismatch Rate Increases as Case Title Length Increases",
+          subtitle = "Data from U.S. Copyright Office Fair Use Index")
+
+p1
+
+```
+
+The two largest bins have very few records, so I wouldn't expect that extremely high error rate to persist as more data is added. However, there does seem to be an increasing mismatch rate with length of the title.
+
+```{r}
+#| label: table-data-by-length
+combined2 %>% gt()
+```
+
+### A Graph of Title Length And Number of Mismatches
+
+Here's looking at the same information, but just in terms of counts.
+
+```{r}
+#| label: dual-axis-plot-count-count
+p2 <- combined2 %>%
+  ggplot(aes(x = title_length_floor)) +
+  geom_point(aes(y = mismatch_count), color = "blue") +
+  geom_col(aes(y = n),  alpha = 0.5) +
+  scale_y_continuous(name = "# of Mismatches",
+                     # Add a second axis and specify its features
+                     sec.axis = sec_axis(trans = ~ . * 1, name = "# of Cases")) +
+  theme_pander() +
+  theme(
+    axis.title.y.left = element_text(colour = "blue"),
+    axis.line.y.left = element_line(color = "blue"),
+    axis.ticks.y.left = element_line(color = "blue"),
+    axis.text.y.left = element_text(colour = "blue"),
+    axis.title.y.right = element_text(colour = "gray28"),
+    axis.line.y.right = element_line(color = "gray28"),
+    axis.ticks.y.right = element_line(color = "gray28"),
+    axis.text.y.right = element_text(colour = "gray28")
+  ) +
+  xlab("Length of the Case Title") +
+  ggtitle("Number of Mismatches as Case Title Length Increases",
+          subtitle = "Data from U.S. Copyright Office Fair Use Index")
+p2
+```
+
+### Making a Composite/ Panel Figure with cowplot
+
+Make a composite figure with cowplot.
+
+```{r}
+#| label: making-panel-plot-with-cowplot
+plot_grid(p1, p2,  ncol = 1)
+```
+
+## 
