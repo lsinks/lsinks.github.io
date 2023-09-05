@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-08-29T20:38:27.190Z</lastmod>
+    <lastmod>2023-09-05T18:49:50.660Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-28-TidyTuesday-Refugees/TidyTuesday34-refugees.html</loc>
@@ -131,5 +131,9 @@
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday35-fair-use.html</loc>
     <lastmod>2023-08-29T20:37:44.192Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor.html</loc>
+    <lastmod>2023-09-05T18:49:40.569Z</lastmod>
   </url>
 </urlset>

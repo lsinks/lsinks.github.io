@@ -1,0 +1,183 @@
+---
+title: "TidyTuesday 36: Visualizing Worker Demographic Information with Treemaps"
+description: "Using treemap and d3treeR to create static and dynamic treemaps"
+twitter-card:
+  image: "thumbnail.png"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 09-05-2023
+categories: [Data-Viz, R, R-code,  Code-Along, treemap, TidyTuesday, d3treeR, interactive] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor
+image: "thumbnail.png"
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+---
+
+## Intro/Overview to TidyTuesday 36: Union Membership in the United States
+
+[This week's TidyTuesday](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-09-05/readme.md) presents data taken from the [Union Membership and Coverage Database from the CPS (*Unionstats.com*)](https://www.unionstats.com/main.htm) created by Barry T. Hirsch, David A. Macpherson, and William E. Even. This database contains data about the wages of union and non-union workers from 1973 until today.
+
+There is a [companion paper](https://onlinelibrary.wiley.com/doi/10.1111/irel.12330):
+
+> Macpherson, David A. and Barry T. Hirsch. 2023. "Five decades of CPS wages, methods, and union-nonunion wage gaps at Unionstats.com." Industrial Relations: A Journal of Economy and Society 62: 439--452. https://doi.org/10.1111/ irel.12330
+
+I highly recommend reading the paper as it clearly illustrates the challenges of working with real-world data collected by 3rd parties. The source data is government survey data. For some key questions, a third of respondents didn't answer. Imputation was performed (but not always noted) by the government agency, but in such a way that it obscured the trend about wage gaps between union and non-union labor. (Likely, the survey was designed to study something else, and the imputation method was fine for that question. Some years did not even ask about participation in labor unions.) The survey also didn't always collect detailed information about the salary of the highest earners, simply marking them as being "above the cap." The paper details numerous such issues and explains how the data was handled to standardize the results over the five decades the database covers. It is a beautiful example of how to handle messy data.
+
+Today, I will make two types of treemaps using some of the demographic data from this dataset. A treemap is a way of visualizing how various parts relate to the whole. The demographic data seems all related and could be viewed in a treemap form. So, I'm going to pull that out. The [UnionStats website](https://www.unionstats.com/) also warns, "Note: CPS sample sizes are very small for some cells.  Use such estimates cautiously." So, we can use the treemap to visualize that caution for the demographic subsets.
+
+## Setting Up
+
+### Loading Libraries
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # who doesn't want to be tidy?
+library(gt) # for nice tables
+library(treemap) # for treemap
+library(d3treeR) # for interactive treemaps
+```
+
+### Loading Data
+
+This week's data is not loaded in the usual way! While the TidyTuesday page was up on Monday, the TidyTuesday package insisted the data was unavailable by either week number or date. So, instead, I loaded it directly from Git Hub.
+
+```{r}
+#| label: loading-data
+#| warning: false
+#| output: false
+demographics <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/demographics.csv')
+wages <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/wages.csv')
+states <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/states.csv')
+```
+
+I will work with the 2019 data, since it is recent and pre-pandemic. The demographic data is found in the `facet` variable and other subcategories (public vs. private sector, industry, etc.).
+
+```{r}
+#| label: looking-at-2019-data
+wages_2019 <- wages %>%
+  filter(year == 2019) 
+
+wages_2019 %>% select(facet) %>% gt()
+```
+
+Interestingly, the overall data ("all wage and salary workers") appears 5 times.
+
+## Selecting the Demographic Data
+
+I will view how the sample size changes over the sex/race demographics. I'm going to use a treemap to do so.
+
+First, I will select the rows where the facet has "demographics" or the "all wage and salary workers". This is done with `str_detect` from the [stringr package](https://stringr.tidyverse.org/).
+
+```{r}
+#| label: looking-at-2019-demo-data	
+wages_2019_demo <- wages_2019 %>%
+  filter(
+    str_detect(facet , "demographics") == TRUE |
+      str_detect(facet, "all wage and salary workers") == TRUE
+  )
+
+```
+
+Remove the first four rows- this contains duplicate information about all workers. The college data is also removed since it isn't related to the other demographic data in a way we can define.
+
+```{r}
+#| label: removing-dups-and-college
+wages_2019_demo2 <- wages_2019_demo[5:15,]
+
+wages_2019_demo2 <- wages_2019_demo2 %>%
+  filter(str_detect(facet , "college") == FALSE)
+
+wages_2019_demo2 %>% gt()
+
+```
+
+Let's remove "`demographics:`" and the all jobs data and then split the `facet` description into race and sex. I'm replacing `"demographics: "` with an empty string using `str_replace`.
+
+From [tidyR](https://tidyr.tidyverse.org/), `separate()` does a pretty good job of guessing how to split the data, but you can always give it the pattern to split on. Note that `separate()` has superseded in favour of [`separate_wider_position()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html) and [`separate_wider_delim()`](https://tidyr.tidyverse.org/reference/separate_wider_delim.html), but it still supported.
+
+```{r}
+#| label: splitting-into-groups-and-subgroups
+wages_2019_demo3 <- wages_2019_demo2[2:9,]
+
+wages_2019_demo3 <- wages_2019_demo3 %>%
+  mutate(facet = str_replace(facet, "demographics: ", "")) %>%
+  separate(facet, c("race", "sex"))
+
+wages_2019_demo2 %>% gt()
+```
+
+Now, I don't need male and female total rows except to check the numbers (the first two rows). I see the subcategories don't add up to these upper-level demographic categories. Male + female does equal the total number of workers ("all wage and salary workers"), but the individual subgroups of male and female don't add up to the totals (hispanic male + white male + black male \> male). One explanation is that some survey participants chose to identify in multiple categories. This data isn't the greatest choice for a treemap since some participants will appear in multiple boxes, but I will proceed with the graph.
+
+Remove the first two rows. Treemap will generate the totals using the sample size from each subcategory.
+
+```{r}
+#| label: removing-m-f-data
+wages_2019_demo3a <- wages_2019_demo3[3:8, ]
+```
+
+## Making a Treemap with the treemap package
+
+Using the [treemap package](https://CRAN.R-project.org/package=treemap) as recommended by [The R Graph Gallery](https://r-graph-gallery.com/treemap.html). There isn't a built-in way to display the numerical data, so I will construct that as a separate field. It will consist of the subgroup name, a new line, and then the sample size for that subgroup.
+
+I'm keeping many of the defaults for the treemap. You can specify the palette and details about how the blocks will be arranged, but I'm not tweaking those parameters. The package also doesn't have a caption or subtitle option, so I'm including the data source in the title.
+
+```{r}
+#| label: static tree map
+
+# Make the label with the subgroup and sample size.
+wages_2019_demo3a <- wages_2019_demo3a %>%
+  mutate(race_sample_size = paste(race, sample_size, sep = "\n"))
+
+# Making the tree map
+treemap(
+  wages_2019_demo3a,
+  index = c("sex", "race_sample_size"),
+  vSize = "sample_size",
+  type = "index",
+  bg.labels = c("white"),
+  align.labels = list(c("center", "center"),
+                      c("right", "bottom")),
+  title = "Sample Size of Different Demographic Groups (2019) [data from unionstats.com]",
+  fontsize.title = 12
+)     
+```
+
+## Interactive Treemap with d3treeR
+
+I can also make an interactive treemap using the [d3treeR package](https://github.com/d3treeR/d3treeR). Like many of the other interactive graphs I've created, this is a wrapper for a javscript module and can be additionally interacted with using [`htmlwidgets`](https://www.htmlwidgets.org/).
+
+This package needs to be installed via `devtools::install_github("d3treeR/d3treeR")`. There is a similarly named package on CRAN (d3Tree), but that isn't what you need.
+
+Here, I made a new treemap without the numerical data label I made for the static map. The `d3tree2` function will automatically display that information as you hover over the boxes.
+
+```{r}
+#| label: interactive- treemap
+#| output: false
+inter <- d3tree2(
+  treemap(
+    wages_2019_demo3a,
+    index = c("sex", "race"),
+    vSize = "sample_size",
+    type = "index",
+    bg.labels = c("white"),
+    align.labels = list(c("center", "center"),
+                        c("right", "bottom"))
+  ),
+  rootname = "Sample Size of Different Demographic Groups (from unionstats.com)"
+)
+```
+
+Weirdly, when you run the above codeblock, the static map created by the treemap call is displayed, even though the interactive map isn't. This can be mitigated by setting the output of the code block to false if you are using markdown or quarto.
+
+And then you can display the interactive map.
+
+```{r}
+inter
+```
+
+## Conclusions
+
+Some demographic subgroups do represent under 5% of the total workforce surveyed. For the race category, it appears that some respondents chose more than one category, which could be a problem for imputed data based on matching demographic characteristics.

@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Louise E. Sinks">
+<meta name="dcterms.date" content="2023-09-05">
+<meta name="description" content="Using treemap and d3treeR to create static and dynamic treemaps">
+
+<title>Louise E. Sinks - TidyTuesday 36: Visualizing Worker Demographic Information with Treemaps</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<script src="../../site_libs/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+<script src="../../site_libs/d3-3.5.5/d3.min.js"></script>
+<link href="../../site_libs/d3tree2-0.1/d3tree2.css" rel="stylesheet">
+<script src="../../site_libs/d3tree2-binding-0.1/d3tree2.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - TidyTuesday 36: Visualizing Worker Demographic Information with Treemaps">
+<meta name="twitter:description" content="Using treemap and d3treeR to create static and dynamic treemaps">
+<meta name="twitter:image" content="https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/thumbnail.png">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:image-height" content="510">
+<meta name="twitter:image-width" content="826">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me/ CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../currentprojects.html" rel="" target="">
+ <span class="menu-text">Current Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introoverview-to-tidytuesday-36-union-membership-in-the-united-states" id="toc-introoverview-to-tidytuesday-36-union-membership-in-the-united-states" class="nav-link active" data-scroll-target="#introoverview-to-tidytuesday-36-union-membership-in-the-united-states">Intro/Overview to TidyTuesday 36: Union Membership in the United States</a></li>
+  <li><a href="#setting-up" id="toc-setting-up" class="nav-link" data-scroll-target="#setting-up">Setting Up</a>
+  <ul class="collapse">
+  <li><a href="#loading-libraries" id="toc-loading-libraries" class="nav-link" data-scroll-target="#loading-libraries">Loading Libraries</a></li>
+  <li><a href="#loading-data" id="toc-loading-data" class="nav-link" data-scroll-target="#loading-data">Loading Data</a></li>
+  </ul></li>
+  <li><a href="#selecting-the-demographic-data" id="toc-selecting-the-demographic-data" class="nav-link" data-scroll-target="#selecting-the-demographic-data">Selecting the Demographic Data</a></li>
+  <li><a href="#making-a-treemap-with-the-treemap-package" id="toc-making-a-treemap-with-the-treemap-package" class="nav-link" data-scroll-target="#making-a-treemap-with-the-treemap-package">Making a Treemap with the treemap package</a></li>
+  <li><a href="#interactive-treemap-with-d3treer" id="toc-interactive-treemap-with-d3treer" class="nav-link" data-scroll-target="#interactive-treemap-with-d3treer">Interactive Treemap with d3treeR</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">TidyTuesday 36: Visualizing Worker Demographic Information with Treemaps</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Data-Viz</div>
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">R-code</div>
+    <div class="quarto-category">Code-Along</div>
+    <div class="quarto-category">treemap</div>
+    <div class="quarto-category">TidyTuesday</div>
+    <div class="quarto-category">d3treeR</div>
+    <div class="quarto-category">interactive</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Using treemap and d3treeR to create static and dynamic treemaps
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://lsinks.github.io/">Louise E. Sinks</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 5, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introoverview-to-tidytuesday-36-union-membership-in-the-united-states" class="level2">
+<h2 class="anchored" data-anchor-id="introoverview-to-tidytuesday-36-union-membership-in-the-united-states">Intro/Overview to TidyTuesday 36: Union Membership in the United States</h2>
+<p><a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-09-05/readme.md">This week’s TidyTuesday</a> presents data taken from the <a href="https://www.unionstats.com/main.htm">Union Membership and Coverage Database from the CPS (<em>Unionstats.com</em>)</a> created by Barry T. Hirsch, David A. Macpherson, and William E. Even. This database contains data about the wages of union and non-union workers from 1973 until today.</p>
+<p>There is a <a href="https://onlinelibrary.wiley.com/doi/10.1111/irel.12330">companion paper</a>:</p>
+<blockquote class="blockquote">
+<p>Macpherson, David A. and Barry T. Hirsch. 2023. “Five decades of CPS wages, methods, and union-nonunion wage gaps at Unionstats.com.” Industrial Relations: A Journal of Economy and Society 62: 439–452. https://doi.org/10.1111/ irel.12330</p>
+</blockquote>
+<p>I highly recommend reading the paper as it clearly illustrates the challenges of working with real-world data collected by 3rd parties. The source data is government survey data. For some key questions, a third of respondents didn’t answer. Imputation was performed (but not always noted) by the government agency, but in such a way that it obscured the trend about wage gaps between union and non-union labor. (Likely, the survey was designed to study something else, and the imputation method was fine for that question. Some years did not even ask about participation in labor unions.) The survey also didn’t always collect detailed information about the salary of the highest earners, simply marking them as being “above the cap.” The paper details numerous such issues and explains how the data was handled to standardize the results over the five decades the database covers. It is a beautiful example of how to handle messy data.</p>
+<p>Today, I will make two types of treemaps using some of the demographic data from this dataset. A treemap is a way of visualizing how various parts relate to the whole. The demographic data seems all related and could be viewed in a treemap form. So, I’m going to pull that out. The <a href="https://www.unionstats.com/">UnionStats website</a> also warns, “Note: CPS sample sizes are very small for some cells.&nbsp; Use such estimates cautiously.” So, we can use the treemap to visualize that caution for the demographic subsets.</p>
+</section>
+<section id="setting-up" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up">Setting Up</h2>
+<section id="loading-libraries" class="level3">
+<h3 class="anchored" data-anchor-id="loading-libraries">Loading Libraries</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># who doesn't want to be tidy?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># for nice tables</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(treemap) <span class="co"># for treemap</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(d3treeR) <span class="co"># for interactive treemaps</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="loading-data" class="level3">
+<h3 class="anchored" data-anchor-id="loading-data">Loading Data</h3>
+<p>This week’s data is not loaded in the usual way! While the TidyTuesday page was up on Monday, the TidyTuesday package insisted the data was unavailable by either week number or date. So, instead, I loaded it directly from Git Hub.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>demographics <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/demographics.csv'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>wages <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/wages.csv'</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>states <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2023/2023-09-05/states.csv'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>I will work with the 2019 data, since it is recent and pre-pandemic. The demographic data is found in the <code>facet</code> variable and other subcategories (public vs.&nbsp;private sector, industry, etc.).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wages_2019 <span class="ot">&lt;-</span> wages <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2019</span>) </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>wages_2019 <span class="sc">%&gt;%</span> <span class="fu">select</span>(facet) <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="nqomuqzvek" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#nqomuqzvek table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#nqomuqzvek thead, #nqomuqzvek tbody, #nqomuqzvek tfoot, #nqomuqzvek tr, #nqomuqzvek td, #nqomuqzvek th {
+  border-style: none;
+}
+
+#nqomuqzvek p {
+  margin: 0;
+  padding: 0;
+}
+
+#nqomuqzvek .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#nqomuqzvek .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#nqomuqzvek .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#nqomuqzvek .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#nqomuqzvek .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#nqomuqzvek .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#nqomuqzvek .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#nqomuqzvek .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#nqomuqzvek .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#nqomuqzvek .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#nqomuqzvek .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#nqomuqzvek .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#nqomuqzvek .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#nqomuqzvek .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#nqomuqzvek .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqomuqzvek .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#nqomuqzvek .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#nqomuqzvek .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#nqomuqzvek .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqomuqzvek .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#nqomuqzvek .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqomuqzvek .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#nqomuqzvek .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqomuqzvek .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#nqomuqzvek .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#nqomuqzvek .gt_left {
+  text-align: left;
+}
+
+#nqomuqzvek .gt_center {
+  text-align: center;
+}
+
+#nqomuqzvek .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#nqomuqzvek .gt_font_normal {
+  font-weight: normal;
+}
+
+#nqomuqzvek .gt_font_bold {
+  font-weight: bold;
+}
+
+#nqomuqzvek .gt_font_italic {
+  font-style: italic;
+}
+
+#nqomuqzvek .gt_super {
+  font-size: 65%;
+}
+
+#nqomuqzvek .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#nqomuqzvek .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#nqomuqzvek .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#nqomuqzvek .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#nqomuqzvek .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#nqomuqzvek .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#nqomuqzvek .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="facet">facet</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">construction</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">wholesale/retail</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">public administration</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">private sector: all</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">private sector: nonagricultural</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">private sector: construction</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">private sector: manufacturing</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">public sector: all</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">public sector: federal</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">public sector: state government</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">public sector: local government</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: less than college</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: college or more</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: male</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: female</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: white male</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: white female</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: black male</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: black female</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: hispanic male</td></tr>
+    <tr><td headers="facet" class="gt_row gt_left">demographics: hispanic female</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Interestingly, the overall data (“all&nbsp;wage&nbsp;and&nbsp;salary&nbsp;workers”) appears 5 times.</p>
+</section>
+</section>
+<section id="selecting-the-demographic-data" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-the-demographic-data">Selecting the Demographic Data</h2>
+<p>I will view how the sample size changes over the sex/race demographics. I’m going to use a treemap to do so.</p>
+<p>First, I will select the rows where the facet has “demographics” or the “all wage and salary workers”. This is done with <code>str_detect</code> from the <a href="https://stringr.tidyverse.org/">stringr package</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wages_2019_demo <span class="ot">&lt;-</span> wages_2019 <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_detect</span>(facet , <span class="st">"demographics"</span>) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">|</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(facet, <span class="st">"all wage and salary workers"</span>) <span class="sc">==</span> <span class="cn">TRUE</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Remove the first four rows- this contains duplicate information about all workers. The college data is also removed since it isn’t related to the other demographic data in a way we can define.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>wages_2019_demo2 <span class="ot">&lt;-</span> wages_2019_demo[<span class="dv">5</span><span class="sc">:</span><span class="dv">15</span>,]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>wages_2019_demo2 <span class="ot">&lt;-</span> wages_2019_demo2 <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(facet , <span class="st">"college"</span>) <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>wages_2019_demo2 <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="neksckudil" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#neksckudil table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#neksckudil thead, #neksckudil tbody, #neksckudil tfoot, #neksckudil tr, #neksckudil td, #neksckudil th {
+  border-style: none;
+}
+
+#neksckudil p {
+  margin: 0;
+  padding: 0;
+}
+
+#neksckudil .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#neksckudil .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#neksckudil .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#neksckudil .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#neksckudil .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#neksckudil .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#neksckudil .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#neksckudil .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#neksckudil .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#neksckudil .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#neksckudil .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#neksckudil .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#neksckudil .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#neksckudil .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#neksckudil .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#neksckudil .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#neksckudil .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#neksckudil .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#neksckudil .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#neksckudil .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#neksckudil .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#neksckudil .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#neksckudil .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#neksckudil .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#neksckudil .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#neksckudil .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#neksckudil .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#neksckudil .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#neksckudil .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#neksckudil .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#neksckudil .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#neksckudil .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#neksckudil .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#neksckudil .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#neksckudil .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#neksckudil .gt_left {
+  text-align: left;
+}
+
+#neksckudil .gt_center {
+  text-align: center;
+}
+
+#neksckudil .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#neksckudil .gt_font_normal {
+  font-weight: normal;
+}
+
+#neksckudil .gt_font_bold {
+  font-weight: bold;
+}
+
+#neksckudil .gt_font_italic {
+  font-style: italic;
+}
+
+#neksckudil .gt_super {
+  font-size: 65%;
+}
+
+#neksckudil .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#neksckudil .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#neksckudil .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#neksckudil .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#neksckudil .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#neksckudil .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#neksckudil .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sample_size">sample_size</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="wage">wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="at_cap">at_cap</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage">union_wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="nonunion_wage">nonunion_wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage_premium_raw">union_wage_premium_raw</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage_premium_adjusted">union_wage_premium_adjusted</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="facet">facet</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">94818</td>
+<td headers="wage" class="gt_row gt_right">28.09587</td>
+<td headers="at_cap" class="gt_row gt_right">0.05071279</td>
+<td headers="union_wage" class="gt_row gt_right">31.70222</td>
+<td headers="nonunion_wage" class="gt_row gt_right">27.64805</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.14663510</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.14290078</td>
+<td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">48157</td>
+<td headers="wage" class="gt_row gt_right">31.31306</td>
+<td headers="at_cap" class="gt_row gt_right">0.07093566</td>
+<td headers="union_wage" class="gt_row gt_right">34.02119</td>
+<td headers="nonunion_wage" class="gt_row gt_right">30.96146</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.09882383</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17838623</td>
+<td headers="facet" class="gt_row gt_left">demographics: male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">46661</td>
+<td headers="wage" class="gt_row gt_right">24.64259</td>
+<td headers="at_cap" class="gt_row gt_right">0.02903222</td>
+<td headers="union_wage" class="gt_row gt_right">28.99576</td>
+<td headers="nonunion_wage" class="gt_row gt_right">24.12817</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.20173885</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.10255232</td>
+<td headers="facet" class="gt_row gt_left">demographics: female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">40352</td>
+<td headers="wage" class="gt_row gt_right">31.72107</td>
+<td headers="at_cap" class="gt_row gt_right">0.07324656</td>
+<td headers="union_wage" class="gt_row gt_right">34.46735</td>
+<td headers="nonunion_wage" class="gt_row gt_right">31.36370</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.09895673</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17714998</td>
+<td headers="facet" class="gt_row gt_left">demographics: white male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">37864</td>
+<td headers="wage" class="gt_row gt_right">24.57163</td>
+<td headers="at_cap" class="gt_row gt_right">0.02741190</td>
+<td headers="union_wage" class="gt_row gt_right">28.91303</td>
+<td headers="nonunion_wage" class="gt_row gt_right">24.06818</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.20129693</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.09296709</td>
+<td headers="facet" class="gt_row gt_left">demographics: white female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">3607</td>
+<td headers="wage" class="gt_row gt_right">23.72498</td>
+<td headers="at_cap" class="gt_row gt_right">0.02696504</td>
+<td headers="union_wage" class="gt_row gt_right">30.11012</td>
+<td headers="nonunion_wage" class="gt_row gt_right">22.74304</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.32392681</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17447826</td>
+<td headers="facet" class="gt_row gt_left">demographics: black male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">4577</td>
+<td headers="wage" class="gt_row gt_right">21.96607</td>
+<td headers="at_cap" class="gt_row gt_right">0.02158116</td>
+<td headers="union_wage" class="gt_row gt_right">26.77524</td>
+<td headers="nonunion_wage" class="gt_row gt_right">21.29592</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.25729427</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.14210089</td>
+<td headers="facet" class="gt_row gt_left">demographics: black female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">6897</td>
+<td headers="wage" class="gt_row gt_right">22.11324</td>
+<td headers="at_cap" class="gt_row gt_right">0.02291996</td>
+<td headers="union_wage" class="gt_row gt_right">30.18838</td>
+<td headers="nonunion_wage" class="gt_row gt_right">21.20103</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.42391109</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.24975224</td>
+<td headers="facet" class="gt_row gt_left">demographics: hispanic male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">5947</td>
+<td headers="wage" class="gt_row gt_right">18.81279</td>
+<td headers="at_cap" class="gt_row gt_right">0.01247475</td>
+<td headers="union_wage" class="gt_row gt_right">25.42001</td>
+<td headers="nonunion_wage" class="gt_row gt_right">18.14904</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.40062550</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.15435517</td>
+<td headers="facet" class="gt_row gt_left">demographics: hispanic female</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Let’s remove “<code>demographics:</code>” and the all jobs data and then split the <code>facet</code> description into race and sex. I’m replacing <code>"demographics: "</code> with an empty string using <code>str_replace</code>.</p>
+<p>From <a href="https://tidyr.tidyverse.org/">tidyR</a>, <code>separate()</code> does a pretty good job of guessing how to split the data, but you can always give it the pattern to split on. Note that <code>separate()</code> has superseded in favour of&nbsp;<a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html"><code>separate_wider_position()</code></a>&nbsp;and&nbsp;<a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html"><code>separate_wider_delim()</code></a>, but it still supported.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>wages_2019_demo3 <span class="ot">&lt;-</span> wages_2019_demo2[<span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>,]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>wages_2019_demo3 <span class="ot">&lt;-</span> wages_2019_demo3 <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">facet =</span> <span class="fu">str_replace</span>(facet, <span class="st">"demographics: "</span>, <span class="st">""</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(facet, <span class="fu">c</span>(<span class="st">"race"</span>, <span class="st">"sex"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 2 rows [1, 2].</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wages_2019_demo2 <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="aaypntbqeb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#aaypntbqeb table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#aaypntbqeb thead, #aaypntbqeb tbody, #aaypntbqeb tfoot, #aaypntbqeb tr, #aaypntbqeb td, #aaypntbqeb th {
+  border-style: none;
+}
+
+#aaypntbqeb p {
+  margin: 0;
+  padding: 0;
+}
+
+#aaypntbqeb .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#aaypntbqeb .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#aaypntbqeb .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#aaypntbqeb .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#aaypntbqeb .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#aaypntbqeb .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#aaypntbqeb .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#aaypntbqeb .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#aaypntbqeb .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#aaypntbqeb .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#aaypntbqeb .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aaypntbqeb .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#aaypntbqeb .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#aaypntbqeb .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#aaypntbqeb .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaypntbqeb .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#aaypntbqeb .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#aaypntbqeb .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#aaypntbqeb .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaypntbqeb .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#aaypntbqeb .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaypntbqeb .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#aaypntbqeb .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaypntbqeb .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aaypntbqeb .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aaypntbqeb .gt_left {
+  text-align: left;
+}
+
+#aaypntbqeb .gt_center {
+  text-align: center;
+}
+
+#aaypntbqeb .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#aaypntbqeb .gt_font_normal {
+  font-weight: normal;
+}
+
+#aaypntbqeb .gt_font_bold {
+  font-weight: bold;
+}
+
+#aaypntbqeb .gt_font_italic {
+  font-style: italic;
+}
+
+#aaypntbqeb .gt_super {
+  font-size: 65%;
+}
+
+#aaypntbqeb .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#aaypntbqeb .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#aaypntbqeb .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#aaypntbqeb .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#aaypntbqeb .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#aaypntbqeb .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#aaypntbqeb .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="year">year</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="sample_size">sample_size</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="wage">wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="at_cap">at_cap</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage">union_wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="nonunion_wage">nonunion_wage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage_premium_raw">union_wage_premium_raw</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="union_wage_premium_adjusted">union_wage_premium_adjusted</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="facet">facet</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">94818</td>
+<td headers="wage" class="gt_row gt_right">28.09587</td>
+<td headers="at_cap" class="gt_row gt_right">0.05071279</td>
+<td headers="union_wage" class="gt_row gt_right">31.70222</td>
+<td headers="nonunion_wage" class="gt_row gt_right">27.64805</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.14663510</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.14290078</td>
+<td headers="facet" class="gt_row gt_left">all wage and salary workers</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">48157</td>
+<td headers="wage" class="gt_row gt_right">31.31306</td>
+<td headers="at_cap" class="gt_row gt_right">0.07093566</td>
+<td headers="union_wage" class="gt_row gt_right">34.02119</td>
+<td headers="nonunion_wage" class="gt_row gt_right">30.96146</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.09882383</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17838623</td>
+<td headers="facet" class="gt_row gt_left">demographics: male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">46661</td>
+<td headers="wage" class="gt_row gt_right">24.64259</td>
+<td headers="at_cap" class="gt_row gt_right">0.02903222</td>
+<td headers="union_wage" class="gt_row gt_right">28.99576</td>
+<td headers="nonunion_wage" class="gt_row gt_right">24.12817</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.20173885</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.10255232</td>
+<td headers="facet" class="gt_row gt_left">demographics: female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">40352</td>
+<td headers="wage" class="gt_row gt_right">31.72107</td>
+<td headers="at_cap" class="gt_row gt_right">0.07324656</td>
+<td headers="union_wage" class="gt_row gt_right">34.46735</td>
+<td headers="nonunion_wage" class="gt_row gt_right">31.36370</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.09895673</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17714998</td>
+<td headers="facet" class="gt_row gt_left">demographics: white male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">37864</td>
+<td headers="wage" class="gt_row gt_right">24.57163</td>
+<td headers="at_cap" class="gt_row gt_right">0.02741190</td>
+<td headers="union_wage" class="gt_row gt_right">28.91303</td>
+<td headers="nonunion_wage" class="gt_row gt_right">24.06818</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.20129693</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.09296709</td>
+<td headers="facet" class="gt_row gt_left">demographics: white female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">3607</td>
+<td headers="wage" class="gt_row gt_right">23.72498</td>
+<td headers="at_cap" class="gt_row gt_right">0.02696504</td>
+<td headers="union_wage" class="gt_row gt_right">30.11012</td>
+<td headers="nonunion_wage" class="gt_row gt_right">22.74304</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.32392681</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.17447826</td>
+<td headers="facet" class="gt_row gt_left">demographics: black male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">4577</td>
+<td headers="wage" class="gt_row gt_right">21.96607</td>
+<td headers="at_cap" class="gt_row gt_right">0.02158116</td>
+<td headers="union_wage" class="gt_row gt_right">26.77524</td>
+<td headers="nonunion_wage" class="gt_row gt_right">21.29592</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.25729427</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.14210089</td>
+<td headers="facet" class="gt_row gt_left">demographics: black female</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">6897</td>
+<td headers="wage" class="gt_row gt_right">22.11324</td>
+<td headers="at_cap" class="gt_row gt_right">0.02291996</td>
+<td headers="union_wage" class="gt_row gt_right">30.18838</td>
+<td headers="nonunion_wage" class="gt_row gt_right">21.20103</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.42391109</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.24975224</td>
+<td headers="facet" class="gt_row gt_left">demographics: hispanic male</td></tr>
+    <tr><td headers="year" class="gt_row gt_right">2019</td>
+<td headers="sample_size" class="gt_row gt_right">5947</td>
+<td headers="wage" class="gt_row gt_right">18.81279</td>
+<td headers="at_cap" class="gt_row gt_right">0.01247475</td>
+<td headers="union_wage" class="gt_row gt_right">25.42001</td>
+<td headers="nonunion_wage" class="gt_row gt_right">18.14904</td>
+<td headers="union_wage_premium_raw" class="gt_row gt_right">0.40062550</td>
+<td headers="union_wage_premium_adjusted" class="gt_row gt_right">0.15435517</td>
+<td headers="facet" class="gt_row gt_left">demographics: hispanic female</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Now, I don’t need male and female total rows except to check the numbers (the first two rows). I see the subcategories don’t add up to these upper-level demographic categories. Male + female does equal the total number of workers (“all&nbsp;wage&nbsp;and&nbsp;salary&nbsp;workers”), but the individual subgroups of male and female don’t add up to the totals (hispanic male + white male + black male &gt; male). One explanation is that some survey participants chose to identify in multiple categories. This data isn’t the greatest choice for a treemap since some participants will appear in multiple boxes, but I will proceed with the graph.</p>
+<p>Remove the first two rows. Treemap will generate the totals using the sample size from each subcategory.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>wages_2019_demo3a <span class="ot">&lt;-</span> wages_2019_demo3[<span class="dv">3</span><span class="sc">:</span><span class="dv">8</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="making-a-treemap-with-the-treemap-package" class="level2">
+<h2 class="anchored" data-anchor-id="making-a-treemap-with-the-treemap-package">Making a Treemap with the treemap package</h2>
+<p>Using the <a href="https://CRAN.R-project.org/package=treemap">treemap package</a> as recommended by <a href="https://r-graph-gallery.com/treemap.html">The R Graph Gallery</a>. There isn’t a built-in way to display the numerical data, so I will construct that as a separate field. It will consist of the subgroup name, a new line, and then the sample size for that subgroup.</p>
+<p>I’m keeping many of the defaults for the treemap. You can specify the palette and details about how the blocks will be arranged, but I’m not tweaking those parameters. The package also doesn’t have a caption or subtitle option, so I’m including the data source in the title.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make the label with the subgroup and sample size.</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>wages_2019_demo3a <span class="ot">&lt;-</span> wages_2019_demo3a <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">race_sample_size =</span> <span class="fu">paste</span>(race, sample_size, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Making the tree map</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">treemap</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  wages_2019_demo3a,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"sex"</span>, <span class="st">"race_sample_size"</span>),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">vSize =</span> <span class="st">"sample_size"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"index"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bg.labels =</span> <span class="fu">c</span>(<span class="st">"white"</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">align.labels =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"center"</span>, <span class="st">"center"</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Sample Size of Different Demographic Groups (2019) [data from unionstats.com]"</span>,</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">fontsize.title =</span> <span class="dv">12</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>)     </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="labor_files/figure-html/static tree map-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="interactive-treemap-with-d3treer" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-treemap-with-d3treer">Interactive Treemap with d3treeR</h2>
+<p>I can also make an interactive treemap using the <a href="https://github.com/d3treeR/d3treeR">d3treeR package</a>. Like many of the other interactive graphs I’ve created, this is a wrapper for a javscript module and can be additionally interacted with using <a href="https://www.htmlwidgets.org/"><code>htmlwidgets</code></a>.</p>
+<p>This package needs to be installed via <code>devtools::install_github("d3treeR/d3treeR")</code>. There is a similarly named package on CRAN (d3Tree), but that isn’t what you need.</p>
+<p>Here, I made a new treemap without the numerical data label I made for the static map. The <code>d3tree2</code> function will automatically display that information as you hover over the boxes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>inter <span class="ot">&lt;-</span> <span class="fu">d3tree2</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">treemap</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    wages_2019_demo3a,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">index =</span> <span class="fu">c</span>(<span class="st">"sex"</span>, <span class="st">"race"</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">vSize =</span> <span class="st">"sample_size"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">type =</span> <span class="st">"index"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">bg.labels =</span> <span class="fu">c</span>(<span class="st">"white"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">align.labels =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"center"</span>, <span class="st">"center"</span>),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rootname =</span> <span class="st">"Sample Size of Different Demographic Groups (from unionstats.com)"</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Weirdly, when you run the above codeblock, the static map created by the treemap call is displayed, even though the interactive map isn’t. This can be mitigated by setting the output of the code block to false if you are using markdown or quarto.</p>
+<p>And then you can display the interactive map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>inter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="d3tree2 html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-34757917230ee5f00706" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-34757917230ee5f00706">{"x":{"data":{"name":"Sample Size of Different Demographic Groups (from unionstats.com)","id":1,"size":null,"children":[{"name":"female","color":"#7EBA68","h":1,"id":2,"size":48388,"stdErr":48388,"vColor":3,"vSize":48388,"w":0.4875659989520778,"x0":0.5124340010479222,"y0":0,"children":[{"name":"black","color":"#919710","h":0.2174919401504505,"id":3,"size":4577,"stdErr":4577,"vColor":1,"vSize":4577,"w":0.212047660319618,"x0":0.787952339680382,"y0":0},{"name":"hispanic","color":"#00A76E","h":0.2174919401504505,"id":4,"size":5947,"stdErr":5947,"vColor":1,"vSize":5947,"w":0.2755183386324598,"x0":0.5124340010479222,"y0":0},{"name":"white","color":"#60A040","h":0.7825080598495495,"id":5,"size":37864,"stdErr":37864,"vColor":1,"vSize":37864,"w":0.4875659989520778,"x0":0.5124340010479222,"y0":0.2174919401504505}]},{"name":"male","color":"#D494E1","h":1,"id":6,"size":50856,"stdErr":50856,"vColor":3,"vSize":50856,"w":0.5124340010479222,"x0":0,"y0":0,"children":[{"name":"black","color":"#D26FAF","h":0.2065439672801636,"id":7,"size":3607,"stdErr":3607,"vColor":1,"vSize":3607,"w":0.1759662454093541,"x0":0.3364677556385681,"y0":0},{"name":"hispanic","color":"#9087D7","h":0.2065439672801636,"id":8,"size":6897,"stdErr":6897,"vColor":1,"vSize":6897,"w":0.3364677556385681,"x0":0,"y0":0},{"name":"white","color":"#BD76CB","h":0.7934560327198364,"id":9,"size":40352,"stdErr":40352,"vColor":1,"vSize":40352,"w":0.5124340010479222,"x0":0,"y0":0.2065439672801636}]}]},"meta":{"type":"index","vSize":"sample_size","vColor":null,"stdErr":"sample_size","algorithm":"pivotSize","vpCoorX":[0.02812148481439815,0.9718785151856019],"vpCoorY":[0.01968503937007871,0.9103149606299213],"aspRatio":1.483511625850942,"range":null,"mapping":[null,null,null],"draw":true},"legend":null,"options":{"celltext":"name","id":"id","valueField":"size","clickAction":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<p>Some demographic subgroups do represent under 5% of the total workforce surveyed. For the race category, it appears that some respondents chose more than one category, which could be a problem for imputed data based on matching demographic characteristics.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e. sinks2023,
+  author = {E. Sinks, Louise},
+  title = {TidyTuesday 36: {Visualizing} {Worker} {Demographic}
+    {Information} with {Treemaps}},
+  date = {2023-09-05},
+  url = {https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e. sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+E. Sinks, Louise. 2023. <span>“TidyTuesday 36: Visualizing Worker
+Demographic Information with Treemaps.”</span> September 5, 2023. <a href="https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor">https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
