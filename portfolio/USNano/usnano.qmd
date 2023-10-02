@@ -1,5 +1,5 @@
 ---
-title: "Nanomaterials at USNano LLC"
+title: "Nanowires at USNano LLC"
 description: "Synthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks" 
 #title-block-banner: images/banner.jpeg
 title-block-banner: nw_strip.jpeg

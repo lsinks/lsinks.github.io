@@ -1,9 +1,7 @@
 ---
 title: "Louise E. Sinks"
 image: images/headshot.jpg
-format: 
-  html:
-    page-layout: full
+page-layout: full
 about: 
   template: trestles
   image-shape: rounded
