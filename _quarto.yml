@@ -11,7 +11,7 @@ website:
     right:
       - href: index.qmd
         text: Home
-      - past_work.qmd
+      - portfolio.qmd
       - about.qmd
       - posts.qmd
       - currentprojects.qmd

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Louise E. Sinks</title>
+<title>Louise E. Sinks - Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,11 +30,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/cookie-consent/cookie-consent.js"></script>
 <link href="site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -60,6 +63,35 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-author','listing-image','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
 <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
 
 <script type="text/plain" cookie-consent="tracking">
@@ -86,11 +118,12 @@ cookieconsent.run({
 </script> 
   
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="styles.css">
-<meta name="twitter:title" content="Louise E. Sinks">
-<meta name="twitter:description" content="">
-<meta name="twitter:image" content="https://lsinks.github.io/images/headshot.jpg">
+<meta name="twitter:title" content="Louise E. Sinks - Portfolio">
+<meta name="twitter:image" content="https://lsinks.github.io/portfolio/USNano/thumbnail.jpg">
 <meta name="twitter:creator" content="@LouiseSinks">
 <meta name="twitter:card" content="summary_large_image">
 </head>
@@ -113,11 +146,11 @@ cookieconsent.run({
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="./index.html" rel="" target="">
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./portfolio.html" rel="" target="">
+    <a class="nav-link active" href="./portfolio.html" rel="" target="" aria-current="page">
  <span class="menu-text">Portfolio</span></a>
   </li>  
   <li class="nav-item">
@@ -152,46 +185,61 @@ cookieconsent.run({
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
 <!-- main -->
-<div class="quarto-about-trestles column-page">
-  <div class="about-entity">
-    <img src="images/headshot.jpg" class="about-image
-  rounded " style="width: 16em;">
+<main class="content column-page" id="quarto-document-content">
+
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Louise E. Sinks</h1>
+<h1 class="title">Portfolio</h1>
 </div>
+
+
+
 <div class="quarto-title-meta">
+
+    
+  
+    
   </div>
+  
+
 </header>
-    <div class="about-links">
-  <a href="https://www.linkedin.com/in/louise-sinks/" class="about-link" rel="" target="">
-    <i class="bi bi-linkedin"></i>
-     <span class="about-link-text">LinkedIn</span>
-  </a>
-  <a href="https://twitter.com/LouiseSinks" class="about-link" rel="" target="">
-    <i class="bi bi-twitter"></i>
-     <span class="about-link-text">Twitter</span>
-  </a>
-  <a href="https://github.com/lsinks" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">GitHub</span>
-  </a>
-  <a href="https://scholar.google.com/citations?user=Os4ZVq8AAAAJ&amp;hl=en" class="about-link" rel="" target="">
-     <span class="about-link-text">Google Scholar</span>
-  </a>
-</div>
-  </div>
-  <div class="about-contents"><main class="content column-page" id="quarto-document-content">
-<p>Hello! I’m Louise Sinks. Welcome to my website. I’m a chemist by training, and I’ve spent my career designing, running, and analyzing a variety of types of experiments.</p>
-<p>You’ll find some of my projects for former employers in the <a href="https://lsinks.github.io/portfolio.html">portfolio section</a>. Most of my research was on advanced functional materials with novel photophysical properties. In addition to spectroscopy, I employed statistical learning/ fitting methods, as interpretability is of primary importance in the sciences. Of course, being in charge of the experimental design gives you a huge advantage if you are trying to develop an interpretable model, as you can make sure you thoroughly explore the relevant parameter space. Most of my modeling and simulation work was done in Matlab, which seems to be a more popular language in academia than in industry and business.</p>
-<p>You’ll also find <a href="https://lsinks.github.io/posts.html">my blog</a>, where I do small projects to master new languages (R and Python currently). These are generally written as tutorials; throughout my career, I’ve benefitted immensely from code chunks and explanations I’ve found online, so this is my way of paying it forward. The blog posts are written in Quarto, and the <a href="https://github.com/lsinks/lsinks.github.io/tree/main/posts">raw .qmd files can be found in my GitHub repo</a>. These can be downloaded and run in RStudio or another IDE that supports Quarto. The <a href="https://lsinks.github.io/currentprojects.html">current projects section</a> includes upcoming topics for the blog.</p>
 
 
-</main></div>
+
+
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1696271072984" data-listing-reading-time-sort="3">
+<div class="thumbnail">
+<p><a href="./portfolio/USNano/usnano.html"> <img src="./portfolio/USNano/thumbnail.jpg" class="thumbnail-image"> </a></p>
 </div>
- <!-- /main -->
+<div class="body">
+<a href="./portfolio/USNano/usnano.html">
+<h3 class="no-anchor listing-title">
+Nanomaterials at USNano LLC
+</h3>
+<div class="listing-subtitle">
+
+</div>
+<div class="listing-description">
+<p>Synthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./portfolio/USNano/usnano.html"> </a>
+</div>
+</div>
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -212,6 +260,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
   toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const isCodeAnnotation = (el) => {
     for (const clz of el.classList) {
       if (clz.startsWith('code-annotation-')) {                     
