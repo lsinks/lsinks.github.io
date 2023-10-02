@@ -6,7 +6,7 @@ twitter-card:
 author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
-date: 
+date: 10-01-2023
 categories: [Data-Viz, R, R-code,  Code-Along, s] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/

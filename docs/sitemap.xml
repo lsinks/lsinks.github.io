@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-09-08T19:32:12.694Z</lastmod>
+    <lastmod>2023-09-29T19:12:14.253Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-28-TidyTuesday-Refugees/TidyTuesday34-refugees.html</loc>
@@ -58,7 +58,7 @@
   </url>
   <url>
     <loc>https://lsinks.github.io/index.html</loc>
-    <lastmod>2023-08-29T20:35:31.352Z</lastmod>
+    <lastmod>2023-09-29T17:14:17.989Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/blogroll.html</loc>
@@ -66,7 +66,7 @@
   </url>
   <url>
     <loc>https://lsinks.github.io/about.html</loc>
-    <lastmod>2023-08-29T20:35:28.868Z</lastmod>
+    <lastmod>2023-09-28T15:53:58.404Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/currentprojects.html</loc>
@@ -138,6 +138,14 @@
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstone/web-scraping.html</loc>
-    <lastmod>2023-09-08T19:30:28.150Z</lastmod>
+    <lastmod>2023-09-29T19:13:12.599Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/past_work.html</loc>
+    <lastmod>2023-10-02T18:25:56.596Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/portfolio/USNano/usnano.html</loc>
+    <lastmod>2023-10-02T18:25:30.482Z</lastmod>
   </url>
 </urlset>

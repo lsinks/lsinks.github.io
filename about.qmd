@@ -32,9 +32,19 @@ Project Management
 -   Wrote and managed grants to fund portions of research
 -   Awarded multiple NSF SBIR grants for \~\$924,000
 
-Marketing & Business Development efforts \* Generated copy for white papers, company website, and other promotional materials \* Generated and presented pitches to Angels, VCs, and potential industrial partners \* Interviewed 100 potential customers to understand needs around nanowire technology
+Marketing & Business Development efforts
 
-Technical & Analytical Work \* Designed and Analyzed experiments using DOE (Design of Experiments) principles using specialized software (Stat-Ease) or advanced Excel functionality (Pivot tables or wrote custom VBA macros) over a wide range of areas (ink formulation, nanomaterial synthesis, and electrical device design) \* Developed financial models for various business scenarios \* Implemented Statistical Process Control on manufacturing activities to increase up-time
+-   Generated copy for white papers, company website, and other promotional materials
+-   Generated and presented pitches to Angels, VCs, and potential industrial partners
+-   Interviewed 100 potential customers to understand needs around nanowire technology
+
+Technical & Analytical Work
+
+-   Designed and Analyzed experiments using DOE (Design of Experiments) principles using specialized software (Stat-Ease) or advanced Excel functionality (Pivot tables or wrote custom VBA macros) over a wide range of areas (ink formulation, nanomaterial synthesis, and electrical device design)
+
+-   Developed financial models for various business scenarios
+
+-   Implemented Statistical Process Control on manufacturing activities to increase up-time
 
 **Prof. Sergei A. Vinogradov, University of Pennsylvania**
 
@@ -106,7 +116,9 @@ Researched solvent/media effects on photo-induced electron transfer in organic c
 
 ## CERTIFICATIONS
 
-DataCamp Data Scientist Professional Certificate, Google Data Analytics Certificate
+DataCamp Data Scientist Professional Certificate
+
+Google Data Analytics Certificate
 
 ## PORTFOLIO
 

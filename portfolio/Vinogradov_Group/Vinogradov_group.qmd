@@ -1,0 +1,48 @@
+---
+title: "Phosphorescence Lifetime Imaging"
+description: "Development of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab." 
+title-block-banner: Image001_ch00a.jpg
+title-block-banner-color: white
+image: "one_photon_psf.jpg"
+draft: true
+---
+
+## Developing New Microscopy Techniques
+
+The [Vinogradov Lab](https://vinogradovlab.org/) at the University of Pennsylvania is a multi-disciplinary group that develops new molecules and instrumentation for analyte detection and imaging. My work focused on developing a new two-photon lifetime imaging microscopy technique for quantifying cell oxygen content.
+
+I coupled ultrafast laser spectroscopy techniques with two-photon microscopy to create a novel phosphorescence lifetime imaging microscope. This method allows the optical sectioning of 3D samples while also obtaining information about the local chemical environment. Phosphorescent molecules glow more or less intensely based on the amount of oxygen in the area, so they can be used to measure local oxygen concentrations. Others in the group synthesized these novel molecules, and then I validated their performance for imaging.
+
+::: column-margin
+![](polymersome_DIC.png)
+:::
+
+In photophysics, models for various processes have often been derived mathematically from fundamental principles or experimentally validated in other systems. Fitting the data then becomes simpler since you only have to fit against a few equations. However, fitting parameters are related to the intrinsic properties of molecules and materials, so it is vital to ensure you are fitting with the correct model. Sometimes, a poorer fit to a more scientifically defensible model is more correct than a better fit to an invalid model. Lots of cross-checking and additional experimentation are needed beyond just fitting.
+
+In addition to deriving photophysical constants, I used the parameters as inputs to simulate the optical resolution of the new microscopy technique.
+
+::: {#fig-psf layout-ncol="2"}
+![One Photon Excitation Volume](one_photon_psf.jpg){#fig-onephoton}
+
+![Two Photon Excitation Volume](two_photon_psf.jpg){#fig-twophoton}
+
+Excitation volumes under one and two photon absorption regimes. Graphs are of the XZ plane.
+:::
+
+## Selected Publications
+
+Devor, A., Sakadžić, S; Yaseen, M. A.; Roussakis,E.; Tian, P.; Slovin, H.; Vanzetta, I.; Teng, I.; Saisan, P. A.; **Sinks, L. E.**; Dale, A. M.; Vinogradov, S.V.; Boas, D.A. [Functional imaging of cerebral oxygenation with intrinsic optical contrast and phosphorescent probes](https://escholarship.org/content/qt8cj3t8z0/qt8cj3t8z0.pdf), Optical Imaging of Neocortical Dynamics 2014
+
+Pedersen, B. W.; **Sinks, L. E.**; Breitenbach, T.; Schack, N. B.; Vinogradov, S. A.; Ogilby, P. R. [Single cell responses to spatially controlled photosensitized production of extracellular singlet oxygen](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3166418/). Photochemistry and Photobiology 2011, 87, 1077--1091.
+
+**Sinks, L. E.**; Robbins, G. P.; Roussakis, E.; Troxler, T.; Hammer, D. A.; Vinogradov, S. A., [Two-Photon Microscopy of Oxygen: Polymersomes as Probe Carrier Vehicles.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2939231/) J. Phys. Chem. B, 2010, 114(45), 14373-14382.
+
+**Sinks, L. E.**; Roussakis, E.; Esipova Tatiana, V.; Vinogradov Sergei, A., [Synthesis and calibration of phosphorescent nanoprobes for oxygen imaging in biological systems](https://www.jove.com/t/1731/synthesis-calibration-phosphorescent-nanoprobes-for-oxygen-imaging). Journal of visualized experiments : JoVE 2010, (37).
+
+## Selected Presentations
+
+**Sinks, L. E.**; Finikova, O. S.; Vinogradov, S. A. [Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes](https://opg.optica.org/abstract.cfm?uri=NTM-2009-NMC7). In Novel Techniques in Microscopy; Optical Society of America, 2009 presented at the Optical Society of America Spring Congress: Novel Techniques in Microscopy Vancouver, Canada
+
+```{=html}
+<iframe width="780" height="500" src="Sinks_Oxygen microscopy_2009.pdf" title="Microscopy Presentation"></iframe>
+```

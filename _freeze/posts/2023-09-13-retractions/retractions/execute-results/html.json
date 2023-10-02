@@ -1,0 +1,14 @@
+{
+  "hash": "4211ae70fdc86db8acd80f7ceb4da7f7",
+  "result": {
+    "markdown": "---\ntitle: \"\"\ndescription: \"Methods for dealing with overlapping points and then styling a leaflet map with various labels and pop-ups.\"\ntwitter-card:\n  image: \"thumbnail.jpg\"\nauthor:\n  - name: Louise E. Sinks\n    url: https://lsinks.github.io/\ndate: 10-01-2023\ncategories: [Data-Viz, R, R-code,  Code-Along, s] # self-defined categories\ncitation:\n  url: https://lsinks.github.io/posts/\nimage: \"thumbnail.jpg\"\ndraft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready\n---\n\n\n# Intro/Overview\n\n# Setting Up\n\n## Loading Libraries\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse) # who doesn't want to be tidy?\nlibrary(gt) # for nice tables\nlibrary(sf) # for handling geo data\nlibrary(here) # reproducible file paths\nlibrary(htmltools) # making html labels\nlibrary(htmlwidgets) # saving final map\nlibrary(leafpop) # pop-up with images\nlibrary(leaflet) # mapping\n```\n:::\n\n\n## Loading Data\n\nReading in the data.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n retractions <- read_csv(\"retractions.csv\")\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nRows: 47024 Columns: 21\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (18): Title, Subject, Institution, Journal, Publisher, Country, Author, ...\ndbl  (3): Record ID, RetractionPubMedID, OriginalPaperPubMedID\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n```\n:::\n:::\n\n\nBy publisher\n\n\n::: {.cell}\n\n```{.r .cell-code}\nretractions %>% group_by(Publisher) %>% count(sort = TRUE) %>% head()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 6 × 2\n# Groups:   Publisher [6]\n  Publisher                                                   n\n  <chr>                                                   <int>\n1 IEEE: Institute of Electrical and Electronics Engineers 10088\n2 Elsevier                                                 5496\n3 Springer                                                 4272\n4 Wiley                                                    2840\n5 Hindawi                                                  2030\n6 Taylor and Francis                                       1401\n```\n:::\n:::\n\n\n# Conclusions\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

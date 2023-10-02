@@ -1,0 +1,8 @@
+---
+title: "Portfolio"
+listing:
+  contents: portfolio/**/*.qmd
+  type: default
+page-layout: full
+title-block-banner: false
+---
