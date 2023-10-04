@@ -1061,7 +1061,7 @@
     "href": "portfolio.html",
     "title": "Portfolio",
     "section": "",
-    "text": "Nanowires at USNano LLC\n\n\n\n\n\nSynthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPhosphorescence Lifetime Imaging\n\n\n\n\n\nDevelopment of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.\n\n\n\n\n \n\n\n\n\nNo matching items"
+    "text": "Advanced Femtosecond Spectroscopy Techniques\n\n\n\n\n\nExploring electron and energy transfer in inorganic functional materials and protein systems\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNanowires at USNano LLC\n\n\n\n\n\nSynthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPhosphorescence Lifetime Imaging\n\n\n\n\n\nDevelopment of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.\n\n\n\n\n \n\n\n\n\nNo matching items"
   },
   {
     "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html",
@@ -1153,5 +1153,47 @@
     "title": "Phosphorescence Lifetime Imaging",
     "section": "Selected Posters and Presentations",
     "text": "Selected Posters and Presentations\nSinks, L. E.; Finikova, O. S.; Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes. In Novel Techniques in Microscopy; Optical Society of America, 2009 presented at the Optical Society of America Spring Congress: Novel Techniques in Microscopy Vancouver, Canada (talk)\n\nSinks, L. E. and Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes at Howard Hughes Medical Institute Janelia Research Campus’s Symposium on Multiphoton Imaging: The Next 6X10^23 Femtoseconds, April 3 - 6, 2011"
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "",
+    "text": "I had a joint post-doctoral appointment with the late Prof. Robin Hochstrasser and Prof. Michael Therien at the University of Pennsylvania, where I researched the role of the environment on electron and energy transfer processes. Prof. Therien, now at Duke University, is a leading expert on functional materials for energy and photonic applications. His lab produced various exciting materials that I was lucky enough to study. Prof. Hochstrasser developed cutting-edge spectroscopic techniques, and I could perform multiple femtosecond spectroscopies in his laser lab."
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#maintaining-and-improving-the-femtosecond-laser-spectrometer",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#maintaining-and-improving-the-femtosecond-laser-spectrometer",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "Maintaining and Improving the Femtosecond Laser Spectrometer",
+    "text": "Maintaining and Improving the Femtosecond Laser Spectrometer\nThe femtosecond spectroscopy system was a complicated instrument designed to perform a variety of experiments for both labs: visible pump-probe, infrared pump-probe, and two-dimensional infrared (2DIR) spectroscopies. I continually improved the system throughout my post-doc. I improved the pump-probe experiment by reducing the temporal chirp 5-fold by redesigning the supercontinuum generation module and compensating for the spatial chirp by adjusting the relative size of the pump and probe beams. Upgrades to the optical train for the infrared beam path improved the power of the pump and probe beam."
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#ultrafast-pump-probe-spectroscopy",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#ultrafast-pump-probe-spectroscopy",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "Ultrafast Pump-Probe Spectroscopy",
+    "text": "Ultrafast Pump-Probe Spectroscopy\nMost of my spectroscopic work was performing visible pump and visible or near IR probe spectroscopy on the novel materials produced by the Therien Group. Since the materials were generated for various applications and with a range of physical properties, many different models were employed to analyze the data. Most fitting was performed with OriginPro, some with the built-in fitting, but some with custom functions I wrote using the built-in scripting language. The sheer variety of projects I got to participate in was a joy."
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#femtosecond-2d-ir-spectroscopy",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#femtosecond-2d-ir-spectroscopy",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "Femtosecond 2D-IR Spectroscopy",
+    "text": "Femtosecond 2D-IR Spectroscopy\nUltrafast infrared spectroscopy is the most challenging spectroscopic technique I have ever performed. Not only are all the beams invisible, making alignment of the system a massive challenge, but ambient atmospheric components, such as humidity, strongly absorb most beams.\n\n\n\nMy main research focus was understanding non-traditional hydrogen bonds. These hydrogen bonds are postulated to be critically important for forming and stabilizing complicated protein structures. While these hydrogen bonds are much weaker than conventional ones, a protein structure can have dozens of them, leading to substantial stability of the folded protein. I studied these hydrogen bonds with my colleague Dr. Kumar in a simple model system based on the molecule formamide. Later, I worked on hydrogen bonding within the structure of the trans-membrane protein gylcophorin A."
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#selected-publications",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#selected-publications",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "Selected Publications",
+    "text": "Selected Publications\nPark, J.; Park, T.-H.; Sinks, L. E.; Deria, P.; Park, J.; Baik, M.-H.; Therien, M. J. Unusual Solvent Polarity Dependent Excitation Relaxation Dynamics of a Bis [p-Ethynyldithiobenzoato] Pd-Linked Bis [(Porphinato) Zinc] Complex. Molecular Systems Design & Engineering 2018, 3 (1), 275–284.\nFry, H. C.; Lehmann, A.; Sinks, L. E.; Asselberghs, I.; Tronin, A.; Krishnan, V.; Blasie, J. K.; Clays, K.; DeGrado, W. F.; Saven, J. G.; Therien, M. J. Computational de novo design and characterization of a protein that selectively binds a highly hyperpolarizable abiological chromophore. J. Am. Chem. Soc. 2013, 135, 13914–26.\nIshizuka, T.; Sinks, L. E.; Song, K.; Hung, S.-T.; Nayak, A.; Clays, K.; Therien, M. J. The roles of molecular structure and effective optical symmetry in evolving dipolar chromophoric building blocks to potent octopolar nonlinear optical chromophores. J. Am. Chem. Soc. 2010, 133, 2884–2896.\nDeria, Pravas; Sinks, Louise; Park, Tae-Hong; Tomezsko, Diana; Brukman, Matthew; Bonnell, Dawn; Therien, Michael, Phase Transfer Catalysts Drive Diverse Organic Solvent Solubility of Single-Walled Carbon Nanotubes Helically Wrapped by Ionic, Semi-Conducting Polymers. Nano Letters, 2010, 10(10), 4192-4199.\nKumar, K.; Sinks, L. E.; Wang, J.; Kim, Y. S.; Hochstrasser, R. M., Coupling between C-D and CO motions using dual-frequency two-dimensional IR photon echo spectroscopy. Chem. Phys. Lett. 2006, 432 (1-3), 122-27.\nDuncan, T. V.; Susumu, K.; Sinks, L. E.; Therien, M. J., Exceptional Near-Infrared Fluorescence Quantum Yields and Excited-State Absorptivity of Highly Conjugated Porphyrin Arrays. J. Am. Chem. Soc. 2006, 128 (28), 9000-01."
+  },
+  {
+    "objectID": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#selected-posters-and-presentations",
+    "href": "portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html#selected-posters-and-presentations",
+    "title": "Advanced Femtosecond Spectroscopy Techniques",
+    "section": "Selected Posters and Presentations",
+    "text": "Selected Posters and Presentations\nSinks, L. E.; Frail, P. R.; Therien, M. J. SYMPOSIUM LECTURES-Photophysics of Porphyrins in Solution and in Films. Journal of Porphyrins and Phthalocyanines 2006, 10 (4–6), 399–399 presented at the International Conference on Porphyrins and Phthalocyanines Rome, Italy July 2006\n\n“Visible Pump/ IR Probe Technique”, 1st Annual Ultrafast Spectroscopy Workshop Sarasota, FL January 2010"
   }
 ]

@@ -46,7 +46,7 @@ I collaborated with multiple groups at the University of Pennsylvania on the pro
 ::: {#fig-cells layout-ncol="2"}
 ![Bright Field Image of HeLa cells](cell.jpg){#fig-cell fig-alt="A brightfield image of a healthy triangular cell in the center and a dead or blebbed cell in the corner"}
 
-![Phosphorescence Image of  HeLa cells](cell_phosphorescence.jpg){#fig-cell-phos fig-alt="Both cells glow white. The healthy cell has a dark spot in the center where the nucleus is"}
+![Phosphorescence Image of HeLa cells](cell_phosphorescence.jpg){#fig-cell-phos fig-alt="Both cells glow white. The healthy cell has a dark spot in the center where the nucleus is"}
 
 Bright-field and Phosphorescent Images of HeLa cells. Probe loading was via microporation. Probe appears not to enter the nucleus.
 :::
