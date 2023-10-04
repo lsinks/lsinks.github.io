@@ -1061,6 +1061,97 @@
     "href": "portfolio.html",
     "title": "Portfolio",
     "section": "",
-    "text": "Nanowires at USNano LLC\n\n\n\n\n\nSynthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks\n\n\n\n\n \n\n\n\n\nNo matching items"
+    "text": "Nanowires at USNano LLC\n\n\n\n\n\nSynthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nPhosphorescence Lifetime Imaging\n\n\n\n\n\nDevelopment of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.\n\n\n\n\n \n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html",
+    "title": "Nanowires at USNano LLC",
+    "section": "",
+    "text": "US Nano was a nanomaterials start-up working on producing printed electronics. The work consisted of scaling up the synthesis of semiconducting nanowires, formulating nanowire inks, and creating various printed electronic devices using these inks. Introduction of applied statistical methods such as Design of Experiments (DOE) and statistical process control accelerated development across all facets of the work."
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#scale-up-of-nanowire-synthesis",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#scale-up-of-nanowire-synthesis",
+    "title": "Nanowires at USNano LLC",
+    "section": "Scale-up of Nanowire Synthesis",
+    "text": "Scale-up of Nanowire Synthesis\nUS Nano developed a robust process for large-scale manufacturing of inorganic semiconductor nanowires. While various laboratory scale methods exist, they tend to have high materials cost, produce very small quantities (milligrams) of product, and do not scale well.\n\n\n\nWe successfully reduced the materials cost 140-fold. We improved the reliability of the synthesis, thus allowing a scale-up of nanowire production to gram scale. This method was robust and used to produce various semiconductor compositions. DOE methods such as fractional factorial design and response surface methodology allowed us to vary multiple predictors at once and iterate to new materials 3X faster than the initial work using one predictor/factor at a time experimentation."
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#ink-formulation-and-printing",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#ink-formulation-and-printing",
+    "title": "Nanowires at USNano LLC",
+    "section": "Ink Formulation and Printing",
+    "text": "Ink Formulation and Printing\nThe resulting nanowires were incorporated into functional inks for printed/flexible electronics. In addition to DOE-based ink formulation projects, quality assurance measures such as statistical process control were implemented to keep our nanomaterials printer fully operational.\n\n\n\nExperimental inks can deposit residue on the inkjet nozzle that isn’t easily detected. Running regular jetting tests with known inks can determine when the system performance is starting to degrade, even when the residue or build-up is undetectable by eye.\nJetting tests involve collecting thousands of jetting images and analyzing the drop speed and velocity for deviation from normal. Home-written Excel VBA macros reduced analysis time from hours to under five minutes, allowing the tests to run more frequently."
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#nanowire-devices",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#nanowire-devices",
+    "title": "Nanowires at USNano LLC",
+    "section": "Nanowire Devices",
+    "text": "Nanowire Devices\nPrinting electronics allows for an almost infinite number of device configurations since the cost of prototyping is minimal. A prototype printed photosensor was produced as a demonstration. The demonstration device validates that inorganic semiconducting nanowires can be incorporated into flexible/printed electronics using standard plastic substrates and commercial printing methods. The technology developed in this project will enable the creation of a variety of additional devices on various substrates, including flexible films, such as plastics and metal foils, in addition to conventional rigid substrates, such as glass or semiconductor wafers. We have successfully printed our semiconductor inks on paper, plastics, and metal foils.\n\n\n\nBy iterating through designs, we produced a device with a million-fold better photocurrent than the initial simple gap devices. Again, DOE methods allowed us to quickly hone in on optimal designs without testing every configuration."
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#patents-and-papers",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#patents-and-papers",
+    "title": "Nanowires at USNano LLC",
+    "section": "Patents and Papers",
+    "text": "Patents and Papers\nApparatus and methods for continuous flow synthesis of semiconductor nanowires, US9306110B2\nSynthesis of CdSe/ZnS core/shell semiconductor nanowires, US9627200B2\nPetchsang N, McDonald MP, Sinks LE, Kuno M. Light induced nanowire assembly: the electrostatic alignment of semiconductor nanowires into functional macroscopic yarns. Adv Mater. 2013 Jan 25;25(4):601-5. doi: 10.1002/adma.201202722. Epub 2012 Oct 2. PMID: 23027517."
+  },
+  {
+    "objectID": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#press",
+    "href": "portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html#press",
+    "title": "Nanowires at USNano LLC",
+    "section": "Press",
+    "text": "Press\nNanowerk Blog, Assembling functional nanowire yarns with light\nFlorida High Tech Corridor 2016 Faces of Technology.\nPrint article, p. 38: http://usnanollc.com/wp-content/uploads/2016/04/FHT-2016-compressed.pdf\nVideo Interview:"
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "",
+    "text": "The Vinogradov Lab at the University of Pennsylvania is a multi-disciplinary group that develops new molecules and instrumentation for analyte detection and imaging. My work focused on developing a new two-photon lifetime imaging microscopy techniques and photophysical characterization of new probe molecules."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#development-of-two-photon-phosphorescence-lifetime-imaging-microscope",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#development-of-two-photon-phosphorescence-lifetime-imaging-microscope",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "Development of Two-Photon Phosphorescence Lifetime Imaging Microscope",
+    "text": "Development of Two-Photon Phosphorescence Lifetime Imaging Microscope\nI coupled ultrafast laser spectroscopy techniques with two-photon microscopy to create a novel phosphorescence lifetime imaging microscope. This method allows the optical sectioning of 3D samples while also obtaining information about the local chemical environment. Using this instrument, I obtained the first 3D phosphorescent lifetime and intensity images. These images were of an oxygen-sensing probe encapsulated in a polymersome. Phosphorescent molecules glow more or less intensely based on the amount of oxygen in the area, so they can be used to measure local oxygen concentrations.\n\n\n\nTwo-photon microscopy achieves super-resolution through a contracted point spread function of excitation compared to one-photon resolution. While the resolution was fairly well understood for fluorescent probes, the novel phosphorescent probes developed by the Vinogradov lab had additional properties (emission lifetimes that are several orders of magnitude longer than for fluorophores) that could impact resolution. I simulated the point spread function with Matlab to determine the resolution under various operating conditions.\n\n\n\n\n\n\n\n(a) One Photon Excitation Volume\n\n\n\n\n\n\n\n(b) Two Photon Excitation Volume\n\n\n\n\nFigure 1: Excitation volumes under one and two photon absorption regimes. Graphs are of the XZ plane."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#general-photophysical-studies-of-novel-probe-molecules",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#general-photophysical-studies-of-novel-probe-molecules",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "General Photophysical Studies of Novel Probe Molecules",
+    "text": "General Photophysical Studies of Novel Probe Molecules\nI measured various photophysical properties of probe molecules using both femtosecond spectroscopy and conventional steady-state techniques for absorption and emission. In addition, I measured the photostability of many probes- the best probe is no good if it is degraded by room light before you even get to the microscope!\n\n\n\nIn photophysics, models for various processes have often been derived mathematically from fundamental principles or experimentally validated in other systems. Fitting the data then becomes simpler since you only have to fit against a few equations. However, fitting parameters are related to the intrinsic properties of molecules and materials, so it is vital to ensure you are fitting with the correct model. Sometimes, a poorer fit to a more scientifically defensible model is more correct than a better fit to an invalid model. Lots of cross-checking and additional experimentation are needed beyond just fitting."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#in-vitro-imaging",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#in-vitro-imaging",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "In Vitro Imaging",
+    "text": "In Vitro Imaging\nThe probe molecules were developed for in vitro and in vivo use. Lots of fundamental questions about cellular functioning remain unanswered due to the lack of high-resolution data. Is there an oxygen gradient within a cell as the mitochondria consume oxygen? How exactly do zinc levels change as insulin is released?\nI collaborated with multiple groups at the University of Pennsylvania on the problem of loading our probes into the cell. At one point, I collaborated with research groups from every experimental school at Penn- Arts & Science, Medicine, Veterinary Medicine, and Engineering! We worked with a variety of cell lines- HeLa, fibroblasts, and macrophages. I did much of the cell culture myself. Various loading techniques were tested, such as microporation, transfection agents, scrape loading, endocytosis of vesicles, and polymersomes decorated with transfection agents. I would then characterize the probe within the cell using Two-Photon Phosphorescent Lifetime Imaging. Generally, the molecules behaved well, but often, the loading process led to many dead cells.\n\n\n\n\n\n\n\n(a) Bright Field Image of HeLa cells\n\n\n\n\n\n\n\n(b) Phosphorescence Image of HeLa cells\n\n\n\n\nFigure 2: Bright-field and Phosphorescent Images of HeLa cells. Probe loading was via microporation. Probe appears not to enter the nucleus."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#center-for-oxygen-microscopic-imaging-university-of-aarhus",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#center-for-oxygen-microscopic-imaging-university-of-aarhus",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "Center for Oxygen Microscopic Imaging University of Aarhus",
+    "text": "Center for Oxygen Microscopic Imaging University of Aarhus\nI spent two months at the University of Aarhus in Denmark working on singlet oxygen imagining. I also studied the cytotoxic effects of fluorescent probes developed in the Vinogradov lab. I learned and performed patch-clamp technique (whole-cell electrophysiological measurements) to study the effect of localized reactive oxygen species generation on ion channel function in mouse neurons. In addition, I shared my simulations on excitation volume and resolution, allowing them to understand the trade-off between resolution and signal-to-noise. Many experiments were performed at higher powers, leading to better signal to noise but degraded resolution. The simulations helped clarify exactly how much resolution was lost."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#selected-publications",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#selected-publications",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "Selected Publications",
+    "text": "Selected Publications\nDevor, A., Sakadžić, S; Yaseen, M. A.; Roussakis,E.; Tian, P.; Slovin, H.; Vanzetta, I.; Teng, I.; Saisan, P. A.; Sinks, L. E.; Dale, A. M.; Vinogradov, S.V.; Boas, D.A. Functional imaging of cerebral oxygenation with intrinsic optical contrast and phosphorescent probes, Optical Imaging of Neocortical Dynamics 2014\nPedersen, B. W.; Sinks, L. E.; Breitenbach, T.; Schack, N. B.; Vinogradov, S. A.; Ogilby, P. R. Single cell responses to spatially controlled photosensitized production of extracellular singlet oxygen. Photochemistry and Photobiology 2011, 87, 1077–1091.\nSinks, L. E.; Robbins, G. P.; Roussakis, E.; Troxler, T.; Hammer, D. A.; Vinogradov, S. A., Two-Photon Microscopy of Oxygen: Polymersomes as Probe Carrier Vehicles. J. Phys. Chem. B, 2010, 114(45), 14373-14382.\nSinks, L. E.; Roussakis, E.; Esipova Tatiana, V.; Vinogradov Sergei, A., Synthesis and calibration of phosphorescent nanoprobes for oxygen imaging in biological systems. Journal of visualized experiments : JoVE 2010, (37)."
+  },
+  {
+    "objectID": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#selected-posters-and-presentations",
+    "href": "portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html#selected-posters-and-presentations",
+    "title": "Phosphorescence Lifetime Imaging",
+    "section": "Selected Posters and Presentations",
+    "text": "Selected Posters and Presentations\nSinks, L. E.; Finikova, O. S.; Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes. In Novel Techniques in Microscopy; Optical Society of America, 2009 presented at the Optical Society of America Spring Congress: Novel Techniques in Microscopy Vancouver, Canada (talk)\n\nSinks, L. E. and Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes at Howard Hughes Medical Institute Janelia Research Campus’s Symposium on Multiphoton Imaging: The Next 6X10^23 Femtoseconds, April 3 - 6, 2011"
   }
 ]

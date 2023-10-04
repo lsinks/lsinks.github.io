@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Development of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.">
+
+<title>Louise E. Sinks - Phosphorescence Lifetime Imaging</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: white;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: white;
+background-image: url(Image001_ch00a.jpg);
+background-size: cover;
+      }
+</style>
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - Phosphorescence Lifetime Imaging">
+<meta name="twitter:description" content="Development of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.">
+<meta name="twitter:image" content="https://lsinks.github.io/portfolio/Phosphorescence_Lifetime_Imaging/one_photon_psf.jpg">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html" rel="" target="">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me/ CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../currentprojects.html" rel="" target="">
+ <span class="menu-text">Current Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Phosphorescence Lifetime Imaging</h1>
+                  <div>
+        <div class="description">
+          Development of novel oxygen imaging technique based on two-photon excitation microscopy. Modeling kinetic events and simulation of excitation volume with Matlab.
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#development-of-two-photon-phosphorescence-lifetime-imaging-microscope" id="toc-development-of-two-photon-phosphorescence-lifetime-imaging-microscope" class="nav-link active" data-scroll-target="#development-of-two-photon-phosphorescence-lifetime-imaging-microscope">Development of Two-Photon Phosphorescence Lifetime Imaging Microscope</a></li>
+  <li><a href="#general-photophysical-studies-of-novel-probe-molecules" id="toc-general-photophysical-studies-of-novel-probe-molecules" class="nav-link" data-scroll-target="#general-photophysical-studies-of-novel-probe-molecules">General Photophysical Studies of Novel Probe Molecules</a></li>
+  <li><a href="#in-vitro-imaging" id="toc-in-vitro-imaging" class="nav-link" data-scroll-target="#in-vitro-imaging">In Vitro Imaging</a></li>
+  <li><a href="#center-for-oxygen-microscopic-imaging-university-of-aarhus" id="toc-center-for-oxygen-microscopic-imaging-university-of-aarhus" class="nav-link" data-scroll-target="#center-for-oxygen-microscopic-imaging-university-of-aarhus">Center for Oxygen Microscopic Imaging University of Aarhus</a></li>
+  <li><a href="#selected-publications" id="toc-selected-publications" class="nav-link" data-scroll-target="#selected-publications">Selected Publications</a></li>
+  <li><a href="#selected-posters-and-presentations" id="toc-selected-posters-and-presentations" class="nav-link" data-scroll-target="#selected-posters-and-presentations">Selected Posters and Presentations</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+<p>The <a href="https://vinogradovlab.org/">Vinogradov Lab</a> at the University of Pennsylvania is a multi-disciplinary group that develops new molecules and instrumentation for analyte detection and imaging. My work focused on developing a new two-photon lifetime imaging microscopy techniques and photophysical characterization of new probe molecules.</p>
+<section id="development-of-two-photon-phosphorescence-lifetime-imaging-microscope" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="development-of-two-photon-phosphorescence-lifetime-imaging-microscope">Development of Two-Photon Phosphorescence Lifetime Imaging Microscope</h2>
+<p>I coupled ultrafast laser spectroscopy techniques with two-photon microscopy to create a novel phosphorescence lifetime imaging microscope. This method allows the optical sectioning of 3D samples while also obtaining information about the local chemical environment. Using this instrument, I obtained the first 3D phosphorescent lifetime and intensity images. These images were of an oxygen-sensing probe encapsulated in a polymersome. Phosphorescent molecules glow more or less intensely based on the amount of oxygen in the area, so they can be used to measure local oxygen concentrations.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="3D_polymersome.png" class="img-fluid" alt="a 3D image of a large white oval and a smaller less bright sphere."></p>
+</div></div><p>Two-photon microscopy achieves super-resolution through a contracted point spread function of excitation compared to one-photon resolution. While the resolution was fairly well understood for fluorescent probes, the novel phosphorescent probes developed by the Vinogradov lab had additional properties (emission lifetimes that are several orders of magnitude longer than for fluorophores) that could impact resolution. I simulated the point spread function with Matlab to determine the resolution under various operating conditions.</p>
+<div id="fig-psf" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-onephoton" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="one_photon_psf.jpg" class="img-fluid figure-img" alt="The PSF for one photon excitation showing a large z extent and multiple lobes and structure that would make the airy disk in the xy plane" data-ref-parent="fig-psf"></p>
+<figcaption class="figure-caption">(a) One Photon Excitation Volume</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-twophoton" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="two_photon_psf.jpg" class="img-fluid figure-img" alt="The PSF for two photon excitation showing a compact oval in z direction" data-ref-parent="fig-psf"></p>
+<figcaption class="figure-caption">(b) Two Photon Excitation Volume</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Excitation volumes under one and two photon absorption regimes. Graphs are of the XZ plane.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="general-photophysical-studies-of-novel-probe-molecules" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="general-photophysical-studies-of-novel-probe-molecules">General Photophysical Studies of Novel Probe Molecules</h2>
+<p>I measured various photophysical properties of probe molecules using both femtosecond spectroscopy and conventional steady-state techniques for absorption and emission. In addition, I measured the photostability of many probes- the best probe is no good if it is degraded by room light before you even get to the microscope!</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><img src="stability.png" class="img-fluid" alt="The line graph of the intensity of a molecule's emission over time with and without oxygen. The oxygenated sample degrades faster"></p>
+</div></div><p>In photophysics, models for various processes have often been derived mathematically from fundamental principles or experimentally validated in other systems. Fitting the data then becomes simpler since you only have to fit against a few equations. However, fitting parameters are related to the intrinsic properties of molecules and materials, so it is vital to ensure you are fitting with the correct model. Sometimes, a poorer fit to a more scientifically defensible model is more correct than a better fit to an invalid model. Lots of cross-checking and additional experimentation are needed beyond just fitting.</p>
+</section>
+<section id="in-vitro-imaging" class="level2">
+<h2 class="anchored" data-anchor-id="in-vitro-imaging">In Vitro Imaging</h2>
+<p>The probe molecules were developed for in vitro and in vivo use. Lots of fundamental questions about cellular functioning remain unanswered due to the lack of high-resolution data. Is there an oxygen gradient within a cell as the mitochondria consume oxygen? How exactly do zinc levels change as insulin is released?</p>
+<p>I collaborated with multiple groups at the University of Pennsylvania on the problem of loading our probes into the cell. At one point, I collaborated with research groups from every experimental school at Penn- Arts &amp; Science, Medicine, Veterinary Medicine, and Engineering! We worked with a variety of cell lines- HeLa, fibroblasts, and macrophages. I did much of the cell culture myself. Various loading techniques were tested, such as microporation, transfection agents, scrape loading, endocytosis of vesicles, and polymersomes decorated with transfection agents. I would then characterize the probe within the cell using Two-Photon Phosphorescent Lifetime Imaging. Generally, the molecules behaved well, but often, the loading process led to many dead cells.</p>
+<div id="fig-cells" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-cell" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="cell.jpg" class="img-fluid figure-img" alt="A brightfield image of a healthy triangular cell in the center and a dead or blebbed cell in the corner" data-ref-parent="fig-cells"></p>
+<figcaption class="figure-caption">(a) Bright Field Image of HeLa cells</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-cell-phos" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="cell_phosphorescence.jpg" class="img-fluid figure-img" alt="Both cells glow white. The healthy cell has a dark spot in the center where the nucleus is" data-ref-parent="fig-cells"></p>
+<figcaption class="figure-caption">(b) Phosphorescence Image of HeLa cells</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Bright-field and Phosphorescent Images of HeLa cells. Probe loading was via microporation. Probe appears not to enter the nucleus.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="center-for-oxygen-microscopic-imaging-university-of-aarhus" class="level2">
+<h2 class="anchored" data-anchor-id="center-for-oxygen-microscopic-imaging-university-of-aarhus">Center for Oxygen Microscopic Imaging University of Aarhus</h2>
+<p>I spent two months at the University of Aarhus in Denmark working on singlet oxygen imagining. I also studied the cytotoxic effects of fluorescent probes developed in the Vinogradov lab. I learned and performed patch-clamp technique (whole-cell electrophysiological measurements) to study the effect of localized reactive oxygen species generation on ion channel function in mouse neurons. In addition, I shared my simulations on excitation volume and resolution, allowing them to understand the trade-off between resolution and signal-to-noise. Many experiments were performed at higher powers, leading to better signal to noise but degraded resolution. The simulations helped clarify exactly how much resolution was lost.</p>
+</section>
+<section id="selected-publications" class="level2">
+<h2 class="anchored" data-anchor-id="selected-publications">Selected Publications</h2>
+<p>Devor, A., Sakadžić, S; Yaseen, M. A.; Roussakis,E.; Tian, P.; Slovin, H.; Vanzetta, I.; Teng, I.; Saisan, P. A.; <strong>Sinks, L. E.</strong>; Dale, A. M.; Vinogradov, S.V.; Boas, D.A. <a href="https://escholarship.org/content/qt8cj3t8z0/qt8cj3t8z0.pdf">Functional imaging of cerebral oxygenation with intrinsic optical contrast and phosphorescent probes</a>, Optical Imaging of Neocortical Dynamics 2014</p>
+<p>Pedersen, B. W.; <strong>Sinks, L. E.</strong>; Breitenbach, T.; Schack, N. B.; Vinogradov, S. A.; Ogilby, P. R. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3166418/">Single cell responses to spatially controlled photosensitized production of extracellular singlet oxygen</a>. Photochemistry and Photobiology 2011, 87, 1077–1091.</p>
+<p><strong>Sinks, L. E.</strong>; Robbins, G. P.; Roussakis, E.; Troxler, T.; Hammer, D. A.; Vinogradov, S. A., <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2939231/">Two-Photon Microscopy of Oxygen: Polymersomes as Probe Carrier Vehicles.</a> J. Phys. Chem. B, 2010, 114(45), 14373-14382.</p>
+<p><strong>Sinks, L. E.</strong>; Roussakis, E.; Esipova Tatiana, V.; Vinogradov Sergei, A., <a href="https://www.jove.com/t/1731/synthesis-calibration-phosphorescent-nanoprobes-for-oxygen-imaging">Synthesis and calibration of phosphorescent nanoprobes for oxygen imaging in biological systems</a>. Journal of visualized experiments : JoVE 2010, (37).</p>
+</section>
+<section id="selected-posters-and-presentations" class="level2">
+<h2 class="anchored" data-anchor-id="selected-posters-and-presentations">Selected Posters and Presentations</h2>
+<p><strong>Sinks, L. E.</strong>; Finikova, O. S.; Vinogradov, S. A. <a href="https://opg.optica.org/abstract.cfm?uri=NTM-2009-NMC7">Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes</a>. In Novel Techniques in Microscopy; Optical Society of America, 2009 presented at the Optical Society of America Spring Congress: Novel Techniques in Microscopy Vancouver, Canada <strong>(talk)</strong></p>
+<iframe width="780" height="500" src="Sinks_Oxygen microscopy_2009.pdf" title="Microscopy Presentation"></iframe>
+<p><strong>Sinks, L. E.</strong> and Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes at Howard Hughes Medical Institute Janelia Research Campus’s Symposium on <a href="https://www.janelia.org/you-janelia/conferences/multiphoton-imaging-next-6x1023-femtoseconds">Multiphoton Imaging: The Next 6X10^23 Femtoseconds</a>, April 3 - 6, 2011</p>
+<iframe width="780" height="500" src="Sinks_HHMI.pdf" title="Microscopy Presentation"></iframe>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
