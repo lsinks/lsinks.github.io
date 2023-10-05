@@ -2,9 +2,7 @@
 title: "About Me/ CV"
 ---
 
-I am a Physical Chemist with over ten years of experience working in multidisciplinary teams in various fields. I am a highly experienced writer and have published numerous peer-reviewed articles and papers on these topics. I previously ran the day-to-day operations of a small nanotechnology start-up.
-
-More details about my background below if you are interested.
+More details about my background below if you are interested. Links in the employer name will take you to a more narrative write up.
 
 ## TECHNICAL SKILLS
 
@@ -14,111 +12,137 @@ R Programming, MATLAB, VBA, Python, SQL, Excel/ Google Sheets, Stat-Ease, Tablea
 
 **Freelance Technical Consultant** (part-time), 2017-present
 
--   Prepares technical responses to Patent Office inquiries
--   Advises on the technical merit of patent claims
--   Drafts patent claims to improve strategic value of the patent
--   Evaluates the technical aspects of competitors' IP portfolio
+-   Prepares technical responses to US and foreign Patent Office inquiries and works with the patent lawyer to get claims approved
 
-**US Nano LLC**
+-   Advises on the technical and business merit of patent claims and drafts patent claims to improve the strategic value of the patent
 
-Vice President, 2012-2017
+[**US Nano LLC**](https://lsinks.github.io/portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html)
 
-Senior Scientist, 2011-2012
+**Vice President,** 2012-2017
+
+**Senior Scientist,** 2011-2012
 
 Project Management
 
--   Directed US Nano's research activities to develop semiconductor nanowire technologies and managed team of 5-10 technical and support staff
--   Resulted in two US patents for scalable synthesis of nanowires
--   Wrote and managed grants to fund portions of research
--   Awarded multiple NSF SBIR grants for \~\$924,000
+-   Wrote and managed grants to fund research, leading to \~\$924,000 of NSF SBIR grants (non-dilutive funding)
 
-Marketing & Business Development efforts
-
--   Generated copy for white papers, company website, and other promotional materials
--   Generated and presented pitches to Angels, VCs, and potential industrial partners
--   Interviewed 100 potential customers to understand needs around nanowire technology
+-   Directed US Nano's research activities to develop semiconductor nanowire technologies and managed a team of 5-10 technical and support staff, resulting in two US patents for scalable synthesis of nanowires and the reduction of the materials cost by 140-fold
 
 Technical & Analytical Work
 
--   Designed and Analyzed experiments using DOE (Design of Experiments) principles using specialized software (Stat-Ease) or advanced Excel functionality (Pivot tables or wrote custom VBA macros) over a wide range of areas (ink formulation, nanomaterial synthesis, and electrical device design)
+-   Introduced applied statistical methods such as DOE (Design of Experiments), leading to such improvements as 3-fold faster development of new materials and a one million-fold improvement in printed photosensor performance
 
--   Developed financial models for various business scenarios
+-   Implemented Statistical Process Control on manufacturing activities, which allowed detection of issues earlier in the workflow, saving \~30 person-hours and thousands of dollars in materials cost per prevented mis-run
 
--   Implemented Statistical Process Control on manufacturing activities to increase up-time
+-   Wrote custom Excel VBA macros to reduce analysis and reporting time for specific experiments from hours to under five minutes
 
-**Prof. Sergei A. Vinogradov, University of Pennsylvania**
+-   Designed Excel dashboards with pivot tables and graphs, allowing the scientific team to data mine all experiments performed by the company, often leading to insights beyond the planned experimental results
+
+-   Formulated Nanowire inks using experimental designs based on fractional factor designs and Hansen solubility parameters to create ink-jet inks that were higher performing than commercially available carbon nanotube analogs.
+
+-   Built a photo/electrical test station, performed device testing, and wrote Matlab code to automatically analyze the data, streamlining the process and reducing analysis errors
+
+Marketing & Business Development efforts
+
+-   Generated copy and visualizations for white papers, company website, and other promotional materials
+
+-   Developed and presented pitches to Angels, VCs, and potential industrial partners
+
+-   Interviewed \~50 potential customers through the Michigan I-Corps program to understand needs around nanowire technology
+
+[**Prof. Sergei A. Vinogradov, University of Pennsylvania**](https://lsinks.github.io/portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html)
 
 Postdoctoral Research Fellow, 2008-2011
 
-Developed new two-photon lifetime imaging microscopy technique for quantifying oxygen content in cells. Validated and characterized new fluorescent or phosphorescent probes for oxygen, zinc, and pH sensing. Performed cell culture work to maintain cells used in microscopy. Performed various assays to determine the viability of cells doped with the probe molecules. Wrote MATLAB code to model, simulate, and fit phosphorescence lifetime and intensity data.
+-   Developed a new two-photon lifetime imaging microscopy technique for quantifying oxygen content in cells and produced the first 3D phosphorescence lifetime and intensity images
 
-**Center for Oxygen Microscopic Imaging University of Aarhus**
+-   Wrote Matlab code to simulate the microscope's point spread function to understand the relationship between resolution and signal-to-noise ratio
 
-Visiting Researcher July-August 2009
+-   Validated and characterized new fluorescent or phosphorescent oxygen, zinc, and pH sensing probes
 
-Tested cytotoxic effects of fluorescent probes developed in Vinogradov lab. Performed singlet oxygen microscopy. Learned and performed patch-clamp technique (whole-cell electrophysiological measurements) to study the effect of localized reactive oxygen species generation on ion channel function in mouse neurons.
+-   Wrote Matlab code to fit data and extract photophysical parameters such as excited state lifetimes, two-photon absorption cross-sections, Stern-Volmer constants, and quantum yields of emission
 
-**Prof. R. Hochstrasser & Prof. M. J. Therien, University of Pennsylvania**
+-   Performed cell culture work to maintain cells (HeLa, macrophages, fibroblasts) used in microscopy
 
-NIH National Research Service Award Postdoctoral Fellow , 2005-2008
+-   Collaborated with multiple research groups to explore methods of loading probe molecules into cells, such as microporation, transfection agents, scrape loading, and endocytosis of vesicles
 
-Used 2D-IR techniques to probe the local structure of trans-membrane proteins and Vis-pump/ IR-probe ultra-fast techniques to probe proton-coupled electron transfer.
+-   Performed various assays to determine the viability of cells after loading with the probe molecules and under experimental conditions such as irradiation with light
+
+[**Center for Oxygen Microscopic Imaging University of Aarhus**](https://lsinks.github.io/portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html), July-August 2009
+
+Visiting Researcher
+
+-   Tested cytotoxic effects of fluorescent probes developed in Vinogradov lab
+
+-   Performed singlet oxygen microscopy to study reactive oxygen species
+
+-   Learned and performed patch-clamp technique (whole-cell electrophysiological measurements) to study the effect of localized reactive oxygen species generation on ion channel function in mouse neurons
+
+[**Prof. R. Hochstrasser & Prof. M. J. Therien, University of Pennsylvania**](https://lsinks.github.io/portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html)
+
+NIH National Research Service Award Postdoctoral Fellow, 2005-2008
 
 Postdoctoral Research Fellow, 2004-2005
 
-Utilized IR- pump/ probe, VIS- pump/probe, 2DIR and VIS-pump/ IR-probe ultra-fast techniques to study the influence of environment on biologically relevant processes such as proton-coupled electron transfer. Environments ranged from simple solvents to complex protein hosts. Use visible pump-probe techniques to study highly conjugated porphyrin arrays. Built VIS-pump/IR-probe equipment. Simulated and fit 2DIR and femtosecond lifetime data with MATLAB.
+-   Maintained and improved femtosecond spectrometer, including redesigning modules to reduce temporal chirp 6-fold and building a VIS pump/ IR-probe module
+
+-   Utilized IR-pump/ probe, VIS-pump/probe, 2DIR, and VIS-pump/ IR-probe ultra-fast techniques to study the influence of the environment on biologically relevant processes such as proton-coupled electron transfer.
+
+-   Assisted in grant writing for group funding and presented research overviews to external review committees during audits and evaluations.
+
+-   Modeled various photophysical processes using OriginPro and Matlab
 
 **Ford Motor Company**, Summers 1998, 1999
 
 Professional/Technical Trainee (Intern)
 
-Contributed to the development of a more sensitive and durable pressure sensitive paint (PSP) for aerodynamic applications. Research resulted in two Ford confidential papers for internal circulation only and Ford filed invention disclosure papers on one of the polymer systems. Research consisted of development of appropriate polymer base, identification of chromophores with high sensing potential, and design and implementation of standards in manufacturing and performance to effectively evaluate PSPs. Assisted in automation of lab. Helped implement Pressure Sensitive Paint measurement technique in a Ford wind tunnel. Demonstrated the technology both internally and to collaborators from the USAF and Boeing in live wind tunnel tests.
+-   Contributed to developing a more sensitive and durable pressure-sensitive paint (PSP) for aerodynamic applications, resulting in two Ford confidential papers and an invention disclosure.
 
-## **EDUCATION**
+-   Researched appropriate polymer bases, identified chromophores with high sensing potential, and designed and implemented standards to evaluate PSPs.
+
+-   Assisted in constructing and automating an emission spectrometer that could apply various gas mixtures to the sample.
+
+-   Helped implement Pressure Sensitive Paint measurement technique in a Ford wind tunnel and demonstrated the system to United States Air Force and Boeing collaborators.
+
+## EDUCATION
 
 **Northwestern University, Evanston, IL**
 
 Thesis Advisor: Prof. M. R. Wasielewski
 
-PhD in Chemistry
+PhD in Chemistry, Dissertation Title: Role of Environment on Photo-induced Electron Transfer
 
-● Dissertation Title: Role of Environment on Photo-induced Electron Transfer
-
-MS in Chemistry
-
-● Thesis Title: Photo-induced Electron Transfer of Donor-Acceptor Molecules in a Liquid Crystalline Environment
+MS in Chemistry, Thesis Title: Photo-induced Electron Transfer of Donor-Acceptor Molecules in a Liquid Crystalline Environment
 
 Researched solvent/media effects on photo-induced electron transfer in organic covalent donor-acceptor systems as well as the role of conformational gating on electronic coupling of donors and acceptors. Studied impact on π- π driven self-assembly on electron and energy transfer within the nanostructure. Designed, constructed, and maintained two femtosecond transient absorption laser systems. Synthesized donor-acceptor molecules.
 
 **University of Virginia, Charlottesville, VA**
 
-● Intermediate Honors
+-   Intermediate Honors
 
-● Echols Scholar (College of Arts and Sciences honors program)
+-   Echols Scholar (College of Arts and Sciences honors program)
 
-● Major: BS in Chemistry with Honors, BA in Physics Minor: Math
+-   Major: BS in Chemistry with Honors, BA in Physics Minor: Math
 
-## **GRANTS AND AWARDS**
+## GRANTS AND AWARDS
 
-● NSF SBIR Phase II: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Photosensors (April 2014- June 2016)
+-   NSF SBIR Phase II: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Photosensors (April 2014- June 2016)
 
-● NSF SBIR Phase IB: Supplemental Funding to "Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics." (January 2013- June 2013)
+-   NSF SBIR Phase IB: Supplemental Funding to "Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics." (January 2013- June 2013)
 
-● NSF SBIR Phase I: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics. (June 2012-December 2012)
+-   NSF SBIR Phase I: Innovations in Nanowire Manufacturing: Large Scale Synthesis of Inorganic Semiconducting Nanowires and Application to Printed Electronics. (June 2012-December 2012)
 
-● NIH National Research Service Award Postdoctoral Fellowship (January 2005- June 2007)
+-   NIH National Research Service Award Postdoctoral Fellowship (January 2005- June 2007)
 
-## **PATENTS**
+## PATENTS
 
-● Synthesis of CdSe/ZnS Core/Shell Semiconductor Nanowires, US Patent 9,627,299. Issued Apr 18, 2017
+-   Synthesis of CdSe/ZnS Core/Shell Semiconductor Nanowires, US Patent 9,627,299. Issued Apr 18, 2017
 
-● Apparatus and Methods for Continuous Flow Synthesis of Semiconductor Nanowires, US 9,306,110. Issued Apr 5, 2016
+-   Apparatus and Methods for Continuous Flow Synthesis of Semiconductor Nanowires, US 9,306,110. Issued Apr 5, 2016
 
 ## CERTIFICATIONS
 
-DataCamp Data Scientist Professional Certificate
-
-Google Data Analytics Certificate
+DataCamp Data Scientist Professional Certificate, Google Data Analytics Certificate
 
 ## PORTFOLIO
 
@@ -126,27 +150,21 @@ Peer reviewed papers: [Google Scholar](https://scholar.google.com/citations?hl=e
 
 Tableau: <https://public.tableau.com/app/profile/louise.sinks>
 
-Coding Portfolio: <https://lsinks.github.io/>
+Website: <https://lsinks.github.io/>
 
-## **PRESS**
+## PRESS
 
-Florida High Tech Corridor 2016 Faces of Technology.
+Florida High Tech Corridor 2016 Faces of Technology
 
-Print article, p. 38: <http://usnanollc.com/wp-content/uploads/2016/04/FHT-2016-compressed.pdf>
+[Print article, p. 38](http://usnanollc.com/wp-content/uploads/2016/04/FHT-2016-compressed.pdf)
 
-Video Interview:
+[Video Interview](https://www.youtube.com/watch?v=ypLwoX6FvZs)
 
-<https://www.youtube.com/watch?v=ypLwoX6FvZs>
+[Biz(941)'s 2015 Person to Watch List](https://www.941ceo.com/articles/2015/10/30/people-to-watch-2015)
 
-Biz(941)'s 2015 Person to Watch List
+[Assembling functional nanowire yarns with light, Nanowerk Blog](http://www.nanowerk.com/spotlight/spotid=27026.php)
 
-<https://www.941ceo.com/articles/2015/10/30/people-to-watch-2015>
-
-Assembling functional nanowire yarns with light, Nanowerk Blog
-
-<http://www.nanowerk.com/spotlight/spotid=27026.php>
-
-## **SELECTED TALKS**
+## SELECTED TALKS
 
 "Visible Pump/ IR Probe Technique", 1st Annual Ultrafast Spectroscopy Workshop Sarasota, FL January 2010
 
@@ -158,7 +176,9 @@ Assembling functional nanowire yarns with light, Nanowerk Blog
 
 "Photophysics of Self-Assembled Multichromophoric Arrays", Argonne National Laboratory Center for Nanoscale Materials Seminar Series Argonne, IL July 2005
 
-## **POSTER PRESENTATIONS**
+## POSTER PRESENTATIONS
+
+Howard Hughes Medical Institute Janelia Research Campus's Symposium on Multiphoton Imaging: The Next 6X10\^23 Femtoseconds, 2011
 
 Electron Donor-Acceptor Interactions Gordon Conference in Newport, RI 2004
 
@@ -172,7 +192,7 @@ Electron Donor-Acceptor Interactions Gordon Conference in Newport, RI 2002
 
 Chicago Section of the Society of Applied Spectroscopy in Evanston, IL 2001
 
-## **PUBLICATIONS**
+## PUBLICATIONS
 
 (Collectively have more than 3200 citations, and 10 papers have over 100 citations)
 
@@ -190,7 +210,7 @@ Chicago Section of the Society of Applied Spectroscopy in Evanston, IL 2001
 
 26\. Ishizuka, T.; Sinks, L. E.; Song, K.; Hung, S.-T.; Nayak, A.; Clays, K.; Therien, M. J. The roles of molecular structure and effective optical symmetry in evolving dipolar chromophoric building blocks to potent octopolar nonlinear optical chromophores. J. Am. Chem. Soc. **2010**, 133, 2884--2896.
 
-25\. Sinks, L. E.; Roussakis, E.; Esipova, T. V.; Vinogradov, S. A. Phosphorescent Dendritic Nanoprobes for Biological Imaging of Oxygen. In *ABSTRACTS OF PAPERS OF THE AMERICAN CHEMICAL SOCIETY*; AMER CHEMICAL SOC 1155 16TH ST, NW, WASHINGTON, DC 20036 USA, **2010**, Vol. 239.
+25\. Sinks, L. E.; Roussakis, E.; Esipova, T. V.; Vinogradov, S. A. Phosphorescent Dendritic Nanoprobes for Biological Imaging of Oxygen. Abstracts of Papers of the American Chemical, **2010**, Vol. 239.
 
 24\. Deria, Pravas; Sinks, Louise; Park, Tae-Hong; Tomezsko, Diana; Brukman, Matthew; Bonnell, Dawn; Therien, Michael, Phase Transfer Catalysts Drive Diverse Organic Solvent Solubility of Single-Walled Carbon Nanotubes Helically Wrapped by Ionic, Semi-Conducting Polymers. Nano Letters, **2010**, 10(10), 4192-4199.
 
@@ -198,13 +218,13 @@ Chicago Section of the Society of Applied Spectroscopy in Evanston, IL 2001
 
 22\. Sinks, L. E.; Roussakis, E.; Esipova Tatiana, V.; Vinogradov Sergei, A., Synthesis and calibration of phosphorescent nanoprobes for oxygen imaging in biological systems. Journal of visualized experiments : JoVE **2010**, (37).
 
-21\. Sinks, L. E.; Finikova, O. S.; Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes. In *Novel Techniques in Microscopy*; Optical Society of America, **2009**.
+21\. Sinks, L. E.; Finikova, O. S.; Vinogradov, S. A. Oxygen Microscopy with Two-Photon-Enhanced Phosphorescent Nanoprobes. *Novel Techniques in Microscopy*; Optical Society of America, **2009**.
 
 20\. Giaimo, J. M.; Lockard, J. V.; Sinks, L. E.; Scott, A. M.; Wilson, T. M.; Wasielewski, M. R., Excited Singlet States of Covalently Bound, Cofacial Dimers and Trimers of Perylene-3,4:9,10-bis(dicarboximide)s. J. Phys. Chem. A **2008**, 112 (11), 2322-30.
 
 19\. Kelley, R. F.; Shin, W. S.; Rybtchinski, B.; Sinks, L. E.; Wasielewski, M. R., Photoinitiated Charge Transport in Supramolecular Assemblies of a 1,7,N,N'-Tetrakis(zinc porphyrin)-perylene-3,4:9,10-bis(dicarboximide). J. Am. Chem. Soc. **2007**, 129 (11), 3173-81.
 
-18\. Sinks, L. E.; Frail, P. R.; Therien, M. J. SYMPOSIUM LECTURES-Photophysics of Porphyrins in Solution and in Films. *Journal of Porphyrins and Phthalocyanines* **2006**, *10* (4--6), 399--399.
+18\. Sinks, L. E.; Frail, P. R.; Therien, M. J. Symposium Lectures-Photophysics of Porphyrins in Solution and in Films. *Journal of Porphyrins and Phthalocyanines* **2006**, *10* (4--6), 399--399.
 
 17\. Kumar, K.; Sinks, L. E.; Wang, J.; Kim, Y. S.; Hochstrasser, R. M., Coupling between C-D and CO motions using dual-frequency two-dimensional IR photon echo spectroscopy. Chem. Phys. Lett. **2006**, 432 (1-3), 122-27.
 
@@ -238,4 +258,4 @@ Chicago Section of the Society of Applied Spectroscopy in Evanston, IL 2001
 
 2\. Sinks, L. E.; Wasielewski, M. R., Effects of solvent and structural dynamics on electron transfer reactions of 4-Aminonaphthalene-1,8-dicarboximide donor-acceptor molecules in nematic liquid crystals and isotropic solvents. J. Phys. Chem. A **2003**, 107 (5), 611-20.
 
-1\. Andersson, M.; Sinks, L. E.; Hayes, R. T.; Zhao, Y.; Wasielewski, M. R., Bio-inspired optically controlled ultrafast molecular AND gate. Angew. Chem., Int. Ed. **2003**, 42 (27), 3139-43
+1\. Andersson, M.; Sinks, L. E.; Hayes, R. T.; Zhao, Y.; Wasielewski, M. R., Bio-inspired optically controlled ultrafast molecular AND gate. Angew. Chem., Int. Ed. **2003**, 42 (27), 3139-43.
