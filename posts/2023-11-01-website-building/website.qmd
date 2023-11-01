@@ -1,6 +1,6 @@
 ---
 title: "Thoughts on Building a Quarto Website"
-description: "Some tips and tricks for using Qaurto and RStudio to create a portfolio website and blog."
+description: "Some tips and tricks for using Quarto and RStudio to create a portfolio website and blog."
 twitter-card:
   image: "thumbnail.jpg"
 author:
