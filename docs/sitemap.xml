@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-11-01T18:07:12.514Z</lastmod>
+    <lastmod>2023-11-01T18:21:48.421Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-28-TidyTuesday-Refugees/TidyTuesday34-refugees.html</loc>
@@ -163,5 +163,9 @@
   <url>
     <loc>https://lsinks.github.io/portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html</loc>
     <lastmod>2023-10-04T20:51:50.817Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-11-01-website-building/website.html</loc>
+    <lastmod>2023-11-01T18:21:00.414Z</lastmod>
   </url>
 </urlset>

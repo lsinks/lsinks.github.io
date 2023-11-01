@@ -8,12 +8,12 @@ author:
       given: Louise E.
       family: Sinks
   url: https://lsinks.github.io/
-date: 10-25-2023
+date: 11-01-2023
 categories: [R, Quarto, turtle] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-09-05-TidyTuesday-Labor/labor
+  url: https://lsinks.github.io/posts/2023-11-01-website-building/website.html
 image: "thumbnail.jpg"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready
 ---
 
 I've been using Quarto to blog for about seven months now, and I'd like to write a quick summary of my experiences and give a few tips and tricks on how to use it to publish a website or blog. This post will come from the R/ RStudio perspective, which has tight Quarto integration. Python folks, you too can have a quarto blog and website, but I have yet to find a good tutorial to link you to.
@@ -42,7 +42,7 @@ As an R user, I chose to implement my website through RStudio. Quarto is a proje
 
 In RStudio, choosing the website project will create some basic files you need- a YAML file and an index.qmd file. The YAML file gives information about what the output of rendering a quarto file (\*.qmd) should be. In this case, it is set to produce HTML, but Quarto is a scientific publishing system, so your YAML could tell it to render a PDF or a PowerPoint or any number of outputs.
 
-### The Difference between Executing code and Rendering the Document
+### The Difference between Executing Code and Rendering the Document
 
 Code written in a Quarto document (a \*.qmd file) can be executed as normal in the RStudio environment. The variables you create show up in the environment pane. You can view them and interact with them in the console as usual. You execute the code using the run button at the top of the screen or cell block by cell block with the run button included in each code block. At this point, things behave like standard code.
 
@@ -100,7 +100,7 @@ Of course, you may not want to have a citation for your webpage, so you can alwa
 
 The steps you used to add the blog page can be extended to other pages. Both additional static pages and listing pages for the blog can be added to the quarto YAML file. You can see mine [here](https://github.com/lsinks/lsinks.github.io/blob/main/_quarto.yml). In fact, you can view the [entire structure of my website](https://github.com/lsinks/lsinks.github.io) on Git Hub. Feel free to look at the \*.qmd files and the \_quarto.yml file to see how the website is structured.
 
-### Give GitHub pages Some Time!
+### Give GitHub Pages Time!
 
 Sometimes, the changes take a while to show up live on the internet. This may give you the impression that what you did isn't working. I know I changed a bunch of things initially and got very frustrated because I didn't see what I expected on the live website. GitHub will email you if your deployment fails. Until you get that message, assume that the changes are just slowly propagating across the internet. Don't panic and change things randomly like I did.
 
