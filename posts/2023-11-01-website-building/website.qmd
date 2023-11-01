@@ -132,7 +132,7 @@ Alt text lets you add a written description to pictures and figures. Alt text ma
 
 ### Steal Some Code!
 
-If you see something cool on a Quarto/ Github pages website and you can't figure out how to do it, go look at the source code in their repo. Do you like the embedded video in my blog post on web scraping? Go look at that folder at Github. See where I stored the asset (\*.mp4) and how I called it in the qmd file. Then, implement that yourself. Here's the [official documentation](https://quarto.org/docs/authoring/videos.html) for embedding video.
+If you see something cool on a Quarto/ GitHub pages website and you can't figure out how to do it, go look at the source code in their repo. Do you like the [embedded video in my blog post on web scraping](https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstone/web-scraping.html#a-real-webpage--rendered-and-source)? Go look at [that folder at GitHub](https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-09-08-web-scraping-tombstone). See where I stored the asset (\*.mp4) and how I called it in the [qmd file](https://github.com/lsinks/lsinks.github.io/blob/main/posts/2023-09-08-web-scraping-tombstone/web-scraping.qmd). Then, implement that yourself. (Here's the [official documentation](https://quarto.org/docs/authoring/videos.html) for embedding video if you prefer.)
 
 Obviously, I'm not advocating that you plagiarize anyone's website! But taking code snippets and adapting them to your needs is fine. And it is nice to give a link or a shoutout to the source you found helpful.
 
