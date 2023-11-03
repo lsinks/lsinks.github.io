@@ -3,13 +3,11 @@ title: "Tidy Tuesday: US Populated Places"
 description: "TidyTuesday: Historic Neighborhoods of Arlington Virginia" 
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 06-27-2023
-categories: [R, TidyTuesday, R-code, Data-Viz, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
+date-modified: last-modified
+categories: [R, TidyTuesday, R-code, data visualization, openxlsx, stringr, fuzzyjoin, mapview, sf] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods
+  url: https://lsinks.github.io/posts/2023-06-27-tidytuesday-US-populated-places/arlington-neighborhoods.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

@@ -3,13 +3,11 @@ title: "TidyTuesday Week 28: Global Surface Temperature"
 description: "Making an animated graph of global temperature change over time with gganimate."
 twitter-card:
   image: "thumbnail.gif"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 07-11-2023
-categories: [R, R-code, Code-Along, TidyTuesday, tidy, gganimate] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, code-along, TidyTuesday, tidy, gganimate] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures
+  url: https://lsinks.github.io/posts/2023-07-11-tidytuesday-temps/temperatures.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
