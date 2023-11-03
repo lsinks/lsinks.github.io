@@ -5,7 +5,7 @@ twitter-card:
   image: "thumbnail.png"
 date: 03-28-2023
 date-modified: last-modified
-categories: [R, tidyTuesday, R-code, code-along, data visualization, ggimage, maps] # self-defined categories
+categories: [R, tidyTuesday, R-code, code-along, data visualization, ggimage, mapping] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-03-28-tidytuesday-timezones/tidytuesday-timezones.html
 image: "thumbnail.png"

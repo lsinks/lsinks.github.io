@@ -426,23 +426,23 @@ cookieconsent.run({
 <dl class="code-annotation-container-grid">
 <dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="1" data-code-annotation="1">Select the elements we want out of the HTML using <code>rvest::html_nodes()</code>. The XPath code specifies that I want `a’ tags that are children of the table. Store it in link_nodes.</span>
+<span data-code-lines="1" data-code-cell="annotated-cell-5" data-code-annotation="1">Select the elements we want out of the HTML using <code>rvest::html_nodes()</code>. The XPath code specifies that I want `a’ tags that are children of the table. Store it in link_nodes.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="2">An alternate method is to use the more standard CSS selectors, but again, we want the <code>&lt;a&gt;</code> elements that are children of the table. It is commented out here, but it produces identical results as 1.</span>
+<span data-code-lines="2" data-code-cell="annotated-cell-5" data-code-annotation="2">An alternate method is to use the more standard CSS selectors, but again, we want the <code>&lt;a&gt;</code> elements that are children of the table. It is commented out here, but it produces identical results as 1.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="3">The link_node contains both the URL and the text. Here, I extract the text. There are <a href="https://rvest.tidyverse.org/reference/html_text.html">two methods in the rvest package</a>: <code>html_text()</code> is faster but might include formatting information relating to whitespace. <code>html_text2()</code> is slower but produces cleaner output.</span>
+<span data-code-lines="4" data-code-cell="annotated-cell-5" data-code-annotation="3">The link_node contains both the URL and the text. Here, I extract the text. There are <a href="https://rvest.tidyverse.org/reference/html_text.html">two methods in the rvest package</a>: <code>html_text()</code> is faster but might include formatting information relating to whitespace. <code>html_text2()</code> is slower but produces cleaner output.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="5" data-code-annotation="4">Now, I store the text in a dataframe.</span>
+<span data-code-lines="5" data-code-cell="annotated-cell-5" data-code-annotation="4">Now, I store the text in a dataframe.</span>
 </dd>
 <dt data-target-cell="annotated-cell-5" data-target-annotation="5">5</dt>
 <dd>
-<span data-code-cell="annotated-cell-5" data-code-lines="10" data-code-annotation="5">Now, I loop through the text dataframe and add on the matching URL that we extract from link_nodes using <code>html_attr("href")</code>. I had mentioned that the elements could contain attributes- attributes are additional features of the element and are expressed in the code as <code>attribute = value</code>. In this case, the format is something like <code>href= "https://sarpatriots.sar.org/patriot/display/335209"</code></span>
+<span data-code-lines="10" data-code-cell="annotated-cell-5" data-code-annotation="5">Now, I loop through the text dataframe and add on the matching URL that we extract from link_nodes using <code>html_attr("href")</code>. I had mentioned that the elements could contain attributes- attributes are additional features of the element and are expressed in the code as <code>attribute = value</code>. In this case, the format is something like <code>href= "https://sarpatriots.sar.org/patriot/display/335209"</code></span>
 </dd>
 </dl>
 </div>

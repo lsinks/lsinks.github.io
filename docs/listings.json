@@ -34,5 +34,13 @@
       "/posts/2023-03-21-tidytuesday-programming-languages/index.html",
       "/posts/2023-03-14-tester-post/index.html"
     ]
+  },
+  {
+    "listing": "/portfolio.html",
+    "items": [
+      "/portfolio/Femtosecond_Laser_Spectroscopy/Femtosecond_Laser_Spectroscopy.html",
+      "/portfolio/Nanomaterials_USNano/Nanomaterials_USNano.html",
+      "/portfolio/Phosphorescence_Lifetime_Imaging/Phosphorescence_Lifetime_Imaging.html"
+    ]
   }
 ]
