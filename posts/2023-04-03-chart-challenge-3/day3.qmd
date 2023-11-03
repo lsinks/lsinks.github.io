@@ -3,13 +3,11 @@ title: "30 Day Chart Challenge- Flora and Fauna"
 description: "How Large are Different Types of Turtles?"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 04-03-2023
-categories: [R, R-code, Code-Along, turtle, 30DayChartChallenge] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, code-along, turtle, 30DayChartChallenge] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3
+  url: https://lsinks.github.io/posts/2023-04-03-chart-challenge-3/day3.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

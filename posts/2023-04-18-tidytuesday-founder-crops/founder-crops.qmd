@@ -3,13 +3,11 @@ title: "TidyTuesday Week 16: Neolithic Founder Crops"
 description: "TidyTuesday: Exploring early agriculture in SW Asia"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 04-18-2023
-categories: [R, TidyTuesday, R-code, Data-Viz] # self-defined categories
+date-modified: last-modified
+categories: [R, TidyTuesday, R-code, data visualization] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops 
+  url: https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

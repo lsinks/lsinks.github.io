@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Louise E. Sinks">
 <meta name="dcterms.date" content="2023-04-04">
 <meta name="description" content="How many species have been delisted?">
 
@@ -157,6 +156,10 @@ cookieconsent.run({
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html" rel="" target="">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About Me/ CV</span></a>
   </li>  
@@ -200,7 +203,7 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">R-code</div>
-    <div class="quarto-category">Code-Along</div>
+    <div class="quarto-category">code-along</div>
     <div class="quarto-category">30DayChartChallenge</div>
     <div class="quarto-category">waffle</div>
   </div>
@@ -229,6 +232,12 @@ cookieconsent.run({
     </div>
   </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 3, 2023</p>
+    </div>
+  </div>
     
   </div>
   
@@ -265,23 +274,23 @@ cookieconsent.run({
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(endangered_df_sub) <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="dfabyuwzbw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#dfabyuwzbw table {
+<div id="tiymftctsq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tiymftctsq table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#dfabyuwzbw thead, #dfabyuwzbw tbody, #dfabyuwzbw tfoot, #dfabyuwzbw tr, #dfabyuwzbw td, #dfabyuwzbw th {
+#tiymftctsq thead, #tiymftctsq tbody, #tiymftctsq tfoot, #tiymftctsq tr, #tiymftctsq td, #tiymftctsq th {
   border-style: none;
 }
 
-#dfabyuwzbw p {
+#tiymftctsq p {
   margin: 0;
   padding: 0;
 }
 
-#dfabyuwzbw .gt_table {
+#tiymftctsq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -307,12 +316,12 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_caption {
+#tiymftctsq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dfabyuwzbw .gt_title {
+#tiymftctsq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -324,7 +333,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-#dfabyuwzbw .gt_subtitle {
+#tiymftctsq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -336,7 +345,7 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-#dfabyuwzbw .gt_heading {
+#tiymftctsq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -348,13 +357,13 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_bottom_border {
+#tiymftctsq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_col_headings {
+#tiymftctsq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -369,7 +378,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_col_heading {
+#tiymftctsq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -389,7 +398,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#dfabyuwzbw .gt_column_spanner_outer {
+#tiymftctsq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -401,15 +410,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-#dfabyuwzbw .gt_column_spanner_outer:first-child {
+#tiymftctsq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dfabyuwzbw .gt_column_spanner_outer:last-child {
+#tiymftctsq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dfabyuwzbw .gt_column_spanner {
+#tiymftctsq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -421,11 +430,11 @@ cookieconsent.run({
   width: 100%;
 }
 
-#dfabyuwzbw .gt_spanner_row {
+#tiymftctsq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#dfabyuwzbw .gt_group_heading {
+#tiymftctsq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -451,7 +460,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-#dfabyuwzbw .gt_empty_group_heading {
+#tiymftctsq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -466,15 +475,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-#dfabyuwzbw .gt_from_md > :first-child {
+#tiymftctsq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dfabyuwzbw .gt_from_md > :last-child {
+#tiymftctsq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dfabyuwzbw .gt_row {
+#tiymftctsq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -493,7 +502,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#dfabyuwzbw .gt_stub {
+#tiymftctsq .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -506,7 +515,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#dfabyuwzbw .gt_stub_row_group {
+#tiymftctsq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -520,15 +529,15 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-#dfabyuwzbw .gt_row_group_first td {
+#tiymftctsq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dfabyuwzbw .gt_row_group_first th {
+#tiymftctsq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#dfabyuwzbw .gt_summary_row {
+#tiymftctsq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -538,16 +547,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#dfabyuwzbw .gt_first_summary_row {
+#tiymftctsq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_first_summary_row.thick {
+#tiymftctsq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dfabyuwzbw .gt_last_summary_row {
+#tiymftctsq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -557,7 +566,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_grand_summary_row {
+#tiymftctsq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -567,7 +576,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#dfabyuwzbw .gt_first_grand_summary_row {
+#tiymftctsq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -577,7 +586,7 @@ cookieconsent.run({
   border-top-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_last_grand_summary_row_top {
+#tiymftctsq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -587,11 +596,11 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_striped {
+#tiymftctsq .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dfabyuwzbw .gt_table_body {
+#tiymftctsq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -600,7 +609,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_footnotes {
+#tiymftctsq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -614,7 +623,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_footnote {
+#tiymftctsq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -623,7 +632,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#dfabyuwzbw .gt_sourcenotes {
+#tiymftctsq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -637,7 +646,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#dfabyuwzbw .gt_sourcenote {
+#tiymftctsq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -645,63 +654,63 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#dfabyuwzbw .gt_left {
+#tiymftctsq .gt_left {
   text-align: left;
 }
 
-#dfabyuwzbw .gt_center {
+#tiymftctsq .gt_center {
   text-align: center;
 }
 
-#dfabyuwzbw .gt_right {
+#tiymftctsq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dfabyuwzbw .gt_font_normal {
+#tiymftctsq .gt_font_normal {
   font-weight: normal;
 }
 
-#dfabyuwzbw .gt_font_bold {
+#tiymftctsq .gt_font_bold {
   font-weight: bold;
 }
 
-#dfabyuwzbw .gt_font_italic {
+#tiymftctsq .gt_font_italic {
   font-style: italic;
 }
 
-#dfabyuwzbw .gt_super {
+#tiymftctsq .gt_super {
   font-size: 65%;
 }
 
-#dfabyuwzbw .gt_footnote_marks {
+#tiymftctsq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#dfabyuwzbw .gt_asterisk {
+#tiymftctsq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dfabyuwzbw .gt_indent_1 {
+#tiymftctsq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dfabyuwzbw .gt_indent_2 {
+#tiymftctsq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dfabyuwzbw .gt_indent_3 {
+#tiymftctsq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dfabyuwzbw .gt_indent_4 {
+#tiymftctsq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dfabyuwzbw .gt_indent_5 {
+#tiymftctsq .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -881,23 +890,23 @@ Delist: The species does not meet the definition of an endangered species or a t
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">5YSR Recommendation</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Revision of listed entity"</span>) <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="skxonqgmku" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#skxonqgmku table {
+<div id="jnmlwwwlgu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jnmlwwwlgu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#skxonqgmku thead, #skxonqgmku tbody, #skxonqgmku tfoot, #skxonqgmku tr, #skxonqgmku td, #skxonqgmku th {
+#jnmlwwwlgu thead, #jnmlwwwlgu tbody, #jnmlwwwlgu tfoot, #jnmlwwwlgu tr, #jnmlwwwlgu td, #jnmlwwwlgu th {
   border-style: none;
 }
 
-#skxonqgmku p {
+#jnmlwwwlgu p {
   margin: 0;
   padding: 0;
 }
 
-#skxonqgmku .gt_table {
+#jnmlwwwlgu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -923,12 +932,12 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-left-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_caption {
+#jnmlwwwlgu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#skxonqgmku .gt_title {
+#jnmlwwwlgu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -940,7 +949,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-width: 0;
 }
 
-#skxonqgmku .gt_subtitle {
+#jnmlwwwlgu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -952,7 +961,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-width: 0;
 }
 
-#skxonqgmku .gt_heading {
+#jnmlwwwlgu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -964,13 +973,13 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_bottom_border {
+#jnmlwwwlgu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_col_headings {
+#jnmlwwwlgu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -985,7 +994,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_col_heading {
+#jnmlwwwlgu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1005,7 +1014,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#skxonqgmku .gt_column_spanner_outer {
+#jnmlwwwlgu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1017,15 +1026,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 4px;
 }
 
-#skxonqgmku .gt_column_spanner_outer:first-child {
+#jnmlwwwlgu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#skxonqgmku .gt_column_spanner_outer:last-child {
+#jnmlwwwlgu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#skxonqgmku .gt_column_spanner {
+#jnmlwwwlgu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1037,11 +1046,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   width: 100%;
 }
 
-#skxonqgmku .gt_spanner_row {
+#jnmlwwwlgu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#skxonqgmku .gt_group_heading {
+#jnmlwwwlgu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1067,7 +1076,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   text-align: left;
 }
 
-#skxonqgmku .gt_empty_group_heading {
+#jnmlwwwlgu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1082,15 +1091,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: middle;
 }
 
-#skxonqgmku .gt_from_md > :first-child {
+#jnmlwwwlgu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#skxonqgmku .gt_from_md > :last-child {
+#jnmlwwwlgu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#skxonqgmku .gt_row {
+#jnmlwwwlgu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1109,7 +1118,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#skxonqgmku .gt_stub {
+#jnmlwwwlgu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1122,7 +1131,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#skxonqgmku .gt_stub_row_group {
+#jnmlwwwlgu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1136,15 +1145,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: top;
 }
 
-#skxonqgmku .gt_row_group_first td {
+#jnmlwwwlgu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#skxonqgmku .gt_row_group_first th {
+#jnmlwwwlgu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#skxonqgmku .gt_summary_row {
+#jnmlwwwlgu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1154,16 +1163,16 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#skxonqgmku .gt_first_summary_row {
+#jnmlwwwlgu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_first_summary_row.thick {
+#jnmlwwwlgu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#skxonqgmku .gt_last_summary_row {
+#jnmlwwwlgu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1173,7 +1182,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_grand_summary_row {
+#jnmlwwwlgu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1183,7 +1192,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#skxonqgmku .gt_first_grand_summary_row {
+#jnmlwwwlgu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1193,7 +1202,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_last_grand_summary_row_top {
+#jnmlwwwlgu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1203,11 +1212,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_striped {
+#jnmlwwwlgu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#skxonqgmku .gt_table_body {
+#jnmlwwwlgu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1216,7 +1225,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_footnotes {
+#jnmlwwwlgu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1230,7 +1239,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_footnote {
+#jnmlwwwlgu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1239,7 +1248,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#skxonqgmku .gt_sourcenotes {
+#jnmlwwwlgu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1253,7 +1262,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#skxonqgmku .gt_sourcenote {
+#jnmlwwwlgu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1261,63 +1270,63 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#skxonqgmku .gt_left {
+#jnmlwwwlgu .gt_left {
   text-align: left;
 }
 
-#skxonqgmku .gt_center {
+#jnmlwwwlgu .gt_center {
   text-align: center;
 }
 
-#skxonqgmku .gt_right {
+#jnmlwwwlgu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#skxonqgmku .gt_font_normal {
+#jnmlwwwlgu .gt_font_normal {
   font-weight: normal;
 }
 
-#skxonqgmku .gt_font_bold {
+#jnmlwwwlgu .gt_font_bold {
   font-weight: bold;
 }
 
-#skxonqgmku .gt_font_italic {
+#jnmlwwwlgu .gt_font_italic {
   font-style: italic;
 }
 
-#skxonqgmku .gt_super {
+#jnmlwwwlgu .gt_super {
   font-size: 65%;
 }
 
-#skxonqgmku .gt_footnote_marks {
+#jnmlwwwlgu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#skxonqgmku .gt_asterisk {
+#jnmlwwwlgu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#skxonqgmku .gt_indent_1 {
+#jnmlwwwlgu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#skxonqgmku .gt_indent_2 {
+#jnmlwwwlgu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#skxonqgmku .gt_indent_3 {
+#jnmlwwwlgu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#skxonqgmku .gt_indent_4 {
+#jnmlwwwlgu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#skxonqgmku .gt_indent_5 {
+#jnmlwwwlgu .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1382,23 +1391,23 @@ Delist: The species does not meet the definition of an endangered species or a t
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Progess of Endangered/Threatened species"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="wsldtwanqo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wsldtwanqo table {
+<div id="eqgwchoroj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eqgwchoroj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wsldtwanqo thead, #wsldtwanqo tbody, #wsldtwanqo tfoot, #wsldtwanqo tr, #wsldtwanqo td, #wsldtwanqo th {
+#eqgwchoroj thead, #eqgwchoroj tbody, #eqgwchoroj tfoot, #eqgwchoroj tr, #eqgwchoroj td, #eqgwchoroj th {
   border-style: none;
 }
 
-#wsldtwanqo p {
+#eqgwchoroj p {
   margin: 0;
   padding: 0;
 }
 
-#wsldtwanqo .gt_table {
+#eqgwchoroj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1424,12 +1433,12 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-left-color: #D3D3D3;
 }
 
-#wsldtwanqo .gt_caption {
+#eqgwchoroj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wsldtwanqo .gt_title {
+#eqgwchoroj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1441,7 +1450,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-width: 0;
 }
 
-#wsldtwanqo .gt_subtitle {
+#eqgwchoroj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1453,7 +1462,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-width: 0;
 }
 
-#wsldtwanqo .gt_heading {
+#eqgwchoroj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1465,13 +1474,13 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#wsldtwanqo .gt_bottom_border {
+#eqgwchoroj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_col_headings {
+#eqgwchoroj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1486,7 +1495,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#wsldtwanqo .gt_col_heading {
+#eqgwchoroj .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1506,7 +1515,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#wsldtwanqo .gt_column_spanner_outer {
+#eqgwchoroj .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1518,15 +1527,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 4px;
 }
 
-#wsldtwanqo .gt_column_spanner_outer:first-child {
+#eqgwchoroj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wsldtwanqo .gt_column_spanner_outer:last-child {
+#eqgwchoroj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wsldtwanqo .gt_column_spanner {
+#eqgwchoroj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -1538,11 +1547,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   width: 100%;
 }
 
-#wsldtwanqo .gt_spanner_row {
+#eqgwchoroj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wsldtwanqo .gt_group_heading {
+#eqgwchoroj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1568,7 +1577,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   text-align: left;
 }
 
-#wsldtwanqo .gt_empty_group_heading {
+#eqgwchoroj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1583,15 +1592,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: middle;
 }
 
-#wsldtwanqo .gt_from_md > :first-child {
+#eqgwchoroj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wsldtwanqo .gt_from_md > :last-child {
+#eqgwchoroj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wsldtwanqo .gt_row {
+#eqgwchoroj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1610,7 +1619,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#wsldtwanqo .gt_stub {
+#eqgwchoroj .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -1623,7 +1632,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#wsldtwanqo .gt_stub_row_group {
+#eqgwchoroj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1637,15 +1646,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: top;
 }
 
-#wsldtwanqo .gt_row_group_first td {
+#eqgwchoroj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wsldtwanqo .gt_row_group_first th {
+#eqgwchoroj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wsldtwanqo .gt_summary_row {
+#eqgwchoroj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1655,16 +1664,16 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#wsldtwanqo .gt_first_summary_row {
+#eqgwchoroj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_first_summary_row.thick {
+#eqgwchoroj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wsldtwanqo .gt_last_summary_row {
+#eqgwchoroj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1674,7 +1683,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_grand_summary_row {
+#eqgwchoroj .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -1684,7 +1693,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#wsldtwanqo .gt_first_grand_summary_row {
+#eqgwchoroj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1694,7 +1703,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_last_grand_summary_row_top {
+#eqgwchoroj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1704,11 +1713,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_striped {
+#eqgwchoroj .gt_striped {
   background-color: #EDF7FC;
 }
 
-#wsldtwanqo .gt_table_body {
+#eqgwchoroj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1717,7 +1726,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#wsldtwanqo .gt_footnotes {
+#eqgwchoroj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1731,7 +1740,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#wsldtwanqo .gt_footnote {
+#eqgwchoroj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1740,7 +1749,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#wsldtwanqo .gt_sourcenotes {
+#eqgwchoroj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1754,7 +1763,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#wsldtwanqo .gt_sourcenote {
+#eqgwchoroj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1762,63 +1771,63 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#wsldtwanqo .gt_left {
+#eqgwchoroj .gt_left {
   text-align: left;
 }
 
-#wsldtwanqo .gt_center {
+#eqgwchoroj .gt_center {
   text-align: center;
 }
 
-#wsldtwanqo .gt_right {
+#eqgwchoroj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wsldtwanqo .gt_font_normal {
+#eqgwchoroj .gt_font_normal {
   font-weight: normal;
 }
 
-#wsldtwanqo .gt_font_bold {
+#eqgwchoroj .gt_font_bold {
   font-weight: bold;
 }
 
-#wsldtwanqo .gt_font_italic {
+#eqgwchoroj .gt_font_italic {
   font-style: italic;
 }
 
-#wsldtwanqo .gt_super {
+#eqgwchoroj .gt_super {
   font-size: 65%;
 }
 
-#wsldtwanqo .gt_footnote_marks {
+#eqgwchoroj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wsldtwanqo .gt_asterisk {
+#eqgwchoroj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wsldtwanqo .gt_indent_1 {
+#eqgwchoroj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wsldtwanqo .gt_indent_2 {
+#eqgwchoroj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wsldtwanqo .gt_indent_3 {
+#eqgwchoroj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wsldtwanqo .gt_indent_4 {
+#eqgwchoroj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wsldtwanqo .gt_indent_5 {
+#eqgwchoroj .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1864,23 +1873,23 @@ Delist: The species does not meet the definition of an endangered species or a t
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Progess of Endangered/Threatened species"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="shmthiccmz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#shmthiccmz table {
+<div id="eugbsqviws" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#eugbsqviws table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#shmthiccmz thead, #shmthiccmz tbody, #shmthiccmz tfoot, #shmthiccmz tr, #shmthiccmz td, #shmthiccmz th {
+#eugbsqviws thead, #eugbsqviws tbody, #eugbsqviws tfoot, #eugbsqviws tr, #eugbsqviws td, #eugbsqviws th {
   border-style: none;
 }
 
-#shmthiccmz p {
+#eugbsqviws p {
   margin: 0;
   padding: 0;
 }
 
-#shmthiccmz .gt_table {
+#eugbsqviws .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1906,12 +1915,12 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-left-color: #D3D3D3;
 }
 
-#shmthiccmz .gt_caption {
+#eugbsqviws .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#shmthiccmz .gt_title {
+#eugbsqviws .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1923,7 +1932,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-width: 0;
 }
 
-#shmthiccmz .gt_subtitle {
+#eugbsqviws .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1935,7 +1944,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-width: 0;
 }
 
-#shmthiccmz .gt_heading {
+#eugbsqviws .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1947,13 +1956,13 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#shmthiccmz .gt_bottom_border {
+#eugbsqviws .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_col_headings {
+#eugbsqviws .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -1968,7 +1977,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#shmthiccmz .gt_col_heading {
+#eugbsqviws .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -1988,7 +1997,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#shmthiccmz .gt_column_spanner_outer {
+#eugbsqviws .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -2000,15 +2009,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 4px;
 }
 
-#shmthiccmz .gt_column_spanner_outer:first-child {
+#eugbsqviws .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#shmthiccmz .gt_column_spanner_outer:last-child {
+#eugbsqviws .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#shmthiccmz .gt_column_spanner {
+#eugbsqviws .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -2020,11 +2029,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   width: 100%;
 }
 
-#shmthiccmz .gt_spanner_row {
+#eugbsqviws .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#shmthiccmz .gt_group_heading {
+#eugbsqviws .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2050,7 +2059,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   text-align: left;
 }
 
-#shmthiccmz .gt_empty_group_heading {
+#eugbsqviws .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2065,15 +2074,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: middle;
 }
 
-#shmthiccmz .gt_from_md > :first-child {
+#eugbsqviws .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#shmthiccmz .gt_from_md > :last-child {
+#eugbsqviws .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#shmthiccmz .gt_row {
+#eugbsqviws .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2092,7 +2101,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   overflow-x: hidden;
 }
 
-#shmthiccmz .gt_stub {
+#eugbsqviws .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -2105,7 +2114,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#shmthiccmz .gt_stub_row_group {
+#eugbsqviws .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2119,15 +2128,15 @@ Delist: The species does not meet the definition of an endangered species or a t
   vertical-align: top;
 }
 
-#shmthiccmz .gt_row_group_first td {
+#eugbsqviws .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#shmthiccmz .gt_row_group_first th {
+#eugbsqviws .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#shmthiccmz .gt_summary_row {
+#eugbsqviws .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2137,16 +2146,16 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#shmthiccmz .gt_first_summary_row {
+#eugbsqviws .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_first_summary_row.thick {
+#eugbsqviws .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#shmthiccmz .gt_last_summary_row {
+#eugbsqviws .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2156,7 +2165,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_grand_summary_row {
+#eugbsqviws .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -2166,7 +2175,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#shmthiccmz .gt_first_grand_summary_row {
+#eugbsqviws .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2176,7 +2185,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-top-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_last_grand_summary_row_top {
+#eugbsqviws .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2186,11 +2195,11 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_striped {
+#eugbsqviws .gt_striped {
   background-color: #EDF7FC;
 }
 
-#shmthiccmz .gt_table_body {
+#eugbsqviws .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -2199,7 +2208,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-bottom-color: #5F5F5F;
 }
 
-#shmthiccmz .gt_footnotes {
+#eugbsqviws .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2213,7 +2222,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#shmthiccmz .gt_footnote {
+#eugbsqviws .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2222,7 +2231,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#shmthiccmz .gt_sourcenotes {
+#eugbsqviws .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2236,7 +2245,7 @@ Delist: The species does not meet the definition of an endangered species or a t
   border-right-color: #D3D3D3;
 }
 
-#shmthiccmz .gt_sourcenote {
+#eugbsqviws .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2244,63 +2253,63 @@ Delist: The species does not meet the definition of an endangered species or a t
   padding-right: 5px;
 }
 
-#shmthiccmz .gt_left {
+#eugbsqviws .gt_left {
   text-align: left;
 }
 
-#shmthiccmz .gt_center {
+#eugbsqviws .gt_center {
   text-align: center;
 }
 
-#shmthiccmz .gt_right {
+#eugbsqviws .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#shmthiccmz .gt_font_normal {
+#eugbsqviws .gt_font_normal {
   font-weight: normal;
 }
 
-#shmthiccmz .gt_font_bold {
+#eugbsqviws .gt_font_bold {
   font-weight: bold;
 }
 
-#shmthiccmz .gt_font_italic {
+#eugbsqviws .gt_font_italic {
   font-style: italic;
 }
 
-#shmthiccmz .gt_super {
+#eugbsqviws .gt_super {
   font-size: 65%;
 }
 
-#shmthiccmz .gt_footnote_marks {
+#eugbsqviws .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#shmthiccmz .gt_asterisk {
+#eugbsqviws .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#shmthiccmz .gt_indent_1 {
+#eugbsqviws .gt_indent_1 {
   text-indent: 5px;
 }
 
-#shmthiccmz .gt_indent_2 {
+#eugbsqviws .gt_indent_2 {
   text-indent: 10px;
 }
 
-#shmthiccmz .gt_indent_3 {
+#eugbsqviws .gt_indent_3 {
   text-indent: 15px;
 }
 
-#shmthiccmz .gt_indent_4 {
+#eugbsqviws .gt_indent_4 {
   text-indent: 20px;
 }
 
-#shmthiccmz .gt_indent_5 {
+#eugbsqviws .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -2349,16 +2358,16 @@ Delist: The species does not meet the definition of an endangered species or a t
 
 
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e. sinks2023,
-  author = {E. Sinks, Louise},
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sinks2023,
+  author = {Sinks, Louise E.},
   title = {30 {Day} {Chart} {Challenge-} {Endangered} {Species}},
   date = {2023-04-04},
-  url = {https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4},
+  url = {https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4.html},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e. sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-E. Sinks, Louise. 2023. <span>“30 Day Chart Challenge- Endangered
-Species.”</span> April 4, 2023. <a href="https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4">https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sinks, Louise E. 2023. <span>“30 Day Chart Challenge- Endangered
+Species.”</span> April 4, 2023. <a href="https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4.html">https://lsinks.github.io/posts/2023-04-04-chart-challenge-4/day4.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

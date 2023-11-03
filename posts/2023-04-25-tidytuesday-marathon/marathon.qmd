@@ -3,13 +3,11 @@ title: "TidyTuesday Week 17: London Marathon"
 description: "TidyTuesday: Exploring the London Marathon"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 04-25-2023
-categories: [R, TidyTuesday, R-code, Code-Along, Data-Viz] # self-defined categories
+date-modified: last-modified
+categories: [R, TidyTuesday, R-code, code-along, data visualization] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon 
+  url: https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon.html 
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
@@ -203,7 +201,7 @@ Okay, now lets clean up the formatting. I need to:
 
 #4 is apparently quite challenging. Apparently, the time axis should be displayed as hms, so it isn't clear to me why fractional seconds are shown. I tried a bunch of different suggestion from the web, but [the top answer to this question is what worked](https://stackoverflow.com/questions/50172591/use-scale-y-time-to-convert-ms-to-minutes-and-seconds-in-boxplot-ggplot).
 
-It actually doesn't matter if the aesthetic is difftime or hms. The key is that the label section of scale_y\_time needs a formatted string generated from strftime.
+It actually doesn't matter if the aesthetic is difftime or hms. The key is that the label section of scale_y_time needs a formatted string generated from strftime.
 
 ```{r}
 winners %>%

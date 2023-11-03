@@ -3,13 +3,11 @@ title: "30 Day Chart Challenge -Arlington Parks"
 description: "Who Owns the Parks in Arlington Virgina?"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 04-02-2023
-categories: [R, R-code, Code-Along, Waffle, 30DayChartChallenge] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, code-along, waffle, 30DayChartChallenge] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks
+  url: https://lsinks.github.io/posts/2023-04-02-chart-challenge-2/parks.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
