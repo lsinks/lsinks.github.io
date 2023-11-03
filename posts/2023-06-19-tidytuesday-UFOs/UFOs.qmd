@@ -5,7 +5,7 @@ twitter-card:
   image: "thumbnail.png"
 date: 06-20-2023
 date-modified: last-modified
-categories: [R, TidyTuesday, R-code, code-along, data visualization] # self-defined categories
+categories: [R, tidyTuesday, R-code, code-along, data visualization] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-06-19-tidytuesday-UFOs/UFOs.html
 image: "thumbnail.png"

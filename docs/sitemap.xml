@@ -2,11 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2023-11-03T22:27:11.196Z</lastmod>
+    <lastmod>2023-11-03T22:33:51.234Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-03-24-tidytuesday-figure-polishing/index.html</loc>
-    <lastmod>2023-11-03T22:13:08.307Z</lastmod>
+    <lastmod>2023-11-03T22:33:24.314Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-08-28-TidyTuesday-Refugees/TidyTuesday34-refugees.html</loc>
@@ -23,5 +23,33 @@
   <url>
     <loc>https://lsinks.github.io/posts/2023-06-29-tidytuesday-populated-places-leaflet/arlington-neighborhoods-leaflet.html</loc>
     <lastmod>2023-11-03T22:26:57.169Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/currentprojects.html</loc>
+    <lastmod>2023-11-03T22:34:07.783Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-07-25-tidytuesday-scurvy/scurvy.html</loc>
+    <lastmod>2023-11-03T22:33:38.417Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-04-25-tidytuesday-marathon/marathon.html</loc>
+    <lastmod>2023-11-03T22:33:29.876Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-03-21-tidytuesday-programming-languages/index.html</loc>
+    <lastmod>2023-11-03T22:33:18.990Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html</loc>
+    <lastmod>2023-11-03T22:33:27.331Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-06-19-tidytuesday-UFOs/UFOs.html</loc>
+    <lastmod>2023-11-03T22:33:32.594Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2023-08-01-tidytuesday-US-states/states.html</loc>
+    <lastmod>2023-11-03T22:33:41.814Z</lastmod>
   </url>
 </urlset>
