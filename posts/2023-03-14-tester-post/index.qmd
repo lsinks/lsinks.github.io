@@ -2,9 +2,10 @@
 title: "Creating a Blog"
 description: "Trying to create a Quarto Blog"
 date: 03-14-2023
+date-modified: last-modified
 categories: [quarto, R, turtle] # self-defined categories
 citation:
-  url: https://lsinks.github.io/2023-03-14-tester-post/
+  url: https://lsinks.github.io/posts/2023-03-14-tester-post/
 image: mckinley.jpg
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
