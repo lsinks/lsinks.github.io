@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Louise E. Sinks">
 <meta name="dcterms.date" content="2023-07-25">
 <meta name="description" content="Making a Heatmap of James Lind’s Scurvy Study using ggplot. Data cleaning and reformating handled through tidyverse packages.">
 
@@ -223,7 +222,7 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">R-code</div>
-    <div class="quarto-category">Code-Along</div>
+    <div class="quarto-category">code-along</div>
     <div class="quarto-category">TidyTuesday</div>
     <div class="quarto-category">tidy</div>
     <div class="quarto-category">heatmap</div>
@@ -292,23 +291,23 @@ cookieconsent.run({
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>scurvy <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 
-<div id="ufoktbwmgj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ufoktbwmgj table {
+<div id="ofhqrthrim" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ofhqrthrim table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ufoktbwmgj thead, #ufoktbwmgj tbody, #ufoktbwmgj tfoot, #ufoktbwmgj tr, #ufoktbwmgj td, #ufoktbwmgj th {
+#ofhqrthrim thead, #ofhqrthrim tbody, #ofhqrthrim tfoot, #ofhqrthrim tr, #ofhqrthrim td, #ofhqrthrim th {
   border-style: none;
 }
 
-#ufoktbwmgj p {
+#ofhqrthrim p {
   margin: 0;
   padding: 0;
 }
 
-#ufoktbwmgj .gt_table {
+#ofhqrthrim .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -334,12 +333,12 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_caption {
+#ofhqrthrim .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ufoktbwmgj .gt_title {
+#ofhqrthrim .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -351,7 +350,7 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-#ufoktbwmgj .gt_subtitle {
+#ofhqrthrim .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -363,7 +362,7 @@ cookieconsent.run({
   border-top-width: 0;
 }
 
-#ufoktbwmgj .gt_heading {
+#ofhqrthrim .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -375,13 +374,13 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_bottom_border {
+#ofhqrthrim .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_col_headings {
+#ofhqrthrim .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -396,7 +395,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_col_heading {
+#ofhqrthrim .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -416,7 +415,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#ufoktbwmgj .gt_column_spanner_outer {
+#ofhqrthrim .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -428,15 +427,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-#ufoktbwmgj .gt_column_spanner_outer:first-child {
+#ofhqrthrim .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ufoktbwmgj .gt_column_spanner_outer:last-child {
+#ofhqrthrim .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ufoktbwmgj .gt_column_spanner {
+#ofhqrthrim .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -448,11 +447,11 @@ cookieconsent.run({
   width: 100%;
 }
 
-#ufoktbwmgj .gt_spanner_row {
+#ofhqrthrim .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ufoktbwmgj .gt_group_heading {
+#ofhqrthrim .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -478,7 +477,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-#ufoktbwmgj .gt_empty_group_heading {
+#ofhqrthrim .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -493,15 +492,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-#ufoktbwmgj .gt_from_md > :first-child {
+#ofhqrthrim .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ufoktbwmgj .gt_from_md > :last-child {
+#ofhqrthrim .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ufoktbwmgj .gt_row {
+#ofhqrthrim .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -520,7 +519,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-#ufoktbwmgj .gt_stub {
+#ofhqrthrim .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -533,7 +532,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ufoktbwmgj .gt_stub_row_group {
+#ofhqrthrim .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -547,15 +546,15 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-#ufoktbwmgj .gt_row_group_first td {
+#ofhqrthrim .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ufoktbwmgj .gt_row_group_first th {
+#ofhqrthrim .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ufoktbwmgj .gt_summary_row {
+#ofhqrthrim .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -565,16 +564,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ufoktbwmgj .gt_first_summary_row {
+#ofhqrthrim .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_first_summary_row.thick {
+#ofhqrthrim .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ufoktbwmgj .gt_last_summary_row {
+#ofhqrthrim .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -584,7 +583,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_grand_summary_row {
+#ofhqrthrim .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -594,7 +593,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ufoktbwmgj .gt_first_grand_summary_row {
+#ofhqrthrim .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -604,7 +603,7 @@ cookieconsent.run({
   border-top-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_last_grand_summary_row_top {
+#ofhqrthrim .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -614,11 +613,11 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_striped {
+#ofhqrthrim .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ufoktbwmgj .gt_table_body {
+#ofhqrthrim .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -627,7 +626,7 @@ cookieconsent.run({
   border-bottom-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_footnotes {
+#ofhqrthrim .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -641,7 +640,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_footnote {
+#ofhqrthrim .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -650,7 +649,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ufoktbwmgj .gt_sourcenotes {
+#ofhqrthrim .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -664,7 +663,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-#ufoktbwmgj .gt_sourcenote {
+#ofhqrthrim .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -672,63 +671,63 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-#ufoktbwmgj .gt_left {
+#ofhqrthrim .gt_left {
   text-align: left;
 }
 
-#ufoktbwmgj .gt_center {
+#ofhqrthrim .gt_center {
   text-align: center;
 }
 
-#ufoktbwmgj .gt_right {
+#ofhqrthrim .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ufoktbwmgj .gt_font_normal {
+#ofhqrthrim .gt_font_normal {
   font-weight: normal;
 }
 
-#ufoktbwmgj .gt_font_bold {
+#ofhqrthrim .gt_font_bold {
   font-weight: bold;
 }
 
-#ufoktbwmgj .gt_font_italic {
+#ofhqrthrim .gt_font_italic {
   font-style: italic;
 }
 
-#ufoktbwmgj .gt_super {
+#ofhqrthrim .gt_super {
   font-size: 65%;
 }
 
-#ufoktbwmgj .gt_footnote_marks {
+#ofhqrthrim .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ufoktbwmgj .gt_asterisk {
+#ofhqrthrim .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ufoktbwmgj .gt_indent_1 {
+#ofhqrthrim .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ufoktbwmgj .gt_indent_2 {
+#ofhqrthrim .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ufoktbwmgj .gt_indent_3 {
+#ofhqrthrim .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ufoktbwmgj .gt_indent_4 {
+#ofhqrthrim .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ufoktbwmgj .gt_indent_5 {
+#ofhqrthrim .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -977,7 +976,7 @@ cookieconsent.run({
 <div class="cell-output-display">
 <p><img src="scurvy_files/figure-html/final-heatmap-1.png" class="img-fluid" width="672"></p>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">here</span>(<span class="st">"post"</span>, <span class="st">"2023-07-tidytuesday-scurvy"</span>, <span class="st">"thumbnail.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">here</span>(<span class="st">"posts"</span>, <span class="st">"2023-07-tidytuesday-scurvy"</span>, <span class="st">"thumbnail.png"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Saving 7 x 5 in image</code></pre>
 </div>

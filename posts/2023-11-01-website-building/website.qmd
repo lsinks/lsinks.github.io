@@ -3,13 +3,9 @@ title: "Thoughts on Building a Quarto Website"
 description: "Some tips and tricks for using Quarto and RStudio to create a portfolio website and blog."
 twitter-card:
   image: "thumbnail.jpg"
-author:
-- name:
-      given: Louise E.
-      family: Sinks
-  url: https://lsinks.github.io/
 date: 11-01-2023
-categories: [R, Quarto, turtle] # self-defined categories
+date-modified: last-modified
+categories: [R, quarto, turtle] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-11-01-website-building/website.html
 image: "thumbnail.jpg"

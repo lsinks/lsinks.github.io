@@ -3,13 +3,11 @@ title: "Data Cleaning for the Tombstone Project"
 description: "Using StringR to clean a human created excel sheet full of typos and formatting inconsistencies. Then matching excel data to photo names."
 twitter-card:
   image: "thumbnail.jpg"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 08-04-2023
-categories: [Data-Viz, R, R-code, fuzzyjoin, quarto, leaflet, regex, stringr, data cleaning, problem solving, mapping, sf, Code-Along] # self-defined categories
+date-modified: last-modified
+categories: [data visualization, R, R-code, fuzzyjoin, quarto, leaflet, regex, stringr, data cleaning, problem solving, mapping, sf, code-along] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstone_data_cleaning
+  url: https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstone_data_cleaning.html
 image: "thumbnail.jpg"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

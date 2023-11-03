@@ -3,13 +3,11 @@ title: "TidyTuesday 35: Exploring Fair Use Cases"
 description: "Using stringr::str_detect() functions to explore why variables from different datasets don't exactly match. "
 twitter-card:
   image: "thumbnail.jpg"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 08-29-2023
-categories: [Data-Viz, R, R-code,  Code-Along, TidyTuesday, stringr, data cleaning, dual axis plot, ggplot2, cowplot] # self-defined categories
+date-modified: last-modified
+categories: [data visualization, R, R-code,  code-along, tidyTuesday, stringr, data cleaning, dual axis plot, ggplot, cowplot] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use
+  url: https://lsinks.github.io/posts/2023-08-29-TidyTuesday-fair-use/tidytuesday-fair-use.html
 image: "thumbnail.jpg"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready
 ---

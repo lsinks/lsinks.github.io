@@ -3,13 +3,11 @@ title: "Tidy Tuesday Twofer (32 and 33)"
 description: "Looking at how heat levels increase on the show The Hot Ones. Then doing some EDA on a data set on spam emails."
 twitter-card:
   image: "thumbnail.jpg"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 08-15-2023
-categories: [R, R-code, Code-Along, TidyTuesday, corrplot] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, code-along, TidyTuesday, corrplot] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-08-15-TidyTuesday-Twofer
+  url: https://lsinks.github.io/posts/2023-08-15-TidyTuesday-Twofer/tidytuesday-twofer.html
 image: "thumbnail.jpg"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
@@ -147,7 +145,7 @@ spam <- tuesdata$spam
 All the variables are complete. This is a subset of the data submitted to the [UCI Machine Learning Repository](https://archive.ics.uci.edu/dataset/94/spambase). Looking at [the data dictionary](https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-08-15/readme.md#data-dictionary), we might expect all the variable to be positively correlated with spam.
 
 | variable | class     | description                                                              |
-|----------|-----------|--------------------------------------------------------------------------|
+|------------|------------|------------------------------------------------|
 | crl.tot  | double    | Total length of uninterrupted sequences of capitals                      |
 | dollar   | double    | Occurrences of the dollar sign, as percent of total number of characters |
 | bang     | double    | Occurrences of '!', as percent of total number of characters             |

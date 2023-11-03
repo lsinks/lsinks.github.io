@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Louise E. Sinks">
 <meta name="dcterms.date" content="2023-06-20">
 <meta name="description" content="TidyTuesday: UFO Sightings">
 
@@ -205,8 +204,8 @@ cookieconsent.run({
     <div class="quarto-category">R</div>
     <div class="quarto-category">TidyTuesday</div>
     <div class="quarto-category">R-code</div>
-    <div class="quarto-category">Code-Along</div>
-    <div class="quarto-category">Data-Viz</div>
+    <div class="quarto-category">code-along</div>
+    <div class="quarto-category">data visualization</div>
   </div>
   </div>
 
@@ -707,7 +706,7 @@ cookieconsent.run({
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 18</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#sthis is the re-coding step from the tidytuesday data</span></span>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the re-coding step from the tidytuesday data</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>combined2 <span class="ot">&lt;-</span> combined <span class="sc">%&gt;%</span></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>       <span class="co"># Recode "images" to TRUE/FALSE, and replace NAs while we're at it.</span></span>
@@ -768,7 +767,7 @@ cookieconsent.run({
 <pre><code>[1] 1863</code></pre>
 </div>
 </div>
-<p>So this method of recoding works. My approach would be to first copy the entire processing code from line 140 and update the coding of images at 890 and re-run the whole thing and see what was produced. But more detailed checking of other steps might be required, depending on the application.</p>
+<p>So this method of recoding works. My approach would be to first <a href="https://github.com/jonthegeek/apis/blob/main/01_ufo-data.qmd">copy the entire processing code</a> from line 140 onwards and update the coding of images at 890 and re-run the whole thing and see what was produced. But more detailed checking of other steps might be required, depending on the application.</p>
 
 
 

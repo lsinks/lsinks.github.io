@@ -3,13 +3,11 @@ title: "An Introduction to Web Scraping Using rvest"
 description: "Web scraping data with rvest to enhance the information in the Tombstone Project." 
 twitter-card:
   image: "thumbnail.jpg"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 09-08-2023
-categories: [R, R-code, Data-Viz, tombstone, regex, web scraping, rvest, data cleaning, TidyTuesday] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, data visualization, tombstone, regex, web scraping, rvest, data cleaning, tidyTuesday] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstones/web-scraping
+  url: https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstones/web-scraping.html
 image: "thumbnail.jpg"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
