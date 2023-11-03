@@ -3,13 +3,11 @@ title: "A Tidymodels Tutorial: A Structural Approach"
 description: "Exploring the different steps for modeling"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 04-10-2023
-categories: [R, R-code, tidymodels, Machine Learning] # self-defined categories
+date-modified: last-modified
+categories: [R, R-code, tidymodels, machine learning, hyperparameters, workflows] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial
+  url: https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---

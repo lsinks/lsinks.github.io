@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Louise E. Sinks">
+<meta name="dcterms.date" content="2023-09-08">
+<meta name="description" content="Web scraping data with rvest to enhance the information in the Tombstone Project.">
+
+<title>Louise E. Sinks - An Introduction to Web Scraping Using rvest</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/videojs/video.min.js"></script>
+<link href="../../site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - An Introduction to Web Scraping Using rvest">
+<meta name="twitter:description" content="Web scraping data with rvest to enhance the information in the Tombstone Project.">
+<meta name="twitter:image" content="https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstone/thumbnail.jpg">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html" rel="" target="">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me/ CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../currentprojects.html" rel="" target="">
+ <span class="menu-text">Current Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#tombstone-project-overview" id="toc-tombstone-project-overview" class="nav-link active" data-scroll-target="#tombstone-project-overview"><strong>Tombstone Project Overview</strong></a></li>
+  <li><a href="#loading-libraries-and-data" id="toc-loading-libraries-and-data" class="nav-link" data-scroll-target="#loading-libraries-and-data">Loading Libraries and Data</a></li>
+  <li><a href="#conceptual-overview-of-web-scraping" id="toc-conceptual-overview-of-web-scraping" class="nav-link" data-scroll-target="#conceptual-overview-of-web-scraping">Conceptual Overview of Web Scraping</a>
+  <ul class="collapse">
+  <li><a href="#ethics-and-legality-of-web-scraping" id="toc-ethics-and-legality-of-web-scraping" class="nav-link" data-scroll-target="#ethics-and-legality-of-web-scraping">Ethics and Legality of Web Scraping</a></li>
+  <li><a href="#anatomy-of-a-webpage-why-do-i-need-to-know-about-css-selectors" id="toc-anatomy-of-a-webpage-why-do-i-need-to-know-about-css-selectors" class="nav-link" data-scroll-target="#anatomy-of-a-webpage-why-do-i-need-to-know-about-css-selectors">Anatomy of a Webpage: Why do I need to know about CSS Selectors?</a></li>
+  </ul></li>
+  <li><a href="#web-scraping-with-rvest" id="toc-web-scraping-with-rvest" class="nav-link" data-scroll-target="#web-scraping-with-rvest">Web Scraping with rvest</a>
+  <ul class="collapse">
+  <li><a href="#reading-in-the-web-page" id="toc-reading-in-the-web-page" class="nav-link" data-scroll-target="#reading-in-the-web-page">Reading in the Web Page</a></li>
+  <li><a href="#deciding-which-html-elements-to-extract" id="toc-deciding-which-html-elements-to-extract" class="nav-link" data-scroll-target="#deciding-which-html-elements-to-extract">Deciding which HTML elements to Extract</a></li>
+  <li><a href="#a-real-webpage--rendered-and-source" id="toc-a-real-webpage--rendered-and-source" class="nav-link" data-scroll-target="#a-real-webpage--rendered-and-source">A Real Webpage- Rendered and Source</a></li>
+  <li><a href="#extracting-the-links-with-html_nodes" id="toc-extracting-the-links-with-html_nodes" class="nav-link" data-scroll-target="#extracting-the-links-with-html_nodes">Extracting the Links with html_nodes</a></li>
+  <li><a href="#extracting-the-links-with-html_elements" id="toc-extracting-the-links-with-html_elements" class="nav-link" data-scroll-target="#extracting-the-links-with-html_elements">Extracting the Links with html_elements</a></li>
+  <li><a href="#more-than-one-selector-works" id="toc-more-than-one-selector-works" class="nav-link" data-scroll-target="#more-than-one-selector-works">More than One Selector Works</a></li>
+  <li><a href="#web-scraping-larger-volumes-of-data" id="toc-web-scraping-larger-volumes-of-data" class="nav-link" data-scroll-target="#web-scraping-larger-volumes-of-data">Web Scraping Larger Volumes of Data</a></li>
+  </ul></li>
+  <li><a href="#dataframes-arent-tibbles" id="toc-dataframes-arent-tibbles" class="nav-link" data-scroll-target="#dataframes-arent-tibbles">Dataframes aren’t Tibbles!</a></li>
+  <li><a href="#cleaning-and-reformating-the-data" id="toc-cleaning-and-reformating-the-data" class="nav-link" data-scroll-target="#cleaning-and-reformating-the-data">Cleaning and Reformating the Data</a></li>
+  <li><a href="#matching-to-excel" id="toc-matching-to-excel" class="nav-link" data-scroll-target="#matching-to-excel">Matching to Excel</a></li>
+  <li><a href="#coding-with-ai-a-useful-tool-to-generate-regex" id="toc-coding-with-ai-a-useful-tool-to-generate-regex" class="nav-link" data-scroll-target="#coding-with-ai-a-useful-tool-to-generate-regex">Coding with AI: A Useful Tool to Generate Regex?</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">An Introduction to Web Scraping Using rvest</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">R-code</div>
+    <div class="quarto-category">Data-Viz</div>
+    <div class="quarto-category">tombstone</div>
+    <div class="quarto-category">regex</div>
+    <div class="quarto-category">web scraping</div>
+    <div class="quarto-category">rvest</div>
+    <div class="quarto-category">data cleaning</div>
+    <div class="quarto-category">TidyTuesday</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Web scraping data with rvest to enhance the information in the Tombstone Project.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://lsinks.github.io/">Louise E. Sinks</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 8, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 3, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="tombstone-project-overview" class="level2">
+<h2 class="anchored" data-anchor-id="tombstone-project-overview"><strong>Tombstone Project Overview</strong></h2>
+<p>I’m working on a project for my father that will culminate in a website for his genealogy research. <a href="https://lsinks.github.io/currentprojects.html">There are a couple of different parts</a> that I’m working on independently. In a <a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html">previous part of the project</a>, I matched an Excel sheet with GPS coordinates and some biographic data with photos of various tombstones. I then used that data to make a <a href="https://lsinks.github.io/posts/2023-08-14-mapping-tombstone/tombstone_mapping_leaflet.html">leaflet map of various family grave sites</a>.</p>
+<p>I wanted to add more information beyond the information on the tombstone. My father suggested that I add information from applications he submitted for membership into the SAR. SAR, Sons of the American Revolution, is a society of men who can trace their lineage back to someone who served in the American Revolutionary War. Some of the application material is available on their website. He indicated that adding the links to his spreadsheet would be a lot of typing. I saw this material was openly available on the SAR website, so this would be an ideal task to solve with web scraping. (It turns out that there aren’t that many links after all, but it was helpful as a learning exercise.</p>
+<p>This blog post deals with scraping the data from the website, wrangling it into a format where it could be matched against my father’s spreadsheet, and then looking for matches. (Every part of this series has ended up being more data wrangling and cleaning than I could have envisioned with just a touch of whatever neat thing I actually wanted to do.) I’ll also talk a bit about including some code from Google Bard.</p>
+<p>The thumbnail for this post is the gravestone of Ebenezer Frost, one of the potential matches. You can see why birth and death dates are difficult to extract from the stone.</p>
+</section>
+<section id="loading-libraries-and-data" class="level2">
+<h2 class="anchored" data-anchor-id="loading-libraries-and-data">Loading Libraries and Data</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># who doesn't want to be tidy?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) <span class="co"># relative file paths</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rvest) <span class="co"># web scraping package</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># for nicer tables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is my father’s spreadsheet after some clean-up. I go into the process in detail <a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html">here</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_file <span class="ot">&lt;-</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">readRDS</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">here</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="st">"posts"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"2023-08-04-data-cleaning-tombstone"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"tombstones_matched_final.RDS"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="conceptual-overview-of-web-scraping" class="level2">
+<h2 class="anchored" data-anchor-id="conceptual-overview-of-web-scraping">Conceptual Overview of Web Scraping</h2>
+<p>Web scraping is extracting data from a website. If you vaguely know what web scraping is, you probably envision high-volume automated processes that extract large quantities of data. This type of web scraping has some ethical and legal concerns, which I’ll discuss in a later section. However, many of the tools and processes you need to understand to web scrape effectively can be practiced in a low-volume, non-automated way. This is the skill set I’m going to focus on in this tutorial.</p>
+<ol type="1">
+<li>Acquire the webpage</li>
+<li>Identify the HTML elements you wish to extract</li>
+<li>Clean and wrangle the data into a format you can work with</li>
+<li>Automate by looping through web pages to acquire additional information</li>
+</ol>
+<section id="ethics-and-legality-of-web-scraping" class="level3">
+<h3 class="anchored" data-anchor-id="ethics-and-legality-of-web-scraping">Ethics and Legality of Web Scraping</h3>
+<p>Do your research before you start a web scraping project, particularly if you intend to collect a high volume of data. If there is an alternate way to get the data, such as through an API, you should probably use that method over web scraping. Small-volume, publically accessible data scraped for non-commercial use is likely fine, both legally and ethically.</p>
+<p>R for Data Science (2e) by Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund has a really nice overview of <a href="https://r4ds.hadley.nz/webscraping">potential issues to consider before starting a web scraping project</a>. Luke Barousse has a great <a href="https://www.youtube.com/watch?v=1kU_ASADlPY">YouTube video about a web scraping project he did that scraped data from LinkedIn</a> that ended with his account access being restricted.</p>
+<p>The data involved in this project involves information about people long dead, except for information I’ve shared about myself or my father, which I have permission to share. This is a very small project involving collecting data from a single webpage and is for non-commercial use.</p>
+</section>
+<section id="anatomy-of-a-webpage-why-do-i-need-to-know-about-css-selectors" class="level3">
+<h3 class="anchored" data-anchor-id="anatomy-of-a-webpage-why-do-i-need-to-know-about-css-selectors">Anatomy of a Webpage: Why do I need to know about CSS Selectors?</h3>
+<p>Modern webpages consist of HTML tags, which define the structure; CSS files, which define the style; and JavaScript files, which create interactivity. HTML tags are usually a pair of tags that enclose content and attributes. The html element is the tag, content, and attributes. The opening tag looks like <code>&lt;tag&gt;</code> while the closing tag looks like <code>&lt;/tag&gt;</code>. In between the tags, you can have content, attributes, and other tags. HTML is hierarchical, and the relationship between tags is described using the language of families. The tag within a tag would be a child. The higher level tag would be a parent. Sibling tags are children of the same parent tag. All of this is important because to select the information you want, you will often need to describe the hierarchy to get to the correct content.</p>
+<p>The formatting and styling of a webpage are generated with cascading styling sheets (CSS). These files describe how specific elements of the HTML should look. For example, you might want to make the h1 header quite large. You would do that in the CSS file with code like this:</p>
+<p><code>h1 {   font-size 72px; }</code></p>
+<p>The CSS file selects the HTML elements using something called CSS selectors. The format of CSS selectors allows you to create complicated selectors- for example, to select the first entry of a list or all children of a table. Many web scraping tools use CSS selectors to extract the desired elements from the webpage. I initially found this confusing since I was trying to extract HTML tags, and it wasn’t made clear that this was using CSS selectors. It made googling for more information difficult as well since I wasn’t using the correct terminology. So, even though you may not be doing any web design, you should be familiar with CSS selectors if you intend to web scrape.</p>
+<p>There is a cheat sheet <a href="https://www.freecodecamp.org/news/css-selectors-cheat-sheet/">here</a> that shows some of the more advanced selectors and a great resource showing all different types of CSS selectors <a href="https://www.w3schools.com/css/css_selectors.asp">here</a>.</p>
+</section>
+</section>
+<section id="web-scraping-with-rvest" class="level2">
+<h2 class="anchored" data-anchor-id="web-scraping-with-rvest">Web Scraping with rvest</h2>
+<p>I decided to use the <a href="https://CRAN.R-project.org/package=rvest">rvest package</a> for web scraping. I was introduced to it through <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday</a>, specifically the <a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2023/2023-04-25/readme.md">London Marathon dataset</a>, which was drawn from the <a href="https://github.com/nrennie/LondonMarathon">London Marathon package</a>. The author of the package, Nicola Rennie, has a tutorial on how she used <a href="https://nrennie.rbind.io/blog/web-scraping-rvest-london-marathon/">web scraping to create the package</a>.</p>
+<p>rvest is a tidyverse package and is installed with the installation of tidyverse. However, it is not <a href="https://www.tidyverse.org/packages/">a core tidyverse package</a> and does need to be loaded separately with a call to <code>library()</code>.</p>
+<p>For politeness’s sake, I am working on a downloaded copy of the webpage. The function <code>read_html()</code> can also take a URL to read directly from a website. You don’t want to repeatedly be pulling the same data from a website as you are getting your code to work. So you can either work with a downloaded copy or use read_html once and then perform all your manipulations on a copy so you don’t have to pull the data again if you mess up your cleaning/wrangling.</p>
+<p>There is a simple example on the <a href="https://rvest.tidyverse.org/articles/rvest.html">webscraping using rvest</a>. This vignette illustrates basic HMTL and CSS selectors to extract them. The rvest webpage recommends using the <a href="https://rvest.tidyverse.org/articles/selectorgadget.html">SelectorGadget</a> to identify the elements you want to extract. There are also instructions at the <a href="https://selectorgadget.com/">SelectorGadget homepage</a>. I didn’t use SelectorGadget when writing my code, but I did go back and try it when I was writing the tutorial, and I didn’t have much luck. I think you still need to know a decent amount about HTML in order to be able to get useful answers from it. In my case, I don’t think there is a selector to extract only the information I wanted. I think you have to select lots of information and do additional extracting in the code.</p>
+<section id="reading-in-the-web-page" class="level3">
+<h3 class="anchored" data-anchor-id="reading-in-the-web-page">Reading in the Web Page</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>sar <span class="ot">&lt;-</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_html</span>(<span class="st">"Display Member - 121743 - John Douglas Sinks Ph.D..html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What I have now in sar is an XML document object. This seems like a simple list, but it is actually a very complicated object consisting of multiple nested lists.</p>
+</section>
+<section id="deciding-which-html-elements-to-extract" class="level3">
+<h3 class="anchored" data-anchor-id="deciding-which-html-elements-to-extract">Deciding which HTML elements to Extract</h3>
+<p>The next part is the part that I haven’t found a great tutorial on that I can refer you to. Nor do I have a great idea of how to teach this- other than trial and error. This has been the main block to publishing this section of the project. So, I will walk through what I did as an example.</p>
+<p>Okay, so how did I actually find the proper CSS selector to extract the HTML elements I wanted, given that GadgetSelector didn’t work well?</p>
+<p>I viewed the source code for the webpage (usually by right-clicking in the browser and clicking view source) and just looked for the elements I wanted.</p>
+<p>Most tutorials on CSS selectors illustrate them with very simple HTML pages; the rvest vignette is a perfect case in point. However, when you actually go to scrape a page, there is a huge jump in (apparent) complexity.</p>
+</section>
+<section id="a-real-webpage--rendered-and-source" class="level3">
+<h3 class="anchored" data-anchor-id="a-real-webpage--rendered-and-source">A Real Webpage- Rendered and Source</h3>
+<p>This is what the webpage I want to scrape from looks like. It doesn’t look particularly complicated. There are 74 rows in the table.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="webpage.mp4"></video></div>
+<p>Then you view the source code:</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video2" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="source.mp4"></video></div>
+<p>There are 2260 lines of code involved in making that webpage!</p>
+<p>So, I searched (Ctrl-f in Chrome) in the source code page for the first name in the table, PHELPS. It shows up at line 451. This is the entire line:</p>
+<blockquote class="blockquote">
+<p>&lt;td&gt;&lt;a href=“<a href="https://sarpatriots.sar.org/patriot/display/335209" class="uri">https://sarpatriots.sar.org/patriot/display/335209</a>”&gt;&lt;span style=“display:inline;color: #003366”&gt; &lt;span style=“color:#003366” class=“glyphicon glyphicon-user”&gt;&lt;/span&gt; John PHELPS &lt;small&gt; (P-335209)&lt;/small&gt;&lt;/span&gt;&lt;/a&gt; &lt;/td&gt;</p>
+</blockquote>
+<p>I see that it is wrapped in td tags. This means this item is being coded as a table cell element. That’s good news- if all the data is actually encoded as a table, then it is much easier to extract. I can look up how a table should be formatted in HTML. I found a great resource at the W3Schools: here is <a href="https://www.w3schools.com/tags/tag_td.asp">their page on tables</a>.</p>
+<p>A table should be tagged as a table with <code>&lt;table&gt;</code> and the closing tag <code>&lt;/table&gt;.</code></p>
+<p>Each row should be tagged with <code>&lt;tr&gt;</code> and each cell with <code>&lt;td&gt;</code></p>
+<blockquote class="blockquote">
+<p>&lt;table&gt;<br>
+&nbsp;&nbsp;&lt;tr&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;Cell A&lt;/td&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;td&gt;Cell B&lt;/td&gt;<br>
+&nbsp;&nbsp;&lt;/tr&gt;<br>
+&lt;/table&gt;</p>
+</blockquote>
+<p>Knowing this, I can now search the source code for <code>table</code>. Why do I need to do this? If there are multiple tables on the page, I want to make sure I extract the correct one. Luckily for me, there is only one table.</p>
+<p>If you only cared about the text in a table, you could easily extract it with <code>html_table()</code>. I want the text and the links, so I need to identify selectors to get to the hyperlinks.</p>
+<p>I also know that there are a lot of hyperlinks on this page, so my selector might involve children of the table, or it might involve something related to the cell itself (td). I can’t just choose every hyperlink, or I’d have a pile of trash to sort through.</p>
+<p>This is how you’d pull out all the hyperlinks.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>all_hyperlinks <span class="ot">&lt;-</span> sar <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_nodes</span>(<span class="at">css =</span> <span class="st">"a"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(all_hyperlinks)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{xml_nodeset (6)}
+[1] &lt;a class="navbar-brand" style="padding:10px 15px" href="https://sarpatrio ...
+[2] &lt;a href="https://sarpatriots.sar.org/patriot/search/" data-toggle="toolti ...
+[3] &lt;a href="https://sarpatriots.sar.org/member/search/" data-toggle="tooltip ...
+[4] &lt;a href="https://sarpatriots.sar.org/application/SearchDescendants/" data ...
+[5] &lt;a href="https://sarpatriots.sar.org/Biographies/search/" data-toggle="to ...
+[6] &lt;a href="https://sarpatriots.sar.org/cemetery/search/" data-toggle="toolt ...</code></pre>
+</div>
+</div>
+<p>The first few are related to the navigation information at the top of the page. So, I do want a more sophisticated selector.</p>
+<p>I need to understand how the table and rows are structured so I can construct the best selector. A row contains 5 cells. The first row is a header row.</p>
+<p><img src="table_structure.png" class="img-fluid"></p>
+<p>The <code>&lt;th&gt;</code> tag is a child element of <code>&lt;tr&gt;</code> and represents table header elements. It should be used instead of <code>&lt;td&gt;</code> for the header elements. Again, looking at the source code and searching for that tag, I can verify that is true. The header row could just be coded as regular table cells, in which case I would need to discard that information during the data cleaning. Again, I’m lucky, and the header is properly encoded with `th’ tags.</p>
+<p>My goal is to extract the patriot name and the link associated with it. There are actually 3 columns with links:</p>
+<ol type="1">
+<li><p><strong>Patriot Name</strong>, which goes to another page with biographical information</p></li>
+<li><p><strong>View Application Detail</strong>, which goes to a page with an abbreviated genealogy.</p></li>
+<li><p><strong>Click to Purchase</strong>, which goes to a page allowing you to order the full application if you are a member</p></li>
+</ol>
+<p>For my purpose, the link under Patriot Name has the most interesting information and is the one I want. But I’m going to end up with all the links, so I could use any of them.</p>
+<p>Since I know I want a hyperlink, I need to understand how that type of element is encoded. Again, the <a href="https://www.w3schools.com/tags/tag_a.asp">W3Schools has a great explanation for hyperlinks</a>.</p>
+<p>A hyperlink uses the <code>a' tag. The</code>a’ tag has two parts: the hyperlink, which is the attribute (comes after <code>href =</code> ), and the text. The plain text part follows the URL and may also include styling. If we go back to the cell I initially extracted for PHELPS, the <code>href = URL</code> is clear. Then there are some codes for styling, and then the text John PHELPS, more styling, and then a number. The name and the number (P-335209) are both in the text of this element.</p>
+<blockquote class="blockquote">
+<p>&lt;td&gt;&lt;a href=“<a href="https://sarpatriots.sar.org/patriot/display/335209" class="uri">https://sarpatriots.sar.org/patriot/display/335209</a>”&gt;&lt;span style=“display:inline;color: #003366”&gt; &lt;span style=“color:#003366” class=“glyphicon glyphicon-user”&gt;&lt;/span&gt; John PHELPS &lt;small&gt; (P-335209)&lt;/small&gt;&lt;/span&gt;&lt;/a&gt; &lt;/td&gt;</p>
+</blockquote>
+<p>Note that when I played with the SelectorGadget, I could never get it to give me the selector for the hyperlinks. I could get the cell element <code>&lt;td&gt;</code>, or I could get <code>&lt;span&gt;</code>, which you can see is a child of the hyperlink. Even if you could get the hyperlink, I don’t know that it is possible to get just the column of hyperlinks that you wanted. I certainly couldn’t make it give me just the <code>&lt;span&gt;</code> of the column I wanted. If you think SelectorGadget will get you to exactly and only the content you want, then you might be frustrated.</p>
+</section>
+<section id="extracting-the-links-with-html_nodes" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-the-links-with-html_nodes">Extracting the Links with html_nodes</h3>
+<p>To get the links that I wanted, I found an <a href="https://stackoverflow.com/questions/63093926/retrieve-link-from-html-table-with-rvest">example on Stack Overflow</a>. (As a side note, I just learned that you could <a href="https://quarto.org/docs/authoring/code-annotation.html">annotate code in Quarto</a>. If you like the annotations better than free-form explanations of the code, please let me know in a comment.)</p>
+<p>I’ve been talking about CSS selectors, but you can also extract elements using a notation called XPATH. That is what the Stack Overflow solution uses. I believe you can build much more complicated selectors using XPATH, but for something basic, it is probably overkill. Here is an <a href="https://www.scraperapi.com/blog/xpath-cheat-sheet/">overview/cheat sheet</a>. Datacamp also has a <a href="https://app.datacamp.com/learn/courses/web-scraping-in-r">course on web scraping in R</a> where they go through selecting with CSS selectors and XPath, but I honestly found it very confusing. I took the course twice (and did the coding for this project in between) and still couldn’t solve many of the problems.</p>
+<p>Anyway, here we go:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-5"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-5-1" class="code-annotation-target"><a href="#annotated-cell-5-1" aria-hidden="true" tabindex="-1"></a>link_nodes <span class="ot">&lt;-</span> sar <span class="sc">%&gt;%</span> <span class="fu">html_nodes</span>(<span class="at">xpath =</span> <span class="st">"//table//a"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-5-2" class="code-annotation-target"><a href="#annotated-cell-5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#link_nodes &lt;- sar %&gt;% html_nodes("table a")</span></span>
+<span id="annotated-cell-5-3"><a href="#annotated-cell-5-3" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-5-4" class="code-annotation-target"><a href="#annotated-cell-5-4" aria-hidden="true" tabindex="-1"></a>link_text  <span class="ot">&lt;-</span> link_nodes <span class="sc">%&gt;%</span> <span class="fu">html_text</span>()</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-5-5" class="code-annotation-target"><a href="#annotated-cell-5-5" aria-hidden="true" tabindex="-1"></a>text_df <span class="ot">=</span> <span class="fu">as.data.frame</span>(link_text)</span>
+<span id="annotated-cell-5-6"><a href="#annotated-cell-5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-5-7"><a href="#annotated-cell-5-7" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="annotated-cell-5-8"><a href="#annotated-cell-5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (index <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(text_df))) {</span>
+<span id="annotated-cell-5-9"><a href="#annotated-cell-5-9" aria-hidden="true" tabindex="-1"></a>  text_df<span class="sc">$</span>url[index] <span class="ot">&lt;-</span> link_nodes[index] <span class="sc">%&gt;%</span>  <span class="fu">html_attr</span>(<span class="st">"href"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-5" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-5-10" class="code-annotation-target"><a href="#annotated-cell-5-10" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-5" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="1" data-code-annotation="1">Select the elements we want out of the HTML using <code>rvest::html_nodes()</code>. The XPath code specifies that I want `a’ tags that are children of the table. Store it in link_nodes.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="2" data-code-annotation="2">An alternate method is to use the more standard CSS selectors, but again, we want the <code>&lt;a&gt;</code> elements that are children of the table. It is commented out here, but it produces identical results as 1.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="4" data-code-annotation="3">The link_node contains both the URL and the text. Here, I extract the text. There are <a href="https://rvest.tidyverse.org/reference/html_text.html">two methods in the rvest package</a>: <code>html_text()</code> is faster but might include formatting information relating to whitespace. <code>html_text2()</code> is slower but produces cleaner output.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="5" data-code-annotation="4">Now, I store the text in a dataframe.</span>
+</dd>
+<dt data-target-cell="annotated-cell-5" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-5" data-code-lines="10" data-code-annotation="5">Now, I loop through the text dataframe and add on the matching URL that we extract from link_nodes using <code>html_attr("href")</code>. I had mentioned that the elements could contain attributes- attributes are additional features of the element and are expressed in the code as <code>attribute = value</code>. In this case, the format is something like <code>href= "https://sarpatriots.sar.org/patriot/display/335209"</code></span>
+</dd>
+</dl>
+</div>
+</div>
+<p>So now I have a dataframe with the text and the URL stored separately.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(text_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                                    link_text
+1                                   John  PHELPS   (P-335209)
+2                                                            
+3 Click to Purchase\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t
+4                                  Moses   ALLEN   (P-102709)
+5                                                            
+6 Click to Purchase\n\t\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t
+                                                      url
+1      https://sarpatriots.sar.org/patriot/display/335209
+2  https://sarpatriots.sar.org/application/display/246742
+3 https://sarpatriots.sar.org/application/purchase/246742
+4      https://sarpatriots.sar.org/patriot/display/102709
+5  https://sarpatriots.sar.org/application/display/246757
+6 https://sarpatriots.sar.org/application/purchase/246757</code></pre>
+</div>
+</div>
+<p>There is a bunch of whitespace (<code>\n</code>, <code>\t</code>) information in some of the entries (new line and tab markers). This perhaps would have been handled with <code>html_text2</code>. We’ve also lost some of the structure that the table had. Each hyperlink is extracted into its own row in the <code>text_df</code>, but 3 of these text_df rows correspond to one row in our webpage table. As I mentioned, I want the link associated with the Patriot name, so I can just take every third row of this text_df table and discard the rest. If I wanted a different link associated with the name, I could do that too.</p>
+<p>Now, I’m creating an index to subset my rows. (This doesn’t need to be a separate variable. I’m just doing that for clarity.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>subset_index <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(text_df), <span class="dv">3</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(subset_index)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  4  7 10 13 16</code></pre>
+</div>
+</div>
+<p>Then, I am subsetting the dataframe using subset_index for the rows and taking all columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>raw_data <span class="ot">&lt;-</span> text_df[subset_index,]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                        link_text
+1                       John  PHELPS   (P-335209)
+4                      Moses   ALLEN   (P-102709)
+7         William  HARRELL/HORRALL Jr  (P-185027)
+10      Aaron   VAN CLEVE/VAN CLEAVE   (P-310164)
+13     William   VAN CLEVE/VANCLEAVE   (P-309334)
+16           Richard   VEATCH/VEETCH   (P-310578)
+                                                  url
+1  https://sarpatriots.sar.org/patriot/display/335209
+4  https://sarpatriots.sar.org/patriot/display/102709
+7  https://sarpatriots.sar.org/patriot/display/185027
+10 https://sarpatriots.sar.org/patriot/display/310164
+13 https://sarpatriots.sar.org/patriot/display/309334
+16 https://sarpatriots.sar.org/patriot/display/310578</code></pre>
+</div>
+</div>
+</section>
+<section id="extracting-the-links-with-html_elements" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-the-links-with-html_elements">Extracting the Links with html_elements</h3>
+<p>The <a href="https://rvest.tidyverse.org/reference/rename.html">html_nodes() function used above has been superseded</a> by <a href="https://rvest.tidyverse.org/reference/html_element.html">html_elements()</a>. They should function exactly the same since the notes say that the function is merely renamed. It is generally best to use the most current version of the functions, so here is the above code updated. I’ve also switched to the CSS Selector instead of the XPATH, just to illustrate it produces the same results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>link_nodes2 <span class="ot">&lt;-</span> sar <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_elements</span>(<span class="st">"table a"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>link_text2  <span class="ot">&lt;-</span> link_nodes2 <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_text2</span>()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>text_df2 <span class="ot">=</span> <span class="fu">as.data.frame</span>(link_text2)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (index <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(text_df2))) {</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  text_df2<span class="sc">$</span>url[index] <span class="ot">&lt;-</span> link_nodes2[index] <span class="sc">%&gt;%</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">html_attr</span>(<span class="st">"href"</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>raw_data2 <span class="ot">&lt;-</span> text_df2[subset_index, ]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               link_text2
+1                  John PHELPS (P-335209)
+4                  Moses ALLEN (P-102709)
+7   William HARRELL/HORRALL Jr (P-185027)
+10  Aaron VAN CLEVE/VAN CLEAVE (P-310164)
+13 William VAN CLEVE/VANCLEAVE (P-309334)
+16       Richard VEATCH/VEETCH (P-310578)
+                                                  url
+1  https://sarpatriots.sar.org/patriot/display/335209
+4  https://sarpatriots.sar.org/patriot/display/102709
+7  https://sarpatriots.sar.org/patriot/display/185027
+10 https://sarpatriots.sar.org/patriot/display/310164
+13 https://sarpatriots.sar.org/patriot/display/309334
+16 https://sarpatriots.sar.org/patriot/display/310578</code></pre>
+</div>
+</div>
+<p>You can see it produces the same results. I did use <code>html_text2()</code>, which did handle the whitespace issues.</p>
+</section>
+<section id="more-than-one-selector-works" class="level3">
+<h3 class="anchored" data-anchor-id="more-than-one-selector-works">More than One Selector Works</h3>
+<p>Many times, there are several different selectors that work. The URLs I want are also children of the table cell elements (<code>&lt;td&gt;</code>), so you could use that instead of children of the table. If you were scraping over multiple pages, you might want to check and see if one selector was more universal than others. Here, I think “table a” is the better choice because it gives an idea of what is going on even if you don’t know HTML or CSS selectors. “td” just isn’t as obvious.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>link_nodes3 <span class="ot">&lt;-</span> sar <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_elements</span>(<span class="st">"td a"</span>)  </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>link_text3 <span class="ot">&lt;-</span> link_nodes3 <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">html_text2</span>()  </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>text_df3 <span class="ot">=</span> <span class="fu">as.data.frame</span>(link_text3) </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (index <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(text_df3))) {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  text_df2<span class="sc">$</span>url[index] <span class="ot">&lt;-</span> link_nodes3[index] <span class="sc">%&gt;%</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">html_attr</span>(<span class="st">"href"</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>raw_data3 <span class="ot">&lt;-</span> text_df2[subset_index,]</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               link_text2
+1                  John PHELPS (P-335209)
+4                  Moses ALLEN (P-102709)
+7   William HARRELL/HORRALL Jr (P-185027)
+10  Aaron VAN CLEVE/VAN CLEAVE (P-310164)
+13 William VAN CLEVE/VANCLEAVE (P-309334)
+16       Richard VEATCH/VEETCH (P-310578)
+                                                  url
+1  https://sarpatriots.sar.org/patriot/display/335209
+4  https://sarpatriots.sar.org/patriot/display/102709
+7  https://sarpatriots.sar.org/patriot/display/185027
+10 https://sarpatriots.sar.org/patriot/display/310164
+13 https://sarpatriots.sar.org/patriot/display/309334
+16 https://sarpatriots.sar.org/patriot/display/310578</code></pre>
+</div>
+</div>
+</section>
+<section id="web-scraping-larger-volumes-of-data" class="level3">
+<h3 class="anchored" data-anchor-id="web-scraping-larger-volumes-of-data">Web Scraping Larger Volumes of Data</h3>
+<p>This is everything I need, but if I were working on a problem where I needed to scrape multiple pages, this is what I’d do. The actual URL of the webpage is https://sarpatriots.sar.org/member/display/121743. It saved the webpage with information about my father’s name, but that isn’t actually in the URL. So, I’d try a few URLs with different 6-digit numbers and see if they produced web pages with the same data. They do, with the exception that some pages say, “No known ancestors within this Online Database.”</p>
+<p>I’d try to figure out what the range of valid numbers is. For example, 021743 isn’t valid and produces a page that says, “This is an invalid Member Number. Please check your records and try again.”</p>
+<p>Then, I’d loop through all the valid member numbers and get the data. I’d have error handling for pages without a table. And I’d use a package like <a href="https://CRAN.R-project.org/package=polite">polite</a> to make sure that the automated requests were being made using best practices.</p>
+</section>
+</section>
+<section id="dataframes-arent-tibbles" class="level2">
+<h2 class="anchored" data-anchor-id="dataframes-arent-tibbles">Dataframes aren’t Tibbles!</h2>
+<p>Tibbles and data frames are usually entirely interchangeable, but sometimes you do run into the differences. The tidyverse doesn’t approve of row names or numbers, so they aren’t used. Dataframes do have row numbers, and you can see that R kept the indexing of the raw_data, so the row numbers are by 3s. However, indexing is, as usual, by position. So rev_war$name_unclean[3] returns the name associated with the row number 7. This is annoying and makes it difficult to pull out test cases. So, this should be fixed. This issue will pop up when you use data frames but not when you use tibbles.</p>
+<p>So, two ways to fix this:</p>
+<ol type="1">
+<li>Convert to a tibble using <a href="https://tibble.tidyverse.org/reference/as_tibble.html"><code>as_tibble()</code></a>.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rev_war_tibble <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(raw_data)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rev_war_tibble)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  link_text                                        url                          
+  &lt;chr&gt;                                            &lt;chr&gt;                        
+1 "    John  PHELPS   (P-335209)"                  https://sarpatriots.sar.org/…
+2 "    Moses   ALLEN   (P-102709)"                 https://sarpatriots.sar.org/…
+3 "    William  HARRELL/HORRALL Jr  (P-185027)"    https://sarpatriots.sar.org/…
+4 "    Aaron   VAN CLEVE/VAN CLEAVE   (P-310164)"  https://sarpatriots.sar.org/…
+5 "    William   VAN CLEVE/VANCLEAVE   (P-309334)" https://sarpatriots.sar.org/…
+6 "    Richard   VEATCH/VEETCH   (P-310578)"       https://sarpatriots.sar.org/…</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Reassign the indexing of the data frame.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                        link_text
+1                       John  PHELPS   (P-335209)
+4                      Moses   ALLEN   (P-102709)
+7         William  HARRELL/HORRALL Jr  (P-185027)
+10      Aaron   VAN CLEVE/VAN CLEAVE   (P-310164)
+13     William   VAN CLEVE/VANCLEAVE   (P-309334)
+16           Richard   VEATCH/VEETCH   (P-310578)
+                                                  url
+1  https://sarpatriots.sar.org/patriot/display/335209
+4  https://sarpatriots.sar.org/patriot/display/102709
+7  https://sarpatriots.sar.org/patriot/display/185027
+10 https://sarpatriots.sar.org/patriot/display/310164
+13 https://sarpatriots.sar.org/patriot/display/309334
+16 https://sarpatriots.sar.org/patriot/display/310578</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(raw_data) <span class="ot">=</span> <span class="fu">seq</span>(<span class="at">length =</span> <span class="fu">nrow</span>(raw_data))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(raw_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                       link_text
+1                      John  PHELPS   (P-335209)
+2                     Moses   ALLEN   (P-102709)
+3        William  HARRELL/HORRALL Jr  (P-185027)
+4      Aaron   VAN CLEVE/VAN CLEAVE   (P-310164)
+5     William   VAN CLEVE/VANCLEAVE   (P-309334)
+6           Richard   VEATCH/VEETCH   (P-310578)
+                                                 url
+1 https://sarpatriots.sar.org/patriot/display/335209
+2 https://sarpatriots.sar.org/patriot/display/102709
+3 https://sarpatriots.sar.org/patriot/display/185027
+4 https://sarpatriots.sar.org/patriot/display/310164
+5 https://sarpatriots.sar.org/patriot/display/309334
+6 https://sarpatriots.sar.org/patriot/display/310578</code></pre>
+</div>
+</div>
+<p>I’m going to continue with the reindexed data frame.</p>
+</section>
+<section id="cleaning-and-reformating-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-and-reformating-the-data">Cleaning and Reformating the Data</h2>
+<p>Now, to wrangle the text data into a usable form. I did more extensive data cleaning in the first part of the project, which you can find <a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html">here</a>.</p>
+<p>The link_text contains the name and an ID number, like John PHELPS (P-335209). This can be split into two components using <code>(</code> as a separator. Remember that special characters like <code>(</code> need to be escaped. So the actual separator is <code>" \\("</code>. I took the space also. Then I removed the other parenthesis with <code>str_replace()</code>. I used <a href="https://dplyr.tidyverse.org/reference/transmute.html">transmute</a> to do the final mutation and select the columns I wanted moving forward.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first, clean up the names</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> raw_data <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(link_text, <span class="at">sep =</span> <span class="st">" </span><span class="sc">\\</span><span class="st">("</span>, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"name_unclean"</span>, <span class="st">"id_unclean"</span>) ) </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up the ID number</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(name_unclean, url, <span class="at">SAR_ID =</span> <span class="fu">str_replace</span>(id_unclean, <span class="st">"</span><span class="sc">\\</span><span class="st">)"</span>, <span class="st">""</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The names are a mess. Women have “Mrs” prepended. The last names are in all caps and sometimes have multiple variations separated by a /. There are also Jr and Sr at the end of some. There are different numbers of leading and trailing spaces on the names.</p>
+<p>The whitespace, Jr/Sr, and Mrs issues are easy to deal with using tools from the stringr package. The “Mrs” is not useful at all, so I’m just going to replace it with” “via <code>str_replace()</code>. I’m going to remove the whitespace using <code>str_trim()</code>. I generally like to keep the original data so I can check the transformations, so these operations are in a new column name. I also made a suffix column for Jr/Sr and removed that info from the name column. I’m not changing the names to title case now because I’m going to use the fact that the last names are in upper case as part of my pattern matching later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove Mrs</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_replace</span>(name_unclean, <span class="st">"Mrs"</span>, <span class="st">""</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># There appear to be leading and tailing strings on the name</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_trim</span>(name, <span class="at">side =</span> <span class="fu">c</span>(<span class="st">"both"</span>))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Deal with Jr/Sr first</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">suffix =</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>             <span class="fu">str_detect</span>(name, <span class="st">"Jr"</span>) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Jr"</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>             <span class="fu">str_detect</span>(name, <span class="st">"Sr"</span>) <span class="sc">==</span> <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Sr"</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>             <span class="cn">TRUE</span> <span class="sc">~</span><span class="st">""</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>           )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Now remove the Jr and Sr from the name</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_replace</span>(name, <span class="st">"Jr"</span>, <span class="st">""</span>)</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_replace</span>(name, <span class="st">"Sr"</span>, <span class="st">""</span>)</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a><span class="co">#double check the white space issue</span></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_trim</span>(name, <span class="at">side =</span> <span class="fu">c</span>(<span class="st">"both"</span>))</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>That is all pretty straightforward.</p>
+<p>Now, how do we break this up?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rev_war<span class="sc">$</span>name[<span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "William  HARRELL/HORRALL"</code></pre>
+</div>
+</div>
+<p>The obvious choice would be to use the space(s) between the name to separate the string into two parts. This fails because of names like this:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>rev_war<span class="sc">$</span>name[<span class="dv">27</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Friderick William NAGEL/NAGLE"</code></pre>
+</div>
+</div>
+<p>I admit I used trial and error to figure this out. First note- using <code>str_split()</code> from <a href="https://stringr.tidyverse.org/">stringr</a> is not the way to go. I got hyper-focused on stringr functions since I was using the package so heavily. It creates a matrix of results in your data frame and not new columns of data. Use something from the <a href="https://tidyr.tidyverse.org/reference/separate_wider_delim.html"><code>separate()</code> family</a> from tidyr instead.</p>
+<p>I decided to do this stepwise. So the <code>remove = FALSE</code> flag needs to be set in <a href="https://tidyr.tidyverse.org/reference/separate.html"><code>separate()</code></a>, so I keep the original data. First, I got the first names by splitting on the pattern of space and then two or more capital letters. The two or more is necessary because of names like Friderick William. This gives the complete first name(s) and an incomplete last name because the separator is discarded. So you end up with AGEL/NAGLE, which I dumped in a column named trash. Here, I immediately deleted it, but it was handy for troubleshooting.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bard gave me a hint to get the regex!</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    name,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"first_name"</span>, <span class="st">"trash"</span>),</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">remove =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s+[A-Z]{2,}"</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Additional pieces discarded in 3 rows [4, 5, 25].</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rev_war)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         name_unclean
+1                      John  PHELPS  
+2                     Moses   ALLEN  
+3        William  HARRELL/HORRALL Jr 
+4      Aaron   VAN CLEVE/VAN CLEAVE  
+5     William   VAN CLEVE/VANCLEAVE  
+6           Richard   VEATCH/VEETCH  
+                                                 url   SAR_ID
+1 https://sarpatriots.sar.org/patriot/display/335209 P-335209
+2 https://sarpatriots.sar.org/patriot/display/102709 P-102709
+3 https://sarpatriots.sar.org/patriot/display/185027 P-185027
+4 https://sarpatriots.sar.org/patriot/display/310164 P-310164
+5 https://sarpatriots.sar.org/patriot/display/309334 P-309334
+6 https://sarpatriots.sar.org/patriot/display/310578 P-310578
+                           name first_name    trash suffix
+1                  John  PHELPS       John                
+2                 Moses   ALLEN      Moses                
+3      William  HARRELL/HORRALL    William /HORRALL     Jr
+4  Aaron   VAN CLEVE/VAN CLEAVE      Aaron                
+5 William   VAN CLEVE/VANCLEAVE    William                
+6       Richard   VEATCH/VEETCH    Richard  /VEETCH       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Delete the trash columns</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>trash)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Getting the last name was trickier because any separator I could think of would also catch the multiple first-name people. Back to stringr to use <a href="https://stringr.tidyverse.org/reference/str_extract.html"><code>str_extract()</code></a>. Basically, any chunk of text with two or more capital letters in a row followed by any number of any other type of character is extracted.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rev_war <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Last_name =</span> <span class="fu">str_extract</span>(name, <span class="st">"[A-Z]{2,}.+"</span>))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(rev_war)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         name_unclean
+1                      John  PHELPS  
+2                     Moses   ALLEN  
+3        William  HARRELL/HORRALL Jr 
+4      Aaron   VAN CLEVE/VAN CLEAVE  
+5     William   VAN CLEVE/VANCLEAVE  
+6           Richard   VEATCH/VEETCH  
+                                                 url   SAR_ID
+1 https://sarpatriots.sar.org/patriot/display/335209 P-335209
+2 https://sarpatriots.sar.org/patriot/display/102709 P-102709
+3 https://sarpatriots.sar.org/patriot/display/185027 P-185027
+4 https://sarpatriots.sar.org/patriot/display/310164 P-310164
+5 https://sarpatriots.sar.org/patriot/display/309334 P-309334
+6 https://sarpatriots.sar.org/patriot/display/310578 P-310578
+                           name first_name suffix            Last_name
+1                  John  PHELPS       John                      PHELPS
+2                 Moses   ALLEN      Moses                       ALLEN
+3      William  HARRELL/HORRALL    William     Jr      HARRELL/HORRALL
+4  Aaron   VAN CLEVE/VAN CLEAVE      Aaron        VAN CLEVE/VAN CLEAVE
+5 William   VAN CLEVE/VANCLEAVE    William         VAN CLEVE/VANCLEAVE
+6       Richard   VEATCH/VEETCH    Richard               VEATCH/VEETCH</code></pre>
+</div>
+</div>
+<p>Now to split on /. In this dataset, we can have 1-3 possible last names. The <code>separate</code> function requires that you know how many parts you are splitting the string into. If you tell the <code>separate()</code> function that you have 3 parts, it will create a warning for any strings that don’t have 3 parts. It will execute though, and it will fill in the missing parts with NAs and discard the extra parts. This actually happened when I separated out the first name above, but the discarded parts were all from the last name part, which I was trashing anyway.</p>
+<p>Separate has been superseded by other separate functions, so I’m going to demonstrate the use of the preferred function, <code>separate_wider_delim()</code> . <code>separate_wider_delim()</code>, unlike <code>separate()</code>, will kick up an error if you don’t have the right number of parts and fail to execute. However, you can run it in debug mode, and it will perform the splits and then tell you on a row-by-row basis if there were the right number of parts. I exploited this and then threw away the debugging info, removed the NAs, and changed the last names to title case. (Note that the first name column should be handled the same way since there is one name that is listed with two variations: Johannes/John .)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Now we need to split the names with /</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>rev_war_test <span class="ot">&lt;-</span> rev_war <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_wider_delim</span>(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    Last_name,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"V1"</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"V2"</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>              <span class="st">"V3"</span>),</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">delim =</span> <span class="st">"/"</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">too_few =</span> <span class="fu">c</span>(<span class="st">"debug"</span>),</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">too_many =</span> <span class="fu">c</span>(<span class="st">"debug"</span>),</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols_remove =</span> <span class="cn">FALSE</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Debug mode activated: adding variables `Last_name_ok`, `Last_name_pieces`, and
+`Last_name_remainder`.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rev_war_test <span class="ot">&lt;-</span> rev_war_test <span class="sc">%&gt;%</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name_unclean, first_name, V1, V2, V3, suffix, url, SAR_ID)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>rev_war_test <span class="ot">&lt;-</span> rev_war_test <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">V2 =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(V2), <span class="st">""</span>, V2),</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">V3 =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(V3), <span class="st">""</span>, V3),</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">V1 =</span> <span class="fu">str_to_title</span>(V1),</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">V2 =</span> <span class="fu">str_to_title</span>(V2),</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">V3 =</span> <span class="fu">str_to_title</span>(V3)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>         )</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>rev_war_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 74 × 8
+   name_unclean                 first_name V1    V2    V3    suffix url   SAR_ID
+   &lt;chr&gt;                        &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; 
+ 1 "    John  PHELPS  "         John       Phel… ""    ""    ""     http… P-335…
+ 2 "    Moses   ALLEN  "        Moses      Allen ""    ""    ""     http… P-102…
+ 3 "    William  HARRELL/HORRA… William    Harr… "Hor… ""    "Jr"   http… P-185…
+ 4 "    Aaron   VAN CLEVE/VAN … Aaron      Van … "Van… ""    ""     http… P-310…
+ 5 "    William   VAN CLEVE/VA… William    Van … "Van… ""    ""     http… P-309…
+ 6 "    Richard   VEATCH/VEETC… Richard    Veat… "Vee… ""    ""     http… P-310…
+ 7 "    Daniel   CHAPMAN  "     Daniel     Chap… ""    ""    ""     http… P-131…
+ 8 "    William  HORRALL Sr "   William    Horr… ""    ""    "Sr"   http… P-335…
+ 9 "    William   BALDWIN  "    William    Bald… ""    ""    ""     http… P-107…
+10 "    John  GOODALL/GOODALE … John       Good… "Goo… ""    ""     http… P-167…
+# ℹ 64 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="matching-to-excel" class="level2">
+<h2 class="anchored" data-anchor-id="matching-to-excel">Matching to Excel</h2>
+<p>So the ultimate goal is to match the URLs with names from my father’s spreadsheet to save him some typing [6,000 words later, I might be getting close to saving him a few keystrokes. :) ]</p>
+<p>I’m not going to go into too much detail here since the main point of this tutorial was web scraping and data cleaning.</p>
+<p>So, I have up to three variations on the name based on the last names. My plan was to match on the first variation, then for those that failed to match, match on the second variation, and so on.</p>
+<p>I was mildly hopeful that the first variation was the variation that my father used in his Excel table. So, I did a quick check using an inner join. My father had mentioned that there wouldn’t be many matches- maybe 5 or 6, because he hadn’t found most of the graves yet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>rev_war_test <span class="ot">&lt;-</span> rev_war_test <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">match_1 =</span> <span class="fu">paste0</span>(V1, <span class="st">" "</span>, first_name))</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>matched_records <span class="ot">&lt;-</span> rev_war_test <span class="sc">%&gt;%</span> </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(data_file, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"match_1"</span> <span class="ot">=</span> <span class="st">"full_name"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(match_1,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>         Surname,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>         First.Name,</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>         Middle.Name,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>         DOB_date,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>         DOD_date)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>matched_records <span class="sc">%&gt;%</span> <span class="fu">gt</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div id="yixptztogt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#yixptztogt table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#yixptztogt thead, #yixptztogt tbody, #yixptztogt tfoot, #yixptztogt tr, #yixptztogt td, #yixptztogt th {
+  border-style: none;
+}
+
+#yixptztogt p {
+  margin: 0;
+  padding: 0;
+}
+
+#yixptztogt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#yixptztogt .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#yixptztogt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#yixptztogt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#yixptztogt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yixptztogt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yixptztogt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#yixptztogt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#yixptztogt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#yixptztogt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#yixptztogt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#yixptztogt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#yixptztogt .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#yixptztogt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#yixptztogt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#yixptztogt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#yixptztogt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#yixptztogt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#yixptztogt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yixptztogt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#yixptztogt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#yixptztogt .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#yixptztogt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yixptztogt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#yixptztogt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#yixptztogt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yixptztogt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yixptztogt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#yixptztogt .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yixptztogt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#yixptztogt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#yixptztogt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yixptztogt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yixptztogt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#yixptztogt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#yixptztogt .gt_left {
+  text-align: left;
+}
+
+#yixptztogt .gt_center {
+  text-align: center;
+}
+
+#yixptztogt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#yixptztogt .gt_font_normal {
+  font-weight: normal;
+}
+
+#yixptztogt .gt_font_bold {
+  font-weight: bold;
+}
+
+#yixptztogt .gt_font_italic {
+  font-style: italic;
+}
+
+#yixptztogt .gt_super {
+  font-size: 65%;
+}
+
+#yixptztogt .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#yixptztogt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#yixptztogt .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#yixptztogt .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#yixptztogt .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#yixptztogt .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#yixptztogt .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="match_1">match_1</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Surname">Surname</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="First.Name">First.Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Middle.Name">Middle.Name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="DOB_date">DOB_date</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="DOD_date">DOD_date</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="match_1" class="gt_row gt_left">Chapman Daniel</td>
+<td headers="Surname" class="gt_row gt_left">Chapman</td>
+<td headers="First.Name" class="gt_row gt_left">Daniel</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Chapman Daniel</td>
+<td headers="Surname" class="gt_row gt_left">Chapman</td>
+<td headers="First.Name" class="gt_row gt_left">Daniel</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1863-07-05</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Horrall William</td>
+<td headers="Surname" class="gt_row gt_left">Horrall</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Baldwin William</td>
+<td headers="Surname" class="gt_row gt_left">Baldwin</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Frost Ebenezer</td>
+<td headers="Surname" class="gt_row gt_left">Frost</td>
+<td headers="First.Name" class="gt_row gt_left">Ebenezer</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Mory Gotthard</td>
+<td headers="Surname" class="gt_row gt_left">Mory</td>
+<td headers="First.Name" class="gt_row gt_left">Gotthard</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1752-03-20</td>
+<td headers="DOD_date" class="gt_row gt_right">1843-05-26</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Horlacher Daniel</td>
+<td headers="Surname" class="gt_row gt_left">Horlacher</td>
+<td headers="First.Name" class="gt_row gt_left">Daniel</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1735-08-04</td>
+<td headers="DOD_date" class="gt_row gt_right">1804-09-24</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Rockel Balzer</td>
+<td headers="Surname" class="gt_row gt_left">Rockel</td>
+<td headers="First.Name" class="gt_row gt_left">Balzer</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1707-11-10</td>
+<td headers="DOD_date" class="gt_row gt_right">1800-06-09</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Finch Isaac</td>
+<td headers="Surname" class="gt_row gt_left">Finch</td>
+<td headers="First.Name" class="gt_row gt_left">Isaac</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">1813-11-26</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Woolard John</td>
+<td headers="Surname" class="gt_row gt_left">Woolard</td>
+<td headers="First.Name" class="gt_row gt_left">John</td>
+<td headers="Middle.Name" class="gt_row gt_left">Edward</td>
+<td headers="DOB_date" class="gt_row gt_right">1872-01-21</td>
+<td headers="DOD_date" class="gt_row gt_right">1936-10-19</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Meredith Samuel</td>
+<td headers="Surname" class="gt_row gt_left">Meredith</td>
+<td headers="First.Name" class="gt_row gt_left">Samuel</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">1825-10-10</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Meredith Samuel</td>
+<td headers="Surname" class="gt_row gt_left">Meredith</td>
+<td headers="First.Name" class="gt_row gt_left">Samuel</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">1884-01-05</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Anderson Abraham</td>
+<td headers="Surname" class="gt_row gt_left">Anderson</td>
+<td headers="First.Name" class="gt_row gt_left">Abraham</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1776-03-10</td>
+<td headers="DOD_date" class="gt_row gt_right">1838-08-15</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Dorris William</td>
+<td headers="Surname" class="gt_row gt_left">Dorris</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">Scott</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Dorris William</td>
+<td headers="Surname" class="gt_row gt_left">Dorris</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">T</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">NA</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Dorris William</td>
+<td headers="Surname" class="gt_row gt_left">Dorris</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">H</td>
+<td headers="DOB_date" class="gt_row gt_right">NA</td>
+<td headers="DOD_date" class="gt_row gt_right">1857-08-10</td></tr>
+    <tr><td headers="match_1" class="gt_row gt_left">Dorris William</td>
+<td headers="Surname" class="gt_row gt_left">Dorris</td>
+<td headers="First.Name" class="gt_row gt_left">William</td>
+<td headers="Middle.Name" class="gt_row gt_left">NA</td>
+<td headers="DOB_date" class="gt_row gt_right">1818-11-28</td>
+<td headers="DOD_date" class="gt_row gt_right">1905-02-17</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>What we see is that many names are reused in the family, an issue I dealt <a href="https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html">with extensively while cleaning up my father’s spreadsheet</a>. Some, but not all, of the people in my father’s spreadsheet have birthdate (DOB) or death date (DOD) information. This could be used to rule out potential matches (for example, if someone was born after the War or if they were only 3 years old during the Revolutionary War). Since there is so much missing data, using dates to rule people in would not work. So, if I select only people alive during the American Revolutionary War and then match, I am potentially excluding the correct person if their DOB or DOD is NA in the spreadsheet.</p>
+</section>
+<section id="coding-with-ai-a-useful-tool-to-generate-regex" class="level2">
+<h2 class="anchored" data-anchor-id="coding-with-ai-a-useful-tool-to-generate-regex">Coding with AI: A Useful Tool to Generate Regex?</h2>
+<p>Large Language Models (LLM) like ChatGPT and Google Bard are trendy right now. I’ve seen a lot of people say that these AI models can be used to increase productivity across a variety of domains. All sorts of tools and services now have AI bonus features. Datacamp has AI in their workspaces and also for some of the course coding exercises. I haven’t been too impressed. Generally, syntax errors are caught, corrected, and explained, but deeper problems aren’t. I also found that the results often hyperfocus on syntax that is technically correct but not necessarily best or common practice. For example, in a dpylr join, you don’t need to specify the columns to join on if they have the same name in both dataframes. However, the AI would insist that not specifying the columns in the code was the problem.</p>
+<p>I’ve also played around with Google Bard for writing and summarizing writing, and the results ranged from generic to ridiculous.</p>
+<p>Anyway, as I was staring at the stringr cheatsheet trying to figure out the regex for the pattern space and then a capital letter, I thought that this might be the perfect use case for Bard.</p>
+<p>So:</p>
+<blockquote class="blockquote">
+<p>hi I need the regular expression for one or more spaces followed by a capital letter</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Sure, here is the regular expression for one or more spaces followed by a capital letter:</p>
+<p>Code snippet</p>
+<p>\s+[A-Z]</p>
+<p>Use code with caution. Learn more</p>
+<p>The \s metacharacter matches a single space character, and the + quantifier means that the space character can be matched one or more times. The [A-Z] character class matches any capital letter.</p>
+<p>So, this regular expression will match any string that contains one or more spaces followed by a capital letter. For example, it would match the strings “&nbsp; A”, ” &nbsp; B”, and “C”.</p>
+<p>Here is an example of how to use this regular expression in Python:</p>
+<p>Python</p>
+<p>import re</p>
+<p>string = “&nbsp; A”</p>
+<p>match = re.search(r”\s+[A-Z]“, string)</p>
+<p>if match:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;print(match.group())</p>
+<p>Use code with caution. Learn more</p>
+<p>This code will print the capital letter that is matched by the regular expression. In this case, the code will print the letter “A”.</p>
+<p>I hope this helps! Let me know if you have any other questions.</p>
+</blockquote>
+<p>I “read” regex much better than I can write it, so <code>"\s+[A-Z]"</code> was enough for me. It isn’t right, but it is almost right. The correct regex is <code>"\\s+[A-Z]"</code> .</p>
+<p>Just for fun, I asked Bard for the R code. I was using voice to text so my question is a bit garbled. Comma should be , of course.</p>
+<blockquote class="blockquote">
+<p>can you give me an example of how to use it in r comma for example in the tidyr function separate</p>
+<p>Sure, here is an example of how to use the regular expression in R, using the separate function from the tidyr package:</p>
+<p>R</p>
+<p>library(tidyr)</p>
+<p>data &lt;- data.frame(</p>
+<p>&nbsp;&nbsp;text = c(“&nbsp; A”, ” &nbsp; B”, “C”),</p>
+<p>&nbsp;&nbsp;stringsAsFactors = FALSE</p>
+<p>)</p>
+<p>data %&gt;% separate(text, into = c(“prefix”, “letter”), sep = r”\s+[A-Z]“)</p>
+<p>#&gt; # A tibble: 3 x 2</p>
+<p>#&gt; &nbsp; prefix letter</p>
+<p>#&gt; &nbsp; &lt;chr&gt; &nbsp; &lt;chr&gt;</p>
+<p>#&gt; 1 &nbsp; &lt;NA&gt; &nbsp; &nbsp; A</p>
+<p>#&gt; 2 &nbsp; &nbsp; &nbsp; B &nbsp; &nbsp; B</p>
+<p>#&gt; 3 &nbsp; &lt;NA&gt; &nbsp; &nbsp; C</p>
+<p>Use code with caution. Learn more</p>
+<p>This code will first load the tidyr package. Then, it will create a data frame called data with three rows, each containing a string with one or more spaces followed by a capital letter. The separate function will then be used to split the strings in the text column into two columns: prefix and letter. The sep argument is used to specify the regular expression that will be used to split the strings. In this case, the regular expression is \s+[A-Z], which matches one or more spaces followed by a capital letter.</p>
+<p>The output of the code is a data frame with three rows and two columns. The prefix column contains the string that precedes the capital letter, and the letter column contains the capital letter.</p>
+<p>I hope this helps! Let me know if you have any other questions.</p>
+</blockquote>
+<p>Does this run? No, of course not! First, this is a terrible example anyway because none of the strings can be split into two parts based on that regex. (‘A A A’ or ‘a B a’ or something like that would be a much better choice.) You certainly won’t get the output that Bard predicts. Remember, the separator gets discarded. For row one, the separator is “&nbsp; A” and there is no part one and no part two. Same with row 2. C should be the prefix, and the letter should be NA. There is no separator in this case. Lots of warnings are going to be generated by this…</p>
+<p>I’m not sure where the extra r in <code>sep = r" \s+[A-Z]"</code> came from. You can fix that and get it to run.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="at">text =</span> <span class="fu">c</span>(<span class="st">"  A"</span>, <span class="st">"   B"</span>, <span class="st">"C"</span>),</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">separate</span>(text, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"prefix"</span>, <span class="st">"letter"</span>), <span class="at">sep =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">s+[A-Z]"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 1 rows [3].</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  prefix letter
+1              
+2              
+3      C   &lt;NA&gt;</code></pre>
+</div>
+</div>
+<p>But it doesn’t give the answer Bard claims.</p>
+<p>I was feeling amused, so I argued back and forth with Bard about the need for the escape character. It finally conceded my point and gave me the following code:</p>
+<p><code>data %&gt;% separate(text, into = c("prefix", "letter"), sep = r"\\\\\s+[A-Z]", fixed = FALSE)</code></p>
+<p>Again, this also doesn’t run, even with the r removed, because <code>\\\\\s</code> is not <code>\\s</code>. Adding extra random slashes does not improve your code!</p>
+<p>In the end, it did save me a bit of time in generating the regex. I think it can be a useful tool, but it is probably more valuable if you have a good idea of what you are doing and can tell if the answer is correct or not. Or if you have the skills to debug what you are given. If you are a learner, I think it can potentially be very time-consuming and frustrating to use.</p>
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sinks2023,
+  author = {Sinks, Louise E.},
+  title = {An {Introduction} to {Web} {Scraping} {Using} Rvest},
+  date = {2023-09-08},
+  url = {https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstones/web-scraping.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sinks, Louise E. 2023. <span>“An Introduction to Web Scraping Using
+Rvest.”</span> September 8, 2023. <a href="https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstones/web-scraping.html">https://lsinks.github.io/posts/2023-09-08-web-scraping-tombstones/web-scraping.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+<script>videojs(video_shortcode_videojs_video1);</script>
+<script>videojs(video_shortcode_videojs_video2);</script>
+
+
+
+</body></html>
