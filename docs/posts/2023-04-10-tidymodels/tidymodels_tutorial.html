@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Louise E. Sinks">
+<meta name="dcterms.date" content="2023-04-10">
+<meta name="description" content="Exploring the different steps for modeling">
+
+<title>Louise E. Sinks - A Tidymodels Tutorial: A Structural Approach</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-WR4VFC0MC2"></script>
+
+<script type="text/plain" cookie-consent="tracking">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WR4VFC0MC2', { 'anonymize_ip': true});
+</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"simple",
+  "consent_type":"implied",
+  "palette":"light",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary","functionality","tracking","targeting"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+
+
+<link rel="stylesheet" href="../../styles.css">
+<meta name="twitter:title" content="Louise E. Sinks - A Tidymodels Tutorial: A Structural Approach">
+<meta name="twitter:description" content="Exploring the different steps for modeling">
+<meta name="twitter:image" content="https://lsinks.github.io/posts/2023-04-10-tidymodels/thumbnail.png">
+<meta name="twitter:creator" content="@LouiseSinks">
+<meta name="twitter:image-height" content="540">
+<meta name="twitter:image-width" content="875">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Louise E. Sinks</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html" rel="" target="">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About Me/ CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Blog Entries</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../currentprojects.html" rel="" target="">
+ <span class="menu-text">Current Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blogroll.html" rel="" target="">
+ <span class="menu-text">Blog Roll</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../posts.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#loading-libraries-and-data" id="toc-loading-libraries-and-data" class="nav-link active" data-scroll-target="#loading-libraries-and-data">Loading libraries and Data</a></li>
+  <li><a href="#resampling-via-rsample" id="toc-resampling-via-rsample" class="nav-link" data-scroll-target="#resampling-via-rsample">Resampling via rsample</a></li>
+  <li><a href="#preprocessing-with-recipes" id="toc-preprocessing-with-recipes" class="nav-link" data-scroll-target="#preprocessing-with-recipes">Preprocessing with recipes</a></li>
+  <li><a href="#defining-the-model-with-parsnip" id="toc-defining-the-model-with-parsnip" class="nav-link" data-scroll-target="#defining-the-model-with-parsnip">Defining the model with parsnip</a></li>
+  <li><a href="#creating-a-metrics-set-with-yardstick" id="toc-creating-a-metrics-set-with-yardstick" class="nav-link" data-scroll-target="#creating-a-metrics-set-with-yardstick">Creating a metrics set with yardstick</a></li>
+  <li><a href="#bundling-everything-together-with-workflows" id="toc-bundling-everything-together-with-workflows" class="nav-link" data-scroll-target="#bundling-everything-together-with-workflows">Bundling everything together with workflows</a></li>
+  <li><a href="#fitting-fitpredict-vs.-last_fit" id="toc-fitting-fitpredict-vs.-last_fit" class="nav-link" data-scroll-target="#fitting-fitpredict-vs.-last_fit">Fitting: <code>fit()</code>/<code>predict()</code> vs.&nbsp;<code>last_fit()</code></a>
+  <ul class="collapse">
+  <li><a href="#fitpredict" id="toc-fitpredict" class="nav-link" data-scroll-target="#fitpredict"><code>fit()</code>/<code>predict()</code></a></li>
+  <li><a href="#last_fit" id="toc-last_fit" class="nav-link" data-scroll-target="#last_fit"><code>last_fit()</code></a></li>
+  </ul></li>
+  <li><a href="#fitting-multiple-models-at-once-with-workflowsets" id="toc-fitting-multiple-models-at-once-with-workflowsets" class="nav-link" data-scroll-target="#fitting-multiple-models-at-once-with-workflowsets">Fitting multiple models at once with workflowsets</a>
+  <ul class="collapse">
+  <li><a href="#handling-a-model-with-no-hyperparameters" id="toc-handling-a-model-with-no-hyperparameters" class="nav-link" data-scroll-target="#handling-a-model-with-no-hyperparameters">Handling a model with no hyperparameters</a></li>
+  <li><a href="#handling-a-model-with-hyperparameters" id="toc-handling-a-model-with-hyperparameters" class="nav-link" data-scroll-target="#handling-a-model-with-hyperparameters">Handling a model with hyperparameters</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A Tidymodels Tutorial: A Structural Approach</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">R-code</div>
+    <div class="quarto-category">tidymodels</div>
+    <div class="quarto-category">Machine Learning</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Exploring the different steps for modeling
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p><a href="https://lsinks.github.io/">Louise E. Sinks</a> </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 10, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 3, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<p>As I’ve started working on more complicated machine learning projects, I’ve leaned into the tidymodels approach. Tidymodels is a highly modular approach, and I felt it reduced the number of errors, especially when evaluating many machine models and different preprocessing steps. (This is, in fact, a stated goal of the tidymodels ecosystem.)</p>
+<p>This tutorial is more about understanding the process of modeling in tidymodels and learning about the various objects created at different steps rather than optimizing a machine learning model.</p>
+<p>Throughout this tutorial, I will use the word “procedure” to describe a set of steps to go from data to final predictions. I’m doing this because tidymodels uses the word workflow for specific types of objects and functions. It would be too confusing to use workflow to also describe the process/procedure.</p>
+<p>But the tidymodels ecosystem can also be very confusing. There are several component packages in tidymodels. While it is easy to explain what a recipe object (from the recipe package) does, it became increasingly difficult for me to name and describe the objects I was creating as I started building more sophisticated machine-learning procedures. And I found it even more confusing that simple and complex procedures, while going through the same basic steps (preprocess, train, evaluate, predict), created objects with different structures and data within them. I found it confusing that <code>fit</code>, <code>last_fit</code>, <code>fit_resamples</code>, etc., did not all produce objects that contained the same information and could be acted on by the same functions. In my first attempt at using <code>last_fit()</code>, I ended up scrapping the entire ML section and redoing it with <code>fit()</code>/<code>predict()</code> because I couldn’t figure out how to get the predictions out of the object created by <code>last_fit()</code>.</p>
+<p>Adding to my woes was the fact that attempting to view/print/ examine these objects, especially in notebook environments, often caused the entire project to time out. RStudio generally handles these objects more gracefully, but I’ve also crashed it hard. It also isn’t consistent whether an object will lock-up RStudio or not. Once RStudio has locked up, restarting the program leads to an increasing number of freezes/locking up, until the computer is restarted.</p>
+<p>I’ve also manually numbered my code blocks and used that for referencing. I believe it is possible to hyperlink code chunks in Quarto, but I plan to replicate this project in an online notebook environment where that isn’t possible. The manual numbering will make it easier to cross-reference the two. I found online notebooks really did not like displaying many tidymodels objects. That’s also why there are timers around many of the display calls.</p>
+<p>So here I’m going to go through three different procedures for modeling. I will compare and contrast the objects created as we move through the different procedures.</p>
+<section id="loading-libraries-and-data" class="level1">
+<h1>Loading libraries and Data</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 1: Loading Libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># loading tidyverse/ tidymodels packages</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co">#core tidyverse</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) <span class="co"># tidymodels framework</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Modeling</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet) <span class="co"># elastic net logistic regression</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(themis) <span class="co"># provides up/down-sampling methods for the data</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Details about how the data was processed and a link to the original dataset from Datacamp can be found at <a href="https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial">my Credit Card fraud tutorial</a>.</p>
+<p>You can find the processed data on the github repo for this website.<br>
+<a href="https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-10-tidymodels" class="uri">https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-10-tidymodels</a></p>
+<p>You can also download the qmd file, which is a quarto document for this page. It is like R markdown, if you know that better. It is a mix of text and executable code blocks. (You can always delete all the text and save it as an R file if you prefer.)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 2- loading the processed data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fraud <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"fraud_processed.rds"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fraud<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">factor</span>(fraud<span class="sc">$</span>category)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Tidymodels expects the outcome to be a factor. It also treats <a href="https://community.rstudio.com/t/tidymodels-which-factor-level-is-the-default-positive-class/100428">the first level as the event</a>. So, Code Block 3 handles these details.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 3: outcome to factor and relevel</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># in tidymodels, outcome should be a factor</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fraud<span class="sc">$</span>is_fraud <span class="ot">&lt;-</span> <span class="fu">factor</span>(fraud<span class="sc">$</span>is_fraud)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(fraud<span class="sc">$</span>is_fraud)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "0" "1"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#first level is the event in tidymodels, so we need to reorder</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fraud<span class="sc">$</span>is_fraud <span class="ot">&lt;-</span> <span class="fu">relevel</span>(fraud<span class="sc">$</span>is_fraud, <span class="at">ref =</span> <span class="st">"1"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(fraud<span class="sc">$</span>is_fraud)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1" "0"</code></pre>
+</div>
+</div>
+</section>
+<section id="resampling-via-rsample" class="level1">
+<h1>Resampling via rsample</h1>
+<p>The rsample package is used to <a href="https://rsample.tidymodels.org/reference/index.html">create splits and folds</a> from your data. Here I use <a href="https://rsample.tidymodels.org/reference/initial_split.html"><code>initial_split()</code></a> to create a testing and training dataset. The resulting object is called an <code>rsplit</code> object and contains the original data and information about whether a record goes to testing or training. This object is not a flat dataframe but rather a nested list. The functions <code>testing()</code> and <code>training()</code> are used to create the appropriate tibbles for fitting. Other functions are available to <a href="https://rsample.tidymodels.org/reference/tidy.rsplit.html">visualize</a> or <a href="https://rsample.tidymodels.org/articles/rsample.html">manipulate</a> the <code>rsplit</code> object. Typing <code>data_split</code> in RStudio produces a high-level overview of the object:</p>
+<p><code>&lt;Training/Testing/Total&gt;</code></p>
+<p><code>&lt;254705/84902/339607&gt;</code></p>
+<p>I will also create some cross-validation folds using <code>vfold_cv()</code>. The resulting object is an <code>rset</code> object, which is a collection of <code>rsplit</code> objects (which <a href="https://rsample.tidymodels.org/reference/get_rsplit.html">can be retrieved</a> from the <code>rset</code> object), The same methods to view or manipulate the <code>rsplit</code> object work on the rset object.</p>
+<p>Both functions let you sample based on strata. This is highly recommended, especially for classification problems with imbalanced classes. The sample is performed separately on each class, which assures your testing/training/folds contain representative data.</p>
+<p>I did notice that the typo “stata” didn’t kick up any sort of error. In fact, you can include any number of named parameters that don’t exist, and you won’t get an error. Positional matching shouldn’t apply if you are using named parameters, but for what it is worth, <code>initial_split(fraud, prop = 0.75, mouse = is_fraud)</code> and <code>initial_split(fraud, mouse = is_fraud, prop = 0.75 )</code> both execute without complaint. And they both produce stratified samples, which is weird. Don’t rely on this and do check that your splits and folds are properly stratified.</p>
+<p>Setting the random seed before running these functions is highly recommended for reproducibility.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 4 : Train/Test Splits &amp; CV Folds </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the data into a test and training set</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># following https://www.tidymodels.org/start/recipes/#recipe</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">222</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>data_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(fraud, <span class="at">prop =</span> <span class="fl">0.75</span>, <span class="at">strata =</span> is_fraud)     </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create data frames for the two sets:</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>train_data <span class="ot">&lt;-</span> <span class="fu">training</span>(data_split)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>test_data  <span class="ot">&lt;-</span> <span class="fu">testing</span>(data_split)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>fraud_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(train_data, <span class="at">v =</span> <span class="dv">3</span>, <span class="at">strata =</span> is_fraud)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>fraud_folds </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  3-fold cross-validation using stratification 
+# A tibble: 3 × 2
+  splits                 id   
+  &lt;list&gt;                 &lt;chr&gt;
+1 &lt;split [169803/84902]&gt; Fold1
+2 &lt;split [169803/84902]&gt; Fold2
+3 &lt;split [169804/84901]&gt; Fold3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Making folds: "</span>, end_time <span class="sc">-</span> start_time))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Making folds:  0.413451910018921"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Printing fraud_folds: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Printing fraud_folds:  0.0741839408874512"</code></pre>
+</div>
+</div>
+</section>
+<section id="preprocessing-with-recipes" class="level1">
+<h1>Preprocessing with recipes</h1>
+<p>The <a href="https://recipes.tidymodels.org/">recipes package</a> bundles the formula, data, and feature engineering steps into a recipe object.</p>
+<p>I set the formula and training data here and then performed preprocessing/ feature engineering steps. All the feature engineering steps have the form <code>step_*()</code>. I chose the feature engineering steps based on the <a href="https://www.tmwr.org/pre-proc-table.html">Appendix</a> from the <a href="https://www.tmwr.org/">Tidy Modeling with R</a> book, which lists models and which feature engineering steps are required or recommended.</p>
+<p>I want to compare using the full dataset with a downsampled dataset with balanced classes, so I also created a downsample recipe. This section is where the strengths of the modularity of tidymodels start to shine. You can create several related recipes off of a base recipe. For complex projects where many preprocessing steps or different formulas are tested, decoupling the recipe step from the fitting reduces the errors that might arise from creating multiple combinations.</p>
+<p>The recipe is built with the training dataset. This data is used to estimate some of the values of the recipe steps, such as the number of dummy variables created, but the recipe isn’t “trained” yet. The recipe will be applied to the training data in later steps, and the necessary values for feature engineering will be calculated and stored. These values will be used on subsequent datasets, such as the testing set. This eliminates a possible source of data leakage. For example, using an imputation step based on the mean should use the mean of the training data and not the entire dataset (which would have information about the testing set within).</p>
+<p>There are a variety of functions, <a href="https://recipes.tidymodels.org/reference/index.html">such as <code>prep()</code>, <code>bake()</code>, and <code>juice()</code></a> which can be used to apply the recipe object to datasets. These can be used in the machine learning procedures, but here we will use the workflow procedure, which handles these steps automatically. These functions are found in some tutorials online, so it is important to be aware of them. You can also use these functions to preprocess data for reasons other than modeling.</p>
+<p>The recipe object is another <a href="https://recipes.tidymodels.org/reference/recipe.html">complicated object and contains a variety of objects</a>. RStudio provides a high-level summary when you view this object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 5: recipes</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>recipe_plain <span class="ot">&lt;-</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(is_fraud <span class="sc">~</span> ., <span class="at">data =</span> train_data) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>recipe_down <span class="ot">&lt;-</span> </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>recipe_plain <span class="sc">%&gt;%</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_downsample</span>(is_fraud)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>recipe_down</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:   1
+predictor: 8</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Dummy variables from: all_nominal_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Centering and scaling for: all_numeric_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Zero variance filter on: all_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Down-sampling based on: is_fraud</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Printing recipe_down: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Printing recipe_down:  0.364406824111938"</code></pre>
+</div>
+</div>
+</section>
+<section id="defining-the-model-with-parsnip" class="level1">
+<h1>Defining the model with parsnip</h1>
+<p>The <a href="https://parsnip.tidymodels.org/">parsnip package</a> handles the modeling. However, many modeling functions and objects arise from other tidymodels packages, not parsnip, as I will discuss later. This confusion can lead to difficulties in handling fit and predictions.</p>
+<p>The type of problem being solved and the method to solve the problem are often bundled together in parsnip, as I’ve done here. I set the type of problem with <a href="https://parsnip.tidymodels.org/reference/logistic_reg.html"><code>logistic_reg()</code></a>. A list of types and engines can be found <a href="https://www.tidymodels.org/find/parsnip/">here</a>. Parameters can be set here to pass to the underlying engine later. The parsnip package is designed to create a harmonized interface to the various independent engines/packages that have been created in R, so you can set the parameters even without choosing an engine/package. <a href="https://parsnip.tidymodels.org/">For example</a>, all tree-based models will use “trees” for the number of trees. I wanted to tune the hyperparameters of the elastic net logistic regression. This can be done by setting the parameter equal to tune(). I’m not going to get into the <a href="https://tune.tidymodels.org/index.html">tune package</a> in detail, but it contains a variety of functions related to tuning hyperparameters. (This is pretty much the <a href="https://tune.tidymodels.org/">overview statement on the package page</a>, which we will see later is deceptively incomplete.) These are passed to functions of other packages in Tidymodels (e.g., parsnip) and are not really stand-alone functions.</p>
+<p>You use <code>set_engine()</code> to specify the particular package you want to use to solve the problem (e.g., glm).</p>
+<p>The objects created by these functions don’t have a simple name like the objects created by rsample and recipe do. The function that sets the type of problem creates “A model specification object,” and the <a href="https://parsnip.tidymodels.org/reference/set_engine.html"><code>set_engine()</code></a> creates “An updated model specification.”</p>
+<p>RStudio will again create a high-level summary of these objects, but using <code>View()</code> reveals that they are a complicated nested list. I don’t think there should be a need to extract components of this object as there might be for some of the earlier objects.</p>
+<p>At this point, you can complete your machine learning procedure entirely within parsnip. Various fitting and predicting functions are available. However, I’m going to continue to the workflows package, which will allow us to create bundles of models and fits.</p>
+<p>I should note that these are not necessarily the best choices for this problem. I chose logistic regression and downsampling because they were fast, not because they were optimal.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 6: Setting engines</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># this is the standard logistic regression</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>logreg_spec <span class="ot">&lt;-</span> </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># elastic net regularization of logistic regression</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># this has 2 hyperparameters that we will tune</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>glmnet_spec <span class="ot">&lt;-</span> </span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>(<span class="at">penalty =</span> <span class="fu">tune</span>(),</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">mixture =</span> <span class="fu">tune</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>glmnet_spec </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Logistic Regression Model Specification (classification)
+
+Main Arguments:
+  penalty = tune()
+  mixture = tune()
+
+Computational engine: glmnet </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Printing glmnet_spec: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Printing glmnet_spec:  0.00687599182128906"</code></pre>
+</div>
+</div>
+</section>
+<section id="creating-a-metrics-set-with-yardstick" class="level1">
+<h1>Creating a metrics set with yardstick</h1>
+<p>The <a href="https://yardstick.tidymodels.org/">yardstick package</a> contains the functions to calculate a variety of metrics such as sensitivity, specificity, etc. I bundled a couple of metrics together as a metrics set, which I will pass to other functions later. The metrics set fraud_metrics contains some metrics that require probabilities, while fraud_metrics_hard only includes accuracy, which uses the hard classifications. These two metric sets will produce different results from fitting and predicting operations, which I will show you later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 7: Setting Metrics</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fraud_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(roc_auc,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                            accuracy, sensitivity, specificity, j_index)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>fraud_metrics_hard <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>fraud_metrics </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  metric      class        direction
+  &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;    
+1 roc_auc     prob_metric  maximize 
+2 accuracy    class_metric maximize 
+3 sensitivity class_metric maximize 
+4 specificity class_metric maximize 
+5 j_index     class_metric maximize </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Printing fraud_metrics: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Printing fraud_metrics:  0.0380551815032959"</code></pre>
+</div>
+</div>
+</section>
+<section id="bundling-everything-together-with-workflows" class="level1">
+<h1>Bundling everything together with workflows</h1>
+<p>In my opinion, the <a href="https://workflows.tidymodels.org/">workflows</a> and <a href="https://workflowsets.tidymodels.org/index.html">workflowset</a> packages are the most powerful part of the tidymodels system. As I’ve worked through the procedure, I’ve created many objects: datasets with rsample, recipes, and models. I’ve said that modularity is an advantage, but it might be challenging to keep track of which pieces go together when faced with so many different objects. Workflows allow you to bundle your preprocessing and modeling objects together. (In theory, you can also bundle postprocessing objects, but this functionality is not available yet.)</p>
+<p>Workflowsets allow you to bundle many workflows into a single object and pass them to fitting or predicting functions as a group. I wanted to evaluate 16 different model/preprocessing pairs in the credit card fraud tutorial. Constructing that many workflows leads to many opportunities for typos or copy/paste errors. But with <code>workflow_set()</code> you can pass the four recipes and the four model specification objects, and the function will create all 16 combinations. If you don’t want all combinations, you can <a href="https://www.tmwr.org/workflow-sets.html">manually construct a workflow_set where you set the combinations you need</a>.</p>
+<p>Here I created a simple workflow that contains a single recipe and model specification and a simple workflow_set that contains four workflows.</p>
+<p>When called, the RStudio again displays high-level information for the workflow and the workflow_set. Using <code>View()</code> simple workflow shows a nested list structure. Using <code>View()</code> on the workflow_set, even the small one here, crashes RStudio for me.</p>
+<p>It is important to keep track of whether you are using workflows or workflowsets because they have different helper functions to extract the final information from the fits.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 8: Create simple workflow to Compare Fit/Predict and last_fit</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>wf_simple <span class="ot">&lt;-</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(recipe_plain) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(logreg_spec)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># showing high-level info</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>wf_simple</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+3 Recipe Steps
+
+• step_dummy()
+• step_normalize()
+• step_zv()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Logistic Regression Model Specification (classification)
+
+Computational engine: glm </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 9: creating a workflow set</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>wf_set_tune <span class="ot">&lt;-</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_set</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">plain =</span> recipe_plain, <span class="at">down =</span> recipe_down),</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">glmnet =</span> glmnet_spec, <span class="at">logreg =</span> logreg_spec)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>wf_set_tune <span class="co">#don't call View()!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A workflow set/tibble: 4 × 4
+  wflow_id     info             option    result    
+  &lt;chr&gt;        &lt;list&gt;           &lt;list&gt;    &lt;list&gt;    
+1 plain_glmnet &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+2 plain_logreg &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+3 down_glmnet  &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;
+4 down_logreg  &lt;tibble [1 × 4]&gt; &lt;opts[0]&gt; &lt;list [0]&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Printing wf_set_tune: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Printing wf_set_tune:  0.0957250595092773"</code></pre>
+</div>
+</div>
+</section>
+<section id="fitting-fitpredict-vs.-last_fit" class="level1">
+<h1>Fitting: <code>fit()</code>/<code>predict()</code> vs.&nbsp;<code>last_fit()</code></h1>
+<p>I’m going to show you the difference between fit()/ predict() and last_fit() using the simple workflow. These are two different procedures that should contain the same results (a fitted model on the training data and the predictions from that model for the test data).</p>
+<section id="fitpredict" class="level2">
+<h2 class="anchored" data-anchor-id="fitpredict"><code>fit()</code>/<code>predict()</code></h2>
+<p>First, I fit the model on the training data to get the fit and then I pass that fit and the test data to <code>predict()</code> to get the predictions for test.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 10: Run fit/ predict on workflow</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>wflow_fit <span class="ot">&lt;-</span> <span class="fu">fit</span>(wf_simple, <span class="at">data =</span> train_data)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>wflow_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(wflow_fit, <span class="at">new_data =</span> test_data)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>wflow_predict2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(wflow_fit, <span class="at">new_data =</span> test_data, <span class="at">type =</span> <span class="st">"prob"</span> )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What comes out of predict is super simple to understand. It is a list of predictions. No complicated nested list objects here. If I want probabilities instead of hard classification, I pass <code>predict()</code> the argument <code>type = "prob"</code> to get the probabilities instead.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 11:  Examine the output of predict</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wflow_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 1
+  .pred_class
+  &lt;fct&gt;      
+1 0          
+2 0          
+3 0          
+4 0          
+5 0          
+6 0          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wflow_predict2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+    .pred_1 .pred_0
+      &lt;dbl&gt;   &lt;dbl&gt;
+1 0.00367     0.996
+2 0.00144     0.999
+3 0.0000262   1.00 
+4 0.00461     0.995
+5 0.0000279   1.00 
+6 0.00138     0.999</code></pre>
+</div>
+</div>
+<p>What about our model? Maybe I want model coefficients or to see which features are most important. There is a lot of information here, but it isn’t very well structured. Again, this is a nested list. RStudio is displaying this nicely and the details can be seen using <code>View()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 12: Examine the outcome of fit </span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>wflow_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+3 Recipe Steps
+
+• step_dummy()
+• step_normalize()
+• step_zv()
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:  stats::glm(formula = ..y ~ ., family = stats::binomial, data = data)
+
+Coefficients:
+            (Intercept)                lat_trans               long_trans  
+                7.06537                 -0.10230                 -0.01413  
+         distance_miles                      age                     hour  
+                0.06526                 -0.26818                 -0.82812  
+                weekday                  amt_log     category_food_dining  
+               -0.12721                 -1.87149                 -0.00929  
+ category_gas_transport     category_grocery_net     category_grocery_pos  
+               -0.62772                 -0.29571                 -0.67063  
+category_health_fitness            category_home       category_kids_pets  
+                0.06286                  0.10517                  0.01683  
+      category_misc_net        category_misc_pos   category_personal_care  
+               -0.42138                 -0.13380                 -0.05152  
+  category_shopping_net    category_shopping_pos          category_travel  
+               -0.38932                 -0.16399                  0.18122  
+
+Degrees of Freedom: 254704 Total (i.e. Null);  254684 Residual
+Null Deviance:      16570 
+Residual Deviance: 11910    AIC: 11950</code></pre>
+</div>
+</div>
+<p>While you can use standard R operations for interacting with lists and nested data to extract the desired information from <code>wflow_fit</code>, it is much easier to use the&nbsp;<a href="https://broom.tidymodels.org/">broom package</a>. Broom is part of the core tidymodels installation, so it does not need to be installed separately. To get the model coefficients and p-values in tibble form, use <code>tidy()</code>. For high-level statistics about the model, use <code>glance()</code>. Just remember that the information you extract from the output of <code>fit()</code> relates to the model as applied to the training data. For information about the model performance as applied to the test data, you need to use the output of <code>predict()</code>. Since this output is only a vector of predictions, you need to bind it to the test dataframe and then perform analysis on the new object.</p>
+<p>So it is pretty straightforward to get our model coefficients:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 13: Summarize wflow_fit with tidy</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>wflow_fit <span class="sc">%&gt;%</span> <span class="fu">tidy</span>() <span class="co">#summarizes information about model components</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 5
+   term                   estimate std.error statistic   p.value
+   &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)             7.07       0.0703   101.    0        
+ 2 lat_trans              -0.102      0.0305    -3.36  7.94e-  4
+ 3 long_trans             -0.0141     0.0306    -0.462 6.44e-  1
+ 4 distance_miles          0.0653     0.0318     2.05  4.02e-  2
+ 5 age                    -0.268      0.0289    -9.27  1.87e- 20
+ 6 hour                   -0.828      0.0397   -20.9   1.27e- 96
+ 7 weekday                -0.127      0.0288    -4.41  1.03e-  5
+ 8 amt_log                -1.87       0.0510   -36.7   2.76e-294
+ 9 category_food_dining   -0.00929    0.0599    -0.155 8.77e-  1
+10 category_gas_transport -0.628      0.0593   -10.6   3.62e- 26
+# ℹ 11 more rows</code></pre>
+</div>
+</div>
+<p>Or to get details of the model performance:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 14: model info from wflow_fit with glance</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>wflow_fit <span class="sc">%&gt;%</span> <span class="fu">glance</span>() <span class="co">#reports information about the entire model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  null.deviance df.null logLik    AIC    BIC deviance df.residual   nobs
+          &lt;dbl&gt;   &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;       &lt;int&gt;  &lt;int&gt;
+1        16568.  254704 -5956. 11953. 12173.   11911.      254684 254705</code></pre>
+</div>
+</div>
+</section>
+<section id="last_fit" class="level2">
+<h2 class="anchored" data-anchor-id="last_fit"><code>last_fit()</code></h2>
+<p>So, from the <a href="https://tune.tidymodels.org/reference/last_fit.html">tidymodels webpage</a>, <code>last_fit()</code> is described as “<code>last_fit()</code> emulates the process where, after determining the best model, the final fit on the entire training set is needed and is then evaluated on the test set.” (Actually this is from the <code>tune</code> subpage, which is important, though I didn’t realize it.)</p>
+<p>I pass the workflow to <code>last_fit()</code> along with the data split object (with the info about testing and training) and the metrics set. In theory, the result should be the same as from <code>fit()</code>/<code>predict()</code> above.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 15: Using lastfit() in hard classifier mode</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>last_fit_results <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(wflow_fit, data_split, <span class="at">metrics =</span> fraud_metrics_hard)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So, I look at the results just as I did with predict in Code Block 11. And RStudio sometimes locks up. Other times, it produces a high-level overview as expected.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 16: creating a workflow set</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>start_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(last_fit_results) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits                 id            .metrics .notes   .predictions .workflow 
+  &lt;list&gt;                 &lt;chr&gt;         &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [254705/84902]&gt; train/test s… &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>end_time_display <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"last_fit_results: "</span>, end_time_display <span class="sc">-</span> start_time_display))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "last_fit_results:  0.0788729190826416"</code></pre>
+</div>
+</div>
+<p>So how to get the predictions out? According to the <a href="https://tune.tidymodels.org/reference/last_fit.html">manual page for <code>last_fit()</code></a>, the output is “A single row tibble that emulates the structure of <a href="https://tune.tidymodels.org/reference/fit_resamples.html">fit_resamples()</a>. However, a list column called .workflow is also attached with the fitted model (and recipe, if any) that used the training set.” I also see that <code>last_fit()</code> is actually from the tune package and not from parsnip as I expected. Nothing I’m doing here involves tuning hyperparameters at all. I expected that is was a parsnip object both thematically and because you interact with <code>last_fit()</code> using <code>extract_fit_parsnip()</code>, see Code Block 23.</p>
+<p>Looking <code>fit_resamples()</code> isn’t very helpful for answering this question. (Oh, but it is. It just took me another few paragraphs of writing to realize it.)</p>
+<p>I did find a <a href="#https://github.com/tidymodels/tune/issues/300">Stackoverflow discussion</a> that provided the answer in their code: <code>last_fit1_pred &lt;- last_fit1[[5]][[1]]</code></p>
+<p>That’s not very straightforward!</p>
+<p>Pull out the predictions from last_fit_pred.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 17: extracting predictions from last_fit</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>last_fit_pred <span class="ot">&lt;-</span> last_fit_results[[<span class="dv">5</span>]][[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Look at the head() of this object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 18: Examine the outcome of lastfit by head</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(last_fit_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  .pred_class  .row is_fraud .config             
+  &lt;fct&gt;       &lt;int&gt; &lt;fct&gt;    &lt;chr&gt;               
+1 0               1 0        Preprocessor1_Model1
+2 0               2 0        Preprocessor1_Model1
+3 0               8 0        Preprocessor1_Model1
+4 0              12 0        Preprocessor1_Model1
+5 0              13 0        Preprocessor1_Model1
+6 0              14 0        Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>Look at the head() of the object from predict().</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 19: Examine the outcome of predict by head</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(wflow_predict)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 1
+  .pred_class
+  &lt;fct&gt;      
+1 0          
+2 0          
+3 0          
+4 0          
+5 0          
+6 0          </code></pre>
+</div>
+</div>
+<p>Use <code>identical()</code> to compare the two hard predictions and verify they are the same.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 20: showing that predict and the predictions in last_fit are the same</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">identical</span>(last_fit_pred<span class="sc">$</span>.pred_class, wflow_predict<span class="sc">$</span>.pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Now, let the realization of what all the stuff about the <code>tune</code> package means hit you. We now know the full secrets of <code>last_fit()</code>. It turns out that any of the helper functions for tuning functions from the tune package work on <code>last_fit()</code> because it is a tune function. I don’t find the documentation for either the helper functions or <code>last_fit()</code> make that connection clear. I think that is what the reference to <code>fit_resamples()</code> on the <code>last_fit()</code> page is getting at.</p>
+<p><a href="https://www.tmwr.org/">Tidy Modeling with R</a> also contains <a href="https://www.tmwr.org/workflows.html#evaluating-the-test-set">an example of using collect_predictions</a> with <code>last_fit(</code>), but most examples are with tuning functions, so obviously from the tune family. <a href="https://www.tidymodels.org/start/tuning/#final-model">One of the tutorials</a> on the main tidymodels webpage does as well. But in general, extracting predictions from the test data is not demonstrated, just collecting metrics and analyzing model performance. So it is hard to google your way to the answer. This is the kind of situation I’ve struggled with throughout learning tidymodels and part of what motivated me to write this tutorial.</p>
+<p>So now I get the predictions the easy way.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 21: Examine the outcome of lastfit by head</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(last_fit_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 4
+  .pred_class  .row is_fraud .config             
+  &lt;fct&gt;       &lt;int&gt; &lt;fct&gt;    &lt;chr&gt;               
+1 0               1 0        Preprocessor1_Model1
+2 0               2 0        Preprocessor1_Model1
+3 0               8 0        Preprocessor1_Model1
+4 0              12 0        Preprocessor1_Model1
+5 0              13 0        Preprocessor1_Model1
+6 0              14 0        Preprocessor1_Model1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>last_fit_results <span class="sc">%&gt;%</span> <span class="fu">collect_predictions</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84,902 × 5
+   id               .pred_class  .row is_fraud .config             
+   &lt;chr&gt;            &lt;fct&gt;       &lt;int&gt; &lt;fct&gt;    &lt;chr&gt;               
+ 1 train/test split 0               1 0        Preprocessor1_Model1
+ 2 train/test split 0               2 0        Preprocessor1_Model1
+ 3 train/test split 0               8 0        Preprocessor1_Model1
+ 4 train/test split 0              12 0        Preprocessor1_Model1
+ 5 train/test split 0              13 0        Preprocessor1_Model1
+ 6 train/test split 0              14 0        Preprocessor1_Model1
+ 7 train/test split 0              16 0        Preprocessor1_Model1
+ 8 train/test split 0              17 0        Preprocessor1_Model1
+ 9 train/test split 0              19 0        Preprocessor1_Model1
+10 train/test split 0              25 0        Preprocessor1_Model1
+# ℹ 84,892 more rows</code></pre>
+</div>
+</div>
+<p>And can evaluate the model performance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 22: collecting metrics from lastfit collect_metrics()</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>last_fit_results <span class="sc">%&gt;%</span> <span class="fu">collect_metrics</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  .metric  .estimator .estimate .config             
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;               
+1 accuracy binary         0.995 Preprocessor1_Model1</code></pre>
+</div>
+</div>
+<p>And extract the fit. This <code>extract_fit_parsnip()</code> result is an identical parsnip object as the workflow_fit object we got from <code>fit()</code> and can be handled the same way (i.e.&nbsp;via broom). You can refer back to Code Block 13 to see the results are the same. This is perhaps the key takeaway; these larger, more complex objects contain the simpler objects (workflows, parsnip objects) and they should be extracted and handled normally. Understanding this will make understanding how to handle a <code>workflow_set()</code> much easier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 23: extract model coefficients from last_fit() </span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>last_fit_results <span class="sc">%&gt;%</span> <span class="fu">extract_fit_parsnip</span>() <span class="sc">%&gt;%</span> <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 21 × 5
+   term                   estimate std.error statistic   p.value
+   &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)             7.07       0.0703   101.    0        
+ 2 lat_trans              -0.102      0.0305    -3.36  7.94e-  4
+ 3 long_trans             -0.0141     0.0306    -0.462 6.44e-  1
+ 4 distance_miles          0.0653     0.0318     2.05  4.02e-  2
+ 5 age                    -0.268      0.0289    -9.27  1.87e- 20
+ 6 hour                   -0.828      0.0397   -20.9   1.27e- 96
+ 7 weekday                -0.127      0.0288    -4.41  1.03e-  5
+ 8 amt_log                -1.87       0.0510   -36.7   2.76e-294
+ 9 category_food_dining   -0.00929    0.0599    -0.155 8.77e-  1
+10 category_gas_transport -0.628      0.0593   -10.6   3.62e- 26
+# ℹ 11 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="fitting-multiple-models-at-once-with-workflowsets" class="level1">
+<h1>Fitting multiple models at once with workflowsets</h1>
+<p>I created a workflow_set back in Code Block 9. I pass <code>workflow_map()</code> this workflow_set. The next parameter is what type of fitting you want to do. Here, I used <code>tune_grid</code> and had it generate 6 grid points. For the models that don’t require hyperparameter tuning, the function defaults to <code>fit_resamples</code> instead. The acceptable types of fitting functions are found <code>here</code>. It is important to note that you can only use fitting methods that operate on folds; you cannot pass <code>workflow_map()</code> the entire train or test set and have it work. This caused me a bit of frustration when I was learning this because I wanted to compare the results I got from <code>workflow_map()</code> to process all the models simultaneously to what I got when I ran each model/recipe separately. It is implemented this way to encourage proper methodology and avoid data leakage. When evaluating multiple models, you should not be evaluating with the entire dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code block 24: fitting the workflow_set </span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">345</span>)</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>tune_results <span class="ot">&lt;-</span> </span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow_map</span>(</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>    wf_set_tune,</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"tune_grid"</span>,</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> fraud_folds,</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid =</span> <span class="dv">6</span>,</span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> fraud_metrics,</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">verbose =</span> <span class="cn">TRUE</span>,  <span class="co">#this gives details about how long each model/recipe takes</span></span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#control = control_grid(save_pred = TRUE) #save pred for each fold or not</span></span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i 1 of 4 tuning:     plain_glmnet</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ 1 of 4 tuning:     plain_glmnet (3m 38.7s)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i 2 of 4 resampling: plain_logreg</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ 2 of 4 resampling: plain_logreg (15.9s)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i 3 of 4 tuning:     down_glmnet</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ 3 of 4 tuning:     down_glmnet (16.9s)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i   No tuning parameters. `fit_resamples()` will be attempted</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>i 4 of 4 resampling: down_logreg</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✔ 4 of 4 resampling: down_logreg (4.6s)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="st">"Total Time for this Set: "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Total Time for this Set: "</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>end_time <span class="sc">-</span> start_time</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Time difference of 4.292892 mins</code></pre>
+</div>
+</div>
+<p>Now we have another complex object. Displaying this object may or may not work. It has never worked for me and I lost a lot of time figuring that out. I followed a <a href="https://juliasilge.com/blog/project-feederwatch/">tutorial from Julia Silge</a> did call that object, and it took me a long time to figure out my code was not timing out/locking up from the fitting, but rather from displaying that object.</p>
+<p>So we are going to interact via helper functions. I’m using the other metric set I created back in Code Block 7 . Accuracy is generally a terrible metric for highly imbalanced problems; the model can achieve high accuracy by assigning everything to the majority class. Alternate metrics like <a href="https://en.wikipedia.org/wiki/Sensitivity_and_specificity">sensitivity</a> or <a href="https://en.wikipedia.org/wiki/Youden%27s_J_statistic">j-index</a> are better choices for the imbalanced class situation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 25: table of ranked results</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rank_results</span>(tune_results, <span class="at">rank_metric =</span> <span class="st">"j_index"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 70 × 9
+   wflow_id    .config      .metric  mean std_err     n preprocessor model  rank
+   &lt;chr&gt;       &lt;chr&gt;        &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt; &lt;int&gt;
+ 1 down_logreg Preprocesso… accura… 0.749 0.0112      3 recipe       logi…     1
+ 2 down_logreg Preprocesso… j_index 0.503 0.0102      3 recipe       logi…     1
+ 3 down_logreg Preprocesso… roc_auc 0.852 0.00742     3 recipe       logi…     1
+ 4 down_logreg Preprocesso… sensit… 0.754 0.0207      3 recipe       logi…     1
+ 5 down_logreg Preprocesso… specif… 0.749 0.0114      3 recipe       logi…     1
+ 6 down_glmnet Preprocesso… accura… 0.750 0.0113      3 recipe       logi…     2
+ 7 down_glmnet Preprocesso… j_index 0.502 0.00986     3 recipe       logi…     2
+ 8 down_glmnet Preprocesso… roc_auc 0.852 0.00771     3 recipe       logi…     2
+ 9 down_glmnet Preprocesso… sensit… 0.753 0.0207      3 recipe       logi…     2
+10 down_glmnet Preprocesso… specif… 0.750 0.0115      3 recipe       logi…     2
+# ℹ 60 more rows</code></pre>
+</div>
+</div>
+<p>I can visualize this too with the <code>autoplot()</code> function. This is a ggplot type object, so I’m going to throw on a ggtitle. The legend is pretty useless- both the elastic net and regular regression are labeled log_reg (which they are) and the preprocessor is just labeled recipe and not which recipe. This could be cleaned up, but that isn’t really the point of this tutorial.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 26: autoplot of best results</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(tune_results, <span class="at">rank_metric =</span> <span class="st">"j_index"</span>, <span class="at">select_best =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Performance of Different Models"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidymodels_tutorial_files/figure-html/autoplot-results-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="handling-a-model-with-no-hyperparameters" class="level2">
+<h2 class="anchored" data-anchor-id="handling-a-model-with-no-hyperparameters">Handling a model with no hyperparameters</h2>
+<p>Normally, we’d want to extract the best recipe/model combination from this set. I’ll do that here. Again, I’m using j-index as my metric and from the output of Code Block 25, we see <code>down_logreg</code> is the best performing model. I extract that workflow from the set of results, and pass it to <code>last_fit(</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 27: Validating the best model with the test data</span></span>
+<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>validation_results <span class="ot">&lt;-</span> tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow</span>(<span class="st">"down_logreg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(<span class="at">split =</span>  data_split, <span class="at">metrics =</span> fraud_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can use the same helper functions we did when we used <code>last_fit()</code> on the simple workflow, because we are working with a simple workflow! We pulled just the one workflow we wanted out.</p>
+<p>You can see now that in addition to the hard classification we got from <code>last_fit()</code> before we also get the probabilities. This is driven by the metrics that make up the metrics set (see the yardstick section for more information). I use these predictions to create the ROC curve as well.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 28: Metric for best model with the test data</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">collect_predictions</span>(validation_results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+  id               .pred_1 .pred_0  .row .pred_class is_fraud .config           
+  &lt;chr&gt;              &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;       &lt;fct&gt;    &lt;chr&gt;             
+1 train/test split  0.552    0.448     1 1           0        Preprocessor1_Mod…
+2 train/test split  0.197    0.803     2 0           0        Preprocessor1_Mod…
+3 train/test split  0.0329   0.967     8 0           0        Preprocessor1_Mod…
+4 train/test split  0.472    0.528    12 0           0        Preprocessor1_Mod…
+5 train/test split  0.0254   0.975    13 0           0        Preprocessor1_Mod…
+6 train/test split  0.312    0.688    14 0           0        Preprocessor1_Mod…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>validation_results <span class="sc">%&gt;%</span> </span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(is_fraud, .pred_1) <span class="sc">%&gt;%</span> </span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> </span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"ROC Curve"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidymodels_tutorial_files/figure-html/best-model-metrics-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="handling-a-model-with-hyperparameters" class="level2">
+<h2 class="anchored" data-anchor-id="handling-a-model-with-hyperparameters">Handling a model with hyperparameters</h2>
+<p>Suppose the best model was the elastic net. I tuned the hyperparameters when I did the fitting in workflow_map(). How do I deal with that?</p>
+<p>First, I need to extract the best set of hyperparameters. Here we aren’t extracting the workflow, we are <a href="https://workflowsets.tidymodels.org/reference/extract_workflow_set_result.html">extracting the workflow set result</a>, which is our set of hyperparameters. This is a really simple object, so you can view it without fear.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 29: getting-hyperparameters</span></span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a>best_hyperparam <span class="ot">&lt;-</span> tune_results <span class="sc">%&gt;%</span> </span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_workflow_set_result</span>(<span class="st">"down_glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select_best</span>(<span class="at">metric =</span> <span class="st">"j_index"</span>)</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a>best_hyperparam</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+      penalty mixture .config             
+        &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1 0.000000137   0.570 Preprocessor1_Model4</code></pre>
+</div>
+</div>
+<p>Our workflow for the glmnet is incomplete because it has tune() for the two hyperparameters, instead of the values. We know the best values (at least from the limited parameter space we explored.) I first extract_workflow() just as I did for the no hyperparameter case and then call finalize_workflow(best_hyperparam). This <a href="https://tune.tidymodels.org/reference/finalize_model.html">updates the workflow hyperparameters with the values we found</a>. Everything is identical to the no hyperparameter case or the simple workflow/ last-fit() case. Realizing how/when to extract or reduce the more complex objects to the simpler objects is key to using tidymodels effectively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 30: last_fit for a workflow with hyperparameter</span></span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a>validation_results <span class="ot">&lt;-</span> tune_results <span class="sc">%&gt;%</span></span>
+<span id="cb97-3"><a href="#cb97-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow</span>(<span class="st">"down_glmnet"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb97-4"><a href="#cb97-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(best_hyperparam) <span class="sc">%&gt;%</span></span>
+<span id="cb97-5"><a href="#cb97-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">last_fit</span>(<span class="at">split =</span>  data_split, <span class="at">metrics =</span> fraud_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can handle this object exactly as before.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Code Block 31: Metric for best model with the test data</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">collect_predictions</span>(validation_results))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+  id               .pred_1 .pred_0  .row .pred_class is_fraud .config           
+  &lt;chr&gt;              &lt;dbl&gt;   &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;       &lt;fct&gt;    &lt;chr&gt;             
+1 train/test split  0.551    0.449     1 1           0        Preprocessor1_Mod…
+2 train/test split  0.217    0.783     2 0           0        Preprocessor1_Mod…
+3 train/test split  0.0342   0.966     8 0           0        Preprocessor1_Mod…
+4 train/test split  0.474    0.526    12 0           0        Preprocessor1_Mod…
+5 train/test split  0.0263   0.974    13 0           0        Preprocessor1_Mod…
+6 train/test split  0.316    0.684    14 0           0        Preprocessor1_Mod…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>validation_results <span class="sc">%&gt;%</span> </span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(is_fraud, .pred_1) <span class="sc">%&gt;%</span> </span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>() <span class="sc">+</span> </span>
+<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"ROC Curve"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="tidymodels_tutorial_files/figure-html/glm-model-metrics-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>So that’s it. I hope this clarifies some of the different procedures you can use to fit models in the tidymodels framework.</p>
+
+
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sinks2023,
+  author = {Sinks, Louise E.},
+  title = {A {Tidymodels} {Tutorial:} {A} {Structural} {Approach}},
+  date = {2023-04-10},
+  url = {https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sinks, Louise E. 2023. <span>“A Tidymodels Tutorial: A Structural
+Approach.”</span> April 10, 2023. <a href="https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html">https://lsinks.github.io/posts/2023-04-10-tidymodels/tidymodels_tutorial.html</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="lsinks/blog-comments" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center"><div class="cookie-consent-footer"><a href="#" id="open_preferences_center">Cookie Preferences</a></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
