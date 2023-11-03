@@ -3,9 +3,6 @@ title: "Mapping for the Tombstone Project"
 description: "Methods for dealing with overlapping points and then styling a leaflet map with various labels and pop-ups."
 twitter-card:
   image: "thumbnail.jpg"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 08-15-2023
 date-modified: last-modified
 categories: [data visualization, R, R-code, leaflet, quarto, problem solving, mapping, code-along, spatial join, wordPress, leafpop, st_jitter] # self-defined categories
