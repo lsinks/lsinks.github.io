@@ -7,7 +7,7 @@ author:
   - name: Louise E. Sinks
     url: https://lsinks.github.io/
 date: 06-29-2023
-categories: [R, TidyTuesday, R-code, Data-Viz, sf, leaflet] # self-defined categories
+categories: [R, tidyTuesday, R-code, data visualization, sf, leaflet] # self-defined categories
 citation:
   url: https://lsinks.github.io/posts/2023-06-29-tidytuesday-US-populated-places-leaflet/arlington-neighborhoods-leaflet
 image: "thumbnail.png"
