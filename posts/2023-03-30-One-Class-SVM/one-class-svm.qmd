@@ -3,13 +3,10 @@ title: "One Class SVM"
 description: "One Class SVM for Imbalanced Classes"
 twitter-card:
   image: "thumbnail.png"
-author:
-  - name: Louise E. Sinks
-    url: https://lsinks.github.io/
 date: 03-30-2023
-categories: [R, R-code, Code-Along, Machine Learning, caret, SVM, Classifiers] # self-defined categories
+categories: [R, R-code, code-along, machine learning, caret, svm, classifiers, support vector machines] # self-defined categories
 citation:
-  url: https://lsinks.github.io/posts/2023-03-30-One-Class-SVM
+  url: https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html
 image: "thumbnail.png"
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
@@ -37,7 +34,7 @@ library(corrplot) # for cool correlation graph
 library(gt) # for tables
 library(e1071) # for svm
 library(caret) # for data split
-thyroid <- read.csv("~/R Projects/SVM/thyroid.csv", header = TRUE)
+thyroid <- read.csv("thyroid.csv", header = TRUE)
 ```
 
 ## Exploratory Data Analysis
@@ -89,7 +86,7 @@ Many of the features are strongly correlated with the outcome. So, we can expect
 
 ## Setting up for ML with caret
 
-I'm using the [e1071 package](https://cran.r-project.org/web/packages/e1071/index.html) for SVM, which is not supported by tidymodels, so I will use [caret](https://topepo.github.io/caret/index.html) as the wrapper for a lot of the machine modeling workflow. First, I'm going to make a train and test split. createDataPartition will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don't want a scenario where the train or test dataset has most of the minority class observations.
+I'm using the [e1071 package](https://cran.r-project.org/web/packages/e1071/index.html) for SVM, which is not supported by tidymodels, so I will use [caret](https://topepo.github.io/caret/index.html) as the wrapper for a lot of the machine modeling workflow. First, I'm going to make a train and test split. `createDataPartition` will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don't want a scenario where the train or test dataset has most of the minority class observations.
 
 ```{r}
 #| label: test-train-setup

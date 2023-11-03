@@ -1,0 +1,11 @@
+---
+title: "author"
+description: "Some tips and tricks for using Quarto and RStudio to create a portfolio website and blog."
+date: 11-01-2023
+categories: [R, Quarto, turtle] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-11-03-authortest/author.html
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+---
+
+testing if I can move all the author info to the post listing page

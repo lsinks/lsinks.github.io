@@ -6,7 +6,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Louise E. Sinks">
 <meta name="dcterms.date" content="2023-03-30">
 <meta name="description" content="One Class SVM for Imbalanced Classes">
 
@@ -157,6 +156,10 @@ cookieconsent.run({
  <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html" rel="" target="">
+ <span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
     <a class="nav-link" href="../../about.html" rel="" target="">
  <span class="menu-text">About Me/ CV</span></a>
   </li>  
@@ -209,11 +212,12 @@ cookieconsent.run({
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
     <div class="quarto-category">R-code</div>
-    <div class="quarto-category">Code-Along</div>
-    <div class="quarto-category">Machine Learning</div>
+    <div class="quarto-category">code-along</div>
+    <div class="quarto-category">machine learning</div>
     <div class="quarto-category">caret</div>
-    <div class="quarto-category">SVM</div>
-    <div class="quarto-category">Classifiers</div>
+    <div class="quarto-category">svm</div>
+    <div class="quarto-category">classifiers</div>
+    <div class="quarto-category">support vector machines</div>
   </div>
   </div>
 
@@ -259,7 +263,7 @@ cookieconsent.run({
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># for tables</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(e1071) <span class="co"># for svm</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret) <span class="co"># for data split</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>thyroid <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"~/R Projects/SVM/thyroid.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>thyroid <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"thyroid.csv"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="exploratory-data-analysis" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
@@ -279,14 +283,26 @@ cookieconsent.run({
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(<span class="at">title =</span> <span class="st">"Summary of Variables in Thyroid"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display column-page">
 
-<div id="rzfmbicyxh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<div id="fhlixbnljq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fhlixbnljq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-:where(#rzfmbicyxh) .gt_table {
+#fhlixbnljq thead, #fhlixbnljq tbody, #fhlixbnljq tfoot, #fhlixbnljq tr, #fhlixbnljq td, #fhlixbnljq th {
+  border-style: none;
+}
+
+#fhlixbnljq p {
+  margin: 0;
+  padding: 0;
+}
+
+#fhlixbnljq .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -309,24 +325,12 @@ cookieconsent.run({
   border-left-color: #D3D3D3;
 }
 
-:where(#rzfmbicyxh) .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-:where(#rzfmbicyxh) .gt_caption {
+#fhlixbnljq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-:where(#rzfmbicyxh) .gt_title {
+#fhlixbnljq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -338,25 +342,37 @@ cookieconsent.run({
   border-bottom-width: 0;
 }
 
-:where(#rzfmbicyxh) .gt_subtitle {
+#fhlixbnljq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-:where(#rzfmbicyxh) .gt_bottom_border {
+#fhlixbnljq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#fhlixbnljq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
 }
 
-:where(#rzfmbicyxh) .gt_col_headings {
+#fhlixbnljq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -371,7 +387,7 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#rzfmbicyxh) .gt_col_heading {
+#fhlixbnljq .gt_col_heading {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -391,7 +407,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#rzfmbicyxh) .gt_column_spanner_outer {
+#fhlixbnljq .gt_column_spanner_outer {
   color: #FFFFFF;
   background-color: #0076BA;
   font-size: 100%;
@@ -403,15 +419,15 @@ cookieconsent.run({
   padding-right: 4px;
 }
 
-:where(#rzfmbicyxh) .gt_column_spanner_outer:first-child {
+#fhlixbnljq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-:where(#rzfmbicyxh) .gt_column_spanner_outer:last-child {
+#fhlixbnljq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-:where(#rzfmbicyxh) .gt_column_spanner {
+#fhlixbnljq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #5F5F5F;
@@ -423,7 +439,11 @@ cookieconsent.run({
   width: 100%;
 }
 
-:where(#rzfmbicyxh) .gt_group_heading {
+#fhlixbnljq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#fhlixbnljq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -449,7 +469,7 @@ cookieconsent.run({
   text-align: left;
 }
 
-:where(#rzfmbicyxh) .gt_empty_group_heading {
+#fhlixbnljq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -464,15 +484,15 @@ cookieconsent.run({
   vertical-align: middle;
 }
 
-:where(#rzfmbicyxh) .gt_from_md > :first-child {
+#fhlixbnljq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-:where(#rzfmbicyxh) .gt_from_md > :last-child {
+#fhlixbnljq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-:where(#rzfmbicyxh) .gt_row {
+#fhlixbnljq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -491,7 +511,7 @@ cookieconsent.run({
   overflow-x: hidden;
 }
 
-:where(#rzfmbicyxh) .gt_stub {
+#fhlixbnljq .gt_stub {
   color: #333333;
   background-color: #89D3FE;
   font-size: 100%;
@@ -504,7 +524,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#rzfmbicyxh) .gt_stub_row_group {
+#fhlixbnljq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -518,11 +538,15 @@ cookieconsent.run({
   vertical-align: top;
 }
 
-:where(#rzfmbicyxh) .gt_row_group_first td {
+#fhlixbnljq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-:where(#rzfmbicyxh) .gt_summary_row {
+#fhlixbnljq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#fhlixbnljq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -532,16 +556,16 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#rzfmbicyxh) .gt_first_summary_row {
+#fhlixbnljq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #5F5F5F;
 }
 
-:where(#rzfmbicyxh) .gt_first_summary_row.thick {
+#fhlixbnljq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-:where(#rzfmbicyxh) .gt_last_summary_row {
+#fhlixbnljq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -551,7 +575,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#rzfmbicyxh) .gt_grand_summary_row {
+#fhlixbnljq .gt_grand_summary_row {
   color: #333333;
   background-color: #D5D5D5;
   text-transform: inherit;
@@ -561,7 +585,7 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#rzfmbicyxh) .gt_first_grand_summary_row {
+#fhlixbnljq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -571,11 +595,21 @@ cookieconsent.run({
   border-top-color: #5F5F5F;
 }
 
-:where(#rzfmbicyxh) .gt_striped {
+#fhlixbnljq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #5F5F5F;
+}
+
+#fhlixbnljq .gt_striped {
   background-color: #EDF7FC;
 }
 
-:where(#rzfmbicyxh) .gt_table_body {
+#fhlixbnljq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #5F5F5F;
@@ -584,7 +618,7 @@ cookieconsent.run({
   border-bottom-color: #5F5F5F;
 }
 
-:where(#rzfmbicyxh) .gt_footnotes {
+#fhlixbnljq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -598,30 +632,8 @@ cookieconsent.run({
   border-right-color: #D3D3D3;
 }
 
-:where(#rzfmbicyxh) .gt_footnote {
+#fhlixbnljq .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-:where(#rzfmbicyxh) .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-:where(#rzfmbicyxh) .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -629,76 +641,95 @@ cookieconsent.run({
   padding-right: 5px;
 }
 
-:where(#rzfmbicyxh) .gt_left {
+#fhlixbnljq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#fhlixbnljq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#fhlixbnljq .gt_left {
   text-align: left;
 }
 
-:where(#rzfmbicyxh) .gt_center {
+#fhlixbnljq .gt_center {
   text-align: center;
 }
 
-:where(#rzfmbicyxh) .gt_right {
+#fhlixbnljq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-:where(#rzfmbicyxh) .gt_font_normal {
+#fhlixbnljq .gt_font_normal {
   font-weight: normal;
 }
 
-:where(#rzfmbicyxh) .gt_font_bold {
+#fhlixbnljq .gt_font_bold {
   font-weight: bold;
 }
 
-:where(#rzfmbicyxh) .gt_font_italic {
+#fhlixbnljq .gt_font_italic {
   font-style: italic;
 }
 
-:where(#rzfmbicyxh) .gt_super {
+#fhlixbnljq .gt_super {
   font-size: 65%;
 }
 
-:where(#rzfmbicyxh) .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#fhlixbnljq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-:where(#rzfmbicyxh) .gt_asterisk {
+#fhlixbnljq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-:where(#rzfmbicyxh) .gt_indent_1 {
+#fhlixbnljq .gt_indent_1 {
   text-indent: 5px;
 }
 
-:where(#rzfmbicyxh) .gt_indent_2 {
+#fhlixbnljq .gt_indent_2 {
   text-indent: 10px;
 }
 
-:where(#rzfmbicyxh) .gt_indent_3 {
+#fhlixbnljq .gt_indent_3 {
   text-indent: 15px;
 }
 
-:where(#rzfmbicyxh) .gt_indent_4 {
+#fhlixbnljq .gt_indent_4 {
   text-indent: 20px;
 }
 
-:where(#rzfmbicyxh) .gt_indent_5 {
+#fhlixbnljq .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-<table class="gt_table">
-  <thead class="gt_header">
-    <tr>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
       <td colspan="8" class="gt_heading gt_title gt_font_normal gt_bottom_border" style="">Summary of Variables in Thyroid</td>
     </tr>
     
-  </thead>
-  <thead class="gt_col_headings">
-    <tr>
+    <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="skim_variable">skim_variable</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="# Missing"># Missing</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="Completeness">Completeness</th>
@@ -796,7 +827,7 @@ cookieconsent.run({
 </section>
 <section id="setting-up-for-ml-with-caret" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-for-ml-with-caret">Setting up for ML with caret</h2>
-<p>I’m using the <a href="https://cran.r-project.org/web/packages/e1071/index.html">e1071 package</a> for SVM, which is not supported by tidymodels, so I will use <a href="https://topepo.github.io/caret/index.html">caret</a> as the wrapper for a lot of the machine modeling workflow. First, I’m going to make a train and test split. createDataPartition will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don’t want a scenario where the train or test dataset has most of the minority class observations.</p>
+<p>I’m using the <a href="https://cran.r-project.org/web/packages/e1071/index.html">e1071 package</a> for SVM, which is not supported by tidymodels, so I will use <a href="https://topepo.github.io/caret/index.html">caret</a> as the wrapper for a lot of the machine modeling workflow. First, I’m going to make a train and test split. <code>createDataPartition</code> will stratify the sampling over the two classes if you pass it the vector of labels. Stratification is usually critical with an imbalanced dataset; you don’t want a scenario where the train or test dataset has most of the minority class observations.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relabel the classes to TRUE if it is normal data and FALSE if it is</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># an anomaly.  (That is, it is false that the outlier data is normal).  </span></span>
@@ -942,15 +973,15 @@ Predicted FALSE TRUE
 
 </section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{e. sinks2023,
-  author = {E. Sinks, Louise},
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sinks2023,
+  author = {Sinks, Louise E.},
   title = {One {Class} {SVM}},
   date = {2023-03-30},
-  url = {https://lsinks.github.io/posts/2023-03-30-One-Class-SVM},
+  url = {https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html},
   langid = {en}
 }
-</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-e. sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
-E. Sinks, Louise. 2023. <span>“One Class SVM.”</span> March 30, 2023. <a href="https://lsinks.github.io/posts/2023-03-30-One-Class-SVM">https://lsinks.github.io/posts/2023-03-30-One-Class-SVM</a>.
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sinks2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sinks, Louise E. 2023. <span>“One Class SVM.”</span> March 30, 2023. <a href="https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html">https://lsinks.github.io/posts/2023-03-30-One-Class-SVM/one-class-svm.html</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

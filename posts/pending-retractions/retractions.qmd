@@ -1,0 +1,55 @@
+---
+title: ""
+description: "Methods for dealing with overlapping points and then styling a leaflet map with various labels and pop-ups."
+twitter-card:
+  image: "thumbnail.jpg"
+author:
+  - name: Louise E. Sinks
+    url: https://lsinks.github.io/
+date: 10-01-2023
+categories: [Data-Viz, R, R-code,  Code-Along, s] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/
+image: "thumbnail.jpg"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready
+---
+
+# Intro/Overview
+
+# Setting Up
+
+## Loading Libraries
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+#| output: false
+library(tidyverse) # who doesn't want to be tidy?
+library(gt) # for nice tables
+library(sf) # for handling geo data
+library(here) # reproducible file paths
+library(htmltools) # making html labels
+library(htmlwidgets) # saving final map
+library(leafpop) # pop-up with images
+library(leaflet) # mapping
+
+
+
+```
+
+## Loading Data
+
+Reading in the data.
+
+```{r}
+#| label: loading-data
+ retractions <- read_csv("retractions.csv")
+```
+
+By publisher
+
+```{r}
+retractions %>% group_by(Publisher) %>% count(sort = TRUE) %>% head()
+```
+
+# Conclusions
