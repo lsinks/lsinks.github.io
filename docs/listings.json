@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/pending-Learning Tableau/trying_embeds.html",
       "/posts/2023-11-01-website-building/website.html",
       "/posts/2023-09-08-web-scraping-tombstone/web-scraping.html",
       "/posts/2023-09-05-TidyTuesday-Labor/labor.html",
@@ -21,6 +22,7 @@
       "/posts/2023-04-25-tidytuesday-marathon/marathon.html",
       "/posts/2023-04-18-tidytuesday-founder-crops/founder-crops.html",
       "/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html",
+      "/posts/pending-cc-fraud-geography/fraud_geography.html",
       "/posts/2023-04-10-tidymodels/tidymodels_tutorial.html",
       "/posts/2023-04-04-chart-challenge-4/day4.html",
       "/posts/2023-04-03-chart-challenge-3/day3.html",
