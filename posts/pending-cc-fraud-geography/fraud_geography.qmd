@@ -99,214 +99,390 @@ I'm going to go through and check the assumptions.
 
 ## Assume that a customer in this dataset can be uniquely identified by date of birth and job
 
-```{r}
-fraud %>% group_by(dob, job, city) 
-
-```
-
-1.  A lat/long might be associated with two customers (e.g. a couple living together with separate accounts.
-
-```         
-```
-
-Everything looks okay, and I am lucky because there is no missing data. I will not need to do cleaning or imputation.
-
-I see that `is_fraud` is coded as 0 or 1, and the mean of this variable is 0.00525. The number of fraudulent transactions is very low, and we should use treatments for imbalanced classes when we get to the fitting/ modeling stage.
-
-### 5.1.2. Looking at our character strings
-
-transaction number(`trans_num`) are both strings. Transaction number should not influence fraud rate as it is a number assigned to the transaction when processed.
+Four locations have 2 users, the rest only have one.
 
 ```{r}
-#| label: removing-merchant-transnum
-# Code Block 9: Removing Character/ String Variables
-fraud <- fraud %>%
-  select(-trans_num)
+temp <- fraud %>% select(lat, long, dob, job, city, state) %>% group_by(lat, long, dob, job, city) %>% distinct()
+
+
+
+temp %>% group_by(lat, long) %>% count(sort = TRUE)
+
 ```
 
-## 5.2. Looking at the geographic data
-
-This data is coded as numeric (latitude and longitude) or character (city/state), but we can recognize it as geographic data and treat it appropriately.
-
-First, there are two sets of geographic data related to the merchant. The location of the merchant and where the transaction occurred. I create scatter plots of latitude and longitude separately, because I want to check the correlation between the two sources of data (merchant and transaction). I create a shared legend following the article [here](https://wilkelab.org/cowplot/articles/shared_legends.html).
+4 locations that have two users each.
 
 ```{r}
-#| label: transaction-merchant-coords
-# Code Block 10: Comparing Merchant and Transaction Locations
-
-# calculate correlations
-cor_lat <- round(cor(fraud$lat, fraud$merch_lat), 3)
-cor_long <- round(cor(fraud$long, fraud$merch_long), 3)
-
-# make figure
-fig_3a <-
-  ggplot(fraud, aes(lat, merch_lat, fill = factor(is_fraud))) +
-  geom_point(
-    alpha = 1,
-    shape = 21,
-    colour = "black",
-    size = 5
-  ) +
-  ggtitle("Latitude") +
-  ylab("Merchant Latitude") +
-  xlab("Transaction Latitude") +
-  scale_fill_viridis(
-    discrete = TRUE,
-    labels = c('Not Fraud', 'Fraud'),
-    name = ""
-  ) +
-  geom_abline(slope = 1, intercept = 0) 
-
-fig_3b <-
-  ggplot(fraud, aes(long, merch_long, fill = factor(is_fraud))) +
-  geom_point(
-    alpha = 1,
-    shape = 21,
-    colour = "black",
-    size = 5
-  ) +
-  ggtitle("Longitude") +
-  ylab("Merchant Longitude") +
-  xlab("Transaction Longitude") +
-  scale_fill_viridis(
-    discrete = TRUE,
-    labels = c('Not Fraud', 'Fraud'),
-    name = ""
-  ) +
-  geom_abline(slope = 1, intercept = 0) 
-
-# create the plot with the two figs on a grid, no legend
-prow_fig_3 <- plot_grid(
-  fig_3a + theme(legend.position = "none"),
-  fig_3b + theme(legend.position = "none"),
-  align = 'vh',
-  labels = c("A", "B"),
-  label_size = 12,
-  hjust = -1,
-  nrow = 1
-)
-
-# extract the legend from one of the figures
-legend <- get_legend(
-  fig_3a + 
-    guides(color = guide_legend(nrow = 1)) +
-    theme(legend.position = "bottom")
-)
-
-# add the legend to the row of figures, prow_fig_3
-plot_fig_3 <- plot_grid(prow_fig_3, legend, ncol = 1, rel_heights = c(1, .1))
-
-# title
-title_3 <- ggdraw() +
-  draw_label(
-    "Figure 3. Are Merchant and Transaction Coordinates Correlated?",
-    fontface = 'bold',
-    size = 14,
-    x = 0,
-    hjust = 0
-  ) +
-  theme(plot.margin = margin(0, 0, 0, 7))
-
-# graph everything
-plot_grid(title_3,
-          plot_fig_3,
-          ncol = 1,
-          rel_heights = c(0.1, 1))
+temp %>% group_by(dob) %>% count(sort = TRUE)
 ```
-
-These two sets of data are highly correlated (for latitude = `r cor_lat` and for longitude = `r cor_long`) and thus are redundant. So I remove `merch_lat` and `merch_long` from the dataset.
 
 ```{r}
-#| label: removing-merchant-coords
-# Code Block 11: Removing merch_lat and merch_long
-fraud <- fraud %>%
-
-  rename(trans_lat = lat, trans_long = long)
+temp %>% group_by(dob, lat, long) %>% count(sort = TRUE)
 ```
 
-Next, I will look and see if some locations are more prone to fraud.
+187 unique profiles.
+
+## The lat/long match the city state
+
+If the lat/long really encode the home address of the card user, then the city, state (of the card user's address) should be equivalent to the lat/long data. I can convert back and forth using a package like tidygeocoder. I did do this before, and then I calculated the distance between the home city/state and lat/long, which I thought was transaction location. I got some very large distances, which doesn't make sense if lat/long is of the home location. I don't expect to get 0, due to some imprecision in the geocoding, but I do expect a small number (that probably varies with the size of the city.) Requesting the lat/long of San Diego, CA will return the coordinates of the center of the city, while the lat/long from our dataset will reflect a specific address in San Diego.
+
+I'm going to use the suffix \_calc for calculated values.
+
+So what is going on? Either the original geocoding is wrong or lat/long is not the home address.
+
+From the very first entry, I can see that Orient, Washington was given coordinates that correspond to Orient, Iowa. It is also clear that city name might be in the city, village, town or hamlet category.
+
+For a quick check of how impactful the incorrect geocoding is, we can look at how many entries have the wrong state.
+
+## Let's Analyze the data properly.
+
+Reimport the data and start fresh
 
 ```{r}
-#| label: fraud-by-location
-# Code Block 12: Looking at Fraud by Location
-ggplot(fraud, aes(trans_long, trans_lat, fill = factor(is_fraud))) +
-  geom_point(
-    alpha = 1,
-    shape = 21,
-    colour = "black",
-    size = 5,
-    position = "jitter"
-  ) +
-  scale_fill_viridis(
-    discrete = TRUE,
-    labels = c('Not Fraud', 'Fraud'),
-    name = ""
-  ) +
-  ggtitle("Figure 4: Where does fraud occur? ") +
-  ylab("Latitude") +
-  xlab("Longitude") 
-  
+fraud_geo <- read_csv('C:/Users/drsin/OneDrive/Documents/R Projects/lsinks.github.io/posts/2023-04-11-credit-card-fraud/datacamp_workspace/credit_card_fraud.csv', show_col_types = FALSE) 
 ```
 
-It looks like there are some locations which only have fraudulent transactions.
+Pull out the lat/long data.
+
+```{r}
+coord_list <- fraud_geo %>%
+  distinct(lat, long)
+```
+
+Check this works with new vars
+
+```{r}
+#| label: reverse-geocode
+
+
+# add_calc <- coord_list %>%
+#   reverse_geocode(
+#     lat = lat,
+#     long = long,
+#     address = addr,
+#     limit = 1,
+#     method = "osm",
+#     full_results = TRUE
+#   )
+# 
+# 
+# write_csv(add_calc, "add_calc.csv")
+
+```
+
+This will be a messy enough data cleaning exercise that I was willing to cheat. I went back to the source code that generated the data set, and I looked to see how the locations were generated. I figured I could use the same method and increase the odds that I'd get the city name in the same field as my output. But all the source code seems to use a file demographic_data/locations_partitions.csv but they never generate it. So I'm unclear where the geographic information is coming from.
+
+Anway, let's do it.
+
+read in data
+
+```{r}
+add_calc <- read_csv("add_calc.csv")
+```
+
+```{r}
+
+add_calc <-
+  add_calc %>% select(
+    lat,
+    long,
+    county,
+    state,
+    town,
+    hamlet,
+    suburb,
+    village,
+    city,
+    neighbourhood,
+    municipality
+  ) %>% rename (
+    county_calc = county,
+    state_calc = state,
+    town_calc = town,
+    hamlet_calc = hamlet,
+    suburb_calc = suburb,
+    village_calc = village,
+    city_calc = city,
+    neighbourhood_calc = neighbourhood,
+    municipality_calc = municipality
+  )
+
+
+```
+
+```{r}
+skim(add_calc)
+```
+
+Every one of the names contains some data, so we will keep them all.
+
+rename geo names to calculated
+
+```{r}
+geo_set <-
+  fraud_geo %>% left_join(add_calc, by = c("lat", "long")) %>% distinct(lat, long, .keep_all = TRUE) 
+
+```
+
+remove other var
+
+```{r}
+geo_set2 <- geo_set %>% select(
+    -trans_date_trans_time,
+    -amt,
+    -merchant,
+    -category,
+    -city_pop,
+    -job,
+    -dob,
+    -is_fraud,
+    -merch_lat,
+    -merch_long,
+    -trans_num
+  )
+```
+
+We have 183 locations to match. I don't know that some of these temrs have a legal meaning in the US (like hamlet) and I'm not sure what the hierarchy should be.
+
+First, let's check that all the states are correct
+
+```{r}
+
+geo_set2$state_calc <- state.abb[match(geo_set2$state_calc, state.name)]
+```
+
+Now check
+
+```{r}
+geo_set2 <- geo_set2 %>%
+  mutate(state_match = (state == state_calc))
+```
+
+value
+
+```{r}
+mean(geo_set2$state_match)
+```
+
+Okay, so we are doing better already.
+
+```{r}
+geo_set2 <- geo_set2 %>%
+  mutate(city_match = (city == city_calc))
+```
+
+I'm going to match everything and then handle the nas
+
+```{r}
+geo_set2 <- geo_set2 %>%
+  mutate(town_match = (city == town_calc)) %>%
+  mutate(county_match = (city == county_calc)) %>%
+  mutate(hamlet_match = (city == hamlet_calc)) %>%
+  mutate(village_match = (city == village_calc)) %>%
+  mutate(suburb_match = (city == suburb_calc)) %>%
+  mutate(neighbourhood_match = (city == neighbourhood_calc)) %>%
+  mutate(municipality_match = (city == municipality_calc)) 
+```
+
+Any NAs in these columns don't match.
+
+```{r}
+geo_set3 <- geo_set2 %>%
+
+  mutate(across(ends_with("_match"), ~replace_na(.,FALSE)))
+
+```
+
+examine this
+
+```{r}
+skim(geo_set3)
+```
+
+neighbourhood and municipality have no matches, so delete them
+
+```{r}
+geo_set3 <- geo_set3 %>% 
+  select (-neighbourhood_calc, -neighbourhood_match, -municipality_calc, -municipality_match)
+```
+
+Now let's find a city_coded using a case when. I'm going to match from what I think is the biggest to smallest geo unit.
+
+```{r}
+geo_set3 <-  geo_set3 %>%
+  mutate(
+    city_coded =  case_when(
+      city_match == TRUE      ~ city_calc,
+      town_match == TRUE      ~ town_calc,
+      county_match == TRUE      ~ county_calc,
+      hamlet_match == TRUE      ~ hamlet_calc,
+      village_match == TRUE      ~  village_calc,
+      suburb_match == TRUE      ~  suburb_calc,
+      .default = "no_match"
+      
+    )
+  )
+```
+
+How many no_match do we have?
+
+```{r}
+temp4 <- geo_set3 %>% filter (city_coded == "no_match")
+```
+
+Test some different methods
+
+```{r}
+# geo_osm <- reverse_geo(
+#     lat = 48.8878,
+#     long = -118.2105,
+#     address = addr,
+#     limit = 1,
+#     method = "osm",
+#     full_results = TRUE)
+```
+
+```{r}
+# geo_argis <- reverse_geo(
+#     lat = 48.8878,
+#     long = -118.2105,
+#     address = addr,
+#     limit = 1,
+#     method = "arcgis",
+#     full_results = TRUE)
+```
+
+now mapquest
+
+```{r}
+# geo_mapquest <- reverse_geo(
+#     lat = 48.8878,
+#     long = -118.2105,
+#     address = addr,
+#     limit = 1,
+#     method = "mapquest",
+#     full_results = TRUE)
+```
+
+google
+
+```{r}
+# geo_google <- reverse_geo(
+#     lat = 48.8878,
+#     long = -118.2105,
+#     address = addr,
+#     limit = 1,
+#     method = "google",
+#     full_results = TRUE)
+```
+
+Okay, google is the only one that correctly IDs Orient, Wa
+
+```{r}
+temp4 <- temp4[,1:4]
+```
+
+Reverse geocode with google for these 88.
+
+```{r}
+# add_calc_google <- temp4 %>% reverse_geocode(
+#     lat = lat,
+#     long = long,
+#     address = addr,
+#     limit = 1,
+#     method = "google",
+#     full_results = TRUE)
+```
+
+save for later
+
+```{r}
+saveRDS(add_calc_google, file = "add_calc_google.rds")
+```
+
+We need to unnest the 6 column. We can also deleted some stuff.
+
+We want locality and adminstrative_area_level_1 to start unforetunately these items don't appear in a consistent place in the matrix.
+
+```{r}
+add_calc_google <- add_calc_google[,1:6]
+```
+
+now unnest
+
+```{r}
+add_calc_google2 <- add_calc_google %>%
+  unnest_longer((address_components)) %>% unnest(address_components)
+```
+
+Now let's clean things up.
+
+```{r}
+add_calc_google3 <- add_calc_google2 %>%
+  filter((types == 'c("locality", "political")') | (types == 'c("administrative_area_level_1", "political")'))
+```
+
+Remove col
+
+```{r}
+add_calc_google4 <- add_calc_google3 %>%
+ select(-long_name)
+```
+
+rename the locality stuff from google
+
+```{r}
+add_calc_google4 <- add_calc_google4 %>%
+  mutate(types = str_replace_all(types, pattern = 'c("locality", "political")', replacement = "State"))
+```
+
+Pivot back to a reasonable shape
+
+```{r}
+add_calc_google4 <- add_calc_google4 %>%
+  pivot_wider(names_from= types, values_from = short_name)
+```
+
+try renaming again
+
+```{r}
+add_calc_google4 <- add_calc_google4 %>% rename(city_calc = 'c("locality", "political")')
+```
+
+rename state
+
+```{r}
+add_calc_google4 <- add_calc_google4 %>% rename(state_calc =  'c("administrative_area_level_1", "political")')
+```
+
+test
+
+```{r}
+add_calc_google4 <-  add_calc_google4 %>%
+  mutate(city_match = (city == city_calc)) %>%
+  mutate(state_match = (state == state_calc))
+```
+
+See how we did
+
+```{r}
+mean(add_calc_google4$state_match)
+```
+
+now city
+
+```{r}
+mean(add_calc_google4$city_match)
+```
+
+```{r}
+no_match2 <-add_calc_google4 %>%
+  filter (city_match== FALSE)
+```
 
 Next, I'm going to convert city/state into latitude and longitude using the [tidygeocoder package](https://jessecambon.github.io/tidygeocoder/reference/geo.html). Also included code to save this output and then re-import it. You likely do not want to be pulling the data from the internet every time you run the code, so this gives you the option to work from a local copy. For many services, it is against terms of service to repeatedly make the same calls rather than working from a local version. I did find that I could originally pull all data from 'osm', but while double checking this code, I found that the service is now imposing some rate limit and denies some requests, leading to some NA entries. So do check your results.
 
-```{r}
-#| label: city-state-to-coords
-# Code Block 13: Converting city/state data lat/long
-
-# need to pass an address to geo to convert to lat/long
-fraud <- fraud %>%
-  mutate(address = str_c(city, state, sep = " , "))
-
-# generate a list of distinct addresses to look up
-# the dataset is large, so it is better to only look up unique address rather that the address
-# for every record
-address_list <- fraud %>%
-  distinct(address)
-
-# this has one more than number in the cities, so there must be a city with the same name in more than one state.
-
-# Reimport the data and load it
-home_coords <-
-  read_csv('C:/Users/drsin/OneDrive/Documents/R Projects/lsinks.github.io/posts/2023-04-11-credit-card-fraud/datacamp_workspace/downloaded_coords.csv', show_col_types = FALSE)
-
-
-# imported home coords has an extra set of quotation marks
-home_coords <- home_coords %>%
-  mutate(address = str_replace_all(address, "\"", "")) %>%
-  rename(lat_home = lat, long_home = long)
-
-# use a left join on fraud and home_coords to assign the coord to every address in fraud
-fraud <- fraud %>%
-  left_join(home_coords, by = "address")
-```
-
 Now I'm going to calculate the distance between the card holder's home and the location of the transaction. I think distance might be a feature that is related to fraud. I followed the tutorial [here](https://www.geeksforgeeks.org/program-distance-two-points-earth/amp/) for calculating distance
-
-```{r}
-# Code Block 14: Distance Between Home and Transaction
-
-# I believe this assuming a spherical Earth
-
-# convert to radians
-fraud <- fraud %>%
-  mutate(
-    lat1_radians = lat_home / 57.29577951,
-    lat2_radians = trans_lat / 57.29577951,
-    long1_radians = long_home / 57.29577951,
-    long2_radians = trans_long / 57.29577951
-  )
-
-# calculating distance
-fraud <-
-  fraud %>% mutate(distance_miles = 3963.0 * acos((sin(lat1_radians) * sin(lat2_radians)) + cos(lat1_radians) * cos(lat2_radians) * cos(long2_radians - long1_radians)
-  ))
-
-# calculating the correlation
-fraud_distance <- round(cor(fraud$distance_miles, fraud$is_fraud), 3) 
-```
 
 Despite my assumption that distance would be correlated with fraud, the correlation value is quite low, `r fraud_distance`.
 
@@ -334,10 +510,27 @@ fraud_distance2 <- round(cor(fraud$distance_miles2, fraud$is_fraud), 3)
 
 I'm going to visualize it anyway.
 
+Some distances only have fraudulent transactions. This might be related to the locations that are only fraud, Figure 4.
+
+This new feature `distances_miles` is retained, and the original variables (`city`, `state`) and the intermediate variables (address, variables used to calculate distance) are removed in Code Block 16.
+
+I'm going to reverse geocode the trans coords
+
+Hypothesis- wrongly encoded addresses are the large distance errors. State alone is enough to flag them?
+
 ```{r}
-#| label: distance-and-fraud
-# Code Block 15: Distance from Home and Fraud
-ggplot(fraud, aes(distance_miles, is_fraud , fill = factor(is_fraud))) +
+fraud <- fraud %>%
+  left_join(address_list2, by = "address")
+```
+
+```{r}
+write_csv(home_address,"home_address.csv" )
+```
+
+And looking at distance based on lat/long
+
+```{r}
+ggplot(fraud, aes(distance_miles2, is_fraud , fill = factor(is_fraud))) +
   geom_point(
     alpha = 1,
     shape = 21,
@@ -355,9 +548,25 @@ ggplot(fraud, aes(distance_miles, is_fraud , fill = factor(is_fraud))) +
   ylab("Is Fraud?") 
 ```
 
-Some distances only have fraudulent transactions. This might be related to the locations that are only fraud, Figure 4.
+How many Wrong states?
 
-This new feature `distances_miles` is retained, and the original variables (`city`, `state`) and the intermediate variables (address, variables used to calculate distance) are removed in Code Block 16.
+```{r}
+mean(fraud_geo_prob$right_state)
+```
+
+Distribution might be clearer
+
+```{r}
+
+
+```
+
+Other histogram
+
+```{r}
+ggplot(fraud) +
+  geom_histogram(aes(distance_miles2), color = "blue", bins = 50) 
+```
 
 ```{r}
 #| label: distance-and-fraud-viz
@@ -370,4 +579,4 @@ fraud <- fraud %>%
 
 ```
 
-## 
+f

@@ -1,0 +1,446 @@
+---
+title: "Credit Card Fraud: A Tidymodels Tutorial"
+description: "An Imbalanced Class Problem"
+twitter-card:
+  image: "thumbnail.png"
+date: 04-11-2023
+date-modified: last-modified
+categories: [R, R-code, mapping, tidymodels, machine learning, classifiers] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+The specific problem is one provided by Datacamp as a challenge in the certification community. The dataset (Credit Card Fraud) can also be found at the Datacamp workspace. To access the dataset and the data dictionary, you can create a new notebook on datacamp using the Credit Card Fraud dataset. That will produce a notebook like [this](https://app.datacamp.com/workspace/w/f3a94059-683b-4bc6-b354-9b98cf3d5242/edit) with the dataset and the data dictionary.
+
+The original source of the data (prior to preparation by DataCamp) can be found [here](https://www.kaggle.com/kartik2112/fraud-detection?select=fraudTrain.csv).
+
+# 1. Set-up steps
+
+Loading the necessary libraries.
+
+```{r}
+#| label: loading-libraries
+#| warning: false
+# Code Block 2: Loading Libraries
+
+# loading tidyverse/ tidymodels packages
+library(tidyverse) #core tidyverse
+library(tidymodels) # tidymodels framework
+library(lubridate) # date/time handling
+
+# visualization
+library(viridis) #color scheme that is colorblind friendly
+library(ggthemes) # themes for ggplot
+library(gt) # to make nice tables
+library(cowplot) # to make multi-panel figures
+library(corrplot) # nice correlation plot
+
+#Data Cleaning
+library(skimr) #provides overview of data and missingness
+
+#Geospatial Data
+library(tidygeocoder) #converts city/state to lat/long
+library(sf) # for handling geo data
+library(mapview) # quick interactive mapping
+library(leaflet) # more mapping
+
+```
+
+I'm setting a global theme for my figures. I'm using [cowplot](https://wilkelab.org/cowplot/index.html) to create some composite figures, and apparently you must choose a cowplot theme if you set a global theme. You can use a ggtheme on a graph by graph basis, but not globally.
+
+```{r}
+#| label: fig-options
+# Code Block 3: setting global figure options
+
+theme_set(theme_cowplot(12))
+```
+
+Loading the data. This is a local copy that is part of the workspace download from Datacamp.
+
+```{r}
+#| label: import-data
+# Code Block 4: Reading in the data
+fraud <- read_csv('C:/Users/drsin/OneDrive/Documents/R Projects/lsinks.github.io/posts/2023-04-11-credit-card-fraud/datacamp_workspace/credit_card_fraud.csv', show_col_types = FALSE) 
+```
+
+Get unique DOBs and associated coordinates
+
+```{r}
+unique_dobs<- fraud%>% group_by(dob, lat, long) %>% count(sort = TRUE)
+unique_dobs <- tibble::rowid_to_column(unique_dobs, "ID")
+unique_dobs
+```
+
+distributions of the number of transactions per user
+
+```{r}
+unique_dobs %>%
+  ggplot(aes(n)) +
+  geom_histogram(bins = 10)
+```
+
+Kind of a weird pattern, but moving on.
+
+# 4. Validation of data types
+
+```{r}
+#| label: skim-data
+# Code Block 5: Validation of Data Types Against Data Dictionary
+# custom skim function to remore some of the quartile data
+my_skim <- skim_with(numeric = sfl(p25 = NULL, p50 = NULL, p75 = NULL))
+
+my_skim(fraud)
+```
+
+Everything looks okay, and I am lucky because there is no missing data. I will not need to do cleaning or imputation.
+
+I see that `is_fraud` is coded as 0 or 1, and the mean of this variable is 0.00525. The number of fraudulent transactions is very low, and we should use treatments for imbalanced classes when we get to the fitting/ modeling stage.
+
+### 5.1.1. Exploring the factors: how is the compactness of categories?
+
+The predictors `category` and `job` are transformed into factors.
+
+```{r}
+#| label: convert-strings-to-factors
+# Code Block 6: Converting Strings to Factors
+fraud$category <- factor(fraud$category)
+fraud$job <- factor(fraud$job)
+```
+
+F
+
+## 5.2. Looking at the geographic data
+
+This data is coded as numeric (latitude and longitude) or character (city/state), but we can recognize it as geographic data and treat it appropriately.
+
+Next, I will look and see if some locations are more prone to fraud.
+
+```{r}
+#| label: fraud-by-location
+# Code Block 12: Looking at Fraud by Location
+
+map_data("usa") %>%
+  ggplot(aes(long, lat)) +
+  geom_polygon(
+    aes(group = group),
+    fill = "white",
+    color = "gray30",
+    alpha = 0.9
+  ) +
+
+  geom_point( 
+    aes(x = merch_long, y = merch_lat), data = fraud) + coord_sf() + theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.background = element_rect(fill = "white", color = "white")
+  )
+  
+
+
+
+  
+```
+
+Now users
+
+```{r}
+
+
+map_data("usa") %>%
+  ggplot(aes(long, lat)) +
+  geom_polygon(
+    aes(group = group),
+    fill = "white",
+    color = "gray30",
+    alpha = 0.9
+  ) +
+  
+  geom_point(aes(x = long, y = lat), data = unique_dobs)  + coord_sf() + theme_void() +
+  theme(
+    legend.position = "bottom",
+    plot.background = element_rect(fill = "white", color = "white")
+  ) 
+  
+```
+
+combined map
+
+```{r}
+map_data("usa") %>%
+  ggplot(aes(long, lat)) +
+  geom_polygon(
+    aes(group = group),
+    fill = "white",
+    color = "gray30",
+    alpha = 0.9
+  ) +
+  
+  geom_point(aes(x = merch_long, y = merch_lat), alpha = 0.1, data = fraud, size = 1) +
+  geom_point(aes(x = long, y = lat, color = dob), fill = "red", size = 1 , shape = 21, data = unique_dobs) +
+  coord_sf()
+```
+
+That is an ugly map! But it suggests that each user has most transactions with a certain distance of their home, so the transactions form a cluster around the users home.
+
+Using maps as the base is ugly
+
+<https://stackoverflow.com/questions/61282572/cant-read-shp-file-in-r>
+
+```{r}
+census_states <- st_read(dsn = "cb_2018_us_state_500k.shp")
+```
+
+See how this map looks
+
+```{r}
+ggplot() +
+  geom_sf(data = census_states)
+```
+
+And us territories apparently!
+
+take set xlim using our dataset
+
+```         
+> min(fraud$long) [1] -165.6723 > max(fraud$long) [1] -89.6287
+```
+
+```{r}
+census_states %>%
+  filter(STATEFP < 57) %>%
+ggplot() +
+  geom_sf(aes(fill= NAME)) +
+   guides(fill = "none") +
+  coord_sf(xlim = c(-165.6723, -89.6287))
+```
+
+now make a spatial object for the transactions
+
+```{r}
+merchant_points<- st_as_sf(fraud, coords = c("merch_long", "merch_lat"), crs = 4269)
+```
+
+home points
+
+```{r}
+home_points<- st_as_sf(unique_dobs, coords = c("long", "lat"), crs = 4269)
+```
+
+now map this
+
+```{r}
+census_states <- census_states %>%
+  filter(STATEFP < 57)
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = census_states) +
+   guides(fill = "none") +
+  geom_sf(data = merchant_points, alpha = 0.01, size = 1) +
+   coord_sf(xlim = c(-165.6723, -89.6287)) +
+  theme_void()
+```
+
+Alaska is a problem
+
+I need two separate geo files- one for lat long and one for merch lat merch long
+
+color palette
+
+```{r}
+pal2 <- distinctColorPalette(k = 187, altCol = FALSE, runTsne = FALSE)
+
+```
+
+plotting states
+
+```{r}
+ggplot() +
+  geom_sf(data = census_states) +
+   guides(fill = "none") +
+  geom_sf(data = merchant_points, aes(fill = dob, color = dob), alpha = 0.01, shape = 21, size = 1) +
+  geom_sf(data = home_points, shape = 8, size = 1, aes(color = dob)) +
+  scale_fill_gradientn(colors = pal2)+
+  scale_color_gradientn(colors = pal2)+
+   coord_sf(xlim = c(-165.6723, -89.6287)) +
+  theme_void() +
+  guides(fill = "none") +
+  guides(color = "none")
+```
+
+working on color palatte issue only
+
+drawing 75 mile circles
+
+```{r}
+circle_buffer  <- home_points %>%  
+      st_buffer(120701)
+```
+
+```{r}
+ggplot() +
+  
+  geom_sf(data = census_states) +
+geom_sf(data = circle_buffer, aes(color = dob))+
+  geom_sf(data = merchant_points, aes(fill = dob, color = dob), alpha = 0.01, shape = 21, size = 1) +
+  geom_sf(data = home_points, shape = 8, size = 1, aes(color = dob)) +
+  scale_fill_gradientn(colors = pal2)+
+  scale_color_gradientn(colors = pal2)+
+   coord_sf(xlim = c(-165.6723, -89.6287)) +
+  theme_void() +
+  guides(fill = "none") +
+  guides(color = "none")
+
+
+
+
+```
+
+```{r}
+fraud %>%
+  group_by(dob, lat, long, merch_lat, merch_long) %>%
+  count(sort= TRUE)
+```
+
+That's really silly. Are there really no duplicate merchants?
+
+```{r}
+fraud %>%
+  group_by(merch_lat, merch_long) %>%
+  count(sort= TRUE)
+```
+
+```{r}
+# Code Block 14: Distance Between Home and Transaction
+
+# I believe this assuming a spherical Earth
+
+# convert to radians
+fraud <- fraud %>%
+  mutate(
+    lat1_radians = lat / 57.29577951,
+    lat2_radians = merch_lat / 57.29577951,
+    long1_radians = long / 57.29577951,
+    long2_radians = merch_long / 57.29577951
+  )
+
+# calculating distance
+fraud <-
+  fraud %>% mutate(distance_miles = 3963.0 * acos((sin(lat1_radians) * sin(lat2_radians)) + cos(lat1_radians) * cos(lat2_radians) * cos(long2_radians - long1_radians)
+  ))
+
+
+```
+
+```{r}
+# calculating the correlation
+cor(fraud$distance_miles, fraud$is_fraud)
+```
+
+Despite my assumption that distance would be correlated with fraud, the correlation value is quite low, `r fraud_distance`.
+
+I'm going to visualize it anyway.
+
+```{r}
+#| label: distance-and-fraud
+# Code Block 15: Distance from Home and Fraud
+ggplot(fraud, aes(distance_miles, is_fraud , fill = factor(is_fraud))) +
+  geom_point(
+    alpha = 1,
+    shape = 21,
+    colour = "black",
+    size = 5,
+    position = "jitter"
+  ) +
+  scale_fill_viridis(
+    discrete = TRUE,
+    labels = c('Not Fraud', 'Fraud'),
+    name = ""
+  ) +
+  ggtitle("Figure 5: How far from home does fraud occur?") +
+  xlab("Distance from Home (miles)") +
+  ylab("Is Fraud?") 
+```
+
+And as a distribution
+
+```{r}
+ggplot(fraud) +
+  geom_histogram(aes(distance_miles), color = "red", bins = 50) 
+```
+
+fraud vs not fraud
+
+```{r}
+
+fraud %>% filter(is_fraud == 1) %>%
+ggplot() +
+  geom_histogram(aes(distance_miles), color = "red", bins = 50) 
+```
+
+Is not_fraud
+
+```{r}
+fraud %>% filter(is_fraud == 0) %>%
+ggplot() +
+  geom_histogram(aes(distance_miles), color = "red", bins = 50) 
+```
+
+## 
+
+for the density map
+
+```{r}
+fraud_only <- fraud %>% filter(is_fraud == TRUE) %>% select(distance_miles)
+legit_only <- fraud %>% filter(is_fraud == FALSE) %>% select(distance_miles)
+```
+
+make into a single df
+
+```{r}
+ggplot() +
+  geom_density(data = fraud_only, aes(distance_miles) , alpha = 0.5, fill = "blue") +
+  geom_density(data = legit_only , aes(distance_miles),  alpha = 0.5 , fill = "yellow") +
+  geom_vline(xintercept = 70) +
+  theme_classic() +
+  labs(title = "Evolution of Word Scores as Guessing Progresses",
+       caption = "for 5 letter words") +
+  xlab("Distance(miles)") +
+  ylab("Density") 
+```
+
+now use the hack to calculate distance
+
+```{r}
+fraud <- fraud %>%
+  mutate(distance_hacky  = (sqrt((lat-merch_lat)^2 + (long-merch_long)^2)*70))
+```
+
+graph
+
+```{r}
+ggplot(fraud) +
+  geom_histogram(aes(distance_hacky), color = "red", bins = 50) +
+  geom_vline(xintercept = 70) 
+  
+```
+
+look at one guy
+
+```{r}
+fraud %>% filter(dob == "1987-04-23") %>%
+ggplot() +
+  geom_histogram(aes(distance_hacky), color = "red", bins = 50) +
+  geom_vline(xintercept = 70) 
+```
+
+does this make sense
+
+```{r}
+
+radius = 1
+
+```
