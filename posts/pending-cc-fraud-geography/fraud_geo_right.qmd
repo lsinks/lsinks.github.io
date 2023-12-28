@@ -258,7 +258,7 @@ reverse$state <- state.abb[match(reverse$state, state.name)]
 
 ```{r}
 #| label: checking-for-failures
-reverse %>% filter(is.na(state) == TRUE)
+reverse %>% filter(is.na(state) == TRUE) %>% gt()
 ```
 
 NA arises from location that is in Canada. This can safely be encoded as an incorrect state.
@@ -399,9 +399,10 @@ unique_dobs <- tibble::rowid_to_column(unique_dobs, "ID")
 ```{r}
 #| label: viewing-unique-dobs
 
-unique_dobs %>% gt() %>%
+unique_dobs %>% ungroup() %>% gt() %>%
   tab_options(container.height = px(300),
-              container.padding.y = px(24))
+              container.padding.y = px(24), container.width = px(600),
+              container.padding.x = px(24))
 ```
 
 From this, it appears the dataset contains 187 unique persons. Again, take "unique person" with a grain of salt. This isn't a unique identifier; it is trivial to come up with scenarios where two people would have all of this information the same. I can't even prove that these are unique IDs within this dataset. However, assuming the dataset has been generated with reasonable paramaters, it is unlikely that there are more than a handful of duplicates. (The US currently has a rate of \~3 twins per 100 births, so our dataset might include 6 pairs of twins. The likelihood of them choosing the same profession and living "together" reduces that possibility more. The odds of two strangers having the same DOB, job, and home location is probably much lower than that.) I'm going to stop putting quotes around "unique", just remember that might not be.
@@ -425,9 +426,10 @@ Now, I'm going it to the list of unique card holders.
 unique_dobs <- unique_dobs %>%
   left_join(states)
 
-unique_dobs %>% gt() %>%
-  tab_options(container.height = px(300),
-              container.padding.y = px(24))
+unique_dobs %>% ungroup() %>% gt() %>%
+              tab_options(container.height = px(300),
+              container.padding.y = px(24), container.width = px(600),
+              container.padding.x = px(24))
 ```
 
 The most prolific card users have \~ 4000 transactions in this time period. The least prolific only have a handful.
@@ -451,6 +453,7 @@ How many users do we have per state?
 unique_dobs %>% 
   group_by(state) %>%
   count(sort = TRUE) %>%
+  ungroup()%>%
   gt() %>%
   tab_options(container.height = px(300),
               container.padding.y = px(24))
@@ -636,7 +639,7 @@ ggplot() +
   guides(fill = "none", color = "none") 
 ```
 
-Qualitatively, it seems like each cardholder is surronded by a cluster of transactions. (This visualization might be nicer as a dynamic presentation where you could zoom in, but most techniques available to a casual user don't handle this many points gracefully. Even Tableau hangs at this visualization.)
+Qualitatively, it seems like each cardholder is surrounded by a cluster of transactions. (This visualization might be nicer as a dynamic presentation where you could zoom in, but most techniques available to a casual user don't handle this many points gracefully. Even Tableau hangs at this visualization.)
 
 Let's look at one state. Arizona has 7 users, so that seems reasonable.
 
@@ -674,19 +677,18 @@ show_col(pal_AZ)
 
 AZ_graph <- ggplot() +
   geom_sf(data = census_AZ, fill = "white") +
-  geom_sf(
-    data = merchant_AZ,
-    aes(fill = ID, color = ID),
-    alpha = 0.05,
-    shape = 21,
-    size = 1
-  ) +
+  # geom_sf(
+  #   data = merchant_AZ,
+  #   aes(fill = ID, color = ID),
+  #   alpha = 0.05,
+  #   shape = 21,
+  #   size = 1
+  # ) +
   geom_sf(
     data = home_AZ,
     shape = 21,
-    size = 3,
-    aes(fill = ID),
-    color = "black"
+    size =9, alpha = 1,
+    aes(fill = ID, color = ID)
   ) +
   scale_fill_gradientn(colors = pal_AZ) +
   scale_color_gradientn(colors = pal_AZ) +
@@ -728,11 +730,11 @@ ggplot(fraud, aes(lat_delta)) +
 ```
 
 ```{r}
-fraud %>%
-  group_by(merch_lat, merch_long) %>%
-  count(sort = TRUE) %>% gt() %>%
-  tab_options(container.height = px(300),
-              container.padding.y = px(24))
+# fraud %>%
+#   group_by(merch_lat, merch_long) %>%
+#   count(sort = TRUE) %>% gt() %>%
+#   tab_options(container.height = px(300),
+#               container.padding.y = px(24))
 ```
 
 Distance vs. Hacky Distance.
@@ -849,9 +851,58 @@ ggplot(fraud) +
 broken code
 
 ```{r}
-{r}
-m <- ggplot(fraud, aes(distance_miles, is_fraud))
-m + stat_summary(fun = "mean", geom = "bar")
+
+#m <- ggplot(fraud, aes(distance_miles, is_fraud))
+#m + stat_summary(fun = "mean", geom = "bar")
+```
+
+error
+
+```{r}
+fraud$error <- fraud$distance_miles-fraud$distance_hacky
+```
+
+distribution
+
+```{r}
+fraud %>% ggplot(aes(abs(error))) +
+  geom_histogram()
+```
+
+graph
+
+```{r}
+fraud %>% ggplot(aes(lat, abs(error))) +
+  geom_point()
+```
+
+long
+
+```{r}
+fraud %>% ggplot(aes(long, abs(error))) +
+  geom_point()
+```
+
+or
+
+```{r}
+state_error <- fraud %>%
+  group_by(state) %>%
+  summarise(avg = mean(abs(error))) %>%
+  arrange(desc(avg))
+```
+
+error map
+
+```{r}
+census_states <- census_states %>%
+  left_join(state_error, by = c("STUSPS"="state"))
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = census_states, aes(fill = avg)) 
+  
 ```
 
 ### Geocoding Services
@@ -872,11 +923,11 @@ On the other hand, every transaction is associated with a unique merchant locati
 Not only are there no duplicate merchant locations for specific users...
 
 ```{r}
-fraud %>%
-  group_by(dob, lat, long, merch_lat, merch_long) %>%
-  count(sort = TRUE) %>% gt() %>%
-  tab_options(container.height = px(300),
-              container.padding.y = px(24))
+# fraud %>%
+#   group_by(dob, lat, long, merch_lat, merch_long) %>%
+#   count(sort = TRUE) %>% gt() %>%
+#   tab_options(container.height = px(300),
+#               container.padding.y = px(24))
 ```
 
 But there are no duplicate merchant locations over the entire dataset.
