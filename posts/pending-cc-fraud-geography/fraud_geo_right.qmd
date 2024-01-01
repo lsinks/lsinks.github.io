@@ -931,3 +931,11 @@ Not only are there no duplicate merchant locations for specific users...
 ```
 
 But there are no duplicate merchant locations over the entire dataset.
+
+I wanted to repeat the credit card fraud exploratory data analysis in Tableau (and also Python). I worked with this dataset extensively while learning R's Tidymodels framework. I had made various visualizations, so I thought repeating them in the new languages would be a good exercise.
+
+The geographic data in the dataset always seemed odd, but I couldn't really put my finger on it based on my R analysis. I brushed it off since the credit card dataset is synthetic, so I assumed it probably arose from a coding choice/ assumption made by the person who generated the dataset.
+
+Tableau allows you to put a ridiculous amount of data on a single visualization and change things dynamically. My dashboards are hideous because I packed so much in them and should never be presented to an executive, but they allowed me to play around with my data and sharply define the weirdness.
+
+Any guesses as to what the issue is?
