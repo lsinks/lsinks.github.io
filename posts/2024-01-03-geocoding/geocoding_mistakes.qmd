@@ -9,7 +9,7 @@ categories: [R, mapping, geocoding, reverse geocoding, error checking] # self-de
 citation:
   url: https://lsinks.github.io/posts/2024-01-03-geocoding/geocoding_mistakes.html
 image: "thumbnail.png"
-draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
 I've worked with a synthetic dataset on credit card fraud for a couple of projects, most notably my [tidymodels](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) and [classification](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) projects.

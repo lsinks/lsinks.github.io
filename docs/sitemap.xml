@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://lsinks.github.io/posts.html</loc>
-    <lastmod>2024-01-03T18:57:17.891Z</lastmod>
+    <lastmod>2024-01-03T19:08:37.790Z</lastmod>
   </url>
   <url>
     <loc>https://lsinks.github.io/posts/2023-11-01-website-building/website.html</loc>
@@ -163,5 +163,9 @@
   <url>
     <loc>https://lsinks.github.io/posts/2024-01-01-tableau/tableau.html</loc>
     <lastmod>2024-01-01T21:09:43.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lsinks.github.io/posts/2024-01-03-geocoding/geocoding_mistakes.html</loc>
+    <lastmod>2024-01-03T19:07:18.885Z</lastmod>
   </url>
 </urlset>
