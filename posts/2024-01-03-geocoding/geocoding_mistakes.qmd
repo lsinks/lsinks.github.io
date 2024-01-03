@@ -1,0 +1,365 @@
+---
+title: "Geocoding Gone Wrong"
+description: "How I messed up my geocoding by not checking my work."
+twitter-card:
+  image: "thumbnail.png"
+date: 01-03-2024
+date-modified: last-modified
+categories: [R, mapping, geocoding, reverse geocoding, error checking] # self-defined categories
+citation:
+  url: https://lsinks.github.io/posts/2024-01-03-geocoding/geocoding_mistakes.html
+image: "thumbnail.png"
+draft: true # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+I've worked with a synthetic dataset on credit card fraud for a couple of projects, most notably my [tidymodels](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) and [classification](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html) projects.
+
+I've been working with this dataset again, and began to suspect some of my previous work was incorrect. Here I'm going to look at part of my previous analysis and do some simple checks (which I should have done before!) to show that this part of the previous work was wrong.
+
+## Previous Analysis
+
+The dataset is one provided by Datacamp. The dataset (Credit Card Fraud) can also be found at the Datacamp workspace. To access the dataset and the data dictionary, you can create a new notebook on Datacamp using the Credit Card Fraud dataset. That will produce a notebook like [this](https://app.datacamp.com/workspace/w/f3a94059-683b-4bc6-b354-9b98cf3d5242/edit) with the dataset and the data dictionary.
+
+The dataset contains roughly 300,000 credit card transactions. It includes the city and state of the credit card holder; there are 177 unique city state combinations in the dataset.
+
+I used the [tidygeocoder package](https://jessecambon.github.io/tidygeocoder/reference/geo.html) to convert this city, state information into latitude and longitude (this is in Code Block 13: Converting city/state data lat/long, in [the Geographical Variables Section](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html#looking-at-the-geographic-data)). I needed this data as lat/long so I could calculate the distance between the home address and the transaction location, which per the data dictionary was found in the lat and long variables. It turns out this isn't the correct definition of lat and long, but I'll cover that in a different post. This incorrect definition doesn't impact the mistakes I made when geocoding.
+
+So I calculated the distance and generated the following plot (For the code, see everything below Fig 4 in [the Geographical Variables Section](https://lsinks.github.io/posts/2023-04-11-credit-card-fraud/fraud_tutorial.html#looking-at-the-geographic-data) of my prior analysis.):
+
+![](/docs/posts/2023-04-11-credit-card-fraud/fraud_tutorial_files/figure-html/distance-and-fraud-1.png)
+
+I had thought that most transactions would be close to home, so I was looking to see if fraud increased with distance. Upon reflection, this also isn't the best visualization to answer that question, but it does illustrate that there are transactions over a wide range of distances.
+
+```{r}
+#| echo: false
+#| results: 'hide'
+
+renv::use(lockfile = "renv.lock")
+```
+
+## Loading Libraries
+
+Loading the necessary libraries.
+
+```{r}
+#| label: loading-libraries
+#| warning: false  
+
+library(here)
+
+# loading tidyverse/ tidymodels packages 
+library(tidyverse) #core tidyverse   
+# visualization 
+library(viridis) #color scheme that is colorblind friendly 
+library(ggthemes) # themes for ggplot 
+library(gt) # to make nice tables 
+#Geospatial Data 
+library(tidygeocoder) #converts city/state to lat/long 
+#library(sf) 
+```
+
+Loading the data. This is a local copy that is part of the workspace download from Datacamp. If you want to follow along, the \*.rmd file, which is executable R code as well as narrative, and the \*csv files from my previous analysis are in [the github repo for this website](https://github.com/lsinks/lsinks.github.io/tree/main/posts/2023-04-11-credit-card-fraud).
+
+First, I'm importing both the credit card fraud dataset and the results from the 177 geocoded locations from my local version of the prior analysis. I'm using the [here package](https://here.r-lib.org/) to traverse my file structure; I've previously discussed [why you should use here especially when using a mix of r script files and markdown files (rmd or quarto) in a project](https://lsinks.github.io/posts/2023-08-04-data-cleaning-tombstone/tombstones_data_cleaning.html#the-here-package-for-reproducible-file-structures).
+
+```{r}
+#| label: import-old-data
+
+previous_data_folder <- "posts/2023-04-11-credit-card-fraud/datacamp_workspace/"
+
+fraud_file <- "credit_card_fraud.csv"
+geocoded_file <- "downloaded_coords.csv"
+
+
+fraud <-
+  read_csv(here(previous_data_folder, fraud_file),
+           show_col_types = FALSE) 
+
+addresses_geocoded <-
+read_csv(here(previous_data_folder, geocoded_file),
+  show_col_types = FALSE
+) 
+```
+
+And my geocoded data file has some extra spaces in the strings, so I strip them out. This is my own fault; I constructed the combined city, state with some extraneous spaces. The latitude and longitude out of the geocoder are called lat and long; I'm going to rename them to lat_calc and long_calc since the fraud dataset already has variables named lat and long.
+
+```{r}
+#| label: removing-spaces-addresses-geocoded  
+
+addresses_geocoded <-
+  addresses_geocoded %>%
+  mutate(address = str_replace_all(address, "\"", "")) %>%
+  rename(lat_calc = lat, long_calc = long)
+```
+
+And this is what my previous geocoded data looks like:
+
+```{r}
+#| label:  viewing-geocoded-addresses
+
+addresses_geocoded %>%   
+  gt() %>%  
+  tab_options(container.height = px(300),
+                                     container.padding.y = px(24))
+```
+
+The tidygeocoder package is a wrapper for [geocoding queries to a variety of different services](https://jessecambon.github.io/tidygeocoder/articles/geocoder_services.html). I used the Nominatim service and I passed it an unstructured query. Looking at the API, you can pass it specific components (city, state, country) but I passed the combined string "city, state" as the address. I also chose `full_results = FALSE`, which just returned the coordinates, and nothing else.
+
+## Reverse Geocoding
+
+Geocoding is getting coordinates from addresses; reverse geocoding is getting addresses from coordinates. Geocoding is likely more error prone than reverse geocoding. Geocoding requires parsing strings and matching them to the correct level of the hierarchy of information (does this string represent a city name, a country name, or some other organizational unit?). Reverse geocoding simply passes two numbers corresponding to latitude and longitude. Assuming you have your coordinates in the [correct format](https://en.wikipedia.org/wiki/Geographic_coordinate_conversion#:~:text=The%20numerical%20values%20for%20latitude,decimal%20degrees%3A%20%2B40.446%20%2D79.982) for the geocoding service there should not be any ambiguity in the numbers. (In this project, I am working entirely in decimal degrees for the GPS data.)
+
+So, I'm going to reverse geocode my calculated latitudes and longitudes and see if I recover my original city, state locations.
+
+Below is the working code block to reverse geocode, but I've commented it out and worked from a saved file for the rest of this project. Many geocoding services (such as the Google API) charge per query, but even if the services doesn't charge, you don't want to continually query a service with the same data. The tidygeocoder package will handle duplicates in the dataset and not pass them on to the geocoder. I made my own list of unique locations since I want that data for other analysis.
+
+I did choose full_results = TRUE. I thought this would be useful for understanding what was going on with the geocoding/ reverse geocoding.
+
+```{r}
+#| label: reverse-geocode 
+
+# reverse_geo <- addresses_geocoded %>%
+#   reverse_geocode(
+#     lat = lat_calc,
+#     long = long_calc,
+#     address = addr,
+#     limit = 1,
+#     method = "osm",
+#     full_results = TRUE
+#   )
+
+```
+
+This is the code block to save the output, also commented out since I already saved it.
+
+```{r}
+#| label: writing-reverse-geocode 
+# write_csv(reverse_geo, "home_coords.csv")
+```
+
+Here I'm loading my saved copy.
+
+```{r}
+#| label: loading-reverse-geocode
+
+reverse <- read_csv("home_coords.csv")
+```
+
+```{r}
+#| label: viewing-reverse 
+
+reverse %>%
+  gt() %>%
+  tab_options(container.height = px(300),
+              container.padding.y = px(24))
+```
+
+From the very first entry, I can see that Orient, Washington was given coordinates that correspond to Orient, Iowa. And as a note, I'm going to use phrases like "geocoded the wrong state" going forwards, but what I mean is "geocoding produced coordinates that are located in a state that does not match the input state." That's really wordy, so I will be using "wrong state" as a shorthand.
+
+The data returned from the reverse geocode is structured in a hierarchical way. What is listed as "city" in the fraud dataset might be a hamlet, a village, a city, etc. or even a combination of the two (such as High Rolls Mountain Park, NM).
+
+There are a bunch of variables that I don't think are relevant, so I'm going to select only the relevant fields.
+
+```{r}
+#| label: selecting-geo-reverse  
+#| 
+reverse <-
+  reverse %>%   
+  select(
+    address,
+    lat_calc,
+    long_calc,
+    city,
+    hamlet,
+    suburb,
+    neighbourhood,
+    village,
+    town,
+    county,
+    state,
+    country
+  )
+```
+
+Look at this data again.
+
+```{r}
+#| label: viewing-reverse-subset 
+
+reverse %>%   
+  gt() %>%  
+  tab_options(container.height = px(300),
+                                     container.padding.y = px(24))
+```
+
+As a quick check, I can look at how many entries have the wrong state. I'm going to split the address back into city and state and tag them \_orig for "original".
+
+(I always want to use `str_split` from stringR, because that just sounds right, but that is almost never the right approach. It is almost always `separate` from tidyR.)
+
+```{r}
+#| label: making-city-state-orig  
+
+reverse <-
+  reverse %>% separate(address,
+                       into = c("city_orig", "state_orig"),
+                       sep = " , ")
+```
+
+Take a look just to make sure everything is as expected.
+
+```{r}
+#| label: viewing-city-state-orig 
+
+reverse %>%   
+  gt() %>%   
+  tab_options(container.height = px(300),
+                                     container.padding.y = px(24))
+```
+
+Now convert state into the two letter abbreviation.
+
+```{r}
+#| label: state-name-to-abbrev 
+  
+reverse$state <- state.abb[match(reverse$state, state.name)]
+```
+
+Making sure everything converted to the abbreviation.
+
+```{r}
+#| label: checking-for-failures 
+
+reverse %>% filter(is.na(state) == TRUE) %>% gt()
+```
+
+So there is one NA which arises from location that is in Canada. This can safely be encoded as an incorrect state. I'm going to make a Boolean correct_state to reflect if the original state and the reverse geocoded state are the same. I'm also handling the Canadian entry (as correct_state = FALSE).
+
+```{r}
+#| label: creating-correct_state-boolean 
+
+reverse <- reverse %>%   mutate(correct_state = (state_orig == state))  
+reverse <- reverse %>%   mutate(correct_state = ifelse(country == "Canada", FALSE, correct_state))                        
+```
+
+How many right?
+
+```{r}
+#| label: stats-correct_state 
+
+sum(reverse$correct_state) 
+mean(reverse$correct_state)
+```
+
+That's not terrible, but it isn't great. Remember, this data is the list of 177 unique locations found in a dataset of 300k+ transactions. Even 7% error here could be thousands of incorrect entries in the main fraud dataset.
+
+### Remaking Figure 5
+
+Now, I'm going to remake Fig 5 from my previous analysis. I'm joining the reverse geocoded data to the fraud set.
+
+```{r}
+#| label: joining-reverse-to-fraud 
+ 
+fraud <-   fraud %>%
+left_join(reverse, by = c("city" = "city_orig", "state" = "state_orig"))
+```
+
+Just for fun, let's see how many wrong state entries we have now.
+
+```{r}
+#| label: stats-correct_state-full-data
+
+sum(fraud$correct_state) 
+
+nrow(fraud)-sum(fraud$correct_state) 
+
+```
+
+Almost 25,000 transactions have a wrong state from the geocoding/reverse geocoding!
+
+Calculating the distances as before. Note this is exactly the same variables/ data/ and formulas as my previous work to generate figure 5. I've just renamed the variables from the geocoder as \_calc.
+
+```{r}
+#| label: calculating-distance  
+# convert to radians 
+fraud <-
+  fraud %>%   mutate(
+    lat1_radians = lat_calc / 57.29577951,
+    lat2_radians = lat / 57.29577951,
+    long1_radians = long_calc / 57.29577951,
+    long2_radians = long / 57.29577951
+  ) 
+
+
+# calculating distance 
+fraud <-
+  fraud %>% mutate(distance_miles = 3963.0 * acos((sin(lat1_radians) * sin(lat2_radians)) + cos(lat1_radians) * cos(lat2_radians) * cos(long2_radians - long1_radians)
+  ))
+```
+
+Now remake the Figure 5, but I'm color coding all the points where the geocoding produced the wrong state.
+
+```{r}
+#| label: remake-fig-5-coded-by-correct_state  
+
+ggplot(fraud, aes(distance_miles, is_fraud , fill = correct_state)) +
+  geom_point(
+  alpha = 1,
+  shape = 21,
+  colour = "black",
+  size = 5,
+  position = "jitter"
+) + 
+  scale_fill_viridis(
+  discrete = TRUE,
+  labels = c('Wrong State', 'Right State'),
+  name = ""
+) +
+  ggtitle("Figure 5 Remake: How far from home does fraud occur?") +
+  xlab("Distance from Home (miles)") +
+  ylab("Is Fraud?")
+```
+
+This is bad. It looks like all my long distances are wrong because the geocoding was wrong. From this graph, it looks like everything greater than 500 miles is incorrect. I can double check this numerically.
+
+```{r}
+#| label: table-of_wrong-states
+
+fraud %>% filter(distance_miles > 500) %>% group_by(correct_state) %>% count() %>% gt()
+```
+
+This means every distance over 500 miles was calculated using an incorrect set of coordinates and is thus wrong.
+
+### Are there other errors?
+
+Now there could be other errors in the smaller distance data. I just checked for a state mismatch, but the city could also be mismatched. Remember, the geocoder returned no errors, even for the obvious mismatches we already found. Let's look at the transactions that had a distance greater than 50 miles and are in the correct state.
+
+```{r}
+#| label: viewing-50mi-locations}
+
+  fraud %>% filter((distance_miles > 50) &
+                     (correct_state == TRUE)) %>% 
+    distinct(city,
+           state, 
+  city.y,
+    hamlet,
+    suburb,
+    neighbourhood,
+    village,
+    town,
+    county,
+    state.y,
+    country
+    ) %>%
+    gt() %>%
+    tab_options(container.height = px(300), container.padding.y = px(24))
+```
+
+Okay, some definitely were incorrectly geocoded : Vinton/ Winton. Powel Butte/ Portland. Camden/ Camdenton. Some are probably correct, like Nelson and Wales.
+
+Really, every one of the 177 locations should checked by matching the original city, state pair to the results of the geocoded/reverse geocoded data. Using this newly engineered feature, distance_miles, as a filter isn't the correct approach, but I wanted to illustrate the non-random impact of this error on my prior analysis. This new distance feature was fed into my modeling, so my algorithm got a nice dose of garbage data to fit.
+
+## Conclusions
+
+To check the geocoding of the 177 locations is quite a task. The city name could be matched in any one of a number of variables produced by the geocoding. Nelson, NE is actually a neighborhood according to the geocoding service, which is a highly local area. I'd probably step through matching from broader levels (city or county) to lower levels (hamlet, village, neighborhood). I'd only pass on the locations that didn't match at the higher level. I'm not illustrating how to do that here, because as I alluded to earlier, there is another problem with the fraud dataset that makes this exercise pointless. The actual coordinates of city, state are already in the dataset, they are just mislabeled/ incorrectly defined in the data dictionary. So city, state doesn't need to be geocoded.
+
+So why go through all this? Because this mistake could have been made in any analysis. The geocoding errors aren't specific to this dataset and have nothing to do with the other problems I found. I expected error handling would be handled by the geocoding service and specifically I expected an NA if there wasn't a city in that state. I didn't even check this assumption at any level. I didn't check my results like I did here. I didn't read the API documentation to see if my assumptions about errors were correct. (And having looked at the documentation now, there isn't any discussion of errors that I could find, so that should have also been a flag to me/ the user to be diligent about checking the results.)
